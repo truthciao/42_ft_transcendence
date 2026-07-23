@@ -1,0 +1,72 @@
+name: Notify Discord on main updates
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send message to Discord
+      run: |
+        ACTOR="${{ github.actor }}"
+        COMMIT_MSG=$(echo "${{ github.event.head_commit.message }}" | head -1)
+        COMMIT_URL="${{ github.event.head_commit.url }}"
+        TIMESTAMP="${{ github.event.head_commit.timestamp }}"
+        EPOCH=$(date -d "$TIMESTAMP" +%s)
+
+        CHANGED_FILES=$(curl -s \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}" \
+          | jq -r '.files[].filename')
+
+        if [ -n "$CHANGED_FILES" ]; then
+          FILE_LIST=$(echo "$CHANGED_FILES" | awk '{print "• `" $0 "`"}')
+        else
+          FILE_LIST="• \`no file info\`"
+        fi
+
+        PAYLOAD=$(jq -n \
+          --arg actor "$ACTOR" \
+          --arg commit_msg "$COMMIT_MSG" \
+          --arg commit_url "$COMMIT_URL" \
+          --arg file_list "$FILE_LIST" \
+          --argjson epoch "$EPOCH" \
+          '{
+            content: "",
+            embeds: [{
+              title: "🚀 New merge to main",
+              url: $commit_url,
+              color: 5814783,
+              description: "\u200b",
+              fields: [
+                {
+                  name: "\u200b",
+                  value: ("👤 **Author:** `" + $actor + "`\n🕐 **Time:** <t:" + ($epoch|tostring) + ":R> (<t:" + ($epoch|tostring) + ":f>)"),
+                  inline: false
+                },
+                { name: "\u200b", value: "\u200b", inline: false },
+                {
+                  name: "📝 Commit Message",
+                  value: ("```" + $commit_msg + "```"),
+                  inline: false
+                },
+                { name: "\u200b", value: "\u200b", inline: false },
+                {
+                  name: "📂 Changed Files",
+                  value: $file_list,
+                  inline: false
+                }
+              ],
+              footer: { text: "your-project-name" }
+            }]
+          }')
+
+        curl -f -H "Content-Type: application/json" \
+          -X POST \
+          -d "$PAYLOAD" \
+          "${{ secrets.DISCORD_WEBHOOK }}"

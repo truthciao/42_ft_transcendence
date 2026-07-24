@@ -5,3 +5,5 @@ allowBuilds:
   '@prisma/engines': false
   prisma: false
   unrs-resolver: false
+minimumReleaseAgeExclude:
+  - pnpm@11.16.0

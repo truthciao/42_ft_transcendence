@@ -1,11 +1,15 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ProfilePage } from './pages/ProfilePage';
 
 function App() {
   return (
-    <main>
-      <h1>Transcendence</h1>
-      <p>Frontend is running.</p>
-    </main>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<ProfilePage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App

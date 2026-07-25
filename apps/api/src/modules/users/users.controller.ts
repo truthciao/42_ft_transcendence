@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -11,12 +11,13 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Post('test-validation')
-  testValidation(@Body() dto: CreateUserDto) {
-    return {
-      message: 'validation passed',
-      data: dto,
-    };
+  @Get('me')
+  getProfile() {
+    return this.usersService.getProfile();
+  }
+
+  @Patch('me')
+  updateProfile(@Body() dto: UpdateProfileDto) {
+    return this.usersService.updateProfile(dto);
   }
 }
-

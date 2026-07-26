@@ -27,6 +27,7 @@ export class UsersService {
       data: {
         id: 1,
         username: 'user-1',
+        email: `user_${Date.now()}@temp.com`, //Added for OAuth (temporary)
       },
     });
   }
@@ -41,6 +42,7 @@ export class UsersService {
         data: {
           id: 1,
           username: dto.username ?? 'user-1',
+          email: `user_${Date.now()}@temp.com`, //Added for OAuth (temporary)
           displayName: dto.displayName,
           bio: dto.bio,
           avatarUrl: dto.avatarUrl,

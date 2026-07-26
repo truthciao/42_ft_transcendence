@@ -68,7 +68,10 @@ describe('UsersService', () => {
     expect(prisma.user.update).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: 1 },
-        data: { displayName: 'Alice Updated', bio: 'Updated bio' },
+        data: expect.objectContaining({
+          displayName: 'Alice Updated',
+          bio: 'Updated bio',
+        }),
       }),
     );
   });

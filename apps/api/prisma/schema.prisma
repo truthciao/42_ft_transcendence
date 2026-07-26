@@ -9,11 +9,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile   Profile?
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  username      String         @unique
+  passwordHash  String?
+  oauthAccounts OAuthAccount[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  profile       Profile?
 }
 
 model Profile {
@@ -26,4 +29,15 @@ model Profile {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OAuthAccount {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  provider   String
+  providerId String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
 }

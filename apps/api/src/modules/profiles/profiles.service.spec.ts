@@ -31,7 +31,11 @@ describe('ProfilesService', () => {
         user: {
           connectOrCreate: {
             where: { id: 1 },
-            create: { id: 1, username: 'user-1' },
+            create: {
+              id: 1,
+              username: 'user-1',
+              email: 'user-1@example.com', // 👈 补上这行，断言就完全匹配了
+            },
           },
         },
       },

@@ -1,11 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { getProfile, updateProfile, type ProfilePayload } from '../api/profile';
 
 export function ProfilePage() {
   const [form, setForm] = useState<ProfilePayload>({
-    username: '',
     displayName: '',
     bio: '',
+    avatarUrl: '',
+    preferredLanguage: '',
   });
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
@@ -15,12 +16,13 @@ export function ProfilePage() {
       try {
         const profile = await getProfile();
         setForm({
-          username: profile.username ?? '',
           displayName: profile.displayName ?? '',
           bio: profile.bio ?? '',
+          avatarUrl: profile.avatarUrl ?? '',
+          preferredLanguage: profile.preferredLanguage ?? '',
         });
-      } catch {
-        setStatus('Failed to load profile');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Failed to load profile');
       } finally {
         setLoading(false);
       }
@@ -36,8 +38,8 @@ export function ProfilePage() {
     try {
       await updateProfile(form);
       setStatus('Profile updated');
-    } catch {
-      setStatus('Failed to update profile');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Failed to update profile');
     }
   }
 
@@ -49,15 +51,6 @@ export function ProfilePage() {
       {loading ? <p>Loading...</p> : null}
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
-        <label>
-          <div>Username</div>
-          <input
-            value={form.username ?? ''}
-            onChange={(event) => setForm({ ...form, username: event.target.value })}
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </label>
-
         <label>
           <div>Display name</div>
           <input
@@ -73,6 +66,25 @@ export function ProfilePage() {
             value={form.bio ?? ''}
             onChange={(event) => setForm({ ...form, bio: event.target.value })}
             rows={5}
+            style={{ width: '100%', padding: '0.5rem' }}
+          />
+        </label>
+
+        <label>
+          <div>Avatar URL</div>
+          <input
+            type="url"
+            value={form.avatarUrl ?? ''}
+            onChange={(event) => setForm({ ...form, avatarUrl: event.target.value })}
+            style={{ width: '100%', padding: '0.5rem' }}
+          />
+        </label>
+
+        <label>
+          <div>Preferred language</div>
+          <input
+            value={form.preferredLanguage ?? ''}
+            onChange={(event) => setForm({ ...form, preferredLanguage: event.target.value })}
             style={{ width: '100%', padding: '0.5rem' }}
           />
         </label>

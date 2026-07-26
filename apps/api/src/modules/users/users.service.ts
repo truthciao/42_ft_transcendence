@@ -1,63 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  async findAll() {
     return this.prisma.user.findMany({
-      orderBy: {
-        id: 'asc',
-      },
+      orderBy: { id: 'asc' },
+      include: { profile: true },
     });
   }
 
-  async getProfile() {
-    const existingUser = await this.prisma.user.findFirst({
-      where: { id: 1 },
+  async findById(id: number) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: { profile: true },
     });
+  }
 
-    if (existingUser) {
-      return existingUser;
-    }
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
 
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({
+      where: { username },
+    });
+  }
+
+  async createUser(data: { email: string; username: string; passwordHash: string }) {
     return this.prisma.user.create({
       data: {
-        id: 1,
-        username: 'user-1',
-        email: `user_${Date.now()}@temp.com`, //Added for OAuth (temporary)
-      },
-    });
-  }
-
-  async updateProfile(dto: UpdateProfileDto) {
-    const existingUser = await this.prisma.user.findFirst({
-      where: { id: 1 },
-    });
-
-    if (!existingUser) {
-      return this.prisma.user.create({
-        data: {
-          id: 1,
-          username: dto.username ?? 'user-1',
-          email: `user_${Date.now()}@temp.com`, //Added for OAuth (temporary)
-          displayName: dto.displayName,
-          bio: dto.bio,
-          avatarUrl: dto.avatarUrl,
+        email: data.email,
+        username: data.username,
+        passwordHash: data.passwordHash,
+        profile: {
+          create: {},
         },
-      });
-    }
-
-    return this.prisma.user.update({
-      where: { id: 1 },
-      data: {
-        username: dto.username ?? existingUser.username,
-        displayName: dto.displayName ?? existingUser.displayName,
-        bio: dto.bio ?? existingUser.bio,
-        avatarUrl: dto.avatarUrl ?? existingUser.avatarUrl,
       },
+      include: { profile: true },
     });
   }
 }

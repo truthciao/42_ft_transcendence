@@ -5,8 +5,8 @@ describe('UsersService', () => {
   let service: UsersService;
   let prisma: {
     user: {
-      findFirst: jest.Mock;
-      update: jest.Mock;
+      findMany: jest.Mock;
+      findUnique: jest.Mock;
       create: jest.Mock;
     };
   };
@@ -14,8 +14,8 @@ describe('UsersService', () => {
   beforeEach(() => {
     prisma = {
       user: {
-        findFirst: jest.fn(),
-        update: jest.fn(),
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
         create: jest.fn(),
       },
     };
@@ -23,75 +23,33 @@ describe('UsersService', () => {
     service = new UsersService(prisma as unknown as PrismaService);
   });
 
-  it('returns the current profile when one exists', async () => {
-    const profile = {
-      id: 1,
-      username: 'alice',
-      displayName: 'Alice',
-      bio: 'Hello',
-      avatarUrl: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  it('finds all users', async () => {
+    const users = [{ id: 1, email: 'test@example.com', username: 'test' }];
+    prisma.user.findMany.mockResolvedValueOnce(users);
 
-    prisma.user.findFirst.mockResolvedValue(profile);
-
-    await expect(service.getProfile()).resolves.toEqual(profile);
-    expect(prisma.user.findFirst).toHaveBeenCalled();
+    await expect(service.findAll()).resolves.toEqual(users);
   });
 
-  it('updates profile fields for the current user', async () => {
-    const currentUser = {
-      id: 1,
-      username: 'alice',
-      displayName: 'Alice',
-      bio: 'Hello',
-      avatarUrl: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  it('finds user by id', async () => {
+    const user = { id: 1, email: 'test@example.com', username: 'test' };
+    prisma.user.findUnique.mockResolvedValueOnce(user);
 
-    prisma.user.findFirst.mockResolvedValueOnce(currentUser);
-    prisma.user.update.mockResolvedValue({
-      ...currentUser,
-      displayName: 'Alice Updated',
-      bio: 'Updated bio',
-    });
+    await expect(service.findById(1)).resolves.toEqual(user);
+  });
+
+  it('finds user by email', async () => {
+    const user = { id: 1, email: 'test@example.com', username: 'test' };
+    prisma.user.findUnique.mockResolvedValueOnce(user);
+
+    await expect(service.findByEmail('test@example.com')).resolves.toEqual(user);
+  });
+
+  it('creates user with profile', async () => {
+    const user = { id: 1, email: 'test@example.com', username: 'test' };
+    prisma.user.create.mockResolvedValueOnce(user);
 
     await expect(
-      service.updateProfile({ displayName: 'Alice Updated', bio: 'Updated bio' }),
-    ).resolves.toMatchObject({
-      displayName: 'Alice Updated',
-      bio: 'Updated bio',
-    });
-
-    expect(prisma.user.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: 1 },
-        data: expect.objectContaining({
-          displayName: 'Alice Updated',
-          bio: 'Updated bio',
-        }),
-      }),
-    );
-  });
-
-  it('creates a fallback user when no profile exists yet', async () => {
-    prisma.user.findFirst.mockResolvedValueOnce(null);
-    prisma.user.create.mockResolvedValue({
-      id: 1,
-      username: 'user-1',
-      displayName: null,
-      bio: null,
-      avatarUrl: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-
-    await expect(service.getProfile()).resolves.toMatchObject({
-      username: 'user-1',
-    });
-
-    expect(prisma.user.create).toHaveBeenCalled();
+      service.createUser({ email: 'test@example.com', username: 'test', passwordHash: 'hash' }),
+    ).resolves.toEqual(user);
   });
 });

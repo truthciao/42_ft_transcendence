@@ -51,7 +51,7 @@ Thumbs.db
 # =========================
 prisma/dev.db
 prisma/dev.db-journal
-src/generated/prisma
+apps/api/src/generated/prisma/
 
 # =========================
 # Docker

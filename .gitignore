@@ -64,3 +64,10 @@ docker-data/
 tmp/
 temp/
 .cache/
+
+# =========================
+# AI
+# =========================
+apps/api/.agents/
+apps/api/.claude/
+apps/api/.windsurf/

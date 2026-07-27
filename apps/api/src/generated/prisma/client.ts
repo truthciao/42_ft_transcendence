@@ -54,3 +54,13 @@ export type Profile = Prisma.ProfileModel
  * 
  */
 export type OAuthAccount = Prisma.OAuthAccountModel
+/**
+ * Model Workspace
+ * 
+ */
+export type Workspace = Prisma.WorkspaceModel
+/**
+ * Model WorkspaceMember
+ * 
+ */
+export type WorkspaceMember = Prisma.WorkspaceMemberModel

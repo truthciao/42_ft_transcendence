@@ -34,7 +34,9 @@ describe('WorkspacesService', () => {
       id: 1,
       name: 'My Workspace',
       ownerId: 1,
-      members: [{ id: 1, workspaceId: 1, userId: 1, role: WorkspaceRole.OWNER }],
+      members: [
+        { id: 1, workspaceId: 1, userId: 1, role: WorkspaceRole.OWNER },
+      ],
     });
 
     await expect(service.create(1, 'My Workspace')).resolves.toMatchObject({
@@ -57,7 +59,9 @@ describe('WorkspacesService', () => {
   });
 
   it('finds workspaces the user belongs to', async () => {
-    prisma.workspace.findMany.mockResolvedValue([{ id: 1, name: 'My Workspace' }]);
+    prisma.workspace.findMany.mockResolvedValue([
+      { id: 1, name: 'My Workspace' },
+    ]);
 
     await expect(service.findAllForUser(1)).resolves.toHaveLength(1);
     expect(prisma.workspace.findMany).toHaveBeenCalledWith({
@@ -103,7 +107,9 @@ describe('WorkspacesService', () => {
       });
       prisma.workspace.update.mockResolvedValue({ id: 1, name: 'Renamed' });
 
-      await expect(service.update(1, 1, { name: 'Renamed' })).resolves.toMatchObject({
+      await expect(
+        service.update(1, 1, { name: 'Renamed' }),
+      ).resolves.toMatchObject({
         name: 'Renamed',
       });
       expect(prisma.workspace.update).toHaveBeenCalledWith({
@@ -119,7 +125,9 @@ describe('WorkspacesService', () => {
         members: [{ userId: 1, role: WorkspaceRole.MEMBER }],
       });
 
-      await expect(service.update(1, 1, { name: 'Renamed' })).rejects.toThrow(ForbiddenException);
+      await expect(service.update(1, 1, { name: 'Renamed' })).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
@@ -132,7 +140,9 @@ describe('WorkspacesService', () => {
       prisma.workspace.delete.mockResolvedValue({ id: 1 });
 
       await expect(service.remove(1, 1)).resolves.toMatchObject({ id: 1 });
-      expect(prisma.workspace.delete).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(prisma.workspace.delete).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
     });
 
     it('throws ForbiddenException when the user is not OWNER', async () => {

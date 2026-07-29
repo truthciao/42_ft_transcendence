@@ -21,8 +21,8 @@ export class WorkspacesService {
       },
       include: {
         members: true,
-      }
-    })
+      },
+    });
   }
 
   async findAllForUser(userId: number) {
@@ -35,8 +35,8 @@ export class WorkspacesService {
       orderBy: { id: 'asc' },
       include: {
         members: true,
-      }
-    })
+      },
+    });
   }
 
   async findOne(workspaceId: number, userId: number) {

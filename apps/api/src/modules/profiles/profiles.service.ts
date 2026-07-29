@@ -24,7 +24,10 @@ export class ProfilesService {
     });
   }
 
-  async updateProfile(userId: number, dto: { displayName?: string; bio?: string; avatarUrl?: string }) {
+  async updateProfile(
+    userId: number,
+    dto: { displayName?: string; bio?: string; avatarUrl?: string },
+  ) {
     return this.prisma.profile.upsert({
       where: { userId },
       create: {

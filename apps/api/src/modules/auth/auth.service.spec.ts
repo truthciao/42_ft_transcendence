@@ -39,11 +39,22 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should successfully register a new user', async () => {
       prismaMock.user.findFirst.mockResolvedValue(null); // 假装没有重复账号
-      prismaMock.user.create.mockResolvedValue({ id: 1, email: 'test@42.fr', username: 'testuser' });
+      prismaMock.user.create.mockResolvedValue({
+        id: 1,
+        email: 'test@42.fr',
+        username: 'testuser',
+      });
 
-      const result = await service.register('test@42.fr', 'password123', 'testuser');
+      const result = await service.register(
+        'test@42.fr',
+        'password123',
+        'testuser',
+      );
 
-      expect(result).toEqual({ message: 'User registered successfully', userId: 1 });
+      expect(result).toEqual({
+        message: 'User registered successfully',
+        userId: 1,
+      });
       expect(prismaMock.user.create).toHaveBeenCalled();
     });
 
@@ -69,15 +80,19 @@ describe('AuthService', () => {
       const result = await service.login('test@42.fr', 'password123');
 
       expect(result).toHaveProperty('access_token', 'mocked_jwt_token');
-      expect(result.user).toEqual({ id: 1, email: 'test@42.fr', username: 'testuser' });
+      expect(result.user).toEqual({
+        id: 1,
+        email: 'test@42.fr',
+        username: 'testuser',
+      });
     });
 
     it('should throw UnauthorizedException if user is not found', async () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.login('wrong@42.fr', 'password123'),
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(service.login('wrong@42.fr', 'password123')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException for invalid password', async () => {

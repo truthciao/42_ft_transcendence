@@ -17,6 +17,5 @@ import { WorkspacesMoudule } from './modules/workspaces/workspaces.module';
     ProfilesModule,
     WorkspacesMoudule,
   ],
-
 })
 export class AppModule {}

@@ -1,5 +1,12 @@
-import { BadRequestException, Controller, Get, Req } from '@nestjs/common';
-import type { Request } from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+} from '@nestjs/common';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -12,23 +19,21 @@ export class UsersController {
   }
 
   @Get('me')
-  getCurrentUser(@Req() req: Request) {
-    return this.usersService.findById(this.getUserId(req));
+  getProfile() {
+    const userId = 1;
+
+    return this.usersService.findById(userId);
   }
 
-  private getUserId(req: Request): number {
-    const rawUserId = req.headers['x-user-id'];
-    const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId;
+  @Patch('me')
+  updateProfile(@Body() dto: UpdateProfileDto) {
+    const userId = 1;
 
-    if (!userId) {
-      throw new BadRequestException('Missing X-User-Id header');
-    }
+    return this.usersService.updateProfile(userId, dto);
+  }
 
-    const parsed = Number(userId);
-    if (!Number.isInteger(parsed) || parsed <= 0) {
-      throw new BadRequestException('Invalid X-User-Id header');
-    }
-
-    return parsed;
+  @Get(':id')
+  findById(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findById(id);
   }
 }

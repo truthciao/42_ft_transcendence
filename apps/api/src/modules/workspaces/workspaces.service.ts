@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WorkspaceRole } from '../../generated/prisma/client';
-// import { NotFoundError } from 'rxjs';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class WorkspacesService {

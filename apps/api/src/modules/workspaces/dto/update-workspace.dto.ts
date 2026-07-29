@@ -1,7 +1,7 @@
 import {
   IsOptional,
   IsString,
-  // Max,
+  Max,
   MaxLength,
   MinLength,
 } from 'class-validator';

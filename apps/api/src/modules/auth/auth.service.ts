@@ -3,48 +3,41 @@ import {
   BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly userService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
   //Sign up a new user
   async register(email: string, password: string, username: string) {
     //step 1: non-blocking waiting for return data and assign pointer to existingUser
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ email: email }, { username: username }],
-      },
-    });
-    if (existingUser) {
+    const existingEmail = await this.userService.findByEmail(email);
+    const existingUsername = await this.userService.findByUsername(username);
+    if (existingEmail || existingUsername) {
       throw new BadRequestException('Email or username already exists');
     }
 
     //step 2: add new user info into the database
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: email,
-        username: username,
-        passwordHash: passwordHash,
-      },
+    const user = await this.userService.createUser({
+      email: email,
+      username: username,
+      passwordHash: passwordHash,
     });
     return { message: 'User registered successfully', userId: user.id };
   }
 
   //log in an exising user
   async login(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: email },
-    });
-
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email');
     }

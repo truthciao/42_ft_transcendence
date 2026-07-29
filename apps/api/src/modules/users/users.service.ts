@@ -1,16 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import * as bcrypt from 'bcrypt';
 
 interface CreateUserData {
   email: string;
   username: string;
-  passwordHash: string;
+  passwordHash?: string; //Optional to skip dto check!
 }
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async createUser(data: CreateUserData) {
+
+    //Check if passwordHash is avaiable!
+    let hash = data.passwordHash;
+    if (!hash) {
+      const defaultPasswordHash = 'DefaultPassword123!';
+      hash = await bcrypt.hash(defaultPasswordHash, 10);
+    
+    }
+
+    return this.prisma.user.create({
+      data: {
+        email: data.email,
+        username: data.username,
+        passwordHash: hash,
+        profile: {
+          create: {},
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        profile: true,
+      },
+    });
+  } 
 
   async findAll() {
     return this.prisma.user.findMany({
@@ -54,43 +82,6 @@ export class UsersService {
         username,
       },
     });
-  }
-
-  async createUser(data: CreateUserData) {
-    return this.prisma.user.create({
-      data: {
-        email: data.email,
-        username: data.username,
-        passwordHash: data.passwordHash,
-        profile: {
-          create: {},
-        },
-      },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        profile: true,
-      },
-    });
-  }
-
-  async updateProfile(userId: number, dto: UpdateProfileDto) {
-    return this.prisma.profile.upsert({
-      where: {
-        userId,
-      },
-      update: {
-        displayName: dto.displayName,
-        bio: dto.bio,
-        avatarUrl: dto.avatarUrl,
-      },
-      create: {
-        userId,
-        displayName: dto.displayName,
-        bio: dto.bio,
-        avatarUrl: dto.avatarUrl,
-      },
-    });
-  }
+  } 
+  
 }

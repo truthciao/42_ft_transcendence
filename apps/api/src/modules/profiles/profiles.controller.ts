@@ -1,4 +1,12 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Req,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';

@@ -8,4 +8,3 @@ export class TestDto {
   @MinLength(3)
   username!: string;
 }
-

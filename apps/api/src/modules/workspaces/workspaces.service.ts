@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../prisma/prisma.service";
-import { WorkspaceRole } from "../../generated/prisma/client"
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { WorkspaceRole } from '../../generated/prisma/client';
 
 @Injectable()
 export class WorkspaceService {
@@ -20,8 +20,8 @@ export class WorkspaceService {
       },
       include: {
         members: true,
-      }
-    })
+      },
+    });
   }
 
   async findAllForUser(userId: number) {
@@ -34,7 +34,7 @@ export class WorkspaceService {
       orderBy: { id: 'asc' },
       include: {
         members: true,
-      }
-    })
+      },
+    });
   }
 }

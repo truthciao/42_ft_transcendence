@@ -15,6 +15,5 @@ import { ProfilesModule } from './modules/profiles/profiles.module';
     AuthModule,
     ProfilesModule,
   ],
-
 })
 export class AppModule {}

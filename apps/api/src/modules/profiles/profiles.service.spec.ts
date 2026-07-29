@@ -44,23 +44,39 @@ describe('ProfilesService', () => {
   });
 
   it('updates profile fields for the current user', async () => {
-    prisma.profile.upsert.mockResolvedValue({ userId: 1, displayName: 'Alice Updated' });
+    prisma.profile.upsert.mockResolvedValue({
+      userId: 1,
+      displayName: 'Alice Updated',
+    });
 
     await expect(
-      service.updateProfile(1, { displayName: 'Alice Updated', bio: 'Updated bio' }),
+      service.updateProfile(1, {
+        displayName: 'Alice Updated',
+        bio: 'Updated bio',
+      }),
     ).resolves.toMatchObject({
       displayName: 'Alice Updated',
     });
 
     expect(prisma.profile.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { userId: 1 }, update: { displayName: 'Alice Updated', bio: 'Updated bio' } }),
+      expect.objectContaining({
+        where: { userId: 1 },
+        update: { displayName: 'Alice Updated', bio: 'Updated bio' },
+      }),
     );
   });
 
   it('looks up a public profile by user ID', async () => {
-    prisma.profile.findUnique.mockResolvedValue({ userId: 2, displayName: 'Bob' });
+    prisma.profile.findUnique.mockResolvedValue({
+      userId: 2,
+      displayName: 'Bob',
+    });
 
-    await expect(service.findProfileByUserId(2)).resolves.toMatchObject({ userId: 2 });
-    expect(prisma.profile.findUnique).toHaveBeenCalledWith({ where: { userId: 2 } });
+    await expect(service.findProfileByUserId(2)).resolves.toMatchObject({
+      userId: 2,
+    });
+    expect(prisma.profile.findUnique).toHaveBeenCalledWith({
+      where: { userId: 2 },
+    });
   });
 });

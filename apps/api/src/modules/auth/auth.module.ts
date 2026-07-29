@@ -4,16 +4,16 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PrismaModule } from '../../prisma/prisma.module';
 
-@Module ({
-    imports: [
-        JwtModule.register({
-            global: true,
-            secret: process.env.JWT_SECRET || 'super-secret-key-transcendence',
-            signOptions: { expiresIn: '1d'},
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [AuthService],
-    exports: [AuthService],
+@Module({
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET || 'super-secret-key-transcendence',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

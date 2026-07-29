@@ -1,8 +1,18 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req } from "@nestjs/common";
-import { raw, type Request } from "express";
-import { CreateWorkspaceDto } from "./dto/create-workspace.dto";
-import { UpdateWorkspaceDto } from "./dto/update-workspace.dto";
-import { WorkspacesService } from "./workspaces.service";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { /*raw,*/ type Request } from 'express';
+import { CreateWorkspaceDto } from './dto/create-workspace.dto';
+import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
+import { WorkspacesService } from './workspaces.service';
 
 @Controller('workspaces')
 export class WorkspaceController {
@@ -20,17 +30,31 @@ export class WorkspaceController {
 
   @Get(':id')
   findOne(@Req() req: Request, @Param('id') rawId: string) {
-    return this.workspacesService.findOne(this.parseWorkspaceId(rawId), this.getUserId(req));
+    return this.workspacesService.findOne(
+      this.parseWorkspaceId(rawId),
+      this.getUserId(req),
+    );
   }
 
   @Patch(':id')
-  update(@Req() req: Request, @Param('id') rawId: string, @Body() dto: UpdateWorkspaceDto) {
-    return this.workspacesService.update(this.parseWorkspaceId(rawId), this.getUserId(req), dto);
+  update(
+    @Req() req: Request,
+    @Param('id') rawId: string,
+    @Body() dto: UpdateWorkspaceDto,
+  ) {
+    return this.workspacesService.update(
+      this.parseWorkspaceId(rawId),
+      this.getUserId(req),
+      dto,
+    );
   }
 
   @Delete(':id')
   remove(@Req() req: Request, @Param('id') rawId: string) {
-    return this.workspacesService.remove(this.parseWorkspaceId(rawId), this.getUserId(req));
+    return this.workspacesService.remove(
+      this.parseWorkspaceId(rawId),
+      this.getUserId(req),
+    );
   }
 
   private getUserId(req: Request): number {

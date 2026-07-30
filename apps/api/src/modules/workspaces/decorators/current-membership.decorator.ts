@@ -1,9 +1,10 @@
-import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import type { WorkspaceMember } from "src/generated/prisma/client";
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const CurrentMembership = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): WorkspaceMember => {
-    const req = ctx.switchToHttp().getRequest();
-    return req.workspaceMembership;
-  }
-)
+  (_data: unknown, ctx: ExecutionContext) => {
+    const request = ctx
+      .switchToHttp()
+      .getRequest<{ workspaceMembership?: unknown }>();
+    return request.workspaceMembership;
+  },
+);

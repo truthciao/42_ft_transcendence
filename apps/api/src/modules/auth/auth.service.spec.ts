@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { PrismaService } from '../../prisma/prisma.service';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let prismaMock: any;
+  let usersServiceMock: any;
   let jwtServiceMock: any;
 
   beforeEach(async () => {
-    // 1. Mock 伪造 PrismaService 句柄
-    prismaMock = {
-      user: {
-        findFirst: jest.fn(),
-        findUnique: jest.fn(),
-        create: jest.fn(),
-      },
+    // 1. Mock 伪造 UsersService 句柄（对齐重构后的 AuthService 依赖）
+    usersServiceMock = {
+      findByEmail: jest.fn(),
+      findByUsername: jest.fn(),
+      createUser: jest.fn(),
     };
 
     // 2. Mock 伪造 JwtService 句柄
@@ -29,7 +29,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: PrismaService, useValue: prismaMock },
+        { provide: UsersService, useValue: usersServiceMock },
         { provide: JwtService, useValue: jwtServiceMock },
       ],
     }).compile();
@@ -39,46 +39,64 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should successfully register a new user', async () => {
-      prismaMock.user.findFirst.mockResolvedValue(null); // 假装没有重复账号
-      prismaMock.user.create.mockResolvedValue({
+      // 伪造 UsersService 查重返回 null
+      usersServiceMock.findByEmail.mockResolvedValue(null);
+      usersServiceMock.findByUsername.mockResolvedValue(null);
+
+      // 伪造 createUser 返回连带落盘结果
+      usersServiceMock.createUser.mockResolvedValue({
         id: 1,
         email: 'test@42.fr',
         username: 'testuser',
       });
 
-      const result = await service.register(
-        'test@42.fr',
-        'password123',
-        'testuser',
-      );
+      const dto: RegisterDto = {
+        email: 'test@42.fr',
+        password: 'password123',
+        username: 'testuser',
+      };
+
+      const result = await service.register(dto);
 
       expect(result).toEqual({
         message: 'User registered successfully',
         userId: 1,
       });
-      expect(prismaMock.user.create).toHaveBeenCalled();
+      expect(usersServiceMock.createUser).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if email or username already exists', async () => {
-      prismaMock.user.findFirst.mockResolvedValue({ id: 1 }); // 假装找到了重复用户
+      // 假装查找到了重复邮箱
+      usersServiceMock.findByEmail.mockResolvedValue({ id: 1 });
+      usersServiceMock.findByUsername.mockResolvedValue(null);
 
-      await expect(
-        service.register('test@42.fr', 'password123', 'testuser'),
-      ).rejects.toThrow(BadRequestException);
+      const dto: RegisterDto = {
+        email: 'test@42.fr',
+        password: 'password123',
+        username: 'testuser',
+      };
+
+      await expect(service.register(dto)).rejects.toThrow(BadRequestException);
     });
   });
 
   describe('login', () => {
     it('should return access token for valid credentials', async () => {
       const hashedPassword = await bcrypt.hash('password123', 10);
-      prismaMock.user.findUnique.mockResolvedValue({
+
+      usersServiceMock.findByEmail.mockResolvedValue({
         id: 1,
         email: 'test@42.fr',
         username: 'testuser',
         passwordHash: hashedPassword,
       });
 
-      const result = await service.login('test@42.fr', 'password123');
+      const dto: LoginDto = {
+        email: 'test@42.fr',
+        password: 'password123',
+      };
+
+      const result = await service.login(dto);
 
       expect(result).toHaveProperty('access_token', 'mocked_jwt_token');
       expect(result.user).toEqual({
@@ -89,24 +107,30 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if user is not found', async () => {
-      prismaMock.user.findUnique.mockResolvedValue(null);
+      usersServiceMock.findByEmail.mockResolvedValue(null);
 
-      await expect(service.login('wrong@42.fr', 'password123')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      const dto: LoginDto = {
+        email: 'wrong@42.fr',
+        password: 'password123',
+      };
+
+      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException for invalid password', async () => {
       const hashedPassword = await bcrypt.hash('password123', 10);
-      prismaMock.user.findUnique.mockResolvedValue({
+      usersServiceMock.findByEmail.mockResolvedValue({
         id: 1,
         email: 'test@42.fr',
         passwordHash: hashedPassword,
       });
 
-      await expect(
-        service.login('test@42.fr', 'WRONG_PASSWORD'),
-      ).rejects.toThrow(UnauthorizedException);
+      const dto: LoginDto = {
+        email: 'test@42.fr',
+        password: 'WRONG_PASSWORD',
+      };
+
+      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

@@ -7,8 +7,19 @@ import type { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { WorkspaceMember } from 'src/generated/prisma/client';
 
+// 1. 显式定义带 user 字段的 Request 类型，避免 any/error 校验失败
+interface AuthenticatedUserPayload {
+  id?: number;
+  userId?: number;
+}
+
+interface CustomAuthenticatedRequest extends Request {
+  user?: AuthenticatedUserPayload;
+}
+
 export function parseWorkspaceId(req: Request): number {
   const parsed = Number(req.params.id);
+  // ✅ 逻辑修正：如果不是整数，或者小于等于 0，抛出异常
   if (!Number.isInteger(parsed) || parsed <= 0) {
     throw new BadRequestException('Invalid workspace ID');
   }
@@ -16,7 +27,12 @@ export function parseWorkspaceId(req: Request): number {
 }
 
 export function getCurrentUserId(req: Request): number {
-  const userId = req.user?.userId;
+  // ✅ 强类型断言，彻底消灭 @typescript-eslint/no-unsafe-assignment
+  const authReq = req as CustomAuthenticatedRequest;
+
+  // 兼顾 user.id 与 user.userId
+  const userId = authReq.user?.id ?? authReq.user?.userId;
+
   if (!userId) {
     throw new BadRequestException('Missing authenticated user');
   }

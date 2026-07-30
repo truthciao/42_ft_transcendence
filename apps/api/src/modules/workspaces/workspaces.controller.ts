@@ -7,10 +7,9 @@ import {
   Patch,
   Post,
   ParseIntPipe,
-  Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
-import { type Request } from 'express';
+
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { InviteMemberDto } from './dto/invite-member.dto';
@@ -28,12 +27,15 @@ export class WorkspaceController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
   @Post()
-  create(@Currentuser('userId') userId: number, @Body() dto: CreateWorkspaceDto) {
+  create(
+    @Currentuser('userId') userId: number,
+    @Body() dto: CreateWorkspaceDto,
+  ) {
     return this.workspacesService.create(userId, dto.name);
   }
 
   @Get()
-  findMine(@Currentuser('userId') userId: number,) {
+  findMine(@Currentuser('userId') userId: number) {
     return this.workspacesService.findAllForUser(userId);
   }
 
@@ -61,17 +63,17 @@ export class WorkspaceController {
   @UseGuards(WorkspaceMemberGuard)
   @Post(':id/leave')
   leave(
-    @Param('id', ParseIntPipe) id:number,
+    @Param('id', ParseIntPipe) id: number,
     @Currentuser('userId') userId: number,
     @CurrentMembership() membership: WorkspaceMember,
   ) {
-    return this.workspacesService.leave(id, userId, membership.role)
+    return this.workspacesService.leave(id, userId, membership.role);
   }
 
   @UseGuards(WorkspaceMemberGuard)
   @Post(':id/members')
   InviteMemberDto(
-    @Param('id', ParseIntPipe) id:number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentMembership() membership: WorkspaceMember,
     @Body() dto: InviteMemberDto,
   ) {

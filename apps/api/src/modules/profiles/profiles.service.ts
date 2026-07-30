@@ -26,7 +26,12 @@ export class ProfilesService {
 
   async updateProfile(
     userId: number,
-    dto: { displayName?: string; bio?: string; avatarUrl?: string; preferredLanguage?: string; },
+    dto: {
+      displayName?: string;
+      bio?: string;
+      avatarUrl?: string;
+      preferredLanguage?: string;
+    },
   ) {
     return this.prisma.profile.upsert({
       where: { userId },

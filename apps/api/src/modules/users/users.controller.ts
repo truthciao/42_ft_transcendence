@@ -4,32 +4,24 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Patch,
+  Post,
 } from '@nestjs/common';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post()
+  createUser(@Body() dto: CreateUserDto) {
+    return this.usersService.createUser(dto);
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
-  }
-
-  @Get('me')
-  getProfile() {
-    const userId = 1;
-
-    return this.usersService.findById(userId);
-  }
-
-  @Patch('me')
-  updateProfile(@Body() dto: UpdateProfileDto) {
-    const userId = 1;
-
-    return this.usersService.updateProfile(userId, dto);
   }
 
   @Get(':id')

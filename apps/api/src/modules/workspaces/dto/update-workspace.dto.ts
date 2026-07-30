@@ -1,4 +1,10 @@
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class UpdateWorkspaceDto {
   @IsOptional()

@@ -21,7 +21,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WorkspaceMemberGuard } from './guards/workspace-member.guard';
 import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard';
 import { WorkspacesService } from './workspaces.service';
-import { UpdateProfileDto } from '../users/dto/update-profile.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('workspaces')
@@ -67,6 +66,16 @@ export class WorkspaceController {
     @CurrentMembership() membership: WorkspaceMember,
   ) {
     return this.workspacesService.leave(id, userId, membership.role)
+  }
+
+  @UseGuards(WorkspaceMemberGuard)
+  @Post(':id/members')
+  InviteMemberDto(
+    @Param('id', ParseIntPipe) id:number,
+    @CurrentMembership() membership: WorkspaceMember,
+    @Body() dto: InviteMemberDto,
+  ) {
+    return this.workspacesService.inviteMember(id, dto.userId);
   }
 
   @UseGuards(WorkspaceOwnerGuard)

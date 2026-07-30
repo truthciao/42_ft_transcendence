@@ -26,29 +26,22 @@ export class ProfilesService {
 
   async updateProfile(
     userId: number,
-    dto: { displayName?: string; bio?: string; avatarUrl?: string },
+    dto: { displayName?: string; bio?: string; avatarUrl?: string; preferredLanguage?: string; },
   ) {
     return this.prisma.profile.upsert({
       where: { userId },
       create: {
+        userId,
         displayName: dto.displayName,
         bio: dto.bio,
         avatarUrl: dto.avatarUrl,
-        user: {
-          connectOrCreate: {
-            where: { id: userId },
-            create: {
-              id: userId,
-              username: `user-${userId}`,
-              email: `user-${userId}@example.com`,
-            },
-          },
-        },
+        preferredLanguage: dto.preferredLanguage,
       },
       update: {
-        ...(dto.displayName !== undefined && { displayName: dto.displayName }),
-        ...(dto.bio !== undefined && { bio: dto.bio }),
-        ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl }),
+        displayName: dto.displayName,
+        bio: dto.bio,
+        avatarUrl: dto.avatarUrl,
+        preferredLanguage: dto.preferredLanguage,
       },
     });
   }

@@ -43,7 +43,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.userService.findByEmail(dto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid email');
+      throw new UnauthorizedException('Email not registered!');
     }
 
     if (!user.passwordHash) {

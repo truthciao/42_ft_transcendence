@@ -19,11 +19,12 @@ export function RootLayout() {
   return (
     <div>
       <header className="border-b border-gray-200">
-        <nav className="flex gap-2 p-4">
+        <nav style={{ display: 'flex', padding: '1rem', alignItems: 'center' }}>
           <NavLink
             to="/"
             end
             className={getNavLinkClass}
+            style={{ marginRight: '0.5rem' }}
           >
             Home
           </NavLink>
@@ -31,8 +32,17 @@ export function RootLayout() {
           <NavLink
             to="/login"
             className={getNavLinkClass}
+            style={{ marginRight: '0.5rem' }}
           >
             Login
+          </NavLink>
+
+          <NavLink
+            to="/register"
+            className={getNavLinkClass}
+            style={{ marginRight: '0.5rem' }}
+          >
+            Register
           </NavLink>
 
           <NavLink

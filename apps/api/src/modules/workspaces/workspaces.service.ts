@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -18,7 +17,8 @@ export class WorkspacesService {
         ownerId,
         members: {
           create: {
-            userId: ownerId, role: WorkspaceRole.OWNER,
+            userId: ownerId,
+            role: WorkspaceRole.OWNER,
           },
         },
       },
@@ -70,39 +70,41 @@ export class WorkspacesService {
     });
   }
 
-  async inviteMember(
-    workspaceId: number,
-    userId: number,
-  ) {
+  async inviteMember(workspaceId: number, userId: number) {
     const existing = await this.prisma.workspaceMember.findUnique({
       where: { workspaceId_userId: { workspaceId, userId } },
     });
     if (existing) {
-      throw new BadRequestException('User is already a member of this workspace');
+      throw new BadRequestException(
+        'User is already a member of this workspace',
+      );
     }
 
     const targetUser = await this.prisma.user.findUnique({
       where: { id: userId },
     });
     if (!targetUser) {
-      throw new NotFoundException('User to invite not found')
+      throw new NotFoundException('User to invite not found');
     }
 
     return this.prisma.workspaceMember.create({
       data: { workspaceId, userId, role: WorkspaceRole.MEMBER },
-    })
+    });
   }
 
   async removeMember(workspaceId: number, targetUserId: number) {
-    const membership = await this.getMembershipOrThrow(workspaceId, targetUserId);
+    const membership = await this.getMembershipOrThrow(
+      workspaceId,
+      targetUserId,
+    );
 
     if (membership.role === WorkspaceRole.OWNER) {
       await this.assertNotSoleOwner(workspaceId);
     }
 
     return this.prisma.workspaceMember.delete({
-      where: { workspaceId_userId: { workspaceId, userId: targetUserId } }
-    })
+      where: { workspaceId_userId: { workspaceId, userId: targetUserId } },
+    });
   }
 
   async leave(workspaceId: number, userId: number, role: WorkspaceRole) {
@@ -111,7 +113,7 @@ export class WorkspacesService {
 
     return this.prisma.workspaceMember.delete({
       where: { workspaceId_userId: { workspaceId, userId } },
-    })
+    });
   }
 
   private async getMembershipOrThrow(workspaceId: number, userId: number) {
@@ -135,5 +137,4 @@ export class WorkspacesService {
       );
     }
   }
-
 }

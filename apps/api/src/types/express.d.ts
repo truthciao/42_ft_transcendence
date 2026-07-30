@@ -3,7 +3,8 @@ import type { AuthenticatedUser } from 'src/modules/auth/interfaces/authenticate
 
 declare global {
   namespace Express {
-    interface User extends AuthenticatedUser {}
+    type User = AuthenticatedUser;
+
     interface Request {
       workspaceMembership?: WorkspaceMember;
     }

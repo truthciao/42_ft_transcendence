@@ -7,6 +7,8 @@ import {
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,28 +18,30 @@ export class AuthService {
   ) {}
 
   //Sign up a new user
-  async register(email: string, password: string, username: string) {
+  async register(dto: RegisterDto) {
     //step 1: non-blocking waiting for return data and assign pointer to existingUser
-    const existingEmail = await this.userService.findByEmail(email);
-    const existingUsername = await this.userService.findByUsername(username);
+    const existingEmail = await this.userService.findByEmail(dto.email);
+    const existingUsername = await this.userService.findByUsername(
+      dto.username,
+    );
     if (existingEmail || existingUsername) {
       throw new BadRequestException('Email or username already exists');
     }
 
     //step 2: add new user info into the database
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(dto.password, 10);
 
     const user = await this.userService.createUser({
-      email: email,
-      username: username,
+      email: dto.email,
+      username: dto.username,
       passwordHash: passwordHash,
     });
     return { message: 'User registered successfully', userId: user.id };
   }
 
   //log in an exising user
-  async login(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
+  async login(dto: LoginDto) {
+    const user = await this.userService.findByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid email');
     }
@@ -48,7 +52,10 @@ export class AuthService {
       );
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }

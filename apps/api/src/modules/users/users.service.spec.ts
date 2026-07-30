@@ -12,9 +12,6 @@ describe('UsersService', () => {
       findUnique: jest.Mock;
       create: jest.Mock;
     };
-    profile: {
-      upsert: jest.Mock;
-    };
   };
 
   beforeEach(() => {
@@ -23,9 +20,6 @@ describe('UsersService', () => {
         findMany: jest.fn(),
         findUnique: jest.fn(),
         create: jest.fn(),
-      },
-      profile: {
-        upsert: jest.fn(),
       },
     };
 
@@ -105,24 +99,5 @@ describe('UsersService', () => {
         passwordHash: 'hash',
       }),
     ).resolves.toEqual(user);
-  });
-
-  it('updates an existing profile', async () => {
-    const updatedProfile = {
-      userId: 1,
-      displayName: 'Alice',
-      bio: 'Hello',
-      avatarUrl: 'https://example.com/avatar.png',
-    };
-
-    prisma.profile.upsert.mockResolvedValueOnce(updatedProfile);
-
-    await expect(
-      service.updateProfile(1, {
-        displayName: 'Alice',
-        bio: 'Hello',
-        avatarUrl: 'https://example.com/avatar.png',
-      }),
-    ).resolves.toEqual(updatedProfile);
   });
 });

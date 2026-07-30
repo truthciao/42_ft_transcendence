@@ -1,9 +1,17 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { WorkspaceRole } from 'src/generated/prisma/client';
-import { findMembershipOrThrow, getCurrentUserId, parseWorkspaceId } from './workspace-guard.utils';
-import { Observable } from 'rxjs';
+import {
+  findMembershipOrThrow,
+  getCurrentUserId,
+  parseWorkspaceId,
+} from './workspace-guard.utils';
 
 @Injectable()
 export class WorkspaceOwnerGuard implements CanActivate {
@@ -20,7 +28,9 @@ export class WorkspaceOwnerGuard implements CanActivate {
       userId,
     );
     if (membership.role !== WorkspaceRole.OWNER) {
-      throw new ForbiddenException('Only the workspace owner can perform this action');
+      throw new ForbiddenException(
+        'Only the workspace owner can perform this action',
+      );
     }
 
     req.workspaceMembership = membership;

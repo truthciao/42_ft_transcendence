@@ -1,11 +1,12 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router'; 
-import { loginUser, type LoginPayload } from '../api/auth';
+import { registerUser, type RegisterPayload } from '../api/auth';
 
-export function LoginPage() {
+export function RegisterPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState<LoginPayload>({
+  const [form, setForm] = useState<RegisterPayload>({
     email: '',
+    username: '',
     password: '',
   });
   const [status, setStatus] = useState('');
@@ -13,28 +14,21 @@ export function LoginPage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setStatus('Logging in...');
+    setStatus('Creating account...');
     setLoading(true);
 
     try {
-      const payload: LoginPayload = {
-        email: form.email.trim(),
-        password: form.password,
-      };
+  
+      await registerUser(form);
 
-      const data = await loginUser(payload);
-      
-      if (data.access_token) {
-        localStorage.setItem('access_token', data.access_token);
-        setStatus('Login successful! Redirecting...');
-        
-        setTimeout(() => {
-          navigate('/profile');
-        }, 500);
-      }
+      setStatus('Registration successful! Redirecting to login...');
+
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+
     } catch (error) {
-      console.error('Login error:', error);
-      setStatus(error instanceof Error ? error.message : 'Failed to login');
+      setStatus(error instanceof Error ? error.message : 'Failed to register');
     } finally {
       setLoading(false);
     }
@@ -42,18 +36,28 @@ export function LoginPage() {
 
   return (
     <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Login</h1>
-      <p>Enter your credentials to access your account.</p>
+      <h1>Register</h1>
+      <p>Create a new account to get started.</p>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label>
           <div>Email</div>
           <input
-            type="text"
+            type="email"
             required
-            placeholder="user@example.com"
             value={form.email}
             onChange={(event) => setForm({ ...form, email: event.target.value })}
+            style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
+          />
+        </label>
+
+        <label>
+          <div>Username</div>
+          <input
+            type="text"
+            required
+            value={form.username}
+            onChange={(event) => setForm({ ...form, username: event.target.value })}
             style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
           />
         </label>
@@ -72,27 +76,16 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          style={{
-            padding: '0.75rem 1rem',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            backgroundColor: loading ? '#ccc' : '#0070f3',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-          }}
+          style={{ padding: '0.75rem 1rem', cursor: loading ? 'not-allowed' : 'pointer' }}
         >
-          {loading ? 'Submitting...' : 'Login'}
+          {loading ? 'Submitting...' : 'Register'}
         </button>
       </form>
 
-      {status ? (
-        <p style={{ marginTop: '1rem', color: status.includes('Failed') || status.includes('must') ? 'red' : 'green' }}>
-          {status}
-        </p>
-      ) : null}
+      {status ? <p style={{ marginTop: '1rem' }}>{status}</p> : null}
 
       <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>
-        Don't have an account? <Link to="/register" style={{ color: '#0070f3' }}>Register here</Link>
+        Already have an account? <Link to="/login" style={{ color: '#0070f3' }}>Login here</Link>
       </div>
     </main>
   );

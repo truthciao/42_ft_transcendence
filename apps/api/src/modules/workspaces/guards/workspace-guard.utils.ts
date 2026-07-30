@@ -9,7 +9,7 @@ import type { WorkspaceMember } from 'src/generated/prisma/client';
 
 export function parseWorkspaceId(req: Request): number {
   const parsed = Number(req.params.id);
-  if (Number.isInteger(parsed) || parsed <= 0) {
+  if (!Number.isInteger(parsed) || parsed <= 0) {
     throw new BadRequestException('Invalid workspace ID');
   }
   return parsed;

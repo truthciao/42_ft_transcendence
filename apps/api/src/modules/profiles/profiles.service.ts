@@ -38,10 +38,10 @@ export class ProfilesService {
         preferredLanguage: dto.preferredLanguage,
       },
       update: {
-        ...(dto.displayName !== undefined && { displayName: dto.displayName }),
-        ...(dto.bio !== undefined && { bio: dto.bio }),
-        ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl }),
-        ...(dto.preferredLanguage !== undefined && { preferredLanguage: dto.preferredLanguage }),
+        displayName: dto.displayName,
+        bio: dto.bio,
+        avatarUrl: dto.avatarUrl,
+        preferredLanguage: dto.preferredLanguage,
       },
     });
   }

@@ -6,14 +6,32 @@ import { WorkspacesService } from './workspaces.service';
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
   let prisma: {
-    workspace: { create: jest.Mock; findMany: jest.Mock; findUnique: jest.Mock; update: jest.Mock; delete: jest.Mock };
-    workspaceMember: { findUnique: jest.Mock; create: jest.Mock; update: jest.Mock; delete: jest.Mock; count: jest.Mock };
+    workspace: {
+      create: jest.Mock;
+      findMany: jest.Mock;
+      findUnique: jest.Mock;
+      update: jest.Mock;
+      delete: jest.Mock;
+    };
+    workspaceMember: {
+      findUnique: jest.Mock;
+      create: jest.Mock;
+      update: jest.Mock;
+      delete: jest.Mock;
+      count: jest.Mock;
+    };
     user: { findUnique: jest.Mock };
   };
 
   beforeEach(() => {
     prisma = {
-      workspace: { create: jest.fn(), findMany: jest.fn(), findUnique: jest.fn(), update: jest.fn(), delete: jest.fn() },
+      workspace: {
+        create: jest.fn(),
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+      },
       workspaceMember: {
         findUnique: jest.fn(),
         create: jest.fn(),
@@ -60,7 +78,11 @@ describe('WorkspacesService', () => {
     it('invites a new member as MEMBER by default', async () => {
       prisma.workspaceMember.findUnique.mockResolvedValue(null);
       prisma.user.findUnique.mockResolvedValue({ id: 2 });
-      prisma.workspaceMember.create.mockResolvedValue({ workspaceId: 1, userId: 2, role: WorkspaceRole.MEMBER });
+      prisma.workspaceMember.create.mockResolvedValue({
+        workspaceId: 1,
+        userId: 2,
+        role: WorkspaceRole.MEMBER,
+      });
 
       await service.inviteMember(1, 2);
 
@@ -70,9 +92,14 @@ describe('WorkspacesService', () => {
     });
 
     it('rejects inviting a user who is already a member', async () => {
-      prisma.workspaceMember.findUnique.mockResolvedValue({ workspaceId: 1, userId: 2 });
+      prisma.workspaceMember.findUnique.mockResolvedValue({
+        workspaceId: 1,
+        userId: 2,
+      });
 
-      await expect(service.inviteMember(1, 2)).rejects.toThrow(BadRequestException);
+      await expect(service.inviteMember(1, 2)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -80,21 +107,31 @@ describe('WorkspacesService', () => {
     it('blocks the sole owner from leaving', async () => {
       prisma.workspaceMember.count.mockResolvedValue(1);
 
-      await expect(service.leave(1, 1, WorkspaceRole.OWNER)).rejects.toThrow(BadRequestException);
+      await expect(service.leave(1, 1, WorkspaceRole.OWNER)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('allows an owner to leave when there is another owner', async () => {
       prisma.workspaceMember.count.mockResolvedValue(2);
       prisma.workspaceMember.delete.mockResolvedValue({});
 
-      await expect(service.leave(1, 1, WorkspaceRole.OWNER)).resolves.toBeDefined();
+      await expect(
+        service.leave(1, 1, WorkspaceRole.OWNER),
+      ).resolves.toBeDefined();
     });
 
     it('blocks removing the sole owner', async () => {
-      prisma.workspaceMember.findUnique.mockResolvedValue({ workspaceId: 1, userId: 1, role: WorkspaceRole.OWNER });
+      prisma.workspaceMember.findUnique.mockResolvedValue({
+        workspaceId: 1,
+        userId: 1,
+        role: WorkspaceRole.OWNER,
+      });
       prisma.workspaceMember.count.mockResolvedValue(1);
 
-      await expect(service.removeMember(1, 1)).rejects.toThrow(BadRequestException);
+      await expect(service.removeMember(1, 1)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 });

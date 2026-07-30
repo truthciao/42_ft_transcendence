@@ -13,13 +13,11 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(data: CreateUserData) {
-
     //Check if passwordHash is avaiable!
     let hash = data.passwordHash;
     if (!hash) {
       const defaultPasswordHash = 'DefaultPassword123!';
       hash = await bcrypt.hash(defaultPasswordHash, 10);
-    
     }
 
     return this.prisma.user.create({
@@ -38,7 +36,7 @@ export class UsersService {
         profile: true,
       },
     });
-  } 
+  }
 
   async findAll() {
     return this.prisma.user.findMany({
@@ -82,6 +80,5 @@ export class UsersService {
         username,
       },
     });
-  } 
-  
+  }
 }

@@ -1,56 +1,80 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req } from "@nestjs/common";
-import { raw, type Request } from "express";
-import { CreateWorkspaceDto } from "./dto/create-workspace.dto";
-import { UpdateWorkspaceDto } from "./dto/update-workspace.dto";
-import { WorkspacesService } from "./workspaces.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  ParseIntPipe,
+  Req,
+  UseGuards
+} from '@nestjs/common';
+import { type Request } from 'express';
+import { CreateWorkspaceDto } from './dto/create-workspace.dto';
+import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
+import { InviteMemberDto } from './dto/invite-member.dto';
+import type { WorkspaceMember } from 'src/generated/prisma/client';
+import { CurrentMembership } from './decorators/current-membership.decorator';
+import { Currentuser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { WorkspaceMemberGuard } from './guards/workspace-member.guard';
+import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard';
+import { WorkspacesService } from './workspaces.service';
+import { UpdateProfileDto } from '../users/dto/update-profile.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('workspaces')
 export class WorkspaceController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
   @Post()
-  create(@Req() req: Request, @Body() dto: CreateWorkspaceDto) {
-    return this.workspacesService.create(this.getUserId(req), dto.name);
+  create(@Currentuser('userId') userId: number, @Body() dto: CreateWorkspaceDto) {
+    return this.workspacesService.create(userId, dto.name);
   }
 
   @Get()
-  findMine(@Req() req: Request) {
-    return this.workspacesService.findAllForUser(this.getUserId(req));
+  findMine(@Currentuser('userId') userId: number,) {
+    return this.workspacesService.findAllForUser(userId);
   }
 
+  @UseGuards(WorkspaceMemberGuard)
   @Get(':id')
-  findOne(@Req() req: Request, @Param('id') rawId: string) {
-    return this.workspacesService.findOne(this.parseWorkspaceId(rawId), this.getUserId(req));
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.workspacesService.findOne(id);
   }
 
+  @UseGuards(WorkspaceOwnerGuard)
   @Patch(':id')
-  update(@Req() req: Request, @Param('id') rawId: string, @Body() dto: UpdateWorkspaceDto) {
-    return this.workspacesService.update(this.parseWorkspaceId(rawId), this.getUserId(req), dto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateWorkspaceDto,
+  ) {
+    return this.workspacesService.update(id, dto);
   }
 
+  @UseGuards(WorkspaceOwnerGuard)
   @Delete(':id')
-  remove(@Req() req: Request, @Param('id') rawId: string) {
-    return this.workspacesService.remove(this.parseWorkspaceId(rawId), this.getUserId(req));
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.workspacesService.remove(id);
   }
 
-  private getUserId(req: Request): number {
-    const rawUserId = req.headers['x-user-id'];
-    const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId;
-    const parsed = Number(userId);
-
-    if (!userId || !Number.isInteger(parsed) || parsed <= 0) {
-      throw new BadRequestException('Invalid X-User-Id header - Bad userId');
-    }
-
-    return parsed;
+  @UseGuards(WorkspaceMemberGuard)
+  @Post(':id/leave')
+  leave(
+    @Param('id', ParseIntPipe) id:number,
+    @Currentuser('userId') userId: number,
+    @CurrentMembership() membership: WorkspaceMember,
+  ) {
+    return this.workspacesService.leave(id, userId, membership.role)
   }
 
-  private parseWorkspaceId(rawId: string): number {
-    const parsed = Number(rawId);
-    if (!Number.isInteger(parsed) || parsed <= 0) {
-      throw new BadRequestException('Invalid workspace ID');
-    }
-
-    return parsed;
+  @UseGuards(WorkspaceOwnerGuard)
+  @Delete(':id/members/:memberUserId')
+  removeMemeber(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('memberUserId', ParseIntPipe) memberUserId: number,
+  ) {
+    return this.workspacesService.removeMember(id, memberUserId);
   }
 }

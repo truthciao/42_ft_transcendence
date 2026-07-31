@@ -1,0 +1,14 @@
+{
+  "common": {
+    "login": "登录",
+    "logout": "退出",
+    "profile": "个人资料",
+    "home": "首页"
+  },
+
+  "auth": {
+    "welcome": "欢迎",
+    "email": "邮箱",
+    "password": "密码"
+  }
+}

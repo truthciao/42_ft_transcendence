@@ -1,0 +1,14 @@
+{
+  "common": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "home": "Accueil"
+  },
+
+  "auth": {
+    "welcome": "Bienvenue",
+    "email": "Email",
+    "password": "Mot de passe"
+  }
+}

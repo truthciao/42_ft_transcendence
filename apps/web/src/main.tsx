@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router/dom';
-import { router } from './router';
-import './index.css';
+import { AppRouter } from './router'; // 必须带 {} 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
+    <AppRouter />
+  </React.StrictMode>
 );

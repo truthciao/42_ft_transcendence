@@ -1,5 +1,4 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
-const DEFAULT_USER_ID = import.meta.env.VITE_USER_ID ?? '1';
 
 export interface ProfilePayload {
   displayName?: string;
@@ -9,9 +8,10 @@ export interface ProfilePayload {
 }
 
 function profileHeaders() {
+  const token = localStorage.getItem('access_token');
   return {
     'Content-Type': 'application/json',
-    'X-User-Id': DEFAULT_USER_ID,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
 

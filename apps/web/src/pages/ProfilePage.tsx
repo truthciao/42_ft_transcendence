@@ -1,6 +1,13 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { getProfile, updateProfile, type ProfilePayload } from '../api/profile';
 
+interface ProfileData extends ProfilePayload {
+  user?: {
+    username?: string;
+    email?: string;
+  };
+}
+
 export function ProfilePage() {
   const [form, setForm] = useState<ProfilePayload>({
     displayName: '',
@@ -8,21 +15,28 @@ export function ProfilePage() {
     avatarUrl: '',
     preferredLanguage: '',
   });
+  
+  const [userInfo, setUserInfo] = useState<{ username?: string; email?: string } | null>(null);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadProfile() {
       try {
-        const profile = await getProfile();
+        const profile = (await getProfile()) as ProfileData;
+        
         setForm({
           displayName: profile.displayName ?? '',
           bio: profile.bio ?? '',
           avatarUrl: profile.avatarUrl ?? '',
           preferredLanguage: profile.preferredLanguage ?? '',
         });
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Failed to load profile');
+
+        if (profile.user) {
+          setUserInfo(profile.user);
+        }
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'Failed to load profile');
       } finally {
         setLoading(false);
       }
@@ -37,7 +51,7 @@ export function ProfilePage() {
 
     try {
       await updateProfile(form);
-      setStatus('Profile updated');
+      setStatus('Profile updated successfully');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Failed to update profile');
     }
@@ -45,8 +59,20 @@ export function ProfilePage() {
 
   return (
     <main style={{ maxWidth: 560, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Profile</h1>
-      <p>Manage your public profile information.</p>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: '1.75rem' }}>Profile</h1>
+          <p style={{ margin: '0.25rem 0 0 0', color: '#6b7280', fontSize: '0.9rem' }}>Manage your public profile information.</p>
+        </div>
+ 
+        {userInfo && (
+          <div style={{ background: '#f3f4f6', padding: '0.5rem 0.75rem', borderRadius: '20px', border: '1px solid #e5e7eb', textAlign: 'right' }}>
+            <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>Logged in as: </span>
+            <strong style={{ fontSize: '0.9rem', color: '#1f2937' }}>{userInfo.username}</strong>
+          </div>
+        )}
+      </div>
 
       {loading ? <p>Loading...</p> : null}
 
@@ -89,12 +115,12 @@ export function ProfilePage() {
           />
         </label>
 
-        <button type="submit" style={{ padding: '0.75rem 1rem', cursor: 'pointer' }}>
+        <button type="submit" style={{ padding: '0.75rem 1rem', cursor: 'pointer', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
           Save
         </button>
       </form>
 
-      {status ? <p>{status}</p> : null}
+      {status ? <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{status}</p> : null}
     </main>
   );
 }

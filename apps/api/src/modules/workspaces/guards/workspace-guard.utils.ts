@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { PrismaService } from 'src/prisma/prisma.service';
-import type { WorkspaceMember } from 'src/generated/prisma/client';
+import { PrismaService } from '../../../prisma/prisma.service';
+import type { WorkspaceMember } from '../../../generated/prisma/client';
 
 // 1. 显式定义带 user 字段的 Request 类型，避免 any/error 校验失败
 interface AuthenticatedUserPayload {

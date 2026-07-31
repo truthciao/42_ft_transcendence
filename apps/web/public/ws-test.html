@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Realtime WS test</title>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+  fieldset { margin-bottom: 1rem; }
+  label { display:block; margin-bottom: .5rem; }
+  input { width: 100%; padding: .4rem; box-sizing: border-box; }
+  button { padding: .5rem 1rem; margin-right: .5rem; cursor:pointer; }
+  #log { background:#111; color:#0f0; padding: 1rem; height: 300px; overflow-y:auto; font-family: monospace; font-size: .85rem; white-space: pre-wrap; }
+  .status { font-weight:bold; }
+  .status.online { color: green; }
+  .status.offline { color: red; }
+</style>
+</head>
+<body>
+  <h1>Realtime Gateway test client</h1>
+  <p>
+    先调用 <code>POST /auth/register</code> 或 <code>POST /auth/login</code>
+    拿到 <code>access_token</code>，粘贴到下面。
+  </p>
+
+  <fieldset>
+    <legend>Connection</legend>
+    <label>API URL
+      <input id="apiUrl" value="http://localhost:3000" />
+    </label>
+    <label>JWT access token
+      <input id="token" placeholder="paste access_token here" />
+    </label>
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn">Disconnect</button>
+    <p>Status: <span id="status" class="status offline">disconnected</span></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Ping / Pong</legend>
+    <button id="pingBtn">Send ping</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>Rooms</legend>
+    <label>Room name
+      <input id="room" value="demo-room" />
+    </label>
+    <button id="joinBtn">Join room</button>
+    <button id="leaveBtn">Leave room</button>
+  </fieldset>
+
+  <h3>Log</h3>
+  <div id="log"></div>
+
+  <script>
+    let socket = null;
+    const logEl = document.getElementById('log');
+    const statusEl = document.getElementById('status');
+
+    function log(direction, event, payload) {
+      const time = new Date().toLocaleTimeString();
+      const line = `[${time}] ${direction} ${event} ${payload !== undefined ? JSON.stringify(payload) : ''}`;
+      logEl.textContent += line + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(online) {
+      statusEl.textContent = online ? 'connected' : 'disconnected';
+      statusEl.className = 'status ' + (online ? 'online' : 'offline');
+    }
+
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      if (socket) socket.disconnect();
+
+      const apiUrl = document.getElementById('apiUrl').value.trim();
+      const token = document.getElementById('token').value.trim();
+
+      socket = io(apiUrl, { auth: { token } });
+
+      socket.on('connect', () => { setStatus(true); log('<-', 'socket.io connect', { id: socket.id }); });
+      socket.on('disconnect', (reason) => { setStatus(false); log('<-', 'socket.io disconnect', { reason }); });
+      socket.on('connect_error', (err) => log('<-', 'connect_error', { message: err.message }));
+      socket.on('connected', (payload) => log('<-', 'connected', payload));
+      socket.on('exception', (payload) => log('<-', 'exception', payload));
+      socket.on('pong', (payload) => log('<-', 'pong', payload));
+      socket.on('room:joined', (payload) => log('<-', 'room:joined', payload));
+      socket.on('room:left', (payload) => log('<-', 'room:left', payload));
+      socket.on('room:member-joined', (payload) => log('<-', 'room:member-joined', payload));
+      socket.on('room:member-left', (payload) => log('<-', 'room:member-left', payload));
+    });
+
+    document.getElementById('disconnectBtn').addEventListener('click', () => socket?.disconnect());
+
+    document.getElementById('pingBtn').addEventListener('click', () => {
+      log('->', 'ping', undefined);
+      socket?.emit('ping');
+    });
+
+    document.getElementById('joinBtn').addEventListener('click', () => {
+      const room = document.getElementById('room').value.trim();
+      log('->', 'room:join', { room });
+      socket?.emit('room:join', { room });
+    });
+
+    document.getElementById('leaveBtn').addEventListener('click', () => {
+      const room = document.getElementById('room').value.trim();
+      log('->', 'room:leave', { room });
+      socket?.emit('room:leave', { room });
+    });
+  </script>
+</body>
+</html>

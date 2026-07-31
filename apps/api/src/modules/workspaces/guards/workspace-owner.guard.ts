@@ -5,8 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { WorkspaceRole } from 'src/generated/prisma/client';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { WorkspaceRole } from '../../../generated/prisma/enums';
 import {
   findMembershipOrThrow,
   getCurrentUserId,

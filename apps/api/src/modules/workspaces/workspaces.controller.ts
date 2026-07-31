@@ -13,7 +13,7 @@ import {
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { InviteMemberDto } from './dto/invite-member.dto';
-import type { WorkspaceMember } from 'src/generated/prisma/client';
+import type { WorkspaceMember } from '../../generated/prisma/client';
 import { CurrentMembership } from './decorators/current-membership.decorator';
 import { Currentuser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';

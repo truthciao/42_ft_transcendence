@@ -5,6 +5,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfilesModule } from './modules/profiles/profiles.module';
 import { WorkspacesMoudule } from './modules/workspaces/workspaces.module';
+import { RealtimeMoudule } from './modules/realtime/realtime.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { WorkspacesMoudule } from './modules/workspaces/workspaces.module';
     AuthModule,
     ProfilesModule,
     WorkspacesMoudule,
+    RealtimeMoudule,
   ],
 })
 export class AppModule {}

@@ -3,7 +3,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ES2023",
-
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -11,9 +10,6 @@
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
-    "baseUrl": "./",
-
     "incremental": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

@@ -1,32 +1,24 @@
 import { useTranslation } from "react-i18next";
 
-export default function LanguageSwitcher() {
-const { i18n } = useTranslation();
+const languages = [
+  { code: "en", label: "EN" },
+  { code: "fr", label: "FR" },
+  { code: "zh", label: "中文" },
+];
 
-const currentLanguage = i18n.language;
+export default function LanguageSwitcher() {
+  const { i18n } = useTranslation();
 
   return (
     <div>
+      {languages.map((language) => (
         <button
-        disabled={currentLanguage === "en"}
-        onClick={() => i18n.changeLanguage("en")}
+          key={language.code}
+          onClick={() => i18n.changeLanguage(language.code)}
         >
-        EN
+          {language.label}
         </button>
-
-        <button
-        disabled={currentLanguage === "fr"}
-        onClick={() => i18n.changeLanguage("fr")}
-        >
-        FR
-        </button>
-
-        <button
-        disabled={currentLanguage === "zh"}
-        onClick={() => i18n.changeLanguage("zh")}
-        >
-        CN
-        </button>    
+      ))}
     </div>
   );
 }

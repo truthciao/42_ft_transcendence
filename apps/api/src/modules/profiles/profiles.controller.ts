@@ -6,23 +6,34 @@ import {
   Param,
   Patch,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+interface RequestWithUser extends Request {
+  user: {
+    userId: number;
+    email: string;
+    username: string;
+  };
+}
+
+@UseGuards(JwtAuthGuard)
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
   @Get('me')
-  getMyProfile(@Req() req: Request) {
-    return this.profilesService.getProfile(this.getUserId(req));
+  getMyProfile(@Req() req: RequestWithUser) {
+    return this.profilesService.getProfile(req.user.userId);
   }
 
   @Patch('me')
-  updateMyProfile(@Req() req: Request, @Body() dto: UpdateProfileDto) {
-    return this.profilesService.updateProfile(this.getUserId(req), dto);
+  updateMyProfile(@Req() req: RequestWithUser, @Body() dto: UpdateProfileDto) {
+    return this.profilesService.updateProfile(req.user.userId, dto);
   }
 
   @Get(':userId')
@@ -35,15 +46,4 @@ export class ProfilesController {
     return this.profilesService.findProfileByUserId(userId);
   }
 
-  private getUserId(req: Request): number {
-    const rawUserId = req.headers['x-user-id'];
-    const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId;
-    const parsed = Number(userId);
-
-    if (!userId || !Number.isInteger(parsed) || parsed <= 0) {
-      throw new BadRequestException('Invalid X-User-Id header');
-    }
-
-    return parsed;
-  }
 }

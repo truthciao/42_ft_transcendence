@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; 
+import { useNavigate, Link } from 'react-router'; 
 import { loginUser, type LoginPayload } from '../api/auth';
 
 export function LoginPage() {

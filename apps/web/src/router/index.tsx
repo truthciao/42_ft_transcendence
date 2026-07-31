@@ -1,35 +1,35 @@
 import { createBrowserRouter } from 'react-router';
-import { RootLayout } from '../layouts/RootLayout';
 import { HomePage } from '../pages/HomePage';
-import { LoginPage } from '../pages/LoginPage';
-import { RegisterPage } from '../pages/RegisterPage';
-import { NotFoundPage } from '../pages/NotFoundPage';
 import { ProfilePage } from '../pages/ProfilePage';
+import { RegisterPage } from '../pages/RegisterPage';
+import { LoginPage } from '../pages/LoginPage';
+import { ProtectedRoute } from '../components/ProtectedRoute';
+import { RootLayout } from '../layouts/RootLayout';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    Component: RootLayout,
+    element: <RootLayout />,
     children: [
       {
-        index: true,
-        Component: HomePage,
+        path: '/',
+        element: <HomePage />,
       },
       {
-        path: 'login',
-        Component: LoginPage,
+        path: '/login',
+        element: <LoginPage />,
       },
       {
-        path: 'register',
-        Component: RegisterPage,
+        path: '/register',
+        element: <RegisterPage />,
       },
       {
-        path: 'profile',
-        Component: ProfilePage,
-      },
-      {
-        path: '*',
-        Component: NotFoundPage,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '/profile',
+            element: <ProfilePage />,
+          },
+        ],
       },
     ],
   },

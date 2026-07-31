@@ -1,9 +1,11 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router'; 
 import { loginUser, type LoginPayload } from '../api/auth';
+import { useAuth } from '../auth/useAuth';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
   const [form, setForm] = useState<LoginPayload>({
     email: '',
     password: '',
@@ -25,12 +27,21 @@ export function LoginPage() {
       const data = await loginUser(payload);
       
       if (data.access_token) {
-        localStorage.setItem('access_token', data.access_token);
-        setStatus('Login successful! Redirecting...');
-        
-        setTimeout(() => {
-          navigate('/profile');
-        }, 500);
+        localStorage.setItem(
+          "access_token",
+          data.access_token,
+        );
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(data.user),
+        );
+
+        await refreshUser();
+
+        setStatus("Login successful! Redirecting...");
+
+        navigate("/profile");
       }
     } catch (error) {
       console.error('Login error:', error);

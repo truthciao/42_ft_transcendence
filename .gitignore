@@ -5,6 +5,7 @@ node_modules/
 
 # pnpm
 .pnpm-store/
+pnpm-lock.yaml
 
 # =========================
 # Build output

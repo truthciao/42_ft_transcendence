@@ -2,7 +2,7 @@ import {
   NavLink,
   Outlet,
   type NavLinkRenderProps,
-} from 'react-router';
+} from 'react-router-dom';
 
 function getNavLinkClass({
   isActive,

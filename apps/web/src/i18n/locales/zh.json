@@ -9,6 +9,7 @@
   "auth": {
     "welcome": "欢迎",
     "email": "邮箱",
-    "password": "密码"
+    "password": "密码",
+    "login": "登录"
   }
 }

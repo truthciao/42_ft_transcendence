@@ -9,6 +9,7 @@
   "auth": {
     "welcome": "Welcome",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "login": "Login"
   }
 }

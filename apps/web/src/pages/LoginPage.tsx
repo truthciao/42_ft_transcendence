@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router'; 
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
+import { useTranslation } from "react-i18next";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export function LoginPage() {
   });
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -53,7 +55,7 @@ export function LoginPage() {
 
   return (
     <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Login</h1>
+      <h1>{t("auth.login")}</h1>
       <p>Enter your credentials to access your account.</p>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>

@@ -3,13 +3,24 @@
     "login": "Connexion",
     "logout": "Déconnexion",
     "profile": "Profil",
-    "home": "Accueil"
+    "home": "Accueil",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "loading": "Chargement..."
   },
 
   "auth": {
     "welcome": "Bienvenue",
+    "register": "Inscription",
     "email": "Email",
     "password": "Mot de passe",
-    "login": "Connexion"
+    "login": "Connexion",
+    "description": "Entrez vos identifiants pour accéder à votre compte.",
+    "loggingIn": "Connexion en cours...",
+    "success": "Succès",
+    "failed": "Échec",
+    "noAccount": "Aucun compte",
+    "submitting": "Soumission en cours..."
   }
 }

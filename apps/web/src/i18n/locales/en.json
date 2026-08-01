@@ -3,13 +3,24 @@
     "login": "Login",
     "logout": "Logout",
     "profile": "Profile",
-    "home": "Home"
+    "home": "Home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading..."
   },
 
   "auth": {
     "welcome": "Welcome",
+    "register": "Register",
     "email": "Email",
     "password": "Password",
-    "login": "Login"
+    "login": "Login",
+    "description": "Enter your credentials to access your account.",
+    "loggingIn": "Logging in...",
+    "success": "Success",
+    "failed": "Failed",
+    "noAccount": "No account",
+    "submitting": "Submitting..."
   }
 }

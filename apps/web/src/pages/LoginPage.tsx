@@ -17,7 +17,7 @@ export function LoginPage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setStatus('Logging in...');
+    setStatus(t("auth.loggingIn"));
     setLoading(true);
 
     try {
@@ -41,13 +41,13 @@ export function LoginPage() {
 
         await refreshUser();
 
-        setStatus("Login successful! Redirecting...");
+        setStatus(t("auth.success"));
 
         navigate("/profile");
       }
     } catch (error) {
       console.error('Login error:', error);
-      setStatus(error instanceof Error ? error.message : 'Failed to login');
+      setStatus(error instanceof Error ? error.message : t("auth.failed"));
     } finally {
       setLoading(false);
     }
@@ -56,11 +56,11 @@ export function LoginPage() {
   return (
     <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>{t("auth.login")}</h1>
-      <p>Enter your credentials to access your account.</p>
+      <p>{t("auth.description")}</p>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label>
-          <div>Email</div>
+          <div>{t("auth.email")}</div>
           <input
             type="text"
             required
@@ -72,7 +72,7 @@ export function LoginPage() {
         </label>
 
         <label>
-          <div>Password</div>
+          <div>{t("auth.password")}</div>
           <input
             type="password"
             required
@@ -94,7 +94,7 @@ export function LoginPage() {
             borderRadius: '4px',
           }}
         >
-          {loading ? 'Submitting...' : 'Login'}
+          {loading ? t("auth.submitting") : t("auth.login")}
         </button>
       </form>
 
@@ -105,7 +105,7 @@ export function LoginPage() {
       ) : null}
 
       <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>
-        Don't have an account? <Link to="/register" style={{ color: '#0070f3' }}>Register here</Link>
+        {t("auth.noAccount")}? <Link to="/register" style={{ color: '#0070f3' }}>{t("auth.register")}</Link>
       </div>
     </main>
   );

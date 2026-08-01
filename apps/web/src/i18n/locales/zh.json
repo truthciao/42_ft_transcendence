@@ -3,13 +3,24 @@
     "login": "登录",
     "logout": "退出",
     "profile": "个人资料",
-    "home": "首页"
+    "home": "首页",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "loading": "加载中..."
   },
 
   "auth": {
     "welcome": "欢迎",
+    "register": "注册",
     "email": "邮箱",
     "password": "密码",
-    "login": "登录"
+    "login": "登录",
+    "description": "输入您的凭据以访问您的账户。",
+    "loggingIn": "登录中...",
+    "success": "成功",
+    "failed": "失败",
+    "noAccount": "没有账户",
+    "submitting": "提交中..."
   }
 }

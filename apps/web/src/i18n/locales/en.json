@@ -6,13 +6,19 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "loading": "Loading..."
-},
+	},
 
-"home": {
-    "home": "Home",
-    "welcome": "Welcome to ft_transcendence.",
-    "profile": "Profile"
-  },
+	"home": {
+			"home": "Home",
+			"welcome": "Welcome to ft_transcendence.",
+			"profile": "Profile"
+	},
+
+	"notfound": {
+		"notfound": "404 - Page Not Found",
+		"message": "The page you are looking for does not exist.",
+		"back": "Go back to Home"
+	},
 
   "auth": {
     "register": "Register",

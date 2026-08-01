@@ -1,18 +1,24 @@
 {
-  "common": {
-    "login": "Connexion",
-    "logout": "Déconnexion",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "loading": "Chargement..."
-},
+	"common": {
+		"login": "Connexion",
+		"logout": "Déconnexion",
+		"save": "Enregistrer",
+		"cancel": "Annuler",
+		"delete": "Supprimer",
+		"loading": "Chargement..."
+	},
 
-"home": {
-    "home": "Accueil",
-    "welcome": "Bienvenue à ft_transcendence.",
-    "profile": "Profil"
+	"home": {
+		"home": "Accueil",
+		"welcome": "Bienvenue à ft_transcendence.",
+		"profile": "Profil"
   },
+
+	"notfound": {
+		"notfound": "404 - Page non trouvée",
+		"message": "La page que vous recherchez n'existe pas.",
+		"back": "Retour à l'accueil"
+	},
 
   "auth": {
     "register": "Inscription",
@@ -20,7 +26,7 @@
     "password": "Mot de passe",
     "login": "Connexion",
     "description": "Entrez vos identifiants pour accéder à votre compte.",
-        "status": {
+    "status": {
       "loggingIn": "Connexion en cours...",
       "success": "Connexion réussie! Redirection...",
       "failed": "Échec de la connexion"

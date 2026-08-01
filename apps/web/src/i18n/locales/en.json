@@ -17,9 +17,11 @@
     "password": "Password",
     "login": "Login",
     "description": "Enter your credentials to access your account.",
-    "loggingIn": "Logging in...",
-    "success": "Success",
-    "failed": "Failed",
+        "status": {
+      "loggingIn": "Logging in...",
+      "success": "Login successful! Redirecting...",
+      "failed": "Failed to login"
+    },
     "noAccount": "No account",
     "submitting": "Submitting..."
   }

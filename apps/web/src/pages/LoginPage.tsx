@@ -11,13 +11,18 @@ export function LoginPage() {
     email: '',
     password: '',
   });
-  const [status, setStatus] = useState('');
+  type LoginStatus =
+  | 'idle'
+  | 'loggingIn'
+  | 'success'
+  | 'failed';
+  const [status, setStatus] = useState<LoginStatus>('idle');
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setStatus(t("auth.loggingIn"));
+    setStatus('loggingIn');
     setLoading(true);
 
     try {
@@ -41,13 +46,13 @@ export function LoginPage() {
 
         await refreshUser();
 
-        setStatus(t("auth.success"));
+        setStatus('success');
 
         navigate("/profile");
       }
     } catch (error) {
       console.error('Login error:', error);
-      setStatus(error instanceof Error ? error.message : t("auth.failed"));
+      setStatus("failed");
     } finally {
       setLoading(false);
     }
@@ -98,9 +103,9 @@ export function LoginPage() {
         </button>
       </form>
 
-      {status ? (
-        <p style={{ marginTop: '1rem', color: status.includes('Failed') || status.includes('must') ? 'red' : 'green' }}>
-          {status}
+      {status !== 'idle' ? (
+        <p>
+          {t(`auth.status.${status}`)}
         </p>
       ) : null}
 

@@ -17,9 +17,11 @@
     "password": "Mot de passe",
     "login": "Connexion",
     "description": "Entrez vos identifiants pour accéder à votre compte.",
-    "loggingIn": "Connexion en cours...",
-    "success": "Succès",
-    "failed": "Échec",
+        "status": {
+      "loggingIn": "Connexion en cours...",
+      "success": "Connexion réussie! Redirection...",
+      "failed": "Échec de la connexion"
+    },
     "noAccount": "Aucun compte",
     "submitting": "Soumission en cours..."
   }

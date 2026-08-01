@@ -63,7 +63,7 @@ jobs:
                   inline: false
                 }
               ],
-              footer: { text: "your-project-name" }
+              footer: { text: "transcendence" }
             }]
           }')
 

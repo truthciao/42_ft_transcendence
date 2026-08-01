@@ -21,10 +21,19 @@
 	},
 
 	"profile": {
-		"profile": "Profile",
+		"title": "Profile",
+		"description": "Manage your public profile information.",
+		"loggedInAs": "Logged in as",
+		"displayName": "Display Name",
+		"displayNamePlaceholder": "Enter your display name",
+		"bio": "Bio",
+		"bioPlaceholder": "Enter your bio",
 		"username": "Username",
 		"email": "Email",
 		"avatar": "Avatar",
+		"avatarPlaceholder": "Enter avatar URL",
+		"preferredLanguage": "Preferred Language",
+		"preferredLanguagePlaceholder": "Enter your preferred language",
 		"update": "Update Profile",
 		"changePassword": "Change Password",
 		"password": "Password",
@@ -37,6 +46,12 @@
 			"passwordUpdateSuccess": "Password updated successfully!",
 			"passwordUpdateError": "Failed to update password."
 		}
+	},
+
+	"language": {
+		"english": "English",
+		"french": "French",
+		"chinese": "Chinese"
 	},
 
   "auth": {

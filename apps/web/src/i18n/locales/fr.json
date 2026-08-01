@@ -21,10 +21,19 @@
 	},
 
 	"profile": {
-		"profile": "Profil",
+		"title": "Profil",
+		"description": "Gérez les informations de votre profil public.",
+		"loggedInAs": "Connecté en tant que",
+		"displayName": "Nom d'affichage",
+		"displayNamePlaceholder": "Entrez votre nom d'affichage",
+		"bio": "Biographie",
+		"bioPlaceholder": "Entrez votre biographie",
 		"username": "Nom d'utilisateur",
 		"email": "Email",
 		"avatar": "Avatar",
+		"avatarPlaceholder": "Entrez l'URL de l'avatar",
+		"preferredLanguage": "Langue préférée",
+		"preferredLanguagePlaceholder": "Entrez votre langue préférée",
 		"update": "Mettre à jour le profil",
 		"changePassword": "Changer le mot de passe",
 		"password": "Mot de passe",
@@ -37,6 +46,12 @@
 			"passwordUpdateSuccess": "Mot de passe mis à jour avec succès !",
 			"passwordUpdateError": "Échec de la mise à jour du mot de passe."
 		}
+	},
+
+	"language": {
+		"english": "Anglais",
+		"french": "Français",
+		"chinese": "Chinois"
 	},
 
   "auth": {

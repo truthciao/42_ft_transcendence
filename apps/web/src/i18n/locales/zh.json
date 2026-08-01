@@ -7,11 +7,11 @@
     "save": "保存",
     "cancel": "取消",
     "delete": "删除",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "welcome": "欢迎来到 ft_transcendence。"
   },
 
   "auth": {
-    "welcome": "欢迎",
     "register": "注册",
     "email": "邮箱",
     "password": "密码",

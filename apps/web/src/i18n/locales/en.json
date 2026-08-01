@@ -7,11 +7,11 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "welcome": "Welcome to ft_transcendence."
   },
 
   "auth": {
-    "welcome": "Welcome",
     "register": "Register",
     "email": "Email",
     "password": "Password",

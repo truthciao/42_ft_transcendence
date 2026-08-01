@@ -7,11 +7,11 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "welcome": "Bienvenue à ft_transcendence."
   },
 
   "auth": {
-    "welcome": "Bienvenue",
     "register": "Inscription",
     "email": "Email",
     "password": "Mot de passe",

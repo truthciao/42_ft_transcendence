@@ -19,7 +19,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
 
-    "noEmit": true
+    "noEmit": true,
+    "types": ["jest", "node"]
   },
   "include": [
     "src/**/*.ts"

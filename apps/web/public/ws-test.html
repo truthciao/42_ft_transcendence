@@ -1,3 +1,4 @@
+<!-- apps/web/public/ws-test.html — full updated file -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -20,7 +21,10 @@
   <h1>Realtime Gateway test client</h1>
   <p>
     先调用 <code>POST /auth/register</code> 或 <code>POST /auth/login</code>
-    拿到 <code>access_token</code>，粘贴到下面。
+    拿到 <code>access_token</code>，粘贴到下面。要测聊天，先调用
+    <code>POST /chat/conversations</code>（body: <code>{"targetUserId": 2}</code>）
+    拿到 conversation id，然后在下面用两个浏览器标签页分别以两个用户身份连接，
+    在 Rooms 里 join <code>chat:&lt;id&gt;</code>，再用 Chat 面板发消息。
   </p>
 
   <fieldset>
@@ -44,10 +48,21 @@
   <fieldset>
     <legend>Rooms</legend>
     <label>Room name
-      <input id="room" value="demo-room" />
+      <input id="room" value="chat:1" />
     </label>
     <button id="joinBtn">Join room</button>
     <button id="leaveBtn">Leave room</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>Chat</legend>
+    <label>Conversation ID
+      <input id="conversationId" value="1" />
+    </label>
+    <label>Message
+      <input id="chatContent" value="hello!" />
+    </label>
+    <button id="sendChatBtn">Send message</button>
   </fieldset>
 
   <h3>Log</h3>
@@ -88,6 +103,7 @@
       socket.on('room:left', (payload) => log('<-', 'room:left', payload));
       socket.on('room:member-joined', (payload) => log('<-', 'room:member-joined', payload));
       socket.on('room:member-left', (payload) => log('<-', 'room:member-left', payload));
+      socket.on('chat:message:created', (payload) => log('<-', 'chat:message:created', payload));
     });
 
     document.getElementById('disconnectBtn').addEventListener('click', () => socket?.disconnect());
@@ -107,6 +123,13 @@
       const room = document.getElementById('room').value.trim();
       log('->', 'room:leave', { room });
       socket?.emit('room:leave', { room });
+    });
+
+    document.getElementById('sendChatBtn').addEventListener('click', () => {
+      const conversationId = Number(document.getElementById('conversationId').value.trim());
+      const content = document.getElementById('chatContent').value.trim();
+      log('->', 'chat:message:send', { conversationId, content });
+      socket?.emit('chat:message:send', { conversationId, content });
     });
   </script>
 </body>

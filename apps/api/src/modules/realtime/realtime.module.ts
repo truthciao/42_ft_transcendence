@@ -13,6 +13,6 @@ import { WsAuthService } from './services/ws-auth.service';
     SocketRegistryService,
     RealtimeRoomService,
   ],
-  exports: [RealtimeRoomService, SocketRegistryService],
+  exports: [RealtimeRoomService, SocketRegistryService, WsJwtGuard, WsAuthService],
 })
 export class RealtimeMoudule {}

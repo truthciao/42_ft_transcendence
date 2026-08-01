@@ -15,7 +15,7 @@ import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { InviteMemberDto } from './dto/invite-member.dto';
 import type { WorkspaceMember } from '../../generated/prisma/client';
 import { CurrentMembership } from './decorators/current-membership.decorator';
-import { Currentuser } from '../auth/decorators/current-user.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WorkspaceMemberGuard } from './guards/workspace-member.guard';
 import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard';
@@ -28,14 +28,14 @@ export class WorkspaceController {
 
   @Post()
   create(
-    @Currentuser('userId') userId: number,
+    @CurrentUser('userId') userId: number,
     @Body() dto: CreateWorkspaceDto,
   ) {
     return this.workspacesService.create(userId, dto.name);
   }
 
   @Get()
-  findMine(@Currentuser('userId') userId: number) {
+  findMine(@CurrentUser('userId') userId: number) {
     return this.workspacesService.findAllForUser(userId);
   }
 
@@ -64,7 +64,7 @@ export class WorkspaceController {
   @Post(':id/leave')
   leave(
     @Param('id', ParseIntPipe) id: number,
-    @Currentuser('userId') userId: number,
+    @CurrentUser('userId') userId: number,
     @CurrentMembership() membership: WorkspaceMember,
   ) {
     return this.workspacesService.leave(id, userId, membership.role);

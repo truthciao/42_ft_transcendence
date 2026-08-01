@@ -45,5 +45,4 @@ export class ProfilesController {
 
     return this.profilesService.findProfileByUserId(userId);
   }
-
 }

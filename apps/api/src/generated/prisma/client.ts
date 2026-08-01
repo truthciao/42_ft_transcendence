@@ -64,3 +64,18 @@ export type Workspace = Prisma.WorkspaceModel
  * 
  */
 export type WorkspaceMember = Prisma.WorkspaceMemberModel
+/**
+ * Model Conversation
+ * 
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model ConversationMember
+ * 
+ */
+export type ConversationMember = Prisma.ConversationMemberModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel

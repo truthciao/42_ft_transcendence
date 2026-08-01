@@ -1,13 +1,15 @@
 import { Link } from 'react-router';
+import { useTranslation } from "react-i18next";
 
 export function NotFoundPage() {
+  const { t } = useTranslation();
   return (
     <main>
-      <h1>404</h1>
-      <p>The page does not exist.</p>
+      <h1>{t("notfound.title")}</h1>
+      <p>{t("notfound.message")}</p>
 
       <Link to="/">
-        Return home
+        {t("notfound.back")}
       </Link>
     </main>
   );

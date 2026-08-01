@@ -1,14 +1,57 @@
 {
-  "common": {
-    "login": "Connexion",
-    "logout": "Déconnexion",
-    "profile": "Profil",
-    "home": "Accueil"
+	"common": {
+		"login": "Connexion",
+		"logout": "Déconnexion",
+		"save": "Enregistrer",
+		"cancel": "Annuler",
+		"delete": "Supprimer",
+		"loading": "Chargement..."
+	},
+
+	"home": {
+		"title": "Accueil",
+		"welcome": "Bienvenue à ft_transcendence.",
+		"profile": "Profil"
   },
 
+	"notfound": {
+		"title": "404 - Page non trouvée",
+		"message": "La page que vous recherchez n'existe pas.",
+		"back": "Retour à l'accueil"
+	},
+
+	"profile": {
+		"profile": "Profil",
+		"username": "Nom d'utilisateur",
+		"email": "Email",
+		"avatar": "Avatar",
+		"update": "Mettre à jour le profil",
+		"changePassword": "Changer le mot de passe",
+		"password": "Mot de passe",
+		"newPassword": "Nouveau mot de passe",
+		"confirmPassword": "Confirmer le mot de passe",
+		"status": {
+			"updateSuccess": "Profil mis à jour avec succès !",
+			"updateError": "Échec de la mise à jour du profil.",
+			"passwordMismatch": "Les mots de passe ne correspondent pas.",
+			"passwordUpdateSuccess": "Mot de passe mis à jour avec succès !",
+			"passwordUpdateError": "Échec de la mise à jour du mot de passe."
+		}
+	},
+
   "auth": {
-    "welcome": "Bienvenue",
+    "register": "Inscription",
+		"registerDescription": "Créez un nouveau compte pour commencer.",
+		"username": "Nom d'utilisateur",
     "email": "Email",
-    "password": "Mot de passe"
+    "password": "Mot de passe",
+    "login": "Connexion",
+    "description": "Entrez vos identifiants pour accéder à votre compte.",
+    "status": {
+      "loggingIn": "Connexion en cours...",
+      "failed": "Échec de la connexion"
+    },
+    "noAccount": "Aucun compte",
+    "submitting": "Soumission en cours..."
   }
 }

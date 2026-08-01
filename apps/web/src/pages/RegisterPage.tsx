@@ -1,6 +1,8 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router'; 
 import { registerUser, type RegisterPayload } from '../api/auth';
+import { useTranslation } from "react-i18next";
+type RegisterStatus = | 'idle' | 'creating' | 'success' | 'failed';
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -9,26 +11,27 @@ export function RegisterPage() {
     username: '',
     password: '',
   });
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<RegisterStatus>('idle');
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setStatus('Creating account...');
+    setStatus('creating');
     setLoading(true);
 
     try {
   
       await registerUser(form);
 
-      setStatus('Registration successful! Redirecting to login...');
+      setStatus('success');
 
       setTimeout(() => {
         navigate('/login');
       }, 1000);
 
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Failed to register');
+      setStatus('failed');
     } finally {
       setLoading(false);
     }
@@ -36,12 +39,12 @@ export function RegisterPage() {
 
   return (
     <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Register</h1>
-      <p>Create a new account to get started.</p>
+      <h1>{t("auth.register")}</h1>
+      <p>{t("auth.registerDescription")}</p>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label>
-          <div>Email</div>
+          <div>{t("auth.email")}</div>
           <input
             type="email"
             required
@@ -52,7 +55,7 @@ export function RegisterPage() {
         </label>
 
         <label>
-          <div>Username</div>
+          <div>{t("auth.username")}</div>
           <input
             type="text"
             required
@@ -63,7 +66,7 @@ export function RegisterPage() {
         </label>
 
         <label>
-          <div>Password</div>
+          <div>{t("auth.password")}</div>
           <input
             type="password"
             required
@@ -82,7 +85,7 @@ export function RegisterPage() {
         </button>
       </form>
 
-      {status ? <p style={{ marginTop: '1rem' }}>{status}</p> : null}
+      {status !== 'idle' ? <p style={{ marginTop: '1rem' }}>{t(`auth.status.${status}`)}</p> : null}
 
       <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>
         Already have an account? <Link to="/login" style={{ color: '#0070f3' }}>Login here</Link>

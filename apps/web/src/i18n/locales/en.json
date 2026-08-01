@@ -9,26 +9,46 @@
 	},
 
 	"home": {
-			"home": "Home",
+			"title": "Home",
 			"welcome": "Welcome to ft_transcendence.",
 			"profile": "Profile"
 	},
 
 	"notfound": {
-		"notfound": "404 - Page Not Found",
+		"title": "404 - Page Not Found",
 		"message": "The page you are looking for does not exist.",
 		"back": "Go back to Home"
 	},
 
+	"profile": {
+		"profile": "Profile",
+		"username": "Username",
+		"email": "Email",
+		"avatar": "Avatar",
+		"update": "Update Profile",
+		"changePassword": "Change Password",
+		"password": "Password",
+		"newPassword": "New Password",
+		"confirmPassword": "Confirm Password",
+		"status": {
+			"updateSuccess": "Profile updated successfully!",
+			"updateError": "Failed to update profile.",
+			"passwordMismatch": "Passwords do not match.",
+			"passwordUpdateSuccess": "Password updated successfully!",
+			"passwordUpdateError": "Failed to update password."
+		}
+	},
+
   "auth": {
     "register": "Register",
+		"registerDescription": "Create a new account to get started.",
+		"username": "Username",
     "email": "Email",
     "password": "Password",
     "login": "Login",
     "description": "Enter your credentials to access your account.",
     "status": {
       "loggingIn": "Logging in...",
-      "success": "Login successful! Redirecting...",
       "failed": "Failed to login"
     },
     "noAccount": "No account",

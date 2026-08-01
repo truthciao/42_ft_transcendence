@@ -9,26 +9,46 @@
 	},
 
 	"home": {
-		"home": "首页",
+		"title": "首页",
 		"welcome": "欢迎来到 ft_transcendence。",
 		"profile": "个人资料"
 	},
 
 	"notfound": {
-		"notfound": "404 - 页面未找到",
+		"title": "404 - 页面未找到",
 		"message": "您正在寻找的页面不存在。",
 		"back": "返回首页"
 	},
 
+	"profile": {
+		"profile": "个人资料",
+		"username": "用户名",
+		"email": "邮箱",
+		"avatar": "头像",
+		"update": "更新个人资料",
+		"changePassword": "更改密码",
+		"password": "密码",
+		"newPassword": "新密码",
+		"confirmPassword": "确认密码",
+		"status": {
+			"updateSuccess": "个人资料更新成功！",
+			"updateError": "更新个人资料失败。",
+			"passwordMismatch": "密码不匹配。",
+			"passwordUpdateSuccess": "密码更新成功！",
+			"passwordUpdateError": "更新密码失败。"
+		}
+	},
+
 	"auth": {
 		"register": "注册",
+		"registerDescription": "创建一个新账户以开始使用。",
+		"username": "用户名",
 		"email": "邮箱",
 		"password": "密码",
 		"login": "登录",
 		"description": "输入您的凭据以访问您的账户。",
 			"status": {
 			"loggingIn": "登录中...",
-			"success": "登录成功！正在重定向...",
 			"failed": "登录失败"
 		},
 		"noAccount": "没有账户",

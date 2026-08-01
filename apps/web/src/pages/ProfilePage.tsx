@@ -1,5 +1,11 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { getProfile, updateProfile, type ProfilePayload } from '../api/profile';
+import { useTranslation } from "react-i18next";
+type ProfileStatus =
+| 'idle'
+| 'saving'
+| 'success'
+| 'failed';
 
 interface ProfileData extends ProfilePayload {
   user?: {
@@ -17,8 +23,9 @@ export function ProfilePage() {
   });
   
   const [userInfo, setUserInfo] = useState<{ username?: string; email?: string } | null>(null);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<ProfileStatus>('idle');
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function loadProfile() {
@@ -36,7 +43,7 @@ export function ProfilePage() {
           setUserInfo(profile.user);
         }
       } catch (error) {
-        setStatus(error instanceof Error ? error.message : 'Failed to load profile');
+        setStatus('failed');
       } finally {
         setLoading(false);
       }
@@ -47,13 +54,13 @@ export function ProfilePage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    setStatus('Saving...');
+    setStatus('saving');
 
     try {
       await updateProfile(form);
-      setStatus('Profile updated successfully');
+      setStatus('success');
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Failed to update profile');
+      setStatus('failed');
     }
   }
 
@@ -120,7 +127,16 @@ export function ProfilePage() {
         </button>
       </form>
 
-      {status ? <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{status}</p> : null}
+      {status === 'success' && (
+        <p style={{ marginTop: '1rem', fontWeight: 'bold', color: 'green' }}>
+          {t("profile.status.updateSuccess")}
+        </p>
+      )}
+      {status === 'failed' && (
+        <p style={{ marginTop: '1rem', fontWeight: 'bold', color: 'red' }}>
+          {t("profile.status.updateError")}
+        </p>
+      )}
     </main>
   );
 }

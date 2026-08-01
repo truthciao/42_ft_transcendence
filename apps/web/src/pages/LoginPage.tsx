@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
 import { useTranslation } from "react-i18next";
+type LoginStatus = | 'idle' | 'loggingIn' | 'failed';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -11,11 +12,6 @@ export function LoginPage() {
     email: '',
     password: '',
   });
-  type LoginStatus =
-  | 'idle'
-  | 'loggingIn'
-  | 'success'
-  | 'failed';
   const [status, setStatus] = useState<LoginStatus>('idle');
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -45,8 +41,6 @@ export function LoginPage() {
         );
 
         await refreshUser();
-
-        setStatus('success');
 
         navigate("/profile");
       }

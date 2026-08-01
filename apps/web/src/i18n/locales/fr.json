@@ -2,13 +2,16 @@
   "common": {
     "login": "Connexion",
     "logout": "Déconnexion",
-    "profile": "Profil",
-    "home": "Accueil",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
-    "loading": "Chargement...",
-    "welcome": "Bienvenue à ft_transcendence."
+    "loading": "Chargement..."
+},
+
+"home": {
+    "home": "Accueil",
+    "welcome": "Bienvenue à ft_transcendence.",
+    "profile": "Profil"
   },
 
   "auth": {

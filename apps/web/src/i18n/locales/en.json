@@ -2,13 +2,16 @@
   "common": {
     "login": "Login",
     "logout": "Logout",
-    "profile": "Profile",
-    "home": "Home",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
-    "loading": "Loading...",
-    "welcome": "Welcome to ft_transcendence."
+    "loading": "Loading..."
+},
+
+"home": {
+    "home": "Home",
+    "welcome": "Welcome to ft_transcendence.",
+    "profile": "Profile"
   },
 
   "auth": {
@@ -17,7 +20,7 @@
     "password": "Password",
     "login": "Login",
     "description": "Enter your credentials to access your account.",
-        "status": {
+    "status": {
       "loggingIn": "Logging in...",
       "success": "Login successful! Redirecting...",
       "failed": "Failed to login"

@@ -19,7 +19,9 @@ export default function LanguageSwitcher() {
       {languages.map((language) => (
         <button
           key={language.code}
-          onClick={() => i18n.changeLanguage(language.code)}
+          onClick={() => {
+            void i18n.changeLanguage(language.code);
+          }}
           disabled={i18n.language === language.code}
         >
           {language.label}

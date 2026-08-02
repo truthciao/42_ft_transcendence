@@ -29,14 +29,39 @@ export function AuthProvider({
 
 
   async function refreshUser() {
-    const savedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+    try {
+      const response =
+        await fetch(
+          "http://localhost:3000/users/me",
+          {
+            headers:{
+              Authorization:
+              `Bearer ${token}`
+            }
+          }
+        );
+      if(!response.ok){
+        throw new Error();
+      }
+      const currentUser =
+        await response.json();
+      setUser(currentUser);
+    } catch {
+      localStorage.removeItem(
+        "access_token"
+      );
 
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    } else {
+      localStorage.removeItem(
+        "user"
+      );
       setUser(null);
     }
-
     setLoading(false);
   }
 

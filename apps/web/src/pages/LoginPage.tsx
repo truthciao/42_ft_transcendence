@@ -35,11 +35,6 @@ export function LoginPage() {
           data.access_token,
         );
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(data.user),
-        );
-
         await refreshUser();
 
         navigate("/profile");

@@ -30,7 +30,7 @@ export class ChatController {
     return this.chatService.findAllForUser(userId);
   }
 
-  @Get('conversation/:id/message')
+  @Get('conversations/:id/message')
   getMessage(
     @CurrentUser('userId') userId: number,
     @Param('id', ParseIntPipe) id: number,

@@ -3,23 +3,42 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UsersService } from './users.service';
 
+type UserWithProfile = {
+  id: number;
+  email: string;
+  username: string;
+  profile: Record<string, unknown> | null;
+};
+
+type UserWithPassword = {
+  id: number;
+  email: string;
+  username: string;
+  passwordHash: string;
+};
+
+type FindManyResult = UserWithProfile[];
+type FindUniqueResult = UserWithProfile | UserWithPassword | null;
+type CreateResult = UserWithProfile;
+
+type PrismaMock = {
+  user: {
+    findMany: jest.Mock<() => Promise<FindManyResult>>;
+    findUnique: jest.Mock<() => Promise<FindUniqueResult>>;
+    create: jest.Mock<() => Promise<CreateResult>>;
+  };
+};
+
 describe('UsersService', () => {
   let service: UsersService;
-
-  let prisma: {
-    user: {
-      findMany: jest.Mock;
-      findUnique: jest.Mock;
-      create: jest.Mock;
-    };
-  };
+  let prisma: PrismaMock;
 
   beforeEach(() => {
     prisma = {
       user: {
-        findMany: jest.fn(),
-        findUnique: jest.fn(),
-        create: jest.fn(),
+        findMany: jest.fn<() => Promise<FindManyResult>>(),
+        findUnique: jest.fn<() => Promise<FindUniqueResult>>(),
+        create: jest.fn<() => Promise<CreateResult>>(),
       },
     };
 
@@ -27,7 +46,7 @@ describe('UsersService', () => {
   });
 
   it('finds all users', async () => {
-    const users = [
+    const users: UserWithProfile[] = [
       {
         id: 1,
         email: 'test@example.com',
@@ -42,7 +61,7 @@ describe('UsersService', () => {
   });
 
   it('finds user by id', async () => {
-    const user = {
+    const user: UserWithProfile = {
       id: 1,
       email: 'test@example.com',
       username: 'test',
@@ -55,7 +74,7 @@ describe('UsersService', () => {
   });
 
   it('finds user by email', async () => {
-    const user = {
+    const user: UserWithPassword = {
       id: 1,
       email: 'test@example.com',
       username: 'test',
@@ -70,7 +89,7 @@ describe('UsersService', () => {
   });
 
   it('finds user by username', async () => {
-    const user = {
+    const user: UserWithPassword = {
       id: 1,
       email: 'test@example.com',
       username: 'test',
@@ -83,7 +102,7 @@ describe('UsersService', () => {
   });
 
   it('creates user with profile', async () => {
-    const user = {
+    const user: UserWithProfile = {
       id: 1,
       email: 'test@example.com',
       username: 'test',

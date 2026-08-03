@@ -18,7 +18,10 @@ describe('Application (e2e)', () => {
   });
 
   it('application should start', async () => {
-    await request(app.getHttpServer()).get('/').expect(404);
+    await request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
   });
 
   afterEach(async () => {

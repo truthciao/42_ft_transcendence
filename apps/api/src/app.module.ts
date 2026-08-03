@@ -7,6 +7,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProfilesModule } from './modules/profiles/profiles.module';
 import { WorkspacesMoudule } from './modules/workspaces/workspaces.module';
 import { RealtimeMoudule } from './modules/realtime/realtime.module';
+import { ChatModule } from './modules/chat/chat.moudle';
+import { FriendsModule } from './modules/friends/friends.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { RealtimeMoudule } from './modules/realtime/realtime.module';
     ProfilesModule,
     WorkspacesMoudule,
     RealtimeMoudule,
+    ChatModule,
+    FriendsModule,
   ],
   controllers: [AppController],
 })

@@ -58,7 +58,7 @@ export class WorkspacesService {
     return this.prisma.workspace.update({
       where: { id: workspaceId },
       data: {
-        ...(dto.name != undefined && { name: dto.name }),
+        ...(dto.name !== undefined && { name: dto.name }),
       },
       include: { members: true },
     });

@@ -7,6 +7,7 @@ import { ProfilesModule } from './modules/profiles/profiles.module';
 import { WorkspacesMoudule } from './modules/workspaces/workspaces.module';
 import { RealtimeMoudule } from './modules/realtime/realtime.module';
 import { ChatModule } from './modules/chat/chat.moudle';
+import { FriendsModule } from './modules/friends/friends.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ChatModule } from './modules/chat/chat.moudle';
     WorkspacesMoudule,
     RealtimeMoudule,
     ChatModule,
+    FriendsModule,
   ],
 })
 export class AppModule {}

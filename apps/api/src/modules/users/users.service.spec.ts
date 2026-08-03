@@ -21,9 +21,15 @@ type CreateResult = UserWithProfile;
 
 type PrismaMock = {
   user: {
-    findMany: jest.Mock<() => Promise<FindManyResult>>;
-    findUnique: jest.Mock<() => Promise<FindUniqueResult>>;
-    create: jest.Mock<() => Promise<CreateResult>>;
+    findMany: jest.MockedFunction<
+      () => Promise<FindManyResult>
+    >;
+    findUnique: jest.MockedFunction<
+      () => Promise<FindUniqueResult>
+    >;
+    create: jest.MockedFunction<
+      () => Promise<CreateResult>
+    >;
   };
 };
 
@@ -34,9 +40,9 @@ describe('UsersService', () => {
   beforeEach(() => {
     prisma = {
       user: {
-        findMany: jest.fn<() => Promise<FindManyResult>>(),
-        findUnique: jest.fn<() => Promise<FindUniqueResult>>(),
-        create: jest.fn<() => Promise<CreateResult>>(),
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        create: jest.fn(),
       },
     };
 

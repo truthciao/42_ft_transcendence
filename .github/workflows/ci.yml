@@ -68,7 +68,7 @@ jobs:
           for attempt in 1 2; do
             echo "pnpm install attempt ${attempt}/2"
 
-            if pnpm install --frozen-lockfile --reporter=append-only; then
+            if pnpm install --reporter=append-only; then
               exit 0
             fi
 

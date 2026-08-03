@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - all
+      - fix/register-profiles-module
 
   # push:
   #   branches:

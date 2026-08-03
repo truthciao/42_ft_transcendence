@@ -7,10 +7,14 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint"
+    "dev": "pnpm --parallel --filter api --filter web dev",
+    "lint": "pnpm --filter api lint && pnpm --filter web lint",
+    "typecheck": "pnpm --filter api typecheck && pnpm --filter web typecheck",
+    "test": "pnpm --filter api test:ci",
+    "build": "pnpm --filter api build && pnpm --filter web build",
+    "prisma:generate": "pnpm --dir apps/api exec prisma generate",
+    "prisma:migrate:deploy": "pnpm --dir apps/api exec prisma migrate deploy",
+    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

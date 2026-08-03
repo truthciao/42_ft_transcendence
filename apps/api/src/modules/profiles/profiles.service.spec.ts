@@ -1,52 +1,84 @@
+import { NotFoundException } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
 describe('ProfilesService', () => {
   let service: ProfilesService;
+
   let prisma: {
     profile: {
-      upsert: jest.Mock;
       findUnique: jest.Mock;
+      update: jest.Mock;
     };
   };
 
   beforeEach(() => {
     prisma = {
       profile: {
-        upsert: jest.fn(),
         findUnique: jest.fn(),
+        update: jest.fn(),
       },
     };
 
     service = new ProfilesService(prisma as unknown as PrismaService);
   });
 
-  it('creates a profile and fallback user when no profile exists', async () => {
-    prisma.profile.upsert.mockResolvedValue({ id: 1, userId: 1 });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    await expect(service.getProfile(1)).resolves.toMatchObject({ userId: 1 });
-    expect(prisma.profile.upsert).toHaveBeenCalledWith({
+  it('returns the current user profile when it exists', async () => {
+    prisma.profile.findUnique.mockResolvedValue({
+      id: 1,
+      userId: 1,
+      displayName: 'Alice',
+      bio: null,
+    });
+
+    await expect(service.getProfile(1)).resolves.toMatchObject({
+      userId: 1,
+      displayName: 'Alice',
+    });
+
+    expect(prisma.profile.findUnique).toHaveBeenCalledWith({
       where: { userId: 1 },
-      create: {
+      include: {
         user: {
-          connectOrCreate: {
-            where: { id: 1 },
-            create: {
-              id: 1,
-              username: 'user-1',
-              email: 'user-1@example.com', // 👈 补上这行，断言就完全匹配了
-            },
+          select: {
+            email: true,
+            username: true,
           },
         },
       },
-      update: {},
+    });
+  });
+
+  it('throws NotFoundException when no profile exists', async () => {
+    prisma.profile.findUnique.mockResolvedValue(null);
+
+    await expect(service.getProfile(1)).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
+
+    expect(prisma.profile.findUnique).toHaveBeenCalledWith({
+      where: { userId: 1 },
+      include: {
+        user: {
+          select: {
+            email: true,
+            username: true,
+          },
+        },
+      },
     });
   });
 
   it('updates profile fields for the current user', async () => {
-    prisma.profile.upsert.mockResolvedValue({
+    prisma.profile.update.mockResolvedValue({
+      id: 1,
       userId: 1,
       displayName: 'Alice Updated',
+      bio: 'Updated bio',
     });
 
     await expect(
@@ -55,26 +87,33 @@ describe('ProfilesService', () => {
         bio: 'Updated bio',
       }),
     ).resolves.toMatchObject({
+      userId: 1,
       displayName: 'Alice Updated',
+      bio: 'Updated bio',
     });
 
-    expect(prisma.profile.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { userId: 1 },
-        update: { displayName: 'Alice Updated', bio: 'Updated bio' },
-      }),
-    );
+    expect(prisma.profile.update).toHaveBeenCalledWith({
+      where: { userId: 1 },
+      data: {
+        displayName: 'Alice Updated',
+        bio: 'Updated bio',
+      },
+    });
   });
 
   it('looks up a public profile by user ID', async () => {
     prisma.profile.findUnique.mockResolvedValue({
+      id: 2,
       userId: 2,
       displayName: 'Bob',
+      bio: null,
     });
 
     await expect(service.findProfileByUserId(2)).resolves.toMatchObject({
       userId: 2,
+      displayName: 'Bob',
     });
+
     expect(prisma.profile.findUnique).toHaveBeenCalledWith({
       where: { userId: 2 },
     });

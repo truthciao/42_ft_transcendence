@@ -1,13 +1,13 @@
 name: CI
 
 on:
+  pull_request:
+    branches:
+      - main
+
   push:
     branches:
-      - fix/register-profiles-module
-
-  # push:
-  #   branches:
-  #     - main
+      - main
 
   workflow_dispatch:
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UsersService } from './users.service';

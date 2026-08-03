@@ -29,10 +29,7 @@ export class UsersService {
           create: {},
         },
       },
-      select: {
-        id: true,
-        email: true,
-        username: true,
+      include: {
         profile: true,
       },
     });

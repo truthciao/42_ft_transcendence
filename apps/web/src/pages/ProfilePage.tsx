@@ -53,7 +53,7 @@ export function ProfilePage() {
     }
 
     void loadProfile();
-  }, [i18n.language]);
+  }, [i18n]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();

@@ -26,9 +26,6 @@ importers:
       globals:
         specifier: ^17.0.0
         version: 17.8.0
-      pnpm:
-        specifier: ^11.16.0
-        version: 11.18.0
       prettier:
         specifier: ^3.4.2
         version: 3.9.6
@@ -3486,11 +3483,6 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
-
-  pnpm@11.18.0:
-    resolution: {integrity: sha512-M9g8d9qC9J+6g2klxvG4QRgewxMrZwY5vQEvcHX1x89jTF+HAUfBmq50ePrAHfCdiJLogEVIlu3SPumzN1dWPA==}
-    engines: {node: '>=22.13'}
-    hasBin: true
 
   postcss@8.5.25:
     resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
@@ -8051,8 +8043,6 @@ snapshots:
       pathe: 2.0.3
 
   pluralize@8.0.0: {}
-
-  pnpm@11.18.0: {}
 
   postcss@8.5.25:
     dependencies:

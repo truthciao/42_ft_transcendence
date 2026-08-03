@@ -8,10 +8,9 @@ describe('Application (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -19,9 +18,7 @@ describe('Application (e2e)', () => {
   });
 
   it('application should start', async () => {
-    await request(app.getHttpServer())
-      .get('/')
-      .expect(404);
+    await request(app.getHttpServer()).get('/').expect(404);
   });
 
   afterEach(async () => {

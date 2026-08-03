@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { router } from './router';
-import { AuthProvider } from './auth/AuthContext';
+import { AuthProvider } from './auth/auth-provider';
 import './index.css';
 import "./i18n";
 

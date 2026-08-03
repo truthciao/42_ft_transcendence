@@ -29,14 +29,11 @@ jobs:
   quality:
     name: Quality and build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
+        uses: actions/checkout@v7
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -44,7 +41,7 @@ jobs:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -54,9 +51,35 @@ jobs:
         run: |
           node --version
           pnpm --version
+          pnpm config get registry
+
+      - name: Configure pnpm network
+        run: |
+          pnpm config set fetch-timeout 600000
+          pnpm config set fetch-retries 5
+          pnpm config set fetch-retry-factor 2
+          pnpm config set fetch-retry-mintimeout 10000
+          pnpm config set fetch-retry-maxtimeout 120000
+          pnpm config set network-concurrency 8
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        shell: bash
+        run: |
+          for attempt in 1 2; do
+            echo "pnpm install attempt ${attempt}/2"
+
+            if pnpm install --frozen-lockfile --reporter=append-only; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 2 ]; then
+              echo "pnpm install failed after 2 attempts"
+              exit 1
+            fi
+
+            echo "Install failed; retrying with the existing pnpm store..."
+            sleep 15
+          done
 
       - name: Generate Prisma Client
         run: pnpm --dir apps/api exec prisma generate
@@ -83,7 +106,7 @@ jobs:
         run: pnpm --filter web build
 
       - name: Upload API build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: api-build
           path: apps/api/dist
@@ -91,7 +114,7 @@ jobs:
           retention-days: 7
 
       - name: Upload web build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-build
           path: apps/web/dist
@@ -101,7 +124,7 @@ jobs:
   database:
     name: Prisma migration check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     services:
       postgres:
@@ -120,10 +143,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
+        uses: actions/checkout@v7
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -131,14 +151,45 @@ jobs:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Show tool versions
+        run: |
+          node --version
+          pnpm --version
+          pnpm config get registry
+
+      - name: Configure pnpm network
+        run: |
+          pnpm config set fetch-timeout 600000
+          pnpm config set fetch-retries 5
+          pnpm config set fetch-retry-factor 2
+          pnpm config set fetch-retry-mintimeout 10000
+          pnpm config set fetch-retry-maxtimeout 120000
+          pnpm config set network-concurrency 8
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        shell: bash
+        run: |
+          for attempt in 1 2; do
+            echo "pnpm install attempt ${attempt}/2"
+
+            if pnpm install --frozen-lockfile --reporter=append-only; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 2 ]; then
+              echo "pnpm install failed after 2 attempts"
+              exit 1
+            fi
+
+            echo "Install failed; retrying with the existing pnpm store..."
+            sleep 15
+          done
 
       - name: Generate Prisma Client
         run: pnpm --dir apps/api exec prisma generate

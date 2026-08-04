@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { getCurrentuser } from "@/api/users";
 
 interface User {
   id: number;
@@ -36,21 +37,7 @@ export function AuthProvider({
       return;
     }
     try {
-      const response =
-        await fetch(
-          "http://localhost:3000/users/me",
-          {
-            headers:{
-              Authorization:
-              `Bearer ${token}`
-            }
-          }
-        );
-      if(!response.ok){
-        throw new Error();
-      }
-      const currentUser =
-        await response.json();
+      const currentUser = await getCurrentuser();
       setUser(currentUser);
     } catch {
       localStorage.removeItem(

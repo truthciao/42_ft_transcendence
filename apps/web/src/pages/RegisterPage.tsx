@@ -30,7 +30,7 @@ export function RegisterPage() {
         navigate('/login');
       }, 1000);
 
-    } catch (error) {
+    } catch {
       setStatus('failed');
     } finally {
       setLoading(false);

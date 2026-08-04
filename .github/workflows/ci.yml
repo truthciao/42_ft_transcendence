@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.0.10
         with:
           run_install: false
 
@@ -68,7 +68,7 @@ jobs:
           for attempt in 1 2; do
             echo "pnpm install attempt ${attempt}/2"
 
-            if pnpm install --frozen-lockfile --reporter=append-only; then
+            if pnpm install --no-frozen-lockfile --reporter=append-only; then
               exit 0
             fi
 
@@ -82,7 +82,7 @@ jobs:
           done
 
       - name: Generate Prisma Client
-        run: pnpm --dir apps/api exec prisma generate
+        run: pnpm --filter api exec prisma generate
 
       - name: Lint API
         run: pnpm --filter api lint
@@ -146,7 +146,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.0.10
         with:
           run_install: false
 

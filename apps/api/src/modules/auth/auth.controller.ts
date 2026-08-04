@@ -1,9 +1,25 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, Get, UseGuards, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  HttpCode,
+  HttpStatus,
+  Get,
+  UseGuards,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { type Response } from 'express';
+
+interface AuthenticateUser {
+  id: string;
+  email: string;
+  [key: string]: any;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -22,19 +38,22 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {
-  }
+  googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleLoginCallback(@Req() req: any, @Res() res: Response) {
-    const tokenData = await this.authService.generateToken(req.user);
+  googleLoginCallback(
+    @Req() req: { user: AuthenticateUser },
+    @Res() res: Response,
+  ) {
+    const user = req.user;
+    const tokenData = this.authService.generateToken(req.user);
 
     return res.json({
       message: 'Log in success with Google account!',
-      user: req.user,
+      user: user,
       ...tokenData,
-    })
+    });
     // return res.redirect(`http://localhost:5173/auth/success?token=${tokenData.access_token}`);
   }
 }

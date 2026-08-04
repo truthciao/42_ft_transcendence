@@ -81,13 +81,13 @@ export class AuthService {
 
   // Validate and link/create the OAuth user in the database
   async validateOAuthUser(dto: {
-    provider: string;   
-    providerId: string; 
-    email: string;     
-    username: string;  
+    provider: string;
+    providerId: string;
+    email: string;
+    username: string;
   }) {
     // 1. check if a OAuth account has been linked with user account
-    let oauthAccount = await this.prisma.oAuthAccount.findUnique({
+    const oauthAccount = await this.prisma.oAuthAccount.findUnique({
       where: {
         provider_providerId: {
           provider: dto.provider,
@@ -105,15 +105,15 @@ export class AuthService {
     let user = await this.userService.findByEmail(dto.email);
 
     if (!user) {
-      // 3. create a new user linked with OAuth account 
+      // 3. create a new user linked with OAuth account
       user = await this.userService.createUser({
         email: dto.email,
         username: dto.username,
-        passwordHash: '', // No password for the OAuth account 
+        passwordHash: '', // No password for the OAuth account
       });
     }
 
-    // 4. Update the OAuthAccount database 
+    // 4. Update the OAuthAccount database
     await this.prisma.oAuthAccount.create({
       data: {
         userId: user.id,
@@ -124,10 +124,10 @@ export class AuthService {
     return user;
   }
 
-    async generateToken(user: any) {
+  generateToken(user: { id: string; email: string }) {
     const payload = { sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
     };
-}
+  }
 }

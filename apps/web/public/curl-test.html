@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>JSON 格式化工具</title>
+<style>
+  * { box-sizing: border-box; font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; }
+  body { margin: 0; background: #1e1e2e; color: #e0e0e0; padding: 20px; }
+  h2 { margin-top: 0; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  textarea {
+    width: 100%; height: 220px; background: #2a2a3d; color: #f0f0f0;
+    border: 1px solid #444; border-radius: 6px; padding: 10px;
+    font-family: "Courier New", monospace; font-size: 13px; resize: vertical;
+  }
+  .btn-row { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+  button {
+    padding: 8px 18px; background: #4f8cff; color: white;
+    border: none; border-radius: 6px; cursor: pointer; font-size: 14px;
+  }
+  button:hover { background: #3a75e6; }
+  button.secondary { background: #555; }
+  button.secondary:hover { background: #444; }
+  .section-title { margin: 20px 0 6px; font-size: 14px; color: #aaa; }
+  .error-msg { color: #f44336; font-size: 13px; margin-top: 8px; display: none; }
+  .success-msg { color: #4caf50; font-size: 13px; margin-top: 8px; display: none; }
+  pre#result {
+    background: #16161f; border-radius: 6px; padding: 14px;
+    font-size: 13px; overflow-x: auto; max-height: 600px;
+    line-height: 1.6; margin: 0; white-space: pre-wrap; word-break: break-all;
+  }
+  .key { color: #7ec9ff; }
+  .string { color: #98d982; }
+  .number { color: #f39c56; }
+  .boolean { color: #ff7ac6; }
+  .null { color: #888; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>🎨 JSON 格式化工具</h2>
+
+  <div class="section-title">粘贴原始 JSON：</div>
+  <textarea id="jsonInput" placeholder='把接口返回的 JSON 粘贴到这里，例如：
+{"id":1,"requesterId":2,"addresseeId":5,"status":"PENDING","createdAt":"2026-08-03T10:00:00.000Z"}'></textarea>
+
+  <div class="btn-row">
+    <button onclick="formatJson()">格式化</button>
+    <button class="secondary" onclick="clearAll()">清空</button>
+    <button class="secondary" onclick="pasteFromClipboard()">从剪贴板粘贴并格式化</button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+
+  <div class="section-title">格式化结果：</div>
+  <pre id="result">等待输入...</pre>
+</div>
+
+<script>
+function clearAll() {
+  document.getElementById('jsonInput').value = '';
+  document.getElementById('result').textContent = '等待输入...';
+  hideMsgs();
+}
+
+function hideMsgs() {
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'none';
+}
+
+function formatJson() {
+  hideMsgs();
+  const raw = document.getElementById('jsonInput').value.trim();
+
+  if (!raw) {
+    showError('请先粘贴 JSON 内容');
+    return;
+  }
+
+  try {
+    const obj = JSON.parse(raw);
+    document.getElementById('result').innerHTML = syntaxHighlight(obj);
+    showSuccess('✓ 格式化成功');
+  } catch (e) {
+    showError('✗ 解析失败：' + e.message);
+    document.getElementById('result').textContent = raw; // 原样展示，方便你自己检查错误位置
+  }
+}
+
+async function pasteFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('jsonInput').value = text;
+    formatJson();
+  } catch (e) {
+    showError('读取剪贴板失败，请手动粘贴（浏览器可能需要授权剪贴板权限）');
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function syntaxHighlight(json) {
+  const jsonStr = JSON.stringify(json, null, 2);
+  return jsonStr.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
+    (match) => {
+      let cls = 'number';
+      if (/^"/.test(match)) {
+        cls = /:$/.test(match) ? 'key' : 'string';
+      } else if (/true|false/.test(match)) {
+        cls = 'boolean';
+      } else if (/null/.test(match)) {
+        cls = 'null';
+      }
+      return `<span class="${cls}">${match}</span>`;
+    }
+  );
+}
+
+// 快捷键：Ctrl/Cmd + Enter 直接格式化
+document.getElementById('jsonInput').addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    formatJson();
+  }
+});
+</script>
+</body>
+</html>

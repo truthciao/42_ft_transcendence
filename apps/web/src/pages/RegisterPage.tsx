@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { useNavigate, Link } from 'react-router'; 
+import { useNavigate, Link } from 'react-router';
 import { registerUser, type RegisterPayload } from '../api/auth';
 import { useTranslation } from "react-i18next";
 type RegisterStatus = | 'idle' | 'creating' | 'success' | 'failed';
@@ -21,7 +21,7 @@ export function RegisterPage() {
     setLoading(true);
 
     try {
-  
+
       await registerUser(form);
 
       setStatus('success');

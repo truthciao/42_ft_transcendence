@@ -9,12 +9,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   //Sign up a new user
@@ -76,4 +78,56 @@ export class AuthService {
       },
     };
   }
+
+  // Validate and link/create the OAuth user in the database
+  async validateOAuthUser(dto: {
+    provider: string;   
+    providerId: string; 
+    email: string;     
+    username: string;  
+  }) {
+    // 1. check if a OAuth account has been linked with user account
+    let oauthAccount = await this.prisma.oAuthAccount.findUnique({
+      where: {
+        provider_providerId: {
+          provider: dto.provider,
+          providerId: dto.providerId,
+        },
+      },
+      include: { user: true },
+    });
+
+    if (oauthAccount) {
+      return oauthAccount.user;
+    }
+
+    // 2. No OAuth account has been linked before, check if email does exist?
+    let user = await this.userService.findByEmail(dto.email);
+
+    if (!user) {
+      // 3. create a new user linked with OAuth account 
+      user = await this.userService.createUser({
+        email: dto.email,
+        username: dto.username,
+        passwordHash: '', // No password for the OAuth account 
+      });
+    }
+
+    // 4. Update the OAuthAccount database 
+    await this.prisma.oAuthAccount.create({
+      data: {
+        userId: user.id,
+        provider: dto.provider,
+        providerId: dto.providerId,
+      },
+    });
+    return user;
+  }
+
+    async generateToken(user: any) {
+    const payload = { sub: user.id, email: user.email };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+}
 }

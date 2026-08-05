@@ -21,6 +21,10 @@ interface AuthenticateUser {
   [key: string]: any;
 }
 
+interface RequestWithUser extends Request {
+  user: AuthenticateUser;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -42,18 +46,12 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleLoginCallback(
-    @Req() req: { user: AuthenticateUser },
-    @Res() res: Response,
-  ) {
+  googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response): void {
     const user = req.user;
-    const tokenData = this.authService.generateToken(req.user);
+    const tokenData = this.authService.generateToken(user);
 
-    return res.json({
-      message: 'Log in success with Google account!',
-      user: user,
-      ...tokenData,
-    });
-    // return res.redirect(`http://localhost:5173/auth/success?token=${tokenData.access_token}`);
+    const accessToken = tokenData.access_token || '';
+
+    res.redirect(`http://localhost:5173/login?token=${accessToken}`);
   }
 }

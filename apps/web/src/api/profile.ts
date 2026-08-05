@@ -18,5 +18,5 @@ export async function getProfile() {
 }
 
 export async function updateProfile(payload: ProfilePayload) {
-  return httpPatch<ProfileResponse>('profiles/me', payload)
+  return httpPatch<ProfileResponse>('/profiles/me', payload)
 }

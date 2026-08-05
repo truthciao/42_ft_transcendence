@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { useNavigate, Link } from 'react-router'; 
+import { useNavigate, Link } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ export function LoginPage() {
       };
 
       const data = await loginUser(payload);
-      
+
       if (data.access_token) {
         localStorage.setItem(
           "access_token",
@@ -37,7 +37,7 @@ export function LoginPage() {
 
         await refreshUser();
 
-        navigate("/profile");
+        navigate("/app/chat");
       }
     } catch (error) {
       console.error('Login error:', error);

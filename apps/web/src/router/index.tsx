@@ -8,7 +8,14 @@ import { RootLayout } from '../layouts/RootLayout';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { AppLayout } from '@/layouts/AppLayout';
 import { ChatEmptyState, ChatPage, ConversationListSidebar, ConversationPage } from '@/pages/app/ChatPage';
-import { SecondarySidebar } from '@/components/layout/SecondarySidebar';
+import { FriendProfilePage, FriendsPage, FriendsSidebar } from '@/pages/app/FriendsPage';
+import { SpacesPage, SpacesSidebar, SpaceDetailPage, SpaceChannelPage, SpaceMembersPage, SpaceSettingsPage } from '@/pages/app/SpacesPage';
+import { SettingsPage, SettingsSidebar, AccountSettingsPage, NotificationSettingsPage } from '@/pages/app/SettingsPage';
+import { InvitePage } from '@/pages/app/InvitePage';
+
+function workspaceLoader({ params }: LoaderFunctionArgs) {
+  return { workspaceId: params.workspaceId };
+}
 
 export const router = createBrowserRouter([
   {
@@ -53,7 +60,67 @@ export const router = createBrowserRouter([
               {index: true, element: <ChatEmptyState />},
               {path: ":conversationId", element: <ConversationPage /> },
             ]
-          }
+          },
+          {
+            path: "friends",
+            element: <FriendsPage />,
+            handle: { secondarySidebar: () => <FriendsSidebar /> },
+          },
+          {
+            path: "friends/:userId",
+            element: <FriendProfilePage />,
+            handle: { secondarySidebar: () => <FriendsSidebar /> },
+          },
+          {
+            path: "spaces",
+            element: <SpacesPage />,
+            handle: { secondarySidebar: () => <SpacesSidebar /> },
+          },
+          {
+            path: "spaces/:workspaceId",
+            loader: workspaceLoader,
+            element: <SpaceDetailPage />,
+            handle: { secondarySidebar: () => <SpacesSidebar /> },
+          },
+          {
+            path: "spaces/:workspaceId/c/:channelId",
+            loader: workspaceLoader,
+            element: <SpaceChannelPage />,
+            handle: { secondarySidebar: () => <SpacesSidebar /> },
+          },
+          {
+            path: "spaces/:workspaceId/members",
+            loader: workspaceLoader,
+            element: <SpaceMembersPage />,
+            handle: { secondarySidebar: () => <SpacesSidebar /> },
+          },
+          {
+            path: "spaces/:workspaceId/settings",
+            loader: workspaceLoader,
+            element: <SpaceSettingsPage />,
+            handle: { secondarySidebar: () => <SpacesSidebar /> },
+          },
+          {
+            path: "settings",
+            element: <SettingsPage />,
+            handle: { secondarySidebar: () => <SettingsSidebar /> },
+          },
+          {
+            path: "settings/profile",
+            element: <ProfilePage />,
+            handle: { secondarySidebar: () => <SettingsSidebar /> },
+          },
+          {
+            path: "settings/account",
+            element: <AccountSettingsPage />,
+            handle: { secondarySidebar: () => <SettingsSidebar /> },
+          },
+          {
+            path: "settings/notifications",
+            element: <NotificationSettingsPage />,
+            handle: { secondarySidebar: () => <SettingsSidebar /> },
+          },
+          { path: "invite/:inviteToken", element: <InvitePage /> },
         ]
       }
     ]

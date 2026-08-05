@@ -1,24 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentuser } from "@/api/users";
-
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-}
-
-export interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  refreshUser: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loading: true,
-  refreshUser: async () => {},
-});
-
+import { AuthContext, type User } from "./AuthContext";
 
 export function AuthProvider({
   children,

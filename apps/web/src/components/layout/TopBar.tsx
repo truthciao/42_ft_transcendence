@@ -4,7 +4,7 @@ import LanguageSwitcher from "../LanguageSwitcher";
 import { useAuth } from "@/auth/useAuth";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export function TopBar() {
   const { user } = useAuth();
@@ -29,33 +29,44 @@ export function TopBar() {
         Search
       </Button>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Avatar>
-            <AvatarFallback>{fallback}</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
+      <div className="ml-auto flex items-center gap-2">
+        <LanguageSwitcher />
 
-        <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuLabel>{user?.username ?? "Account"}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/app/settings/profile")}>
-            <User className="size-4"/>
-            Profile
-          </DropdownMenuItem>
+        <Button variant="ghost" size="icon" aria-label="Notifications">
+          <Bell className="size-4" />
+        </Button>
 
-          <DropdownMenuItem onClick={() => navigate("/app/settings/account")}>
-            <Settings className="size-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="cursor-pointer outline-none">
+            <Avatar>
+              <AvatarFallback>{fallback}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
 
-          <DropdownMenuItem variant="destructive" onClick={logout}>
-            <LogOut className="size-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5 text-sm font-semibold">
+              {user?.username ?? "Account"}
+            </div>
+            {/* <DropdownMenuLabel>{user?.username ?? "Account"}</DropdownMenuLabel> */}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/app/settings/profile")}>
+              <User className="size-4"/>
+              Profile
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => navigate("/app/settings/account")}>
+              <Settings className="size-4" />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem variant="destructive" onClick={logout}>
+              <LogOut className="size-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   )
 }

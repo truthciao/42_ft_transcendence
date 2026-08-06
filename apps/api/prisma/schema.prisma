@@ -14,6 +14,8 @@ model User {
   email         String         @unique
   username      String         @unique
   passwordHash  String?
+  isTwoFactorEnabled Boolean   @default(false)
+  twoFactorSecret              String?
   oauthAccounts OAuthAccount[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

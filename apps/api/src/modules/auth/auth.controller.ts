@@ -14,9 +14,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { type Response } from 'express';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UsersService } from '../users/users.service';
 
 interface AuthenticateUser {
-  id: string;
+  id: number;
+  userId: number;
   email: string;
   [key: string]: any;
 }
@@ -27,7 +30,10 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('register')
   async register(@Body() dto: RegisterDto) {
@@ -48,10 +54,35 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response): void {
     const user = req.user;
-    const tokenData = this.authService.generateToken(user);
+    const tokenData = this.authService.generateToken({
+      id: String(user.id),
+      email: user.email,
+    });
 
     const accessToken = tokenData.access_token || '';
 
     res.redirect(`http://localhost:5173/login?token=${accessToken}`);
   }
+
+  @Post('2fa/generate')
+  @UseGuards(JwtAuthGuard)
+  async generate2FA(@Req() req: RequestWithUser) {
+    const userId = Number(req.user.userId || req.user.id);
+    return this.authService.generateTwoFactorSecret(userId);
+  }
+
+  @Post('2fa/turn-on')
+  @UseGuards(JwtAuthGuard)
+  async turnOn2FA(@Req() req: RequestWithUser, @Body() dto: { code: string }) {
+    const userId = Number(req.user.userId || req.user.id);
+    return this.authService.turnOnTwoFactor(userId, dto.code);
+  }
+
+  @Post('2fa/toggle')
+  @UseGuards(JwtAuthGuard)
+  async toggle2FA(@Req() req, @Body('enabled') enabled: boolean) {
+    const userId = Number(req.user.userId || req.user.id);
+    return this.usersService.enableTwoFactor(userId, enabled);
+  }
+
 }

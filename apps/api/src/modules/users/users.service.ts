@@ -59,6 +59,8 @@ export class UsersService {
         email: true,
         username: true,
         profile: true,
+        twoFactorSecret: true,
+        isTwoFactorEnabled: true,
       },
     });
   }
@@ -68,6 +70,15 @@ export class UsersService {
       where: {
         email,
       },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        passwordHash: true,
+        profile: true,
+        twoFactorSecret: true,
+        isTwoFactorEnabled: true,
+      },
     });
   }
 
@@ -76,6 +87,29 @@ export class UsersService {
       where: {
         username,
       },
+      select: {           
+        id: true,
+        email: true,
+        username: true,
+        passwordHash: true,
+        profile: true,
+        twoFactorSecret: true,
+        isTwoFactorEnabled: true,
+      },
+    });
+  }
+
+  async updateTwoFactorSecret(userId: number, secret: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret },
+    });
+  }
+
+  async enableTwoFactor(userId: number, isEnabled: boolean) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { isTwoFactorEnabled: isEnabled },
     });
   }
 }

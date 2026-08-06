@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { AuthContext } from "./AuthContext";
 import type { User } from "./AuthContext";
+
+import { getCurrentUser } from "../api/users";
+
 
 export function AuthProvider({
   children,
@@ -9,6 +13,7 @@ export function AuthProvider({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
 
   async function refreshUser() {
     const token = localStorage.getItem("access_token");
@@ -19,34 +24,28 @@ export function AuthProvider({
       return;
     }
 
+
     try {
-      const response = await fetch(
-        "http://localhost:3000/users/me",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const currentUser = await getCurrentUser();
 
-      if (!response.ok) {
-        throw new Error();
-      }
-
-      const currentUser = await response.json();
       setUser(currentUser);
+
     } catch {
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
+
       setUser(null);
     }
+
 
     setLoading(false);
   }
 
+
   useEffect(() => {
     refreshUser();
   }, []);
+
 
   return (
     <AuthContext.Provider

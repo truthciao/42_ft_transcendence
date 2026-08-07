@@ -8,13 +8,13 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User.ts'
-export type * from './models/Profile.ts'
-export type * from './models/OAuthAccount.ts'
-export type * from './models/Workspace.ts'
-export type * from './models/WorkspaceMember.ts'
-export type * from './models/Conversation.ts'
-export type * from './models/ConversationMember.ts'
-export type * from './models/Message.ts'
-export type * from './models/Friendship.ts'
-export type * from './commonInputTypes.ts'
+export type * from './models/User.js'
+export type * from './models/Profile.js'
+export type * from './models/OAuthAccount.js'
+export type * from './models/Workspace.js'
+export type * from './models/WorkspaceMember.js'
+export type * from './models/Conversation.js'
+export type * from './models/ConversationMember.js'
+export type * from './models/Message.js'
+export type * from './models/Friendship.js'
+export type * from './commonInputTypes.js'

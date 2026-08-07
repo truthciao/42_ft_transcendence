@@ -40,7 +40,7 @@ export function ProfilePage() {
     ) {
       void i18n.changeLanguage(profile.preferredLanguage);
     }
-  }, [profile, i18n.language]);
+  }, [profile, i18n]);
 
   const mutation = useUpdateProfile();
 

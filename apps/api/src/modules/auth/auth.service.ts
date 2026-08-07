@@ -143,13 +143,11 @@ export class AuthService {
 
     await this.userService.updateTwoFactorSecret(userId, secret);
 
-    const appName = "WorkSpaceApp";
-
     const otpauthUrl = generateURI({
       issuer: 'WorkSpaceApp',
       label: user.email,
       secret: secret,
-    }) 
+    });
 
     return {
       secret,
@@ -164,11 +162,10 @@ export class AuthService {
       throw new BadRequestException('2FA Secret not initialized');
     }
 
-    const validCode = await generate({ secret: user.twoFactorSecret});
-    console.log("current valid code:", validCode);
-    console.log("introduced valid code:", code);
+    const validCode = await generate({ secret: user.twoFactorSecret });
+    console.log('current valid code:', validCode);
+    console.log('introduced valid code:', code);
 
-   
     const result = await verify({
       token: code,
       secret: user.twoFactorSecret,

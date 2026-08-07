@@ -1,4 +1,4 @@
-import type { Friend } from "../../api/friends";
+import type { Friend } from "@repo/shared-types";
 
 interface FriendCardProps {
   friend: Friend;

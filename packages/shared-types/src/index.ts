@@ -4,8 +4,18 @@ export type {
   AuthResponse,
 } from './auth';
 
-export type { Friend } from './friends';
+export type {
+  Friend,
+  PendingRequest,
+//   SendFriendRequestDto,
+//   MessageResponse,
+} from './friends';
 
-export type { ProfilePayload, ProfileResponse } from './profile';
+export type {
+  ProfilePayload,
+//   ProfileResponse,
+} from './profile';
 
-export type { User } from './users';
+export type {
+  User,
+} from './users';

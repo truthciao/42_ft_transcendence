@@ -41,6 +41,7 @@
 		"confirmPassword": "确认密码",
 		"status": {
 			"updateSuccess": "个人资料更新成功！",
+			"loadError": "加载个人资料失败。",
 			"updateError": "更新个人资料失败。",
 			"passwordMismatch": "密码不匹配。",
 			"passwordUpdateSuccess": "密码更新成功！",

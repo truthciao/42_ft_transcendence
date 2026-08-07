@@ -1,31 +1,20 @@
 import { type FormEvent, useEffect, useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { getProfile, updateProfile, type ProfilePayload } from "../api/profile";
 import { useTranslation } from "react-i18next";
 
-interface ProfileData extends ProfilePayload {
-  user?: {
-    username?: string;
-    email?: string;
-  };
-}
+import { type ProfilePayload } from "../api/profile";
+import {
+ useProfile,
+ useUpdateProfile
+} from "../hooks/useProfile";
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
-  const queryClient = useQueryClient();
 
   const {
-    data: profile,
-    isLoading,
-    isError,
-  } = useQuery<ProfileData>({
-    queryKey: ["profile"],
-    queryFn: getProfile,
-  });
+  data: profile,
+  isLoading,
+  isError,
+  }=useProfile();
 
   const [form, setForm] = useState<ProfilePayload>({
     displayName: "",
@@ -45,20 +34,15 @@ export function ProfilePage() {
         profile.preferredLanguage ?? i18n.language,
     });
 
-    if (profile.preferredLanguage) {
+    if (
+      profile.preferredLanguage &&
+      profile.preferredLanguage !== i18n.language
+    ) {
       void i18n.changeLanguage(profile.preferredLanguage);
     }
-  }, [profile, i18n]);
+  }, [profile, i18n.language]);
 
-  const mutation = useMutation({
-    mutationFn: updateProfile,
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["profile"],
-      });
-    },
-  });
+  const mutation = useUpdateProfile();
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -89,7 +73,7 @@ export function ProfilePage() {
         }}
       >
         <p style={{ color: "red" }}>
-          {t("profile.status.updateError")}
+          {t("profile.status.loadError")}
         </p>
       </main>
     );
@@ -289,14 +273,8 @@ export function ProfilePage() {
         </p>
       )}
 
-      {(isError || mutation.isError) && (
-        <p
-          style={{
-            marginTop: "1rem",
-            fontWeight: "bold",
-            color: "red",
-          }}
-        >
+      {mutation.isError && (
+        <p>
           {t("profile.status.updateError")}
         </p>
       )}

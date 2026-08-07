@@ -13,7 +13,7 @@ interface ProfileResponse extends ProfilePayload {
   }
 }
 
-export async function getProfile() {
+export async function getProfile(): Promise<ProfileResponse> {
   return httpGet<ProfileResponse>('/profiles/me');
 }
 

@@ -11,6 +11,8 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
+import { generateSecret, verify, generate, generateURI } from 'otplib';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -128,6 +130,60 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async generateTwoFactorSecret(userId: number) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const secret = generateSecret();
+
+    await this.userService.updateTwoFactorSecret(userId, secret);
+
+    const appName = "WorkSpaceApp";
+
+    const otpauthUrl = generateURI({
+      issuer: 'WorkSpaceApp',
+      label: user.email,
+      secret: secret,
+    }) 
+
+    return {
+      secret,
+      otpauthUrl,
+    };
+  }
+
+  async turnOnTwoFactor(userId: number, code: string) {
+    const user = await this.userService.findById(userId);
+
+    if (!user || !user.twoFactorSecret) {
+      throw new BadRequestException('2FA Secret not initialized');
+    }
+
+    const validCode = await generate({ secret: user.twoFactorSecret});
+    console.log("current valid code:", validCode);
+    console.log("introduced valid code:", code);
+
+   
+    const result = await verify({
+      token: code,
+      secret: user.twoFactorSecret,
+      epochTolerance: 2,
+    });
+
+    if (!result.valid) {
+      throw new BadRequestException('Invalid 2FA verification code');
+    }
+
+    await this.userService.enableTwoFactor(userId, true);
+
+    return {
+      success: true,
+      message: '2FA enabled successfully',
     };
   }
 }

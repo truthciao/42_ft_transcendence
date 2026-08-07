@@ -39,7 +39,7 @@ export class FriendsController {
     return this.friendsService.acceptRequest(id, userId);
   }
 
-  @Post('request/:id/reject')
+  @Post('requests/:id/reject')
   rejectRequest(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser('userId') userId: number,

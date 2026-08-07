@@ -1,10 +1,5 @@
 import { httpGet } from "@/lib/http";
-
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-}
+import type { User } from "@repo/shared-types";
 
 export function getCurrentUser() {
   return httpGet<User>("/users/me");

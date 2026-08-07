@@ -1,32 +1,5 @@
 import { httpDelete, httpGet, httpPost } from "../lib/http";
-
-export interface Friend {
-  id: number;
-  username: string;
-  email: string;
-}
-
-export interface PendingRequest {
-  id: number;
-  requesterId: number;
-  addresseeId: number;
-  status: "PENDING";
-  createdAt: string;
-
-  requester: {
-    id: number;
-    username: string;
-    email: string;
-  };
-}
-
-export interface SendFriendRequestDto {
-  addresseeId: number;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import type { Friend, PendingRequest, SendFriendRequestDto, MessageResponse } from "@repo/shared-types";
 
 export function getFriends() {
   return httpGet<Friend[]>("/friends");

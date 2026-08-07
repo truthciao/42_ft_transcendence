@@ -1,8 +1,7 @@
 services:
   postgres:
-    image: postgres:18
+    image: postgres:17-alpine
     container_name: transcendence-postgres
-    restart: unless-stopped
 
     environment:
       POSTGRES_USER: transcendence
@@ -13,17 +12,83 @@ services:
       - "5432:5432"
 
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U transcendence -d transcendence",
+          "pg_isready -U transcendence -d transcendence"
         ]
       interval: 5s
       timeout: 5s
       retries: 10
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    environment:
+      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+
+    command: >
+      sh -c "
+        pnpm --dir apps/api exec prisma generate &&
+        pnpm --dir apps/api exec prisma migrate deploy
+      "
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      JWT_SECRET: development-secret
+      WEB_ORIGIN: http://localhost:5173
+
+    command: pnpm --filter api dev
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/web/node_modules
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+  
+    command: pnpm --filter web exec vite --host 0.0.0.0
+  
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - api
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/web/node_modules
 
 volumes:
   postgres_data:

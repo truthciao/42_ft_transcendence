@@ -57,7 +57,9 @@ export class AuthController {
     const user = req.user;
 
     if (user.isTwoFactorEnabled) {
-      res.redirect(`http://localhost:5173/login?requires2FA=true&userId=${user.id}`);
+      res.redirect(
+        `http://localhost:5173/login?requires2FA=true&userId=${user.id}`,
+      );
       return;
     }
 
@@ -97,7 +99,7 @@ export class AuthController {
 
   @Post('login-2fa')
   @HttpCode(HttpStatus.OK)
-  async loginWith2fa(@Body() dto: { userId: number; code: string}) {
+  async loginWith2fa(@Body() dto: { userId: number; code: string }) {
     return this.authService.loginWith2fa(dto.userId, dto.code);
   }
 }

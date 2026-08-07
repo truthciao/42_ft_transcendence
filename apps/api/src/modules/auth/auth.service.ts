@@ -11,8 +11,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
-import { generateSecret, verify, generate, generateURI } from 'otplib';
-import { access } from 'node:fs';
+import { generateSecret, verify, generateURI } from 'otplib';
 
 @Injectable()
 export class AuthService {
@@ -163,8 +162,8 @@ export class AuthService {
       otpauthUrl,
     };
   }
- 
-  // Verify the initial 2FA code to enable 2FA for the user. 
+
+  // Verify the initial 2FA code to enable 2FA for the user.
   async turnOnTwoFactor(userId: number, code: string) {
     const user = await this.userService.findById(userId);
 

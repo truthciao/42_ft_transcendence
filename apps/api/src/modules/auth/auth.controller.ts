@@ -80,9 +80,11 @@ export class AuthController {
 
   @Post('2fa/toggle')
   @UseGuards(JwtAuthGuard)
-  async toggle2FA(@Req() req, @Body('enabled') enabled: boolean) {
+  async toggle2FA(
+    @Req() req: RequestWithUser,
+    @Body('enabled') enabled: boolean,
+  ) {
     const userId = Number(req.user.userId || req.user.id);
     return this.usersService.enableTwoFactor(userId, enabled);
   }
-
 }

@@ -21,6 +21,7 @@ interface AuthenticateUser {
   id: number;
   userId: number;
   email: string;
+  isTwoFactorEnabled: boolean;
   [key: string]: any;
 }
 
@@ -54,6 +55,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response): void {
     const user = req.user;
+
+    if (user.isTwoFactorEnabled) {
+      res.redirect(`http://localhost:5173/login?requires2FA=true&userId=${user.id}`);
+      return;
+    }
+
     const tokenData = this.authService.generateToken({
       id: String(user.id),
       email: user.email,
@@ -86,5 +93,11 @@ export class AuthController {
   ) {
     const userId = Number(req.user.userId || req.user.id);
     return this.usersService.enableTwoFactor(userId, enabled);
+  }
+
+  @Post('login-2fa')
+  @HttpCode(HttpStatus.OK)
+  async loginWith2fa(@Body() dto: { userId: number; code: string}) {
+    return this.authService.loginWith2fa(dto.userId, dto.code);
   }
 }

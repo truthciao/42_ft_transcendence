@@ -12,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 import { generateSecret, verify, generate, generateURI } from 'otplib';
+import { access } from 'node:fs';
 
 @Injectable()
 export class AuthService {
@@ -62,6 +63,14 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
+    }
+
+    if (user.isTwoFactorEnabled) {
+      return {
+        requiresTwoFactor: true,
+        userId: user.id,
+        message: 'Please provide your 2FA code',
+      };
     }
 
     const payload = {
@@ -154,17 +163,14 @@ export class AuthService {
       otpauthUrl,
     };
   }
-
+ 
+  // Verify the initial 2FA code to enable 2FA for the user. 
   async turnOnTwoFactor(userId: number, code: string) {
     const user = await this.userService.findById(userId);
 
     if (!user || !user.twoFactorSecret) {
       throw new BadRequestException('2FA Secret not initialized');
     }
-
-    const validCode = await generate({ secret: user.twoFactorSecret });
-    console.log('current valid code:', validCode);
-    console.log('introduced valid code:', code);
 
     const result = await verify({
       token: code,
@@ -181,6 +187,42 @@ export class AuthService {
     return {
       success: true,
       message: '2FA enabled successfully',
+    };
+  }
+
+  // Verify the 2FA code during routine login and issue the JWT access token.
+  async loginWith2fa(userId: number, code: string) {
+    const user = await this.userService.findById(userId);
+
+    if (!user || !user.twoFactorSecret) {
+      throw new BadRequestException('User not found or 2FA not initialized');
+    }
+
+    const result = await verify({
+      token: code,
+      secret: user.twoFactorSecret,
+      epochTolerance: 2,
+    });
+
+    if (!result.valid) {
+      throw new UnauthorizedException('Invalid 2FA verification code');
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      access_token: accessToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
     };
   }
 }

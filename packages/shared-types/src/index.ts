@@ -1,12 +1,12 @@
-export type { RegisterPayload, LoginPayload, AuthResponse } from './auth';
+export type { RegisterPayload, LoginPayload, AuthResponse } from './auth.js';
 
 export type {
   Friend,
   PendingRequest,
   SendFriendRequestDto,
   MessageResponse,
-} from './friends';
+} from './friends.js';
 
-export type { ProfilePayload, ProfileResponse } from './profile';
+export type { ProfilePayload, ProfileResponse } from './profile.js';
 
-export type { User } from './users';
+export type { User } from './users.js';

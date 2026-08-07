@@ -5,8 +5,9 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import type { ProfilePayload } from '@repo/shared-types';
 
-export class UpdateProfileDto {
+export class UpdateProfileDto implements ProfilePayload {
   @IsOptional()
   @IsString({ message: 'displayName must be a string' })
   @MinLength(2, { message: 'displayName must be at least 2 characters long' })

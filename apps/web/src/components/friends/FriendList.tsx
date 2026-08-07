@@ -1,19 +1,14 @@
-import { useState } from "react";
-import { useFriends } from "../../hooks/useFriends";
-import { useRemoveFriend } from "../../hooks/useFriendMutations";
-import { FriendCard } from "./FriendCard";
+import { useState } from 'react';
+import { useFriends } from '../../hooks/useFriends';
+import { useRemoveFriend } from '../../hooks/useFriendMutations';
+import { FriendCard } from './FriendCard';
 
 export function FriendList() {
-  const {
-    data: friends,
-    isLoading,
-    isError,
-  } = useFriends();
+  const { data: friends, isLoading, isError } = useFriends();
 
   const removeFriendMutation = useRemoveFriend();
 
-  const [removingFriendId, setRemovingFriendId] =
-    useState<number | null>(null);
+  const [removingFriendId, setRemovingFriendId] = useState<number | null>(null);
 
   const handleRemoveFriend = (friendId: number) => {
     setRemovingFriendId(friendId);
@@ -26,26 +21,16 @@ export function FriendList() {
   };
 
   if (isLoading) {
-    return (
-      <p className="text-muted-foreground">
-        Loading friends...
-      </p>
-    );
+    return <p className="text-muted-foreground">Loading friends...</p>;
   }
 
   if (isError) {
-    return (
-      <p className="text-destructive">
-        Failed to load friends.
-      </p>
-    );
+    return <p className="text-destructive">Failed to load friends.</p>;
   }
 
   if (!friends || friends.length === 0) {
     return (
-      <p className="text-muted-foreground">
-        You don't have any friends yet.
-      </p>
+      <p className="text-muted-foreground">You don't have any friends yet.</p>
     );
   }
 
@@ -56,8 +41,7 @@ export function FriendList() {
           key={friend.id}
           friend={friend}
           isRemoving={
-            removeFriendMutation.isPending &&
-            removingFriendId === friend.id
+            removeFriendMutation.isPending && removingFriendId === friend.id
           }
           onRemove={handleRemoveFriend}
         />

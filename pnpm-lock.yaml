@@ -183,6 +183,9 @@ importers:
       '@fontsource-variable/geist':
         specifier: ^5.3.0
         version: 5.3.0
+      '@repo/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
@@ -262,6 +265,8 @@ importers:
       vite:
         specifier: ^8.1.1
         version: 8.2.0(@types/node@24.13.3)(jiti@2.7.0)(terser@5.49.0)
+
+  packages/shared-types: {}
 
 packages:
 

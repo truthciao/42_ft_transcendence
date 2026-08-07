@@ -1,18 +1,13 @@
-import { useEffect, useState } from "react";
-import { getCurrentuser } from "@/api/users";
-import { AuthContext, type User } from "./AuthContext";
+import { useEffect, useState } from 'react';
+import { getCurrentuser } from '@/api/users';
+import { AuthContext, type User } from './AuthContext';
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-
   async function refreshUser() {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem('access_token');
     if (!token) {
       setUser(null);
       setLoading(false);
@@ -22,23 +17,17 @@ export function AuthProvider({
       const currentUser = await getCurrentuser();
       setUser(currentUser);
     } catch {
-      localStorage.removeItem(
-        "access_token"
-      );
+      localStorage.removeItem('access_token');
 
-      localStorage.removeItem(
-        "user"
-      );
+      localStorage.removeItem('user');
       setUser(null);
     }
     setLoading(false);
   }
 
-
   useEffect(() => {
     refreshUser();
   }, []);
-
 
   return (
     <AuthContext.Provider

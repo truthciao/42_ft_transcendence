@@ -1,28 +1,32 @@
 # ft_transcendence
 
-A full-stack web application built for the 42 School `ft_transcendence` project.
+A full-stack web application built for the 42 School **ft_transcendence** project.
 
 ## Tech Stack
 
 ### Frontend
 
-- React
-- Vite
-- TypeScript
+* React
+* Vite
+* TypeScript
 
 ### Backend
 
-- NestJS
-- Prisma ORM
+* NestJS
+* Prisma ORM
 
 ### Database
 
-- PostgreSQL
-- Docker Compose
+* PostgreSQL
+
+### Infrastructure
+
+* Docker
+* Docker Compose
 
 ### Monorepo
 
-- pnpm Workspace
+* pnpm Workspace
 
 ---
 
@@ -31,9 +35,9 @@ A full-stack web application built for the 42 School `ft_transcendence` project.
 ```text
 transcendence/
 ├── apps/
-│   ├── api/        # NestJS backend
-│   └── web/        # React frontend
-├── packages/       # Shared packages
+│   ├── api/                 # NestJS backend
+│   └── web/                 # React frontend
+├── packages/                # Shared packages
 ├── docs/
 ├── infra/
 ├── scripts/
@@ -45,17 +49,17 @@ transcendence/
 
 # Requirements
 
-Before running the project, install the following software.
+Install the following software before running the project.
 
 ## Node.js
 
 Recommended version:
 
-```
+```text
 >= 22
 ```
 
-If you use **nvm**:
+Using **nvm**:
 
 ```bash
 nvm install
@@ -66,13 +70,13 @@ nvm use
 
 ## pnpm
 
-Install globally:
+Install pnpm globally:
 
 ```bash
 npm install -g pnpm
 ```
 
-Check:
+Verify the installation:
 
 ```bash
 pnpm -v
@@ -82,9 +86,9 @@ pnpm -v
 
 ## Docker
 
-Install Docker Desktop.
+Install Docker Desktop (or Docker Engine + Docker Compose on Linux).
 
-Verify:
+Verify your installation:
 
 ```bash
 docker --version
@@ -112,7 +116,7 @@ pnpm install
 
 # Environment Variables
 
-Create the environment file or change the name of example file:
+Create an environment file for the backend.
 
 ```text
 apps/api/.env
@@ -124,67 +128,98 @@ Example:
 DATABASE_URL="postgresql://transcendence:transcendence@localhost:5432/transcendence?schema=public"
 ```
 
+Additional environment variables (JWT secrets, OAuth credentials, etc.) can be added as the project grows.
+
 ---
 
-# Start PostgreSQL
+# Docker
 
-Start the database:
+The project uses Docker Compose to manage local services such as PostgreSQL.
+
+## Start all services
+
+```bash
+docker compose up -d
+```
+
+## Start only PostgreSQL
 
 ```bash
 docker compose up -d postgres
 ```
 
-Check the container:
+## Stop containers
+
+```bash
+docker compose down
+```
+
+## Stop and remove volumes
+
+> Warning: this removes all local database data.
+
+```bash
+docker compose down -v
+```
+
+## View running containers
 
 ```bash
 docker compose ps
 ```
 
+## View logs
+
+```bash
+docker compose logs -f
+```
+
+View logs for PostgreSQL only:
+
+```bash
+docker compose logs -f postgres
+```
+
 ---
 
-# Prisma
+# Database Setup
 
-Generate Prisma Client:
+Generate the Prisma Client:
 
 ```bash
 pnpm --filter api exec prisma generate
 ```
 
-Run database migrations:
+Apply database migrations:
 
 ```bash
 pnpm --filter api exec prisma migrate dev
 ```
 
+If the database is empty, Prisma will automatically create it and apply all migrations.
+
 ---
 
-# Start Development Server
+# Running the Application
 
-Run both frontend and backend:
+Start the development servers:
 
 ```bash
 pnpm dev
 ```
 
-Services:
+The application will be available at:
 
-Frontend:
-
-```
-http://localhost:5173
-```
-
-Backend:
-
-```
-http://localhost:3000
-```
+| Service  | URL                   |
+| -------- | --------------------- |
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3000 |
 
 ---
 
 # Available Scripts
 
-## Run all applications
+## Run the entire project
 
 ```bash
 pnpm dev
@@ -224,18 +259,40 @@ pnpm --filter web dev
 
 ---
 
-# Database
-
-Open PostgreSQL:
+## Backend tests
 
 ```bash
-docker compose exec postgres psql -U transcendence -d transcendence
+pnpm --filter api test
+```
+
+Run tests with coverage:
+
+```bash
+pnpm --filter api test:cov
+```
+
+---
+
+# Working with PostgreSQL
+
+Connect to PostgreSQL:
+
+```bash
+docker compose exec postgres psql \
+    -U transcendence \
+    -d transcendence
 ```
 
 List tables:
 
 ```sql
 \dt
+```
+
+Describe a table:
+
+```sql
+\d table_name
 ```
 
 Exit:
@@ -246,50 +303,82 @@ Exit:
 
 ---
 
-# Current Status
+# Prisma Workflow
 
-The project is initialized with:
+Whenever the Prisma schema changes:
 
-- pnpm Workspace
-- React + Vite + TypeScript
-- NestJS
-- PostgreSQL
-- Docker Compose
-- Prisma ORM
-- Initial database migration
-- Generated Prisma Client
+Create a new migration:
 
-The following features are **not implemented yet**:
+```bash
+pnpm --filter api exec prisma migrate dev
+```
 
-- Authentication
-- OAuth 42
-- User CRUD
-- WebSocket
-- Chat
-- Friends
-- Match History
+Regenerate the Prisma Client:
+
+```bash
+pnpm --filter api exec prisma generate
+```
+
+If you only need to regenerate the client:
+
+```bash
+pnpm --filter api exec prisma generate
+```
+
+---
+
+# Docker Tips
+
+Restart PostgreSQL:
+
+```bash
+docker compose restart postgres
+```
+
+Rebuild containers:
+
+```bash
+docker compose up --build
+```
+
+Remove unused Docker resources:
+
+```bash
+docker system prune
+```
 
 ---
 
 # Development Workflow
 
-Start PostgreSQL:
+1. Start Docker services.
 
 ```bash
-docker compose up -d postgres
+docker compose up -d
 ```
 
-Start development servers:
+2. Install dependencies.
 
 ```bash
-pnpm dev
+pnpm install
 ```
 
-After modifying the Prisma schema:
+3. Apply database migrations.
 
 ```bash
 pnpm --filter api exec prisma migrate dev
+```
+
+4. Generate the Prisma Client.
+
+```bash
 pnpm --filter api exec prisma generate
+```
+
+5. Start the application.
+
+```bash
+pnpm dev
 ```
 
 ---

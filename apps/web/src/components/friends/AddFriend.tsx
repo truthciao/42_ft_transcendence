@@ -1,7 +1,7 @@
-import { useUsers } from "../../hooks/useUsers";
-import { useAuth } from "../../auth/useAuth";
-import { useFriends } from "../../hooks/useFriends";
-import { useSendFriendRequest } from "../../hooks/useFriendMutations";
+import { useUsers } from '../../hooks/useUsers';
+import { useAuth } from '../../auth/useAuth';
+import { useFriends } from '../../hooks/useFriends';
+import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 
 export function AddFriend() {
   const {
@@ -10,36 +10,21 @@ export function AddFriend() {
     isError: isUsersError,
   } = useUsers();
 
-	const {
-	user: currentUser,
-	loading: isCurrentUserLoading,
-	} = useAuth();
+  const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
 
-  const {
-    data: friends,
-  } = useFriends();
+  const { data: friends } = useFriends();
 
   const sendFriendRequestMutation = useSendFriendRequest();
 
   if (isUsersLoading || isCurrentUserLoading) {
-    return (
-      <p className="text-muted-foreground">
-        Loading users...
-      </p>
-    );
+    return <p className="text-muted-foreground">Loading users...</p>;
   }
 
   if (isUsersError) {
-    return (
-      <p className="text-destructive">
-        Failed to load users.
-      </p>
-    );
+    return <p className="text-destructive">Failed to load users.</p>;
   }
 
-  const friendIds = new Set(
-    friends?.map((friend) => friend.id) ?? [],
-  );
+  const friendIds = new Set(friends?.map((friend) => friend.id) ?? []);
 
   const availableUsers =
     users?.filter((user) => {
@@ -56,14 +41,10 @@ export function AddFriend() {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">
-        Add Friend
-      </h2>
+      <h2 className="text-xl font-semibold">Add Friend</h2>
 
       {availableUsers.length === 0 ? (
-        <p className="text-muted-foreground">
-          No users available.
-        </p>
+        <p className="text-muted-foreground">No users available.</p>
       ) : (
         <div className="space-y-3">
           {availableUsers.map((user) => (
@@ -79,13 +60,9 @@ export function AddFriend() {
               "
             >
               <div>
-                <p className="font-medium">
-                  {user.username}
-                </p>
+                <p className="font-medium">{user.username}</p>
 
-                <p className="text-sm text-muted-foreground">
-                  {user.email}
-                </p>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
 
               <button
@@ -105,8 +82,8 @@ export function AddFriend() {
                 }
               >
                 {sendFriendRequestMutation.isPending
-                  ? "Sending..."
-                  : "Add Friend"}
+                  ? 'Sending...'
+                  : 'Add Friend'}
               </button>
             </div>
           ))}

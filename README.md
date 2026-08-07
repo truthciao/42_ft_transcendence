@@ -8,27 +8,27 @@ A full-stack web application built for the 42 School **ft_transcendence** projec
 
 ## Frontend
 
-* React
-* Vite
-* TypeScript
+- React
+- Vite
+- TypeScript
 
 ## Backend
 
-* NestJS
-* Prisma ORM
+- NestJS
+- Prisma ORM
 
 ## Database
 
-* PostgreSQL
+- PostgreSQL
 
 ## Infrastructure
 
-* Docker
-* Docker Compose
+- Docker
+- Docker Compose
 
 ## Monorepo
 
-* pnpm Workspace
+- pnpm Workspace
 
 ---
 
@@ -199,11 +199,11 @@ docker compose up -d --build
 
 Docker automatically starts:
 
-* PostgreSQL
-* Prisma Client generation
-* Database migrations
-* NestJS API
-* React (Vite)
+- PostgreSQL
+- Prisma Client generation
+- Database migrations
+- NestJS API
+- React (Vite)
 
 Applications:
 
@@ -421,4 +421,3 @@ docker compose down --remove-orphans
 # License
 
 42 School Project
-

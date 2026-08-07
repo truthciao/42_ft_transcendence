@@ -1,12 +1,9 @@
-const API_BASE_URI = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const API_BASE_URI = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export class HttpError extends Error {
   status: number;
 
-  constructor(
-    status: number,
-    message: string,
-  ) {
+  constructor(status: number, message: string) {
     super(message);
     this.status = status;
     this.name = 'HttpError';
@@ -25,14 +22,10 @@ async function parseErrorMessage(
     const body: unknown = await response.json();
     if (typeof body === 'object' && body !== null && 'message' in body) {
       const { message } = body as { message?: unknown };
-      if (typeof message === 'string')
-        return message;
-      if (Array.isArray(message))
-        return message.join(', ');
+      if (typeof message === 'string') return message;
+      if (Array.isArray(message)) return message.join(', ');
     }
-  } catch {
-
-  }
+  } catch {}
   return fallback;
 }
 
@@ -41,7 +34,10 @@ interface HttpOptions extends Omit<RequestInit, 'body'> {
   auth?: boolean;
 }
 
-export async function http<T>(path: string, options: HttpOptions = {}): Promise<T> {
+export async function http<T>(
+  path: string,
+  options: HttpOptions = {},
+): Promise<T> {
   const { body, auth = true, headers, ...rest } = options;
 
   const finalHeaders = new Headers(headers);
@@ -53,14 +49,17 @@ export async function http<T>(path: string, options: HttpOptions = {}): Promise<
 
   if (auth) {
     const token = getToken();
-    if (token)
-      finalHeaders.set('Authorization', `Bearer ${token}`);
+    if (token) finalHeaders.set('Authorization', `Bearer ${token}`);
   }
 
   const response = await fetch(`${API_BASE_URI}${path}`, {
     ...rest,
     headers: finalHeaders,
-    body: isFormData ? (body as FormData) : body !== undefined ? JSON.stringify(body) : undefined,
+    body: isFormData
+      ? (body as FormData)
+      : body !== undefined
+        ? JSON.stringify(body)
+        : undefined,
   });
 
   if (response.status === 401) {
@@ -84,13 +83,19 @@ export async function http<T>(path: string, options: HttpOptions = {}): Promise<
 }
 
 export const httpGet = <T>(path: string, options?: HttpOptions) =>
-  http<T>(path, { ...options, method: 'GET'});
+  http<T>(path, { ...options, method: 'GET' });
 
-export const httpPost = <T>(path: string, body?: unknown, options?: HttpOptions) =>
-  http<T>(path, { ...options, method: 'POST', body});
+export const httpPost = <T>(
+  path: string,
+  body?: unknown,
+  options?: HttpOptions,
+) => http<T>(path, { ...options, method: 'POST', body });
 
-export const httpPatch = <T>(path: string, body?: unknown, options?: HttpOptions) =>
-  http<T>(path, { ...options, method: 'PATCH', body});
+export const httpPatch = <T>(
+  path: string,
+  body?: unknown,
+  options?: HttpOptions,
+) => http<T>(path, { ...options, method: 'PATCH', body });
 
 export const httpDelete = <T>(path: string, options?: HttpOptions) =>
-  http<T>(path, { ...options, method: 'DELETE'});
+  http<T>(path, { ...options, method: 'DELETE' });

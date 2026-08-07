@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -75,7 +75,7 @@ export function LoginPage() {
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      setStatus("failed");
+      setStatus('failed');
     } finally {
       setIsSubmitting(false);
     }

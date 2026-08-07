@@ -1,56 +1,27 @@
-import { useParams, useNavigate } from "react-router";
-import { useFriends } from "../hooks/useFriends";
-
+import { useParams, useNavigate } from 'react-router';
+import { useFriends } from '../hooks/useFriends';
 
 export function FriendProfilePage() {
-
   const { id } = useParams();
 
   const navigate = useNavigate();
 
-
-  const {
-    data: friends,
-    isLoading,
-    isError,
-  } = useFriends();
-
-
+  const { data: friends, isLoading, isError } = useFriends();
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        Loading profile...
-      </div>
-    );
+    return <div className="p-6">Loading profile...</div>;
   }
-
-
 
   if (isError) {
-    return (
-      <div className="p-6 text-destructive">
-        Failed to load profile.
-      </div>
-    );
+    return <div className="p-6 text-destructive">Failed to load profile.</div>;
   }
 
-
-
-  const friend = friends?.find(
-    (friend) => friend.id === Number(id)
-  );
-
-
+  const friend = friends?.find((friend) => friend.id === Number(id));
 
   if (!friend) {
     return (
       <div className="p-6">
-
-        <h1 className="text-xl font-semibold">
-          Friend not found
-        </h1>
-
+        <h1 className="text-xl font-semibold">Friend not found</h1>
 
         <button
           className="
@@ -60,22 +31,16 @@ export function FriendProfilePage() {
             rounded
             border
           "
-          onClick={() => navigate("/friends")}
+          onClick={() => navigate('/friends')}
         >
           Back to Friends
         </button>
-
       </div>
     );
   }
 
-
-
   return (
-
     <div className="flex-1 bg-background p-6">
-
-
       <button
         className="
           mb-6
@@ -88,8 +53,6 @@ export function FriendProfilePage() {
         ← Back
       </button>
 
-
-
       <div
         className="
           max-w-md
@@ -99,8 +62,6 @@ export function FriendProfilePage() {
           space-y-6
         "
       >
-
-
         <div
           className="
             flex
@@ -108,7 +69,6 @@ export function FriendProfilePage() {
             gap-4
           "
         >
-
           <div
             className="
               w-16
@@ -125,63 +85,28 @@ export function FriendProfilePage() {
             {friend.username[0]}
           </div>
 
-
-
           <div>
+            <h1 className="text-2xl font-semibold">{friend.username}</h1>
 
-            <h1 className="text-2xl font-semibold">
-              {friend.username}
-            </h1>
-
-
-            <p className="text-muted-foreground">
-              Friend
-            </p>
-
+            <p className="text-muted-foreground">Friend</p>
           </div>
-
-
         </div>
-
-
 
         <div className="space-y-3">
-
-
           <div>
+            <p className="text-sm text-muted-foreground">Username</p>
 
-            <p className="text-sm text-muted-foreground">
-              Username
-            </p>
-
-            <p className="font-medium">
-              {friend.username}
-            </p>
-
+            <p className="font-medium">{friend.username}</p>
           </div>
 
-
-
           <div>
+            <p className="text-sm text-muted-foreground">Email</p>
 
-            <p className="text-sm text-muted-foreground">
-              Email
-            </p>
-
-            <p className="font-medium">
-              {friend.email}
-            </p>
-
+            <p className="font-medium">{friend.email}</p>
           </div>
-
-
         </div>
 
-
-
         <div className="flex gap-3">
-
-
           <button
             className="
               flex-1
@@ -195,8 +120,6 @@ export function FriendProfilePage() {
             Message
           </button>
 
-
-
           <button
             className="
               px-4
@@ -207,16 +130,8 @@ export function FriendProfilePage() {
           >
             Remove Friend
           </button>
-
-
         </div>
-
-
-
       </div>
-
-
     </div>
-
   );
 }

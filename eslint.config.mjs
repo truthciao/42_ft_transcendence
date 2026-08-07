@@ -42,10 +42,7 @@ export default tseslint.config(
   {
     files: ['apps/api/src/**/*.ts'],
 
-    ignores: [
-      'apps/api/src/**/*.spec.ts',
-      'apps/api/src/**/*.test.ts',
-    ],
+    ignores: ['apps/api/src/**/*.spec.ts', 'apps/api/src/**/*.test.ts'],
 
     extends: [
       eslint.configs.recommended,
@@ -106,10 +103,7 @@ export default tseslint.config(
   {
     files: ['apps/api/prisma.config.ts'],
 
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-    ],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
 
     languageOptions: {
       globals: {
@@ -119,9 +113,8 @@ export default tseslint.config(
 
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': commonRules[
-        '@typescript-eslint/no-unused-vars'
-      ],
+      '@typescript-eslint/no-unused-vars':
+        commonRules['@typescript-eslint/no-unused-vars'],
     },
   },
 

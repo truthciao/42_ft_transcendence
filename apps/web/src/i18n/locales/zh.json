@@ -1,73 +1,73 @@
 {
-	"common": {
-		"login": "登录",
-		"logout": "退出",
-		"save": "保存",
-		"cancel": "取消",
-		"delete": "删除",
-		"loading": "加载中..."
-	},
+  "common": {
+    "login": "登录",
+    "logout": "退出",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "loading": "加载中..."
+  },
 
-	"home": {
-		"title": "首页",
-		"welcome": "欢迎来到 ft_transcendence。",
-		"profile": "个人资料"
-	},
+  "home": {
+    "title": "首页",
+    "welcome": "欢迎来到 ft_transcendence。",
+    "profile": "个人资料"
+  },
 
-	"notfound": {
-		"title": "404 - 页面未找到",
-		"message": "您正在寻找的页面不存在。",
-		"back": "返回首页"
-	},
+  "notfound": {
+    "title": "404 - 页面未找到",
+    "message": "您正在寻找的页面不存在。",
+    "back": "返回首页"
+  },
 
-	"profile": {
-		"title": "个人资料",
-		"description": "管理您的公开个人资料信息。",
-		"loggedInAs": "登录为",
-		"displayName": "显示名称",
-		"displayNamePlaceholder": "输入您的显示名称",
-		"bio": "个人简介",
-		"bioPlaceholder": "输入您的个人简介",
-		"username": "用户名",
-		"email": "邮箱",
-		"avatar": "头像",
-		"avatarPlaceholder": "输入头像 URL",
-		"preferredLanguage": "首选语言",
-		"preferredLanguagePlaceholder": "输入您的首选语言",
-		"update": "更新个人资料",
-		"changePassword": "更改密码",
-		"password": "密码",
-		"newPassword": "新密码",
-		"confirmPassword": "确认密码",
-		"status": {
-			"updateSuccess": "个人资料更新成功！",
-			"loadError": "加载个人资料失败。",
-			"updateError": "更新个人资料失败。",
-			"passwordMismatch": "密码不匹配。",
-			"passwordUpdateSuccess": "密码更新成功！",
-			"passwordUpdateError": "更新密码失败。"
-		}
-	},
+  "profile": {
+    "title": "个人资料",
+    "description": "管理您的公开个人资料信息。",
+    "loggedInAs": "登录为",
+    "displayName": "显示名称",
+    "displayNamePlaceholder": "输入您的显示名称",
+    "bio": "个人简介",
+    "bioPlaceholder": "输入您的个人简介",
+    "username": "用户名",
+    "email": "邮箱",
+    "avatar": "头像",
+    "avatarPlaceholder": "输入头像 URL",
+    "preferredLanguage": "首选语言",
+    "preferredLanguagePlaceholder": "输入您的首选语言",
+    "update": "更新个人资料",
+    "changePassword": "更改密码",
+    "password": "密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "status": {
+      "updateSuccess": "个人资料更新成功！",
+      "loadError": "加载个人资料失败。",
+      "updateError": "更新个人资料失败。",
+      "passwordMismatch": "密码不匹配。",
+      "passwordUpdateSuccess": "密码更新成功！",
+      "passwordUpdateError": "更新密码失败。"
+    }
+  },
 
-	"language": {
-		"english": "英语",
-		"french": "法语",
-		"chinese": "中文"
-	},
+  "language": {
+    "english": "英语",
+    "french": "法语",
+    "chinese": "中文"
+  },
 
-	"auth": {
-		"register": "注册",
-		"registerDescription": "创建一个新账户以开始使用。",
-		"username": "用户名",
-		"email": "邮箱",
-		"password": "密码",
-		"login": "登录",
-		"description": "输入您的凭据以访问您的账户。",
-			"status": {
-			"loggingIn": "登录中...",
-			"failed": "登录失败"
-		},
-		"noAccount": "没有账户",
-		"submitting": "提交中..."
-	}
+  "auth": {
+    "register": "注册",
+    "registerDescription": "创建一个新账户以开始使用。",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码",
+    "login": "登录",
+    "description": "输入您的凭据以访问您的账户。",
+    "status": {
+      "loggingIn": "登录中...",
+      "failed": "登录失败"
+    },
+    "noAccount": "没有账户",
+    "submitting": "提交中..."
+  }
 }

@@ -1,11 +1,11 @@
-import type { ReactNode } from "react";
-import { Outlet, useMatches } from "react-router";
-import { TopBar } from "@/components/layout/TopBar";
-import { TabRail } from "@/components/layout/TabRail";
-import { SecondarySidebar } from "@/components/layout/SecondarySidebar";
+import type { ReactNode } from 'react';
+import { Outlet, useMatches } from 'react-router';
+import { TopBar } from '@/components/layout/TopBar';
+import { TabRail } from '@/components/layout/TabRail';
+import { SecondarySidebar } from '@/components/layout/SecondarySidebar';
 
 interface AppRoutehandle {
-    secondarySidebar?: () => ReactNode;
+  secondarySidebar?: () => ReactNode;
 }
 
 export function AppLayout() {
@@ -13,7 +13,9 @@ export function AppLayout() {
 
   const secondarySidebarContent = [...matches]
     .reverse()
-    .map((match) => (match.handle as AppRoutehandle | undefined)?.secondarySidebar?.())
+    .map((match) =>
+      (match.handle as AppRoutehandle | undefined)?.secondarySidebar?.(),
+    )
     .find(Boolean);
 
   return (
@@ -22,13 +24,13 @@ export function AppLayout() {
         <TopBar />
       </header>
 
-        <TabRail />
+      <TabRail />
 
-        <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
+      <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
 
       <main className="min-h-0 min-w-0 overflow-hidden">
         <Outlet />
       </main>
     </div>
-  )
+  );
 }

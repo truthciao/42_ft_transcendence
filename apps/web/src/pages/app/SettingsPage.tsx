@@ -8,7 +8,9 @@ export function SettingsSidebar() {
       <div className="space-y-2">
         <div className="p-2 rounded hover:bg-muted cursor-pointer">Profile</div>
         <div className="p-2 rounded hover:bg-muted cursor-pointer">Account</div>
-        <div className="p-2 rounded hover:bg-muted cursor-pointer">Notifications</div>
+        <div className="p-2 rounded hover:bg-muted cursor-pointer">
+          Notifications
+        </div>
       </div>
     </div>
   );
@@ -145,7 +147,9 @@ export function AccountSettingsPage() {
     <div className="flex-1 bg-background p-4 space-y-4">
       <div>
         <h2 className="text-2xl font-semibold">Account Settings</h2>
-        <p className="text-muted-foreground mt-2">Manage your account security and preferences</p>
+        <p className="text-muted-foreground mt-2">
+          Manage your account security and preferences
+        </p>
       </div>
 
       <div className="p-4 border rounded-lg bg-card flex items-center justify-between max-w-xl">
@@ -236,7 +240,9 @@ export function NotificationSettingsPage() {
   return (
     <div className="flex-1 bg-background p-4">
       <h2 className="text-2xl font-semibold">Notification Settings</h2>
-      <p className="text-muted-foreground mt-2">Notification settings content</p>
+      <p className="text-muted-foreground mt-2">
+        Notification settings content
+      </p>
     </div>
   );
 }

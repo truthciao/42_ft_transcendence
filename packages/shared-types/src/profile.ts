@@ -9,5 +9,5 @@ export interface ProfileResponse extends ProfilePayload {
   user?: {
     username: string;
     email: string;
-  }
+  };
 }

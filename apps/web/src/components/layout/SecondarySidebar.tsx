@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-export function SecondarySidebar({ children } : { children?: ReactNode }) {
+export function SecondarySidebar({ children }: { children?: ReactNode }) {
   return (
     <aside className="min-h-0 overflow-y-auto border-r border-border bg-muted/30">
       {children ?? (
@@ -9,5 +9,5 @@ export function SecondarySidebar({ children } : { children?: ReactNode }) {
         </div>
       )}
     </aside>
-  )
+  );
 }

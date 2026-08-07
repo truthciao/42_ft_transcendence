@@ -16,7 +16,7 @@ export interface PendingRequest {
   id: number;
   requesterId: number;
   addresseeId: number;
-  status: "PENDING";
+  status: 'PENDING';
   createdAt: string;
 
   requester: {

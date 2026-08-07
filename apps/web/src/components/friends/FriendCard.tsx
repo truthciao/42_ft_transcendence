@@ -1,4 +1,4 @@
-import type { Friend } from "@repo/shared-types";
+import type { Friend } from '@repo/shared-types';
 
 interface FriendCardProps {
   friend: Friend;
@@ -6,11 +6,7 @@ interface FriendCardProps {
   onRemove: (friendId: number) => void;
 }
 
-export function FriendCard({
-  friend,
-  isRemoving,
-  onRemove,
-}: FriendCardProps) {
+export function FriendCard({ friend, isRemoving, onRemove }: FriendCardProps) {
   return (
     <div
       className="
@@ -23,13 +19,9 @@ export function FriendCard({
       "
     >
       <div>
-        <p className="font-medium">
-          {friend.username}
-        </p>
+        <p className="font-medium">{friend.username}</p>
 
-        <p className="text-sm text-muted-foreground">
-          {friend.email}
-        </p>
+        <p className="text-sm text-muted-foreground">{friend.email}</p>
       </div>
 
       <button
@@ -47,7 +39,7 @@ export function FriendCard({
         disabled={isRemoving}
         onClick={() => onRemove(friend.id)}
       >
-        {isRemoving ? "Removing..." : "Remove"}
+        {isRemoving ? 'Removing...' : 'Remove'}
       </button>
     </div>
   );

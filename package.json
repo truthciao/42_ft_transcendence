@@ -14,7 +14,8 @@
     "build": "pnpm --filter api build && pnpm --filter web build",
     "prisma:generate": "pnpm --dir apps/api exec prisma generate",
     "prisma:migrate:deploy": "pnpm --dir apps/api exec prisma migrate deploy",
-    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

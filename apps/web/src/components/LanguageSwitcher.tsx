@@ -1,14 +1,14 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 type Language = {
-  code: "en" | "fr" | "zh";
+  code: 'en' | 'fr' | 'zh';
   label: string;
 };
 
 const languages: Language[] = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "zh", label: "中文" },
+  { code: 'en', label: 'EN' },
+  { code: 'fr', label: 'FR' },
+  { code: 'zh', label: '中文' },
 ];
 
 export default function LanguageSwitcher() {

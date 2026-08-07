@@ -1,8 +1,4 @@
-export type {
-  RegisterPayload,
-  LoginPayload,
-  AuthResponse,
-} from './auth';
+export type { RegisterPayload, LoginPayload, AuthResponse } from './auth';
 
 export type {
   Friend,
@@ -11,11 +7,6 @@ export type {
   MessageResponse,
 } from './friends';
 
-export type {
-  ProfilePayload,
-  ProfileResponse,
-} from './profile';
+export type { ProfilePayload, ProfileResponse } from './profile';
 
-export type {
-  User,
-} from './users';
+export type { User } from './users';

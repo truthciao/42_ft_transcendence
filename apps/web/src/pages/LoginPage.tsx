@@ -2,7 +2,7 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -42,53 +42,64 @@ export function LoginPage() {
       const data = await loginUser(payload);
 
       if (data.access_token) {
-        localStorage.setItem(
-          "access_token",
-          data.access_token,
-        );
+        localStorage.setItem('access_token', data.access_token);
 
         await refreshUser();
 
-        navigate("/app/chat");
+        navigate('/app/chat');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setStatus("failed");
+      setStatus('failed');
     } finally {
       setLoading(false);
     }
   }
 
   const handleGoogleLogin = () => {
-     window.location.href = 'http://localhost:3000/auth/google';
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   return (
-    <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>{t("auth.login")}</h1>
-      <p>{t("auth.description")}</p>
+    <main
+      style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}
+    >
+      <h1>{t('auth.login')}</h1>
+      <p>{t('auth.description')}</p>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label>
-          <div>{t("auth.email")}</div>
+          <div>{t('auth.email')}</div>
           <input
             type="text"
             required
             placeholder="user@example.com"
             value={form.email}
-            onChange={(event) => setForm({ ...form, email: event.target.value })}
-            style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
+            onChange={(event) =>
+              setForm({ ...form, email: event.target.value })
+            }
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              boxSizing: 'border-box',
+            }}
           />
         </label>
 
         <label>
-          <div>{t("auth.password")}</div>
+          <div>{t('auth.password')}</div>
           <input
             type="password"
             required
             value={form.password ?? ''}
-            onChange={(event) => setForm({ ...form, password: event.target.value })}
-            style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
+            onChange={(event) =>
+              setForm({ ...form, password: event.target.value })
+            }
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              boxSizing: 'border-box',
+            }}
           />
         </label>
 
@@ -104,12 +115,28 @@ export function LoginPage() {
             borderRadius: '4px',
           }}
         >
-          {loading ? t("auth.submitting") : t("auth.login")}
+          {loading ? t('auth.submitting') : t('auth.login')}
         </button>
       </form>
 
-      <div style={{ margin: '1.5rem 0', textAlign: 'center', borderBottom: '1px solid #ddd', lineHeight: '0.1em' }}>
-        <span style={{ background: '#fff', padding: '0 10px', color: '#777', fontSize: '0.85rem' }}>OR</span>
+      <div
+        style={{
+          margin: '1.5rem 0',
+          textAlign: 'center',
+          borderBottom: '1px solid #ddd',
+          lineHeight: '0.1em',
+        }}
+      >
+        <span
+          style={{
+            background: '#fff',
+            padding: '0 10px',
+            color: '#777',
+            fontSize: '0.85rem',
+          }}
+        >
+          OR
+        </span>
       </div>
 
       <button
@@ -154,13 +181,23 @@ export function LoginPage() {
       </button>
 
       {status !== 'idle' ? (
-        <p style={{ marginTop: '1rem', color: status === 'failed' ? 'red' : 'inherit' }}>
+        <p
+          style={{
+            marginTop: '1rem',
+            color: status === 'failed' ? 'red' : 'inherit',
+          }}
+        >
           {t(`auth.status.${status}`)}
         </p>
       ) : null}
 
-      <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>
-        {t("auth.noAccount")}? <Link to="/register" style={{ color: '#0070f3' }}>{t("auth.register")}</Link>
+      <div
+        style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}
+      >
+        {t('auth.noAccount')}?{' '}
+        <Link to="/register" style={{ color: '#0070f3' }}>
+          {t('auth.register')}
+        </Link>
       </div>
     </main>
   );

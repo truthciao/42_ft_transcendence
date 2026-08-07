@@ -1,16 +1,21 @@
-import { httpDelete, httpGet, httpPost } from "../lib/http";
-import type { Friend, PendingRequest, SendFriendRequestDto, MessageResponse } from "@repo/shared-types";
+import { httpDelete, httpGet, httpPost } from '../lib/http';
+import type {
+  Friend,
+  PendingRequest,
+  SendFriendRequestDto,
+  MessageResponse,
+} from '@repo/shared-types';
 
 export function getFriends() {
-  return httpGet<Friend[]>("/friends");
+  return httpGet<Friend[]>('/friends');
 }
 
 export function getPendingRequests() {
-  return httpGet<PendingRequest[]>("/friends/requests");
+  return httpGet<PendingRequest[]>('/friends/requests');
 }
 
 export function sendFriendRequest(data: SendFriendRequestDto) {
-  return httpPost("/friends/requests", data);
+  return httpPost('/friends/requests', data);
 }
 
 export function acceptFriendRequest(requestId: number) {
@@ -18,9 +23,7 @@ export function acceptFriendRequest(requestId: number) {
 }
 
 export function rejectFriendRequest(requestId: number) {
-  return httpPost<MessageResponse>(
-    `/friends/requests/${requestId}/reject`,
-  );
+  return httpPost<MessageResponse>(`/friends/requests/${requestId}/reject`);
 }
 
 export function removeFriend(userId: number) {

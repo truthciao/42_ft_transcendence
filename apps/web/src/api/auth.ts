@@ -1,4 +1,5 @@
 import { httpPost } from '../lib/http';
+
 export interface RegisterPayload {
   email: string;
   username: string;

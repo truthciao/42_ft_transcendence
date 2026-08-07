@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type ProfilePayload } from '../api/profile';
+import type { ProfilePayload } from '@repo/shared-types';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
 
 export function ProfilePage() {

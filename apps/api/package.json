@@ -83,6 +83,7 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
+    "resolver": "<rootDir>/../jest.resolver.cjs",
     "transform": {
       "^.+\\.[tj]s$": [
         "ts-jest",
@@ -95,9 +96,6 @@
       "node_modules/.pnpm/(?!(?:@scure\\+base|@noble\\+hashes|@otplib\\+plugin-base32-scure|@otplib\\+plugin-crypto-noble|otplib)@)",
       "node_modules/(?!.pnpm|@scure/base|@noble/hashes|@otplib/plugin-base32-scure|@otplib/plugin-crypto-noble|otplib)"
     ],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
     "testEnvironment": "node"
   }
 }

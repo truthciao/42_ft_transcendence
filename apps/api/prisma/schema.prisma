@@ -4,7 +4,7 @@ generator client {
   moduleFormat = "cjs"
   engineType   = "binary"
   generatedFileExtension = "ts"
-  importFileExtension    = "ts"
+  importFileExtension    = "js"
 }
 
 datasource db {

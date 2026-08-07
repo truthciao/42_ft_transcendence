@@ -84,6 +84,7 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
+    "resolver": "<rootDir>/../jest.resolver.cjs",
     "transform": {
       "^.+\\.[tj]s$": [
         "ts-jest",

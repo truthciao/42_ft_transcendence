@@ -7,13 +7,13 @@ export type {
 export type {
   Friend,
   PendingRequest,
-//   SendFriendRequestDto,
-//   MessageResponse,
+  SendFriendRequestDto,
+  MessageResponse,
 } from './friends';
 
 export type {
   ProfilePayload,
-//   ProfileResponse,
+  ProfileResponse,
 } from './profile';
 
 export type {

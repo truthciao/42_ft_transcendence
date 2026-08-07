@@ -4,6 +4,14 @@ export interface Friend {
   email: string;
 }
 
+export interface SendFriendRequestDto {
+  addresseeId: number;
+}
+
+export interface MessageResponse {
+  message: string;
+}
+
 export interface PendingRequest {
   id: number;
   requesterId: number;

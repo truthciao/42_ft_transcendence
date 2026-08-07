@@ -5,7 +5,7 @@ export interface ProfilePayload {
   preferredLanguage?: string;
 }
 
-interface ProfileResponse extends ProfilePayload {
+export interface ProfileResponse extends ProfilePayload {
   user?: {
     username: string;
     email: string;

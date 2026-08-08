@@ -1,11 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import type { LoginPayload } from '@repo/shared-types';
+import { createZodDto } from 'nestjs-zod';
+import { loginSchema } from '@repo/shared-types';
 
-export class LoginDto implements LoginPayload {
-  @IsEmail({}, { message: 'email must be a valid email address' })
-  email!: string;
-
-  @IsString({ message: 'password must be a string' })
-  @IsNotEmpty({ message: 'password is required' })
-  password!: string;
-}
+export class LoginDto extends createZodDto(loginSchema) {}

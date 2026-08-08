@@ -1,4 +1,23 @@
-export type { RegisterPayload, LoginPayload, AuthResponse } from './auth.js';
+export {
+  registerSchema,
+  loginSchema,
+  authUserSchema,
+  authResponseSchema,
+} from './auth.js';
+
+export type {
+  RegisterPayload,
+  LoginPayload,
+  AuthUser,
+  AuthResponse,
+} from './auth.js';
+
+export {
+  friendSchema,
+  sendFriendRequestSchema,
+  messageResponseSchema,
+  pendingRequestSchema,
+} from './friends.js';
 
 export type {
   Friend,
@@ -7,6 +26,15 @@ export type {
   MessageResponse,
 } from './friends.js';
 
-export type { ProfilePayload, ProfileResponse } from './profile.js';
+export {
+  updateProfileSchema,
+  profileResponseSchema,
+} from './profile.js';
 
+export type {
+  UpdateProfilePayload,
+  ProfileResponse,
+} from './profile.js';
+
+export { userSchema } from './users.js';
 export type { User } from './users.js';

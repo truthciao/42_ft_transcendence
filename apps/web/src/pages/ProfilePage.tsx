@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { ProfilePayload } from '@repo/shared-types';
+import type { UpdateProfilePayload } from '@repo/shared-types';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
 
 export function ProfilePage() {
@@ -9,11 +9,11 @@ export function ProfilePage() {
 
   const { data: profile, isLoading, isError } = useProfile();
 
-  const [form, setForm] = useState<ProfilePayload>({
+  const [form, setForm] = useState<UpdateProfilePayload>({
     displayName: '',
     bio: '',
     avatarUrl: '',
-    preferredLanguage: '',
+    preferredLanguage: undefined,
   });
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function ProfilePage() {
       displayName: profile.displayName ?? '',
       bio: profile.bio ?? '',
       avatarUrl: profile.avatarUrl ?? '',
-      preferredLanguage: profile.preferredLanguage ?? i18n.language,
+      preferredLanguage: undefined,
     });
 
     if (
@@ -215,7 +215,7 @@ export function ProfilePage() {
 
               setForm({
                 ...form,
-                preferredLanguage: language,
+                preferredLanguage: undefined,
               });
 
               void i18n.changeLanguage(language);

@@ -1,21 +1,28 @@
-export interface RegisterPayload {
-  email: string;
-  username: string;
-  password?: string;
-}
+import { z } from 'zod';
 
-export interface LoginPayload {
-  email: string;
-  password?: string;
-}
+export const registerSchema = z.object({
+  email: z.string().email(),
+  username: z.string(),
+  password: z.string(),
+});
 
-export interface AuthUser {
-  id: number;
-  email: string;
-  username: string;
-}
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 
-export interface AuthResponse {
-  access_token: string;
-  user?: AuthUser;
-}
+export const authUserSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  username: z.string(),
+});
+
+export const authResponseSchema = z.object({
+  access_token: z.string(),
+  user: authUserSchema.optional(),
+});
+
+export type RegisterPayload = z.infer<typeof registerSchema>;
+export type LoginPayload = z.infer<typeof loginSchema>;
+export type AuthUser = z.infer<typeof authUserSchema>;
+export type AuthResponse = z.infer<typeof authResponseSchema>;

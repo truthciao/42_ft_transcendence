@@ -7,13 +7,12 @@
     "^.+\\.ts$": [
       "ts-jest",
       {
-        "tsconfig": "<rootDir>/test/tsconfig.spec.json",
-        "useESM": false
+        "tsconfig": "test/tsconfig.spec.json"
       }
     ]
   },
   "moduleNameMapper": {
-    "^@repo/shared-types$": "<rootDir>/../../packages/shared-types/src/index.ts",
+    "^@repo/shared-types$": "<rootDir>/../packages/shared-types/src/index.ts",
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
 }

@@ -81,6 +81,9 @@ jobs:
             sleep 15
           done
 
+      - name: Build shared types
+        run: pnpm --filter @repo/shared-types build
+
       - name: Generate Prisma Client
         run: pnpm --filter api exec prisma generate
 
@@ -190,6 +193,9 @@ jobs:
             echo "Install failed; retrying with the existing pnpm store..."
             sleep 15
           done
+
+      - name: Build shared types
+        run: pnpm --filter @repo/shared-types build
 
       - name: Generate Prisma Client
         run: pnpm --dir apps/api exec prisma generate

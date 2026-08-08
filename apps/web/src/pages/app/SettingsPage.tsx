@@ -1,17 +1,34 @@
 import { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react'; // Import QR code rendering library
+import { NavLink } from 'react-router';
 
 export function SettingsSidebar() {
   return (
-    <div className="p-4">
-      <h3 className="font-semibold mb-4">Settings</h3>
-      <div className="space-y-2">
-        <div className="p-2 rounded hover:bg-muted cursor-pointer">Profile</div>
-        <div className="p-2 rounded hover:bg-muted cursor-pointer">Account</div>
-        <div className="p-2 rounded hover:bg-muted cursor-pointer">
+    <div>
+      <h3 className="mb-4 font-semibold">Settings</h3>
+
+      <nav className="flex flex-col gap-1">
+        <NavLink
+          to="/app/settings/profile"
+          className="rounded-md px-2 py-1.5"
+        >
+          Profile
+        </NavLink>
+
+        <NavLink
+          to="/app/settings/account"
+          className="rounded-md px-2 py-1.5"
+        >
+          Account
+        </NavLink>
+
+        <NavLink
+          to="/app/settings/notifications"
+          className="rounded-md px-2 py-1.5"
+        >
           Notifications
-        </div>
-      </div>
+        </NavLink>
+      </nav>
     </div>
   );
 }

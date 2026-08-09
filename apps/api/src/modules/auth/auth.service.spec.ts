@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BadRequestException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jest } from '@jest/globals';
 import * as bcrypt from 'bcrypt';
@@ -116,9 +113,7 @@ describe('AuthService', () => {
         username: 'testuser',
       };
 
-      await expect(service.register(dto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.register(dto)).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -145,10 +140,7 @@ describe('AuthService', () => {
 
       const result = await service.login(dto);
 
-      expect(result).toHaveProperty(
-        'access_token',
-        'mocked_jwt_token',
-      );
+      expect(result).toHaveProperty('access_token', 'mocked_jwt_token');
 
       expect(result.user).toEqual({
         id: 1,
@@ -165,9 +157,7 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      await expect(service.login(dto)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException for invalid password', async () => {
@@ -188,9 +178,7 @@ describe('AuthService', () => {
         password: 'WRONG_PASSWORD',
       };
 
-      await expect(service.login(dto)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

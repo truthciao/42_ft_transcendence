@@ -32,23 +32,13 @@ type MockMessage = {
 
 type ChatPrismaMock = {
   user: {
-    findUnique: jest.Mock<
-      (args: unknown) => Promise<MockUser | null>
-    >;
+    findUnique: jest.Mock<(args: unknown) => Promise<MockUser | null>>;
   };
   conversation: {
-    findFirst: jest.Mock<
-      (args: unknown) => Promise<MockConversation | null>
-    >;
-    create: jest.Mock<
-      (args: unknown) => Promise<MockConversation>
-    >;
-    findMany: jest.Mock<
-      (args: unknown) => Promise<MockConversation[]>
-    >;
-    update: jest.Mock<
-      (args: unknown) => Promise<MockConversation>
-    >;
+    findFirst: jest.Mock<(args: unknown) => Promise<MockConversation | null>>;
+    create: jest.Mock<(args: unknown) => Promise<MockConversation>>;
+    findMany: jest.Mock<(args: unknown) => Promise<MockConversation[]>>;
+    update: jest.Mock<(args: unknown) => Promise<MockConversation>>;
   };
   conversationMember: {
     findUnique: jest.Mock<
@@ -56,12 +46,8 @@ type ChatPrismaMock = {
     >;
   };
   message: {
-    findMany: jest.Mock<
-      (args: unknown) => Promise<MockMessage[]>
-    >;
-    create: jest.Mock<
-      (args: unknown) => Promise<MockMessage>
-    >;
+    findMany: jest.Mock<(args: unknown) => Promise<MockMessage[]>>;
+    create: jest.Mock<(args: unknown) => Promise<MockMessage>>;
   };
 };
 
@@ -89,24 +75,22 @@ describe('ChatService', () => {
       },
     };
 
-    service = new ChatService(
-      prisma as unknown as PrismaService,
-    );
+    service = new ChatService(prisma as unknown as PrismaService);
   });
 
   describe('createDirectConversation', () => {
     it('rejects starting a conversation with yourself', async () => {
-      await expect(
-        service.createDirectConversation(1, 1),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.createDirectConversation(1, 1)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('throws when the target user does not exist', async () => {
       prisma.user.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.createDirectConversation(1, 2),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.createDirectConversation(1, 2)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('returns the existing direct conversation if one already exists', async () => {
@@ -160,9 +144,9 @@ describe('ChatService', () => {
     it('rejects senders who are not a member of the conversation', async () => {
       prisma.conversationMember.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.createMessage(1, 5, 'hi'),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.createMessage(1, 5, 'hi')).rejects.toThrow(
+        ForbiddenException,
+      );
 
       expect(prisma.message.create).not.toHaveBeenCalled();
     });
@@ -180,11 +164,7 @@ describe('ChatService', () => {
         content: 'hi',
       });
 
-      const message = await service.createMessage(
-        1,
-        5,
-        'hi',
-      );
+      const message = await service.createMessage(1, 5, 'hi');
 
       expect(message).toMatchObject({
         id: 100,

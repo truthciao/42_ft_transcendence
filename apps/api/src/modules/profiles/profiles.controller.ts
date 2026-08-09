@@ -7,10 +7,10 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { ProfilesService } from './profiles.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UpdateProfileDto } from './dto/update-profile.dto.js';
+import { ProfilesService } from './profiles.service.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profiles')

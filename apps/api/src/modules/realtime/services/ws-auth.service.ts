@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 import type { Socket } from 'socket.io';
-import { PrismaService } from '../../../prisma/prisma.service';
-import type { AuthenticatedUser } from '../../auth/interfaces/authenticated-user.interface';
-import type { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import type { AuthenticatedUser } from '../../auth/interfaces/authenticated-user.interface.js';
+import type { JwtPayload } from '../../auth/interfaces/jwt-payload.interface.js';
 
 @Injectable()
 export class WsAuthService {

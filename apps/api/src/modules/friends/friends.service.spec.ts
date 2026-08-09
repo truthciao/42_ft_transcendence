@@ -4,9 +4,9 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { FriendshipStatus } from '../../generated/prisma/client';
-import { FriendsService } from './friends.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { FriendshipStatus } from '../../generated/prisma/client.js';
+import { FriendsService } from './friends.service.js';
 
 describe('FriendsService', () => {
   let service: FriendsService;

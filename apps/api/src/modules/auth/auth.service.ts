@@ -4,12 +4,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../users/users.service.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+import { RegisterDto } from './dto/register.dto.js';
+import { LoginDto } from './dto/login.dto.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 import { generateSecret, verify, generateURI } from 'otplib';
 

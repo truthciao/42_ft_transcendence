@@ -11,16 +11,16 @@ import {
 } from '@nestjs/websockets';
 import type { WsResponse } from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
-import { ALLOWED_ORIGINS } from '../../../config/cors.config';
-import { JoinRoomDto } from '../dto/join-room.dto';
-import { LeaveRoomDto } from '../dto/leave-room.dto';
-import { WsJwtGuard } from '../guards/ws-jwt.guard';
-import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface';
-import { REALTIME_EVENTS } from '../realtime.constants';
-import { RealtimeRoomService } from '../services/realtime-room.service';
-import { SocketRegistryService } from '../services/ws-registry.service';
-import { WsAuthService } from '../services/ws-auth.service';
-import { getUserRoom } from '../utils/room-naming.util';
+import { ALLOWED_ORIGINS } from '../../../config/cors.config.js';
+import { JoinRoomDto } from '../dto/join-room.dto.js';
+import { LeaveRoomDto } from '../dto/leave-room.dto.js';
+import { WsJwtGuard } from '../guards/ws-jwt.guard.js';
+import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface.js';
+import { REALTIME_EVENTS } from '../realtime.constants.js';
+import { RealtimeRoomService } from '../services/realtime-room.service.js';
+import { SocketRegistryService } from '../services/ws-registry.service.js';
+import { WsAuthService } from '../services/ws-auth.service.js';
+import { getUserRoom } from '../utils/room-naming.util.js';
 
 @WebSocketGateway({
   cors: {

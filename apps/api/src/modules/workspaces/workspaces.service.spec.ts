@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { WorkspaceRole } from '../../generated/prisma/client';
-import { WorkspacesService } from './workspaces.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { WorkspaceRole } from '../../generated/prisma/client.js';
+import { WorkspacesService } from './workspaces.service.js';
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;

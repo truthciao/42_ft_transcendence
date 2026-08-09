@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { ConversationType } from '../../generated/prisma/enums';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { ConversationType } from '../../generated/prisma/enums.js';
 
 @Injectable()
 export class ChatService {

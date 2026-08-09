@@ -8,10 +8,10 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { SendFriendRequestDto } from './dto/send-friend-request.dto';
-import { FriendsService } from './friends.service';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { SendFriendRequestDto } from './dto/send-friend-request.dto.js';
+import { FriendsService } from './friends.service.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('friends')

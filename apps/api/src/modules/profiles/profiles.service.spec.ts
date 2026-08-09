@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
-import { ProfilesService } from './profiles.service';
-import { PrismaService } from '../../prisma/prisma.service';
+import { ProfilesService } from './profiles.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 describe('ProfilesService', () => {
   let service: ProfilesService;

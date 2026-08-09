@@ -1,5 +1,5 @@
-import { PrismaService } from '../../prisma/prisma.service';
-import { UsersService } from './users.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { UsersService } from './users.service.js';
 
 type UserWithProfile = {
   id: number;

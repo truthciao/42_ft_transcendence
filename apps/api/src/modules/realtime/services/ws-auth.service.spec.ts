@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 import type { Socket } from 'socket.io';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { WsAuthService } from './ws-auth.service';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import { WsAuthService } from './ws-auth.service.js';
 
 function createSocket(overrides: Partial<Socket['handshake']> = {}): Socket {
   return {

@@ -1,38 +1,65 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
+import {
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { jest } from '@jest/globals';
+import * as bcrypt from 'bcrypt';
+
 import { AuthService } from './auth.service.js';
 import { UsersService } from '../users/users.service.js';
-import { JwtService } from '@nestjs/jwt';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { PrismaService } from '../../prisma/prisma.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { jest } from '@jest/globals';
+
+type UsersServiceMock = {
+  findByEmail: jest.MockedFunction<UsersService['findByEmail']>;
+  findByUsername: jest.MockedFunction<UsersService['findByUsername']>;
+  createUser: jest.MockedFunction<UsersService['createUser']>;
+  findById: jest.MockedFunction<UsersService['findById']>;
+  updateTwoFactorSecret: jest.MockedFunction<
+    UsersService['updateTwoFactorSecret']
+  >;
+  enableTwoFactor: jest.MockedFunction<UsersService['enableTwoFactor']>;
+};
+
+type JwtServiceMock = {
+  sign: jest.Mock<(payload: object) => string>;
+  signAsync: jest.Mock<(payload: object) => Promise<string>>;
+};
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersServiceMock: any;
-  let jwtServiceMock: any;
+  let usersServiceMock: UsersServiceMock;
+  let jwtServiceMock: JwtServiceMock;
 
   beforeEach(async () => {
-    // 1. Mock 伪造 UsersService 句柄（对齐重构后的 AuthService 依赖）
     usersServiceMock = {
       findByEmail: jest.fn(),
       findByUsername: jest.fn(),
       createUser: jest.fn(),
+      findById: jest.fn(),
+      updateTwoFactorSecret: jest.fn(),
+      enableTwoFactor: jest.fn(),
     };
 
-    // 2. Mock 伪造 JwtService 句柄
     jwtServiceMock = {
-      signAsync: jest.fn().mockResolvedValue('mocked_jwt_token'),
+      sign: jest.fn(),
+      signAsync: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: UsersService, useValue: usersServiceMock },
-        { provide: JwtService, useValue: jwtServiceMock },
+        {
+          provide: UsersService,
+          useValue: usersServiceMock,
+        },
+        {
+          provide: JwtService,
+          useValue: jwtServiceMock,
+        },
         {
           provide: PrismaService,
           useValue: {},
@@ -45,16 +72,14 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should successfully register a new user', async () => {
-      // 伪造 UsersService 查重返回 null
       usersServiceMock.findByEmail.mockResolvedValue(null);
       usersServiceMock.findByUsername.mockResolvedValue(null);
 
-      // 伪造 createUser 返回连带落盘结果
       usersServiceMock.createUser.mockResolvedValue({
         id: 1,
         email: 'test@42.fr',
         username: 'testuser',
-      });
+      } as Awaited<ReturnType<UsersService['createUser']>>);
 
       const dto: RegisterDto = {
         email: 'test@42.fr',
@@ -68,12 +93,21 @@ describe('AuthService', () => {
         message: 'User registered successfully',
         userId: 1,
       });
+
       expect(usersServiceMock.createUser).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if email or username already exists', async () => {
-      // 假装查找到了重复邮箱
-      usersServiceMock.findByEmail.mockResolvedValue({ id: 1 });
+      usersServiceMock.findByEmail.mockResolvedValue({
+        id: 1,
+        email: 'test@42.fr',
+        username: 'existing',
+        passwordHash: null,
+        profile: null,
+        twoFactorSecret: null,
+        isTwoFactorEnabled: false,
+      });
+
       usersServiceMock.findByUsername.mockResolvedValue(null);
 
       const dto: RegisterDto = {
@@ -82,7 +116,9 @@ describe('AuthService', () => {
         username: 'testuser',
       };
 
-      await expect(service.register(dto)).rejects.toThrow(BadRequestException);
+      await expect(service.register(dto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -95,7 +131,12 @@ describe('AuthService', () => {
         email: 'test@42.fr',
         username: 'testuser',
         passwordHash: hashedPassword,
+        profile: null,
+        twoFactorSecret: null,
+        isTwoFactorEnabled: false,
       });
+
+      jwtServiceMock.signAsync.mockResolvedValue('mocked_jwt_token');
 
       const dto: LoginDto = {
         email: 'test@42.fr',
@@ -104,7 +145,11 @@ describe('AuthService', () => {
 
       const result = await service.login(dto);
 
-      expect(result).toHaveProperty('access_token', 'mocked_jwt_token');
+      expect(result).toHaveProperty(
+        'access_token',
+        'mocked_jwt_token',
+      );
+
       expect(result.user).toEqual({
         id: 1,
         email: 'test@42.fr',
@@ -120,15 +165,22 @@ describe('AuthService', () => {
         password: 'password123',
       };
 
-      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException for invalid password', async () => {
       const hashedPassword = await bcrypt.hash('password123', 10);
+
       usersServiceMock.findByEmail.mockResolvedValue({
         id: 1,
         email: 'test@42.fr',
+        username: 'testuser',
         passwordHash: hashedPassword,
+        profile: null,
+        twoFactorSecret: null,
+        isTwoFactorEnabled: false,
       });
 
       const dto: LoginDto = {
@@ -136,7 +188,9 @@ describe('AuthService', () => {
         password: 'WRONG_PASSWORD',
       };
 
-      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

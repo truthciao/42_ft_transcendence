@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { jest } from '@jest/globals';
 
 describe('AuthService', () => {
   let service: AuthService;

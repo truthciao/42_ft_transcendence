@@ -4,9 +4,10 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { ConversationType } from '../../generated/prisma/client';
-import { ChatService } from './chat.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { ConversationType } from '../../generated/prisma/client.js';
+import { ChatService } from './chat.service.js';
+import { jest } from '@jest/globals';
 
 describe('ChatService', () => {
   let service: ChatService;

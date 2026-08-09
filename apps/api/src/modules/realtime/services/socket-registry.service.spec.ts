@@ -1,4 +1,4 @@
-import { SocketRegistryService } from './ws-registry.service';
+import { SocketRegistryService } from './ws-registry.service.js';
 
 describe('SocketRegistryService', () => {
   let service: SocketRegistryService;

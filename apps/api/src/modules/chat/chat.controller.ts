@@ -7,10 +7,10 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ChatService } from './chat.service';
-import { CreateConversationDto } from './dto/create-conversation.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { ChatService } from './chat.service.js';
+import { CreateConversationDto } from './dto/create-conversation.dto.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('chat')

@@ -5,13 +5,13 @@ import {
   Injectable,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { WorkspaceRole } from '../../../generated/prisma/enums';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import { WorkspaceRole } from '../../../generated/prisma/enums.js';
 import {
   findMembershipOrThrow,
   getCurrentUserId,
   parseWorkspaceId,
-} from './workspace-guard.utils';
+} from './workspace-guard.utils.js';
 
 @Injectable()
 export class WorkspaceOwnerGuard implements CanActivate {

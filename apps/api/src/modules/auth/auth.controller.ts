@@ -9,13 +9,13 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth.service.js';
 import { AuthGuard } from '@nestjs/passport';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto.js';
+import { LoginDto } from './dto/login.dto.js';
 import { type Response } from 'express';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { UsersService } from '../users/users.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { UsersService } from '../users/users.service.js';
 
 interface AuthenticateUser {
   id: number;

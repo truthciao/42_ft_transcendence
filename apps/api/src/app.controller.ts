@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { TestDto } from './app.dto';
+import { TestDto } from './app.dto.js';
 
 @Controller()
 export class AppController {

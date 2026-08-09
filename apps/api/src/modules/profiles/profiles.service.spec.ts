@@ -1,30 +1,29 @@
 import { NotFoundException } from '@nestjs/common';
-import { ProfilesService } from './profiles.service';
-import { PrismaService } from '../../prisma/prisma.service';
+import { ProfilesService } from './profiles.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { jest } from '@jest/globals';
+
+type MockProfile = {
+  id: number;
+  userId: number;
+  displayName: string;
+  bio: string | null;
+};
 
 describe('ProfilesService', () => {
   let service: ProfilesService;
 
-  let prisma: {
+  const prisma = {
     profile: {
-      findUnique: jest.Mock;
-      update: jest.Mock;
-    };
+      findUnique: jest.fn<() => Promise<MockProfile | null>>(),
+      update: jest.fn<() => Promise<MockProfile>>(),
+    },
   };
 
   beforeEach(() => {
-    prisma = {
-      profile: {
-        findUnique: jest.fn(),
-        update: jest.fn(),
-      },
-    };
+    jest.clearAllMocks();
 
     service = new ProfilesService(prisma as unknown as PrismaService);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it('returns the current user profile when it exists', async () => {

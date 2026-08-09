@@ -1,46 +1,72 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { WorkspaceRole } from '../../generated/prisma/client';
-import { WorkspacesService } from './workspaces.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { WorkspaceRole } from '../../generated/prisma/client.js';
+import { WorkspacesService } from './workspaces.service.js';
+import { jest } from '@jest/globals';
+
+type MockWorkspace = {
+  id: number;
+  name?: string;
+  members?: unknown[];
+};
+
+type MockWorkspaceMember = {
+  workspaceId: number;
+  userId: number;
+  role: WorkspaceRole;
+};
+
+type MockUser = {
+  id: number;
+};
+
+const createWorkspace = jest.fn<() => Promise<MockWorkspace>>();
+
+const findManyWorkspace = jest.fn<() => Promise<MockWorkspace[]>>();
+
+const findUniqueWorkspace = jest.fn<() => Promise<MockWorkspace | null>>();
+
+const updateWorkspace = jest.fn<() => Promise<MockWorkspace>>();
+
+const deleteWorkspace = jest.fn<() => Promise<unknown>>();
+
+const findUniqueWorkspaceMember =
+  jest.fn<() => Promise<MockWorkspaceMember | null>>();
+
+const createWorkspaceMember = jest.fn<() => Promise<MockWorkspaceMember>>();
+
+const updateWorkspaceMember = jest.fn<() => Promise<MockWorkspaceMember>>();
+
+const deleteWorkspaceMember = jest.fn<() => Promise<unknown>>();
+
+const countWorkspaceMember = jest.fn<() => Promise<number>>();
+
+const findUniqueUser = jest.fn<() => Promise<MockUser | null>>();
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
-  let prisma: {
+  const prisma = {
     workspace: {
-      create: jest.Mock;
-      findMany: jest.Mock;
-      findUnique: jest.Mock;
-      update: jest.Mock;
-      delete: jest.Mock;
-    };
+      create: createWorkspace,
+      findMany: findManyWorkspace,
+      findUnique: findUniqueWorkspace,
+      update: updateWorkspace,
+      delete: deleteWorkspace,
+    },
     workspaceMember: {
-      findUnique: jest.Mock;
-      create: jest.Mock;
-      update: jest.Mock;
-      delete: jest.Mock;
-      count: jest.Mock;
-    };
-    user: { findUnique: jest.Mock };
+      findUnique: findUniqueWorkspaceMember,
+      create: createWorkspaceMember,
+      update: updateWorkspaceMember,
+      delete: deleteWorkspaceMember,
+      count: countWorkspaceMember,
+    },
+    user: {
+      findUnique: findUniqueUser,
+    },
   };
 
   beforeEach(() => {
-    prisma = {
-      workspace: {
-        create: jest.fn(),
-        findMany: jest.fn(),
-        findUnique: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-      workspaceMember: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-        count: jest.fn(),
-      },
-      user: { findUnique: jest.fn() },
-    };
+    jest.clearAllMocks();
 
     service = new WorkspacesService(prisma as unknown as PrismaService);
   });
@@ -95,6 +121,7 @@ describe('WorkspacesService', () => {
       prisma.workspaceMember.findUnique.mockResolvedValue({
         workspaceId: 1,
         userId: 2,
+        role: WorkspaceRole.MEMBER,
       });
 
       await expect(service.inviteMember(1, 2)).rejects.toThrow(

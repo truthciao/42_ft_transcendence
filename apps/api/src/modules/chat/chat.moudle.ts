@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { RealtimeMoudule } from '../realtime/realtime.module';
-import { ChatController } from './chat.controller';
-import { ChatService } from './chat.service';
-import { ChatGateway } from './gateways/chat.gateway';
+import { RealtimeMoudule } from '../realtime/realtime.module.js';
+import { ChatController } from './chat.controller.js';
+import { ChatService } from './chat.service.js';
+import { ChatGateway } from './gateways/chat.gateway.js';
 
 @Module({
   imports: [RealtimeMoudule],

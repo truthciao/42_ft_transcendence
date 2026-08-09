@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface';
-import { WsAuthService } from '../services/ws-auth.service';
+import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface.js';
+import { WsAuthService } from '../services/ws-auth.service.js';
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {

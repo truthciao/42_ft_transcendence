@@ -23,9 +23,7 @@ describe('ProfilesService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    service = new ProfilesService(
-      prisma as unknown as PrismaService,
-    );
+    service = new ProfilesService(prisma as unknown as PrismaService);
   });
 
   it('returns the current user profile when it exists', async () => {
@@ -110,9 +108,7 @@ describe('ProfilesService', () => {
       bio: null,
     });
 
-    await expect(
-      service.findProfileByUserId(2),
-    ).resolves.toMatchObject({
+    await expect(service.findProfileByUserId(2)).resolves.toMatchObject({
       userId: 2,
       displayName: 'Bob',
     });

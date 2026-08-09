@@ -5,7 +5,6 @@ import { PrismaService } from '../../../prisma/prisma.service.js';
 import { WsAuthService } from './ws-auth.service.js';
 import { jest } from '@jest/globals';
 
-
 type MockJwtPayload = {
   sub: number;
   email: string;
@@ -19,22 +18,16 @@ type MockUser = {
 };
 
 const jwtService = {
-  verifyAsync: jest.fn<
-    () => Promise<MockJwtPayload>
-  >(),
+  verifyAsync: jest.fn<() => Promise<MockJwtPayload>>(),
 };
 
 const prisma = {
   user: {
-    findUnique: jest.fn<
-      () => Promise<MockUser | null>
-    >(),
+    findUnique: jest.fn<() => Promise<MockUser | null>>(),
   },
 };
 
-function createSocket(
-  overrides: Partial<Socket['handshake']> = {},
-): Socket {
+function createSocket(overrides: Partial<Socket['handshake']> = {}): Socket {
   return {
     handshake: {
       auth: {},

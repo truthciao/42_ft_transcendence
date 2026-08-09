@@ -38,33 +38,19 @@ type UpdatedFriendship = {
   status: FriendshipStatus;
 };
 
-const findUniqueUser = jest.fn<
-  () => Promise<MockUser | null>
->();
+const findUniqueUser = jest.fn<() => Promise<MockUser | null>>();
 
-const findFirstFriendship = jest.fn<
-  () => Promise<MockFriendship | null>
->();
+const findFirstFriendship = jest.fn<() => Promise<MockFriendship | null>>();
 
-const findUniqueFriendship = jest.fn<
-  () => Promise<MockFriendship | null>
->();
+const findUniqueFriendship = jest.fn<() => Promise<MockFriendship | null>>();
 
-const findManyFriendships = jest.fn<
-  () => Promise<MockFriendshipWithUsers[]>
->();
+const findManyFriendships = jest.fn<() => Promise<MockFriendshipWithUsers[]>>();
 
-const createFriendship = jest.fn<
-  () => Promise<MockFriendship>
->();
+const createFriendship = jest.fn<() => Promise<MockFriendship>>();
 
-const updateFriendship = jest.fn<
-  () => Promise<UpdatedFriendship>
->();
+const updateFriendship = jest.fn<() => Promise<UpdatedFriendship>>();
 
-const deleteFriendship = jest.fn<
-  () => Promise<unknown>
->();
+const deleteFriendship = jest.fn<() => Promise<unknown>>();
 
 describe('FriendsService', () => {
   let service: FriendsService;

@@ -20,49 +20,28 @@ type MockUser = {
   id: number;
 };
 
-const createWorkspace = jest.fn<
-  () => Promise<MockWorkspace>
->();
+const createWorkspace = jest.fn<() => Promise<MockWorkspace>>();
 
-const findManyWorkspace = jest.fn<
-  () => Promise<MockWorkspace[]>
->();
+const findManyWorkspace = jest.fn<() => Promise<MockWorkspace[]>>();
 
-const findUniqueWorkspace = jest.fn<
-  () => Promise<MockWorkspace | null>
->();
+const findUniqueWorkspace = jest.fn<() => Promise<MockWorkspace | null>>();
 
-const updateWorkspace = jest.fn<
-  () => Promise<MockWorkspace>
->();
+const updateWorkspace = jest.fn<() => Promise<MockWorkspace>>();
 
-const deleteWorkspace = jest.fn<
-  () => Promise<unknown>
->();
+const deleteWorkspace = jest.fn<() => Promise<unknown>>();
 
-const findUniqueWorkspaceMember = jest.fn<
-  () => Promise<MockWorkspaceMember | null>
->();
+const findUniqueWorkspaceMember =
+  jest.fn<() => Promise<MockWorkspaceMember | null>>();
 
-const createWorkspaceMember = jest.fn<
-  () => Promise<MockWorkspaceMember>
->();
+const createWorkspaceMember = jest.fn<() => Promise<MockWorkspaceMember>>();
 
-const updateWorkspaceMember = jest.fn<
-  () => Promise<MockWorkspaceMember>
->();
+const updateWorkspaceMember = jest.fn<() => Promise<MockWorkspaceMember>>();
 
-const deleteWorkspaceMember = jest.fn<
-  () => Promise<unknown>
->();
+const deleteWorkspaceMember = jest.fn<() => Promise<unknown>>();
 
-const countWorkspaceMember = jest.fn<
-  () => Promise<number>
->();
+const countWorkspaceMember = jest.fn<() => Promise<number>>();
 
-const findUniqueUser = jest.fn<
-  () => Promise<MockUser | null>
->();
+const findUniqueUser = jest.fn<() => Promise<MockUser | null>>();
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;

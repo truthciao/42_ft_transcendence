@@ -10,9 +10,12 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -b --force"
   },
   "dependencies": {
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
   }
 }

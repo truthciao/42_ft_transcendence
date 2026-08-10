@@ -4,6 +4,7 @@
     "logout": "Déconnexion",
     "save": "Enregistrer",
     "cancel": "Annuler",
+    "confirm": "Confirmer",
     "delete": "Supprimer",
     "loading": "Chargement..."
   },
@@ -41,7 +42,6 @@
     "confirmPassword": "Confirmer le mot de passe",
     "status": {
       "updateSuccess": "Profil mis à jour avec succès !",
-      "loadError": "Échec du chargement du profil",
       "updateError": "Échec de la mise à jour du profil.",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "passwordUpdateSuccess": "Mot de passe mis à jour avec succès !",
@@ -69,5 +69,39 @@
     },
     "noAccount": "Aucun compte",
     "submitting": "Soumission en cours..."
+  },
+
+  "errors": {
+    "unexpectedTitle": "Une erreur est survenue",
+    "unexpectedMessage": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "routeTitle": "Erreur {{status}}",
+    "routeMessage": "Impossible de charger cette page.",
+    "retry": "Réessayer",
+    "backHome": "Retour à l'accueil"
+  },
+
+  "showcase": {
+    "title": "Bibliothèque de composants",
+    "description": "Un aperçu rapide des composants d'interface partagés.",
+    "emptyFriendsTitle": "Aucun ami pour l'instant",
+    "emptyFriendsDescription": "Lorsque vous ajouterez des amis, ils apparaîtront ici.",
+    "emptyFriendsAction": "Ajouter un ami",
+    "actionClicked": "Action déclenchée",
+    "toastSuccess": "Enregistré avec succès",
+    "toastError": "Une erreur est survenue",
+    "toastInfo": "Voici une information",
+    "triggerSuccess": "Afficher un toast de succès",
+    "triggerError": "Afficher un toast d'erreur",
+    "triggerInfo": "Afficher un toast d'information",
+    "triggerConfirm": "Supprimer un élément",
+    "confirmTitle": "Êtes-vous sûr ?",
+    "confirmDescription": "Cette action est irréversible.",
+    "confirmed": "Confirmé",
+    "cancelled": "Annulé",
+    "pageErrorTitle": "Titre d'aperçu d'erreur",
+    "pageErrorMessage": "Voici à quoi ressemble PageError.",
+    "retryClicked": "Réessai cliqué",
+    "showPreview": "Afficher l'aperçu de PageError",
+    "hidePreview": "Masquer l'aperçu de PageError"
   }
 }

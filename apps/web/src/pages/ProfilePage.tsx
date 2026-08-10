@@ -9,6 +9,7 @@ import { SkeletonText } from '@/components/common/Skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
+import { toast } from 'sonner';
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -42,7 +43,7 @@ export function ProfilePage() {
 
   const mutation = useUpdateProfile();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     mutation.mutate(form, {

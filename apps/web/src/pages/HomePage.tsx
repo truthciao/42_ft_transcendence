@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 export function HomePage() {
@@ -10,12 +9,6 @@ export function HomePage() {
 
       <p className="mt-2 text-gray-600">{t('home.welcome')}</p>
 
-      <Link
-        to="/profile"
-        className="mt-4 inline-block text-blue-600 hover:underline"
-      >
-        {t('home.profile')}
-      </Link>
     </main>
   );
 }

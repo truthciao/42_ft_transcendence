@@ -26,8 +26,8 @@ export function Navbar() {
           Register
         </NavLink>
 
-        <NavLink to="/profile" className={getNavLinkClass}>
-          Profile
+        <NavLink to="/showcase" className={getNavLinkClass}>
+          Showcase
         </NavLink>
 
         <div style={{ marginLeft: 'auto' }}>

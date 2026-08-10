@@ -35,6 +35,8 @@ import {
   NotificationSettingsPage,
 } from '@/pages/app/SettingsPage';
 import { InvitePage } from '@/pages/app/InvitePage';
+import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
+import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 
 function workspaceLoader({ params }: LoaderFunctionArgs) {
   return { workspaceId: params.workspaceId };
@@ -43,6 +45,7 @@ function workspaceLoader({ params }: LoaderFunctionArgs) {
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         path: '/',
@@ -57,13 +60,8 @@ export const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: '/profile',
-            element: <ProfilePage />,
-          },
-        ],
+        path: '/showcase',
+        element: <ComponentShowcasePage />,
       },
     ],
   },
@@ -73,6 +71,7 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
+        errorElement: <RouteErrorBoundary />,
         children: [
           { index: true, element: <Navigate to="/app/chat" replace /> },
           {

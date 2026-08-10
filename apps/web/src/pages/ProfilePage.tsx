@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { UpdateProfilePayload } from '@repo/shared-types';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
+import { toast } from 'sonner';
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -36,9 +37,16 @@ export function ProfilePage() {
 
   const mutation = useUpdateProfile();
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    mutation.mutate(form);
+    mutation.mutate(form, {
+      onSuccess: () => {
+        toast.success(t('profile.status.updateSuccess'));
+      },
+      onError: () => {
+        toast.error(t('profile.status.updateError'))
+      }
+    });
   }
 
   if (isLoading) {

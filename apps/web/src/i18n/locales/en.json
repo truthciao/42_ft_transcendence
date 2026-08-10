@@ -4,6 +4,7 @@
     "logout": "Logout",
     "save": "Save",
     "cancel": "Cancel",
+    "confirm": "Confirm",
     "delete": "Delete",
     "loading": "Loading..."
   },
@@ -41,7 +42,6 @@
     "confirmPassword": "Confirm Password",
     "status": {
       "updateSuccess": "Profile updated successfully!",
-      "loadError": "Failed to load profile",
       "updateError": "Failed to update profile.",
       "passwordMismatch": "Passwords do not match.",
       "passwordUpdateSuccess": "Password updated successfully!",
@@ -69,5 +69,39 @@
     },
     "noAccount": "No account",
     "submitting": "Submitting..."
+  },
+
+  "errors": {
+    "unexpectedTitle": "Something went wrong",
+    "unexpectedMessage": "An unexpected error occurred. Please try again.",
+    "routeTitle": "Error {{status}}",
+    "routeMessage": "We couldn't load this page.",
+    "retry": "Try again",
+    "backHome": "Back to Home"
+  },
+
+  "showcase": {
+    "title": "Component Library",
+    "description": "A quick reference of the shared UI building blocks.",
+    "emptyFriendsTitle": "No friends yet",
+    "emptyFriendsDescription": "When you add friends, they'll show up here.",
+    "emptyFriendsAction": "Add a friend",
+    "actionClicked": "Action clicked",
+    "toastSuccess": "Saved successfully",
+    "toastError": "Something went wrong",
+    "toastInfo": "Here's some information",
+    "triggerSuccess": "Show success toast",
+    "triggerError": "Show error toast",
+    "triggerInfo": "Show info toast",
+    "triggerConfirm": "Delete something",
+    "confirmTitle": "Are you sure?",
+    "confirmDescription": "This action cannot be undone.",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "pageErrorTitle": "Preview error title",
+    "pageErrorMessage": "This is what PageError looks like.",
+    "retryClicked": "Retry clicked",
+    "showPreview": "Show PageError preview",
+    "hidePreview": "Hide PageError preview"
   }
 }

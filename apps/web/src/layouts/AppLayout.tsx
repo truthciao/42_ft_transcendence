@@ -3,6 +3,9 @@ import { Outlet, useMatches } from 'react-router';
 import { TopBar } from '@/components/layout/TopBar';
 import { TabRail } from '@/components/layout/TabRail';
 import { SecondarySidebar } from '@/components/layout/SecondarySidebar';
+import { ConfirmProvider } from '@/lib/confirm';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { Toaster } from 'sonner';
 
 interface AppRoutehandle {
   secondarySidebar?: () => ReactNode;
@@ -19,18 +22,23 @@ export function AppLayout() {
     .find(Boolean);
 
   return (
-    <div className="grid h-dvh min-h-0 grid-cols-[72px_260px_1fr] grid-rows-[56px_minmax(0,1fr)] overflow-hidden bg-background">
-      <header className="col-span-3 min-w-0 border-b border-border">
-        <TopBar />
-      </header>
+    <ConfirmProvider>
+      <div className="grid h-dvh min-h-0 grid-cols-[72px_260px_1fr] grid-rows-[56px_minmax(0,1fr)] overflow-hidden bg-background">
+        <header className="col-span-3 min-w-0 border-b border-border">
+          <TopBar />
+        </header>
 
-      <TabRail />
+        <TabRail />
 
-      <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
+        <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
 
-      <main className="min-h-0 min-w-0 overflow-hidden">
-        <Outlet />
-      </main>
-    </div>
+        <main className="min-h-0 min-w-0 overflow-hidden">
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </main>
+      </div>
+      <Toaster />
+    </ConfirmProvider>
   );
 }

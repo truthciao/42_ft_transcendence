@@ -4,6 +4,7 @@
     "logout": "退出",
     "save": "保存",
     "cancel": "取消",
+    "confirm": "确认",
     "delete": "删除",
     "loading": "加载中..."
   },
@@ -41,7 +42,6 @@
     "confirmPassword": "确认密码",
     "status": {
       "updateSuccess": "个人资料更新成功！",
-      "loadError": "加载个人资料失败。",
       "updateError": "更新个人资料失败。",
       "passwordMismatch": "密码不匹配。",
       "passwordUpdateSuccess": "密码更新成功！",
@@ -69,5 +69,39 @@
     },
     "noAccount": "没有账户",
     "submitting": "提交中..."
+  },
+
+  "errors": {
+    "unexpectedTitle": "出错了",
+    "unexpectedMessage": "发生了意外错误，请重试。",
+    "routeTitle": "错误 {{status}}",
+    "routeMessage": "无法加载此页面。",
+    "retry": "重试",
+    "backHome": "返回首页"
+  },
+
+  "showcase": {
+    "title": "组件库",
+    "description": "共享 UI 基础组件速览。",
+    "emptyFriendsTitle": "暂无好友",
+    "emptyFriendsDescription": "添加好友后，他们会显示在这里。",
+    "emptyFriendsAction": "添加好友",
+    "actionClicked": "已点击操作",
+    "toastSuccess": "保存成功",
+    "toastError": "发生错误",
+    "toastInfo": "这是一条提示信息",
+    "triggerSuccess": "显示成功提示",
+    "triggerError": "显示错误提示",
+    "triggerInfo": "显示信息提示",
+    "triggerConfirm": "删除某项内容",
+    "confirmTitle": "确定要执行此操作吗？",
+    "confirmDescription": "此操作无法撤销。",
+    "confirmed": "已确认",
+    "cancelled": "已取消",
+    "pageErrorTitle": "错误预览标题",
+    "pageErrorMessage": "这是 PageError 组件的效果预览。",
+    "retryClicked": "已点击重试",
+    "showPreview": "显示 PageError 预览",
+    "hidePreview": "隐藏 PageError 预览"
   }
 }

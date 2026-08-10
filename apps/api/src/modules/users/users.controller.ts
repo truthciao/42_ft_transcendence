@@ -50,10 +50,13 @@ export class UsersController {
 
   @Get('search')
   @UseGuards(JwtAuthGuard)
-  searchUsers(@Query('username') username: string, @Req() req: AuthenticatedRequest) {
+  searchUsers(
+    @Query('username') username: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     return this.usersService.searchUsers(username, req.user.userId);
   }
-  
+
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findById(id);

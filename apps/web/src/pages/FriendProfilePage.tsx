@@ -1,137 +1,139 @@
 import { useParams, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+
+import { Avatar } from '@/components/common/Avatar';
+import { PageError } from '@/components/common/PageError';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+
 import { useFriends } from '../hooks/useFriends';
 
 export function FriendProfilePage() {
+  const { t } = useTranslation();
   const { id } = useParams();
-
   const navigate = useNavigate();
 
-  const { data: friends, isLoading, isError } = useFriends();
+  const {
+    data: friends,
+    isLoading,
+    isError,
+    refetch,
+  } = useFriends();
 
   if (isLoading) {
-    return <div className="p-6">Loading profile...</div>;
+    return (
+      <main className="mx-auto max-w-md p-6">
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Skeleton className="size-16 rounded-full" />
+
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-1/3" />
+            <Skeleton className="h-5 w-2/3" />
+
+            <Skeleton className="h-4 w-1/4" />
+            <Skeleton className="h-5 w-3/4" />
+          </div>
+
+          <div className="flex gap-3">
+            <Skeleton className="h-10 flex-1" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </div>
+      </main>
+    );
   }
 
   if (isError) {
-    return <div className="p-6 text-destructive">Failed to load profile.</div>;
+    return <PageError onRetry={() => void refetch()} />;
   }
 
-  const friend = friends?.find((friend) => friend.id === Number(id));
+  const friend = friends?.find(
+    (friend) => friend.id === Number(id),
+  );
 
   if (!friend) {
     return (
-      <div className="p-6">
-        <h1 className="text-xl font-semibold">Friend not found</h1>
+      <main className="mx-auto max-w-md p-6">
+        <div className="flex flex-col items-center gap-4 py-12 text-center">
+          <h1 className="text-xl font-semibold">
+            {t('friends.profile.notFound')}
+          </h1>
 
-        <button
-          className="
-            mt-4
-            px-4
-            py-2
-            rounded
-            border
-          "
-          onClick={() => navigate('/friends')}
-        >
-          Back to Friends
-        </button>
-      </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/friends')}
+          >
+            {t('friends.profile.backToFriends')}
+          </Button>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="flex-1 bg-background p-6">
-      <button
-        className="
-          mb-6
-          text-sm
-          text-muted-foreground
-          hover:underline
-        "
-        onClick={() => navigate(-1)}
+    <main className="mx-auto max-w-md p-6">
+      <Button
+        variant="ghost"
+        className="mb-6 px-0"
+        onClick={() => navigate('/friends')}
       >
-        ← Back
-      </button>
+        ← {t('common.back')}
+      </Button>
 
-      <div
-        className="
-          max-w-md
-          border
-          rounded-lg
-          p-6
-          space-y-6
-        "
-      >
-        <div
-          className="
-            flex
-            items-center
-            gap-4
-          "
-        >
-          <div
-            className="
-              w-16
-              h-16
-              rounded-full
-              bg-muted
-              flex
-              items-center
-              justify-center
-              text-xl
-              font-semibold
-            "
-          >
-            {friend.username[0]}
-          </div>
+      <div className="space-y-6 rounded-lg border p-6">
+        <div className="flex items-center gap-4">
+          <Avatar
+            src={null}
+            name={friend.username}
+            size="xl"
+          />
 
           <div>
-            <h1 className="text-2xl font-semibold">{friend.username}</h1>
+            <h1 className="text-2xl font-semibold">
+              {friend.username}
+            </h1>
 
-            <p className="text-muted-foreground">Friend</p>
+            <p className="text-muted-foreground">
+              {t('friends.profile.friend')}
+            </p>
           </div>
         </div>
 
         <div className="space-y-3">
           <div>
-            <p className="text-sm text-muted-foreground">Username</p>
+            <p className="text-sm text-muted-foreground">
+              {t('friends.profile.username')}
+            </p>
 
             <p className="font-medium">{friend.username}</p>
           </div>
 
           <div>
-            <p className="text-sm text-muted-foreground">Email</p>
+            <p className="text-sm text-muted-foreground">
+              {t('friends.profile.email')}
+            </p>
 
             <p className="font-medium">{friend.email}</p>
           </div>
         </div>
 
         <div className="flex gap-3">
-          <button
-            className="
-              flex-1
-              px-4
-              py-2
-              rounded
-              bg-primary
-              text-primary-foreground
-            "
-          >
-            Message
-          </button>
+          <Button className="flex-1">
+            {t('friends.profile.message')}
+          </Button>
 
-          <button
-            className="
-              px-4
-              py-2
-              rounded
-              border
-            "
-          >
-            Remove Friend
-          </button>
+          <Button variant="outline">
+            {t('friends.profile.removeFriend')}
+          </Button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

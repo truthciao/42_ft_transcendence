@@ -1,19 +1,25 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import type { UpdateProfilePayload } from '@repo/shared-types';
+import { Avatar } from '@/components/common/Avatar';
+import { PageError } from '@/components/common/PageError';
+import { SkeletonText } from '@/components/common/Skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
 
-  const { data: profile, isLoading, isError } = useProfile();
+  const { data: profile, isLoading, isError, refetch } = useProfile();
 
   const [form, setForm] = useState<UpdateProfilePayload>({
     displayName: '',
     bio: '',
     avatarUrl: '',
-    preferredLanguage: undefined,
+    preferredLanguage: 'en',
   });
 
   useEffect(() => {
@@ -23,7 +29,7 @@ export function ProfilePage() {
       displayName: profile.displayName ?? '',
       bio: profile.bio ?? '',
       avatarUrl: profile.avatarUrl ?? '',
-      preferredLanguage: undefined,
+      preferredLanguage: profile.preferredLanguage ?? 'en',
     });
 
     if (
@@ -36,194 +42,139 @@ export function ProfilePage() {
 
   const mutation = useUpdateProfile();
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    mutation.mutate(form);
+
+    mutation.mutate(form, {
+      onSuccess: () => {
+        toast.success(t('profile.status.updateSuccess'));
+      },
+      onError: () => {
+        toast.error(t('profile.status.updateError'));
+      },
+    });
   }
 
   if (isLoading) {
     return (
-      <main
-        style={{
-          maxWidth: 560,
-          margin: '2rem auto',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <p>{t('common.loading')}</p>
+      <main className="mx-auto max-w-xl space-y-6 p-6">
+        <div className="flex items-center gap-4">
+          <Skeleton className="size-16 rounded-full" />
+          <div className="flex-1">
+            <SkeletonText lines={2} />
+          </div>
+        </div>
+
+        <SkeletonText lines={4} />
       </main>
     );
   }
 
   if (isError || !profile) {
-    return (
-      <main
-        style={{
-          maxWidth: 560,
-          margin: '2rem auto',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <p style={{ color: 'red' }}>{t('profile.status.loadError')}</p>
-      </main>
-    );
+    return <PageError onRetry={() => void refetch()} />;
   }
 
   return (
-    <main
-      style={{
-        maxWidth: 560,
-        margin: '2rem auto',
-        fontFamily: 'sans-serif',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #e5e7eb',
-          paddingBottom: '1rem',
-          marginBottom: '1.5rem',
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: '1.75rem',
-            }}
-          >
-            {t('profile.title')}
-          </h1>
+    <main className="mx-auto max-w-xl space-y-6 p-6">
+      <header className="border-b border-border pb-4">
+        <div className="flex items-center gap-4">
+          <Avatar
+            src={profile.avatarUrl}
+            name={profile.displayName || profile.user?.username || '?'}
+            size="xl"
+          />
 
-          <p
-            style={{
-              margin: '0.25rem 0 0 0',
-              color: '#6b7280',
-              fontSize: '0.9rem',
-            }}
-          >
-            {t('profile.description')}
-          </p>
-        </div>
+          <div className="min-w-0">
+            <h1 className="text-2xl font-semibold">{t('profile.title')}</h1>
 
-        {profile.user && (
-          <div
-            style={{
-              background: '#f3f4f6',
-              padding: '0.5rem 0.75rem',
-              borderRadius: '20px',
-              border: '1px solid #e5e7eb',
-              textAlign: 'right',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.85rem',
-                color: '#4b5563',
-              }}
-            >
-              {t('profile.loggedInAs')}{' '}
-            </span>
+            <p className="text-sm text-muted-foreground">
+              {t('profile.description')}
+            </p>
 
-            <strong
-              style={{
-                fontSize: '0.9rem',
-                color: '#1f2937',
-              }}
-            >
-              {profile.user.username}
-            </strong>
+            {profile.user && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t('profile.loggedInAs')}{' '}
+                <span className="font-medium text-foreground">
+                  {profile.user.username}
+                </span>
+              </p>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      </header>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'grid',
-          gap: '1rem',
-        }}
-      >
-        <label>
-          <div>{t('profile.displayName')}</div>
+      <form onSubmit={handleSubmit} className="grid gap-4">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">
+            {t('profile.displayName')}
+          </span>
 
           <input
             value={form.displayName}
             placeholder={t('profile.displayNamePlaceholder')}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm({
                 ...form,
-                displayName: e.target.value,
+                displayName: event.target.value,
               })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-            }}
+            className="rounded-md border border-input bg-background px-3 py-2"
           />
         </label>
 
-        <label>
-          <div>{t('profile.bio')}</div>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">{t('profile.bio')}</span>
 
           <textarea
             rows={5}
             value={form.bio}
             placeholder={t('profile.bioPlaceholder')}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm({
                 ...form,
-                bio: e.target.value,
+                bio: event.target.value,
               })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-            }}
+            className="resize-y rounded-md border border-input bg-background px-3 py-2"
           />
         </label>
 
-        <label>
-          <div>{t('profile.avatar')}</div>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">{t('profile.avatar')}</span>
 
           <input
             type="url"
             value={form.avatarUrl}
             placeholder={t('profile.avatarPlaceholder')}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm({
                 ...form,
-                avatarUrl: e.target.value,
+                avatarUrl: event.target.value,
               })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-            }}
+            className="rounded-md border border-input bg-background px-3 py-2"
           />
         </label>
 
-        <label>
-          <div>{t('profile.preferredLanguage')}</div>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">
+            {t('profile.preferredLanguage')}
+          </span>
 
           <select
             value={form.preferredLanguage}
-            onChange={(e) => {
-              const language = e.target.value;
+            onChange={(event) => {
+              const language = event.target
+                .value as UpdateProfilePayload['preferredLanguage'];
 
               setForm({
                 ...form,
-                preferredLanguage: undefined,
+                preferredLanguage: language,
               });
 
               void i18n.changeLanguage(language);
             }}
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-            }}
+            className="rounded-md border border-input bg-background px-3 py-2"
           >
             <option value="en">{t('language.english')}</option>
             <option value="fr">{t('language.french')}</option>
@@ -231,37 +182,10 @@ export function ProfilePage() {
           </select>
         </label>
 
-        <button
-          type="submit"
-          disabled={mutation.isPending}
-          style={{
-            padding: '0.75rem 1rem',
-            cursor: mutation.isPending ? 'not-allowed' : 'pointer',
-            background: '#2563eb',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontWeight: 'bold',
-            opacity: mutation.isPending ? 0.7 : 1,
-          }}
-        >
+        <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? t('common.saving') : t('common.save')}
-        </button>
+        </Button>
       </form>
-
-      {mutation.isSuccess && (
-        <p
-          style={{
-            marginTop: '1rem',
-            fontWeight: 'bold',
-            color: 'green',
-          }}
-        >
-          {t('profile.status.updateSuccess')}
-        </p>
-      )}
-
-      {mutation.isError && <p>{t('profile.status.updateError')}</p>}
     </main>
   );
 }

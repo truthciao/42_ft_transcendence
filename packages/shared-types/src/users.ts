@@ -7,3 +7,16 @@ export const userSchema = z.object({
 });
 
 export type User = z.infer<typeof userSchema>;
+
+export const userSearchResultSchema = userSchema.pick({
+  id: true,
+  username: true,
+});
+
+export const userSearchResultsSchema = z.array(
+  userSearchResultSchema,
+);
+
+export type UserSearchResult = z.infer<
+  typeof userSearchResultSchema
+>;

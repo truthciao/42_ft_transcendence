@@ -7,12 +7,14 @@ import {
   Post,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UsersService } from './users.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import type { Request } from 'express';
+import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
 
 interface RequestWithUser extends Request {
   user: {
@@ -20,6 +22,10 @@ interface RequestWithUser extends Request {
     email: string;
     username: string;
   };
+}
+
+interface AuthenticatedRequest extends Request {
+  user: AuthenticatedUser;
 }
 
 @Controller('users')
@@ -40,6 +46,15 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('search')
+  @UseGuards(JwtAuthGuard)
+  searchUsers(
+    @Query('username') username: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.usersService.searchUsers(username, req.user.userId);
   }
 
   @Get(':id')

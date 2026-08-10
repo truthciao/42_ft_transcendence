@@ -112,4 +112,23 @@ export class UsersService {
       data: { isTwoFactorEnabled: isEnabled },
     });
   }
+
+  async searchUsers(username: string, currentUserId: number) {
+    return this.prisma.user.findMany({
+      where: {
+        username: {
+          contains: username,
+          mode: 'insensitive',
+        },
+        id: {
+          not: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+      },
+      take: 10,
+    });
+  }
 }

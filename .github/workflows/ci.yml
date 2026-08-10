@@ -108,18 +108,18 @@ jobs:
         run: pnpm --filter api build
 
       - name: Build web
-  id: web_build
-  continue-on-error: true
-  run: pnpm --filter web build
+        id: web_build
+        continue-on-error: true
+        run: pnpm --filter web build
 
-- name: Upload web build
-  if: steps.web_build.outcome == 'success'
-  uses: actions/upload-artifact@v7
-  with:
-    name: web-build
-    path: apps/web/dist
-    if-no-files-found: error
-    retention-days: 7
+      - name: Upload web build
+        if: steps.web_build.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-build
+          path: apps/web/dist
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload web build
         uses: actions/upload-artifact@v7

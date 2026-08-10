@@ -1,7 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
-
 import type { UpdateProfilePayload } from '@repo/shared-types';
 import { Avatar } from '@/components/common/Avatar';
 import { PageError } from '@/components/common/PageError';

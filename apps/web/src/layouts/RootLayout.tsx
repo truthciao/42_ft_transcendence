@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router';
 import { Navbar } from '../components/Navbar';
 import { Toaster } from '@/components/ui/sooner';
-import { ConfirmProvider } from '@/lib/confirm';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { ConfirmProvider } from '@/lib/confirm';
 
 export function RootLayout() {
   return (

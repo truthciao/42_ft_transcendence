@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { RealtimeGateway } from './gateways/realtime.gateway';
-import { WsJwtGuard } from './guards/ws-jwt.guard';
-import { RealtimeRoomService } from './services/realtime-room.service';
-import { SocketRegistryService } from './services/ws-registry.service';
-import { WsAuthService } from './services/ws-auth.service';
+import { RealtimeGateway } from './gateways/realtime.gateway.js';
+import { WsJwtGuard } from './guards/ws-jwt.guard.js';
+import { RealtimeRoomService } from './services/realtime-room.service.js';
+import { SocketRegistryService } from './services/ws-registry.service.js';
+import { WsAuthService } from './services/ws-auth.service.js';
 
 @Module({
   providers: [

@@ -1,38 +1,78 @@
-// apps/api/src/modules/chat/chat.service.spec.ts
 import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { ConversationType } from '../../generated/prisma/client';
-import { ChatService } from './chat.service';
+import { jest } from '@jest/globals';
+
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { ConversationType } from '../../generated/prisma/enums.js';
+import { ChatService } from './chat.service.js';
+
+type MockUser = {
+  id: number;
+};
+
+type MockConversation = {
+  id: number;
+  members: never[];
+};
+
+type MockConversationMember = {
+  conversationId: number;
+  userId: number;
+};
+
+type MockMessage = {
+  id: number;
+  conversationId: number;
+  senderId: number;
+  content: string;
+};
+
+type ChatPrismaMock = {
+  user: {
+    findUnique: jest.Mock<(args: unknown) => Promise<MockUser | null>>;
+  };
+  conversation: {
+    findFirst: jest.Mock<(args: unknown) => Promise<MockConversation | null>>;
+    create: jest.Mock<(args: unknown) => Promise<MockConversation>>;
+    findMany: jest.Mock<(args: unknown) => Promise<MockConversation[]>>;
+    update: jest.Mock<(args: unknown) => Promise<MockConversation>>;
+  };
+  conversationMember: {
+    findUnique: jest.Mock<
+      (args: unknown) => Promise<MockConversationMember | null>
+    >;
+  };
+  message: {
+    findMany: jest.Mock<(args: unknown) => Promise<MockMessage[]>>;
+    create: jest.Mock<(args: unknown) => Promise<MockMessage>>;
+  };
+};
 
 describe('ChatService', () => {
   let service: ChatService;
-  let prisma: {
-    user: { findUnique: jest.Mock };
-    conversation: {
-      findFirst: jest.Mock;
-      create: jest.Mock;
-      findMany: jest.Mock;
-      update: jest.Mock;
-    };
-    conversationMember: { findUnique: jest.Mock };
-    message: { findMany: jest.Mock; create: jest.Mock };
-  };
+  let prisma: ChatPrismaMock;
 
   beforeEach(() => {
     prisma = {
-      user: { findUnique: jest.fn() },
+      user: {
+        findUnique: jest.fn(),
+      },
       conversation: {
         findFirst: jest.fn(),
         create: jest.fn(),
         findMany: jest.fn(),
         update: jest.fn(),
       },
-      conversationMember: { findUnique: jest.fn() },
-      message: { findMany: jest.fn(), create: jest.fn() },
+      conversationMember: {
+        findUnique: jest.fn(),
+      },
+      message: {
+        findMany: jest.fn(),
+        create: jest.fn(),
+      },
     };
 
     service = new ChatService(prisma as unknown as PrismaService);
@@ -54,28 +94,48 @@ describe('ChatService', () => {
     });
 
     it('returns the existing direct conversation if one already exists', async () => {
-      prisma.user.findUnique.mockResolvedValue({ id: 2 });
-      prisma.conversation.findFirst.mockResolvedValue({ id: 10, members: [] });
+      prisma.user.findUnique.mockResolvedValue({
+        id: 2,
+      });
+
+      prisma.conversation.findFirst.mockResolvedValue({
+        id: 10,
+        members: [],
+      });
 
       await expect(
         service.createDirectConversation(1, 2),
-      ).resolves.toMatchObject({ id: 10 });
+      ).resolves.toMatchObject({
+        id: 10,
+      });
+
       expect(prisma.conversation.create).not.toHaveBeenCalled();
     });
 
     it('creates a new direct conversation with both members when none exists', async () => {
-      prisma.user.findUnique.mockResolvedValue({ id: 2 });
+      prisma.user.findUnique.mockResolvedValue({
+        id: 2,
+      });
+
       prisma.conversation.findFirst.mockResolvedValue(null);
-      prisma.conversation.create.mockResolvedValue({ id: 11, members: [] });
+
+      prisma.conversation.create.mockResolvedValue({
+        id: 11,
+        members: [],
+      });
 
       await service.createDirectConversation(1, 2);
 
       expect(prisma.conversation.create).toHaveBeenCalledWith({
         data: {
           type: ConversationType.DIRECT,
-          members: { create: [{ userId: 1 }, { userId: 2 }] },
+          members: {
+            create: [{ userId: 1 }, { userId: 2 }],
+          },
         },
-        include: { members: true },
+        include: {
+          members: true,
+        },
       });
     });
   });
@@ -87,6 +147,7 @@ describe('ChatService', () => {
       await expect(service.createMessage(1, 5, 'hi')).rejects.toThrow(
         ForbiddenException,
       );
+
       expect(prisma.message.create).not.toHaveBeenCalled();
     });
 
@@ -95,6 +156,7 @@ describe('ChatService', () => {
         conversationId: 1,
         userId: 5,
       });
+
       prisma.message.create.mockResolvedValue({
         id: 100,
         conversationId: 1,
@@ -104,9 +166,17 @@ describe('ChatService', () => {
 
       const message = await service.createMessage(1, 5, 'hi');
 
-      expect(message).toMatchObject({ id: 100, content: 'hi' });
+      expect(message).toMatchObject({
+        id: 100,
+        content: 'hi',
+      });
+
       expect(prisma.conversation.update).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 1 } }),
+        expect.objectContaining({
+          where: {
+            id: 1,
+          },
+        }),
       );
     });
   });

@@ -1,8 +1,31 @@
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 import type { Socket } from 'socket.io';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { WsAuthService } from './ws-auth.service';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import { WsAuthService } from './ws-auth.service.js';
+import { jest } from '@jest/globals';
+
+type MockJwtPayload = {
+  sub: number;
+  email: string;
+  username: string;
+};
+
+type MockUser = {
+  id: number;
+  email: string;
+  username: string;
+};
+
+const jwtService = {
+  verifyAsync: jest.fn<() => Promise<MockJwtPayload>>(),
+};
+
+const prisma = {
+  user: {
+    findUnique: jest.fn<() => Promise<MockUser | null>>(),
+  },
+};
 
 function createSocket(overrides: Partial<Socket['handshake']> = {}): Socket {
   return {
@@ -17,12 +40,9 @@ function createSocket(overrides: Partial<Socket['handshake']> = {}): Socket {
 
 describe('WsAuthService', () => {
   let service: WsAuthService;
-  let jwtService: { verifyAsync: jest.Mock };
-  let prisma: { user: { findUnique: jest.Mock } };
 
   beforeEach(() => {
-    jwtService = { verifyAsync: jest.fn() };
-    prisma = { user: { findUnique: jest.fn() } };
+    jest.clearAllMocks();
 
     service = new WsAuthService(
       jwtService as unknown as JwtService,

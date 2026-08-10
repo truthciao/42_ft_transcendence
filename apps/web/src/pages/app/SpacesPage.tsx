@@ -1,4 +1,3 @@
-
 export function SpacesSidebar() {
   return (
     <div className="p-4">

@@ -1,7 +1,6 @@
-import { IsInt, Min } from 'class-validator';
+import { createZodDto } from 'nestjs-zod';
+import { sendFriendRequestSchema } from '@repo/shared-types';
 
-export class SendFriendRequestDto {
-  @IsInt({ message: 'addresseeId must be an integer' })
-  @Min(1, { message: 'addresseeId must be a positive integer' })
-  addresseeId!: number;
-}
+export class SendFriendRequestDto extends createZodDto(
+  sendFriendRequestSchema,
+) {}

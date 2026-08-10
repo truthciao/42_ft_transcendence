@@ -9,9 +9,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { UsersService } from './users.service.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import type { Request } from 'express';
 
 interface RequestWithUser extends Request {

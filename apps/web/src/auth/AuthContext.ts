@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 export interface User {
   id: number;
@@ -17,4 +17,3 @@ export const AuthContext = createContext<AuthContextType>({
   loading: true,
   refreshUser: async () => {},
 });
-

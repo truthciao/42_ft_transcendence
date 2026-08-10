@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import type { Request } from 'express';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service.js';
 import {
   findMembershipOrThrow,
   getCurrentUserId,
   parseWorkspaceId,
-} from './workspace-guard.utils';
+} from './workspace-guard.utils.js';
 
 @Injectable()
 export class WorkspaceMemberGuard implements CanActivate {

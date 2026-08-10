@@ -1,8 +1,8 @@
-import { NavLink, Outlet, useParams } from "react-router";
+import { NavLink, Outlet, useParams } from 'react-router';
 
 const conversations = [
-  { id: "dm-1", name: "Ada Lovelace", preview: "See you later." },
-  { id: "group-1", name: "Study Room", preview: "Planning tonight." },
+  { id: 'dm-1', name: 'Ada Lovelace', preview: 'See you later.' },
+  { id: 'group-1', name: 'Study Room', preview: 'Planning tonight.' },
 ];
 
 export function ConversationListSidebar() {
@@ -20,7 +20,9 @@ export function ConversationListSidebar() {
             className="block rounded-lg px-3 py-2 text-sm hover:bg-accent"
           >
             <div className="font-medium">{conversation.name}</div>
-            <div className="truncate text-xs text-muted-foreground">{conversation.preview}</div>
+            <div className="truncate text-xs text-muted-foreground">
+              {conversation.preview}
+            </div>
           </NavLink>
         ))}
       </div>

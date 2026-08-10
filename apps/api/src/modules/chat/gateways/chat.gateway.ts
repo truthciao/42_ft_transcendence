@@ -6,14 +6,14 @@ import {
   WebSocketGateway,
   WsException,
 } from '@nestjs/websockets';
-import { ALLOWED_ORIGINS } from '../../../config/cors.config';
-import type { AuthenticatedSocket } from '../../realtime/interfaces/authenticated-socket.interface';
-import { RealtimeRoomService } from '../../realtime/services/realtime-room.service';
-import { CHAT_EVENTS } from '../chat.constants';
-import { ChatService } from '../chat.service';
-import { SendMessageDto } from '../dto/send-message.dto';
-import { getChatRoom } from '../utils/chat-room-naming.util';
-import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard';
+import { ALLOWED_ORIGINS } from '../../../config/cors.config.js';
+import type { AuthenticatedSocket } from '../../realtime/interfaces/authenticated-socket.interface.js';
+import { RealtimeRoomService } from '../../realtime/services/realtime-room.service.js';
+import { CHAT_EVENTS } from '../chat.constants.js';
+import { ChatService } from '../chat.service.js';
+import { SendMessageDto } from '../dto/send-message.dto.js';
+import { getChatRoom } from '../utils/chat-room-naming.util.js';
+import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard.js';
 
 @WebSocketGateway({
   cors: {

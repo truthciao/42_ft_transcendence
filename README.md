@@ -2,31 +2,33 @@
 
 A full-stack web application built for the 42 School **ft_transcendence** project.
 
-## Tech Stack
+---
 
-### Frontend
+# Tech Stack
 
-* React
-* Vite
-* TypeScript
+## Frontend
 
-### Backend
+- React
+- Vite
+- TypeScript
 
-* NestJS
-* Prisma ORM
+## Backend
 
-### Database
+- NestJS
+- Prisma ORM
 
-* PostgreSQL
+## Database
 
-### Infrastructure
+- PostgreSQL
 
-* Docker
-* Docker Compose
+## Infrastructure
 
-### Monorepo
+- Docker
+- Docker Compose
 
-* pnpm Workspace
+## Monorepo
+
+- pnpm Workspace
 
 ---
 
@@ -59,7 +61,7 @@ Recommended version:
 >= 22
 ```
 
-Using **nvm**:
+Using nvm:
 
 ```bash
 nvm install
@@ -70,13 +72,13 @@ nvm use
 
 ## pnpm
 
-Install pnpm globally:
+Install pnpm:
 
 ```bash
 npm install -g pnpm
 ```
 
-Verify the installation:
+Verify:
 
 ```bash
 pnpm -v
@@ -86,9 +88,9 @@ pnpm -v
 
 ## Docker
 
-Install Docker Desktop (or Docker Engine + Docker Compose on Linux).
+Install Docker Desktop (Windows/macOS) or Docker Engine + Docker Compose (Linux).
 
-Verify your installation:
+Verify:
 
 ```bash
 docker --version
@@ -106,7 +108,7 @@ git clone <repository-url>
 cd transcendence
 ```
 
-Install all dependencies:
+Install dependencies:
 
 ```bash
 pnpm install
@@ -114,9 +116,25 @@ pnpm install
 
 ---
 
-# Environment Variables
+# Local Development
 
-Create an environment file for the backend.
+Run the frontend and backend directly on your local machine.
+
+## 1. Start PostgreSQL
+
+If PostgreSQL is installed locally, ensure it is running.
+
+Alternatively, start only the database with Docker:
+
+```bash
+docker compose up -d postgres
+```
+
+---
+
+## 2. Configure environment variables
+
+Create:
 
 ```text
 apps/api/.env
@@ -128,87 +146,33 @@ Example:
 DATABASE_URL="postgresql://transcendence:transcendence@localhost:5432/transcendence?schema=public"
 ```
 
-Additional environment variables (JWT secrets, OAuth credentials, etc.) can be added as the project grows.
+Additional variables (JWT secrets, OAuth credentials, etc.) can be added as the project grows.
 
 ---
 
-# Docker
-
-The project uses Docker Compose to manage local services such as PostgreSQL.
-
-## Start all services
-
-```bash
-docker compose up -d
-```
-
-## Start only PostgreSQL
-
-```bash
-docker compose up -d postgres
-```
-
-## Stop containers
-
-```bash
-docker compose down
-```
-
-## Stop and remove volumes
-
-> Warning: this removes all local database data.
-
-```bash
-docker compose down -v
-```
-
-## View running containers
-
-```bash
-docker compose ps
-```
-
-## View logs
-
-```bash
-docker compose logs -f
-```
-
-View logs for PostgreSQL only:
-
-```bash
-docker compose logs -f postgres
-```
-
----
-
-# Database Setup
-
-Generate the Prisma Client:
+## 3. Generate Prisma Client
 
 ```bash
 pnpm --filter api exec prisma generate
 ```
 
-Apply database migrations:
+---
+
+## 4. Apply database migrations
 
 ```bash
 pnpm --filter api exec prisma migrate dev
 ```
 
-If the database is empty, Prisma will automatically create it and apply all migrations.
-
 ---
 
-# Running the Application
-
-Start the development servers:
+## 5. Start the application
 
 ```bash
 pnpm dev
 ```
 
-The application will be available at:
+Applications:
 
 | Service  | URL                   |
 | -------- | --------------------- |
@@ -217,9 +181,104 @@ The application will be available at:
 
 ---
 
+# Docker Development
+
+Run the complete development environment inside Docker.
+
+## Build and start
+
+```bash
+docker compose up --build
+```
+
+Or run in the background:
+
+```bash
+docker compose up -d --build
+```
+
+Docker automatically starts:
+
+- PostgreSQL
+- Prisma Client generation
+- Database migrations
+- NestJS API
+- React (Vite)
+
+Applications:
+
+| Service  | URL                   |
+| -------- | --------------------- |
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3000 |
+
+---
+
+## Stop containers
+
+```bash
+docker compose down
+```
+
+---
+
+## Remove database volume
+
+> Warning: This removes all local PostgreSQL data.
+
+```bash
+docker compose down -v
+```
+
+---
+
+## View running containers
+
+```bash
+docker compose ps
+```
+
+---
+
+## View logs
+
+All services:
+
+```bash
+docker compose logs -f
+```
+
+Backend:
+
+```bash
+docker compose logs -f api
+```
+
+Frontend:
+
+```bash
+docker compose logs -f web
+```
+
+Database:
+
+```bash
+docker compose logs -f postgres
+```
+
+---
+
+## Rebuild containers
+
+```bash
+docker compose up --build
+```
+
+---
+
 # Available Scripts
 
-## Run the entire project
+Run the entire project locally:
 
 ```bash
 pnpm dev
@@ -227,7 +286,7 @@ pnpm dev
 
 ---
 
-## Build
+Build:
 
 ```bash
 pnpm build
@@ -235,7 +294,7 @@ pnpm build
 
 ---
 
-## Lint
+Lint:
 
 ```bash
 pnpm lint
@@ -243,7 +302,7 @@ pnpm lint
 
 ---
 
-## Backend only
+Backend only:
 
 ```bash
 pnpm --filter api dev
@@ -251,7 +310,7 @@ pnpm --filter api dev
 
 ---
 
-## Frontend only
+Frontend only:
 
 ```bash
 pnpm --filter web dev
@@ -259,13 +318,13 @@ pnpm --filter web dev
 
 ---
 
-## Backend tests
+Backend tests:
 
 ```bash
 pnpm --filter api test
 ```
 
-Run tests with coverage:
+Coverage:
 
 ```bash
 pnpm --filter api test:cov
@@ -273,7 +332,7 @@ pnpm --filter api test:cov
 
 ---
 
-# Working with PostgreSQL
+# PostgreSQL
 
 Connect to PostgreSQL:
 
@@ -305,9 +364,11 @@ Exit:
 
 # Prisma Workflow
 
+This section applies to **Local Development** only.
+
 Whenever the Prisma schema changes:
 
-Create a new migration:
+Create a migration:
 
 ```bash
 pnpm --filter api exec prisma migrate dev
@@ -319,7 +380,7 @@ Regenerate the Prisma Client:
 pnpm --filter api exec prisma generate
 ```
 
-If you only need to regenerate the client:
+If only the generated client needs updating:
 
 ```bash
 pnpm --filter api exec prisma generate
@@ -329,10 +390,12 @@ pnpm --filter api exec prisma generate
 
 # Docker Tips
 
-Restart PostgreSQL:
+Restart a specific service:
 
 ```bash
 docker compose restart postgres
+docker compose restart api
+docker compose restart web
 ```
 
 Rebuild containers:
@@ -341,44 +404,16 @@ Rebuild containers:
 docker compose up --build
 ```
 
-Remove unused Docker resources:
+Rebuild without cache:
 
 ```bash
-docker system prune
+docker compose build --no-cache
 ```
 
----
-
-# Development Workflow
-
-1. Start Docker services.
+Remove orphan containers:
 
 ```bash
-docker compose up -d
-```
-
-2. Install dependencies.
-
-```bash
-pnpm install
-```
-
-3. Apply database migrations.
-
-```bash
-pnpm --filter api exec prisma migrate dev
-```
-
-4. Generate the Prisma Client.
-
-```bash
-pnpm --filter api exec prisma generate
-```
-
-5. Start the application.
-
-```bash
-pnpm dev
+docker compose down --remove-orphans
 ```
 
 ---

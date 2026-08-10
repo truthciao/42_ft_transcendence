@@ -50,9 +50,9 @@ Request
 
 ```json
 {
-    "email":"a@test.com",
-    "username":"alice",
-    "role":"ADMIN"
+  "email": "a@test.com",
+  "username": "alice",
+  "role": "ADMIN"
 }
 ```
 
@@ -60,11 +60,11 @@ DTO
 
 ```ts
 class CreateUserDto {
-    @IsEmail()
-    email: string;
+  @IsEmail()
+  email: string;
 
-    @IsString()
-    username: string;
+  @IsString()
+  username: string;
 }
 ```
 
@@ -86,10 +86,8 @@ Response
 
 ```json
 {
-    "statusCode":400,
-    "message":[
-        "property role should not exist"
-    ]
+  "statusCode": 400,
+  "message": ["property role should not exist"]
 }
 ```
 
@@ -142,7 +140,7 @@ Expected
 
 ```json
 {
-    "role":"ADMIN"
+  "role": "ADMIN"
 }
 ```
 
@@ -159,4 +157,3 @@ Expected
 Validation is performed before controller execution.
 
 Business logic should not perform input validation already handled by DTO.
-

@@ -1,6 +1,7 @@
 {
   "name": "api",
   "version": "0.0.1",
+  "type": "module",
   "description": "",
   "author": "",
   "private": true,
@@ -17,9 +18,9 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\" \"prisma.config.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:unit": "jest",
-    "test:ci": "jest --ci",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test:unit": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test:ci": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --ci",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -36,10 +37,12 @@
     "@nestjs/websockets": "^11.1.28",
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
+    "@repo/shared-types": "workspace:*",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "dotenv": "^17.4.2",
+    "nestjs-zod": "^5.5.0",
     "otplib": "^13.4.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
@@ -51,7 +54,7 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "@jest/globals": "^30.4.1",
+    "@jest/globals": "^29.7.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -83,21 +86,23 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
+    "resolver": "../jest.resolver.cjs",
     "transform": {
       "^.+\\.[tj]s$": [
         "ts-jest",
         {
-          "tsconfig": "tsconfig.spec.json"
+          "tsconfig": "tsconfig.spec.json",
+          "useESM": true
         }
       ]
     },
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "transformIgnorePatterns": [
       "node_modules/.pnpm/(?!(?:@scure\\+base|@noble\\+hashes|@otplib\\+plugin-base32-scure|@otplib\\+plugin-crypto-noble|otplib)@)",
       "node_modules/(?!.pnpm|@scure/base|@noble/hashes|@otplib/plugin-base32-scure|@otplib/plugin-crypto-noble|otplib)"
     ],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
     "testEnvironment": "node"
   }
 }

@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import type { AuthenticatedUser } from '../../auth/interfaces/authenticated-user.interface';
-import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface';
+import type { AuthenticatedUser } from '../../auth/interfaces/authenticated-user.interface.js';
+import type { AuthenticatedSocket } from '../interfaces/authenticated-socket.interface.js';
 
 export const WsCurrentUser = createParamDecorator(
   (data: keyof AuthenticatedUser | undefined, ctx: ExecutionContext) => {

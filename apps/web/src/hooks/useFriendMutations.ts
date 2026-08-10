@@ -1,105 +1,68 @@
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
-} from "../api/friends";
+} from '../api/friends';
 
-
-export function useSendFriendRequest(){
-
+export function useSendFriendRequest() {
   const queryClient = useQueryClient();
 
-
   return useMutation({
-
     mutationFn: sendFriendRequest,
 
-
-    onSuccess(){
+    onSuccess() {
       queryClient.invalidateQueries({
-        queryKey:["friendRequests"],
+        queryKey: ['friendRequests'],
       });
     },
-
   });
 }
 
-
-
-export function useAcceptFriendRequest(){
-
+export function useAcceptFriendRequest() {
   const queryClient = useQueryClient();
 
-
   return useMutation({
-
     mutationFn: acceptFriendRequest,
 
-
-    onSuccess(){
-
+    onSuccess() {
       queryClient.invalidateQueries({
-        queryKey:["friends"],
+        queryKey: ['friends'],
       });
 
-
       queryClient.invalidateQueries({
-        queryKey:["friendRequests"],
+        queryKey: ['friendRequests'],
       });
-
     },
-
   });
 }
 
-
-
-export function useRejectFriendRequest(){
-
+export function useRejectFriendRequest() {
   const queryClient = useQueryClient();
 
-
   return useMutation({
-
     mutationFn: rejectFriendRequest,
 
-
-    onSuccess(){
-
+    onSuccess() {
       queryClient.invalidateQueries({
-        queryKey:["friendRequests"],
+        queryKey: ['friendRequests'],
       });
-
     },
-
   });
 }
 
-
-
-export function useRemoveFriend(){
-
+export function useRemoveFriend() {
   const queryClient = useQueryClient();
 
-
   return useMutation({
-
     mutationFn: removeFriend,
 
-
-    onSuccess(){
-
+    onSuccess() {
       queryClient.invalidateQueries({
-        queryKey:["friends"],
+        queryKey: ['friends'],
       });
-
     },
-
   });
 }

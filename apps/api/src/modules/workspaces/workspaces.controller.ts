@@ -10,16 +10,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { CreateWorkspaceDto } from './dto/create-workspace.dto';
-import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
-import { InviteMemberDto } from './dto/invite-member.dto';
-import type { WorkspaceMember } from '../../generated/prisma/client';
-import { CurrentMembership } from './decorators/current-membership.decorator';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { WorkspaceMemberGuard } from './guards/workspace-member.guard';
-import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard';
-import { WorkspacesService } from './workspaces.service';
+import { CreateWorkspaceDto } from './dto/create-workspace.dto.js';
+import { UpdateWorkspaceDto } from './dto/update-workspace.dto.js';
+import { InviteMemberDto } from './dto/invite-member.dto.js';
+import type { WorkspaceMember } from '../../generated/prisma/client.js';
+import { CurrentMembership } from './decorators/current-membership.decorator.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { WorkspaceMemberGuard } from './guards/workspace-member.guard.js';
+import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard.js';
+import { WorkspacesService } from './workspaces.service.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('workspaces')

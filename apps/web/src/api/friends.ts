@@ -4,6 +4,7 @@ import type {
   PendingRequest,
   SendFriendRequestDto,
   MessageResponse,
+  UserSearchResult,
 } from '@repo/shared-types';
 
 export function getFriends() {
@@ -12,6 +13,12 @@ export function getFriends() {
 
 export function getPendingRequests() {
   return httpGet<PendingRequest[]>('/friends/requests');
+}
+
+export function searchUsers(username: string) {
+  return httpGet<UserSearchResult[]>(
+    `/users/search?username=${encodeURIComponent(username)}`,
+  );
 }
 
 export function sendFriendRequest(data: SendFriendRequestDto) {

@@ -56,10 +56,15 @@ services:
       JWT_SECRET: development-secret
       WEB_ORIGIN: http://localhost:5173
 
-    command: pnpm --filter api dev
+    command:
+      - /app/docker/dev-entrypoint.sh
+      - pnpm
+      - --filter
+      - api
+      - dev
 
     ports:
-      - "3000:3000"
+      - '3000:3000'
 
     depends_on:
       migrate:
@@ -76,14 +81,22 @@ services:
       context: .
       dockerfile: Dockerfile.dev
   
-    command: pnpm --filter web exec vite --host 0.0.0.0
+    command:
+      - /app/docker/dev-entrypoint.sh
+      - pnpm
+      - --filter
+      - web
+      - exec
+      - vite
+      - --host
+      - 0.0.0.0
   
     ports:
-      - "5173:5173"
+      - '5173:5173'
 
     depends_on:
       - api
-
+ 
     volumes:
       - .:/app
       - /app/node_modules

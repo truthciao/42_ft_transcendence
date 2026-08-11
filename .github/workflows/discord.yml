@@ -1,9 +1,9 @@
-name: Notify Discord on main updates
+name: Notify Discord on Pull Request
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - ready_for_review
 
 jobs:
   notify:
@@ -11,42 +11,25 @@ jobs:
 
     steps:
       - name: Send message to Discord
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          ACTOR="${{ github.actor }}"
-          COMMIT_SHA="${{ github.sha }}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
-          TIMESTAMP="${{ github.event.head_commit.timestamp }}"
+          ACTOR="${{ github.event.pull_request.user.login }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_BODY="${{ github.event.pull_request.body }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          COMMIT_SHA="${{ github.event.pull_request.head.sha }}"
+          TIMESTAMP="${{ github.event.pull_request.created_at }}"
+
           EPOCH=$(date -d "$TIMESTAMP" +%s)
 
           # -----------------------------
-          # Find related PR
+          # PR Description
           # -----------------------------
 
-          PR_DATA=$(curl -s \
-            -H "Authorization: Bearer ${{ github.token }}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/commits/${COMMIT_SHA}/pulls")
-
-
-          PR_TITLE=$(echo "$PR_DATA" | jq -r '.[0].title // ""')
-          PR_BODY=$(echo "$PR_DATA" | jq -r '.[0].body // ""')
-          PR_URL=$(echo "$PR_DATA" | jq -r '.[0].html_url // ""')
-
-
-          if [ -n "$PR_TITLE" ]; then
-            TITLE="$PR_TITLE"
-            LINK="$PR_URL"
-          else
-            TITLE=$(echo "${{ github.event.head_commit.message }}" | head -1)
-            LINK="$COMMIT_URL"
-          fi
-
-
-          # -----------------------------
-          # PR Extended Description
-          # -----------------------------
-
-          if [ -n "$PR_BODY" ]; then
+          if [ -n "$PR_BODY" ] && [ "$PR_BODY" != "null" ]; then
             DESCRIPTION=$(echo "$PR_BODY" \
               | head -20 \
               | head -c 1000)
@@ -55,13 +38,11 @@ jobs:
           fi
 
 
-
           # -----------------------------
           # Wait for CI
           # -----------------------------
 
           CI_WORKFLOW="ci"
-
           CI_STATUS="unknown"
 
           echo "Waiting for CI workflow..."
@@ -69,10 +50,9 @@ jobs:
           for i in {1..30}
           do
             RUN_DATA=$(curl -s \
-              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Authorization: Bearer $GH_TOKEN" \
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/${{ github.repository }}/actions/runs?head_sha=${COMMIT_SHA}")
-
 
             STATUS=$(echo "$RUN_DATA" \
               | jq -r \
@@ -82,7 +62,6 @@ jobs:
               | .status' \
               | head -1)
 
-
             CONCLUSION=$(echo "$RUN_DATA" \
               | jq -r \
               --arg workflow "$CI_WORKFLOW" \
@@ -90,7 +69,6 @@ jobs:
               | select(.name | ascii_downcase | contains($workflow))
               | .conclusion' \
               | head -1)
-
 
             if [ "$STATUS" = "completed" ]; then
 
@@ -112,9 +90,7 @@ jobs:
               break
             fi
 
-
             sleep 10
-
           done
 
 
@@ -123,18 +99,16 @@ jobs:
           fi
 
 
-
           # -----------------------------
           # Changed files
           # -----------------------------
 
           CHANGED_FILES=$(curl -s \
-            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.before }}...${COMMIT_SHA}" \
-            | jq -r '.files[].filename' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/files" \
+            | jq -r '.[].filename' \
             | head -15)
-
 
           if [ -n "$CHANGED_FILES" ]; then
             FILE_LIST=$(echo "$CHANGED_FILES" \
@@ -144,17 +118,17 @@ jobs:
           fi
 
 
-
           # -----------------------------
           # Discord payload
           # -----------------------------
 
           PAYLOAD=$(jq -n \
             --arg actor "$ACTOR" \
-            --arg title "$TITLE" \
+            --arg pr_number "$PR_NUMBER" \
+            --arg title "$PR_TITLE" \
             --arg description "$DESCRIPTION" \
             --arg ci "$CI_STATUS" \
-            --arg link "$LINK" \
+            --arg link "$PR_URL" \
             --arg file_list "$FILE_LIST" \
             --argjson epoch "$EPOCH" \
             '
@@ -162,7 +136,7 @@ jobs:
               content:"",
               embeds:[
                 {
-                  title:"🚀 New update to main",
+                  title:("🔔 New Pull Request #"+$pr_number),
                   url:$link,
                   color:5814783,
 
@@ -208,9 +182,10 @@ jobs:
             ')
 
 
-
           curl -f \
             -H "Content-Type: application/json" \
             -X POST \
             -d "$PAYLOAD" \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+            "$DISCORD_WEBHOOK"
+
+

@@ -5,195 +5,133 @@ on:
     types:
       - ready_for_review
 
+permissions:
+  contents: read
+
 jobs:
   notify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Send message to Discord
+        shell: bash
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          UPDATED_AT: ${{ github.event.pull_request.updated_at }}
         run: |
-          ACTOR="${{ github.actor }}"
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_BODY="${{ github.event.pull_request.body }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          COMMIT_SHA="${{ github.event.pull_request.head.sha }}"
-          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${COMMIT_SHA}"
-          TIMESTAMP="${{ github.event.pull_request.updated_at }}"
-          EPOCH=$(date -d "$TIMESTAMP" +%s)
+          set -euo pipefail
 
-          TITLE="$PR_TITLE"
-          LINK="$PR_URL"
-
-
-          # -----------------------------
-          # PR Extended Description
-          # -----------------------------
+          EPOCH=$(date -d "$UPDATED_AT" +%s)
 
           if [ -n "$PR_BODY" ]; then
-            DESCRIPTION=$(echo "$PR_BODY" \
-              | head -20 \
-              | head -c 1000)
+            DESCRIPTION=$(printf '%s' "$PR_BODY" | head -20 | head -c 1000)
           else
             DESCRIPTION="No pull request description."
           fi
 
+          CI_STATUS="⏳ Waiting for CI..."
+          RUN_DATA=$(curl -s \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPOSITORY/actions/runs?head_sha=$HEAD_SHA")
 
+          STATUS=$(echo "$RUN_DATA" | jq -r --arg workflow "ci" '.workflow_runs[] | select(.name | ascii_downcase | contains($workflow)) | .status' | head -1)
+          CONCLUSION=$(echo "$RUN_DATA" | jq -r --arg workflow "ci" '.workflow_runs[] | select(.name | ascii_downcase | contains($workflow)) | .conclusion' | head -1)
 
-          # -----------------------------
-          # Wait for CI
-          # -----------------------------
-
-          CI_WORKFLOW="ci"
-
-          CI_STATUS="unknown"
-
-          echo "Waiting for CI workflow..."
-
-          for i in {1..30}
-          do
-            RUN_DATA=$(curl -s \
-              -H "Authorization: Bearer ${{ github.token }}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs?head_sha=${COMMIT_SHA}")
-
-
-            STATUS=$(echo "$RUN_DATA" \
-              | jq -r \
-              --arg workflow "$CI_WORKFLOW" \
-              '.workflow_runs[]
-              | select(.name | ascii_downcase | contains($workflow))
-              | .status' \
-              | head -1)
-
-
-            CONCLUSION=$(echo "$RUN_DATA" \
-              | jq -r \
-              --arg workflow "$CI_WORKFLOW" \
-              '.workflow_runs[]
-              | select(.name | ascii_downcase | contains($workflow))
-              | .conclusion' \
-              | head -1)
-
-
-            if [ "$STATUS" = "completed" ]; then
-
-              case "$CONCLUSION" in
-                success)
-                  CI_STATUS="✅ Passed"
-                  ;;
-                failure)
-                  CI_STATUS="❌ Failed"
-                  ;;
-                cancelled)
-                  CI_STATUS="⚠️ Cancelled"
-                  ;;
-                *)
-                  CI_STATUS="❓ $CONCLUSION"
-                  ;;
-              esac
-
-              break
-            fi
-
-
-            sleep 10
-
-          done
-
-
-          if [ "$CI_STATUS" = "unknown" ]; then
-            CI_STATUS="⏳ Timeout / No CI found"
+          if [ "$STATUS" = "completed" ]; then
+            case "$CONCLUSION" in
+              success)
+                CI_STATUS="✅ Passed"
+                ;;
+              failure)
+                CI_STATUS="❌ Failed"
+                ;;
+              cancelled)
+                CI_STATUS="⚠️ Cancelled"
+                ;;
+              *)
+                CI_STATUS="❓ $CONCLUSION"
+                ;;
+            esac
           fi
 
-
-
-          # -----------------------------
-          # Changed files
-          # -----------------------------
-
           CHANGED_FILES=$(curl -s \
-            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.pull_request.base.sha }}...${COMMIT_SHA}" \
+            "https://api.github.com/repos/$REPOSITORY/compare/$BASE_SHA...$HEAD_SHA" \
             | jq -r '.files[].filename' \
             | head -15)
 
-
           if [ -n "$CHANGED_FILES" ]; then
-            FILE_LIST=$(echo "$CHANGED_FILES" \
-              | awk '{print "• `" $0 "`"}')
+            FILE_LIST=$(echo "$CHANGED_FILES" | awk '{print "• `" $0 "`"}')
           else
-            FILE_LIST="• \`no file info\`"
+            FILE_LIST="• `no file info`"
           fi
-
-
-
-          # -----------------------------
-          # Discord payload
-          # -----------------------------
 
           PAYLOAD=$(jq -n \
             --arg actor "$ACTOR" \
-            --arg title "$TITLE" \
+            --arg title "$PR_TITLE" \
             --arg description "$DESCRIPTION" \
             --arg ci "$CI_STATUS" \
-            --arg link "$LINK" \
+            --arg link "$PR_URL" \
             --arg file_list "$FILE_LIST" \
             --argjson epoch "$EPOCH" \
-            '
-            {
-              content:"",
-              embeds:[
+            '{
+              content: "",
+              embeds: [
                 {
-                  title:"🚀 PR ready for review",
-                  url:$link,
-                  color:5814783,
-
-                  fields:[
+                  title: "🚀 PR ready for review",
+                  url: $link,
+                  color: 5814783,
+                  fields: [
                     {
-                      name:"👤 Author",
-                      value:$actor,
-                      inline:true
+                      name: "👤 Author",
+                      value: $actor,
+                      inline: true
                     },
                     {
-                      name:"🕐 Time",
-                      value:("<t:"+($epoch|tostring)+":R>"),
-                      inline:true
+                      name: "🕐 Time",
+                      value: ("<t:" + ($epoch | tostring) + ":R>"),
+                      inline: true
                     },
                     {
-                      name:"📝 Title",
-                      value:("```"+$title+"```"),
-                      inline:false
+                      name: "📝 Title",
+                      value: ("```" + $title + "```"),
+                      inline: false
                     },
                     {
-                      name:"📖 Extended Description",
-                      value:("```"+$description+"```"),
-                      inline:false
+                      name: "📖 Extended Description",
+                      value: ("```" + $description + "```"),
+                      inline: false
                     },
                     {
-                      name:"🟢 CI Status",
-                      value:$ci,
-                      inline:false
+                      name: "🟢 CI Status",
+                      value: $ci,
+                      inline: false
                     },
                     {
-                      name:"📂 Changed Files",
-                      value:$file_list,
-                      inline:false
+                      name: "📂 Changed Files",
+                      value: $file_list,
+                      inline: false
                     }
                   ],
-
-                  footer:{
-                    text:"transcendence"
+                  footer: {
+                    text: "transcendence"
                   }
                 }
               ]
-            }
-            ')
+            }')
 
-
-
-          curl -f \
+          curl -fsS \
             -H "Content-Type: application/json" \
             -X POST \
             -d "$PAYLOAD" \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+            "$DISCORD_WEBHOOK"

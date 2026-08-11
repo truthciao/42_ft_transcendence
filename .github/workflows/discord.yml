@@ -37,7 +37,6 @@ jobs:
             DESCRIPTION="No pull request description."
           fi
 
-
           # -----------------------------
           # Wait for CI
           # -----------------------------
@@ -71,7 +70,6 @@ jobs:
               | head -1)
 
             if [ "$STATUS" = "completed" ]; then
-
               case "$CONCLUSION" in
                 success)
                   CI_STATUS="✅ Passed"
@@ -93,11 +91,9 @@ jobs:
             sleep 10
           done
 
-
           if [ "$CI_STATUS" = "unknown" ]; then
             CI_STATUS="⏳ Timeout / No CI found"
           fi
-
 
           # -----------------------------
           # Changed files
@@ -116,7 +112,6 @@ jobs:
           else
             FILE_LIST="• \`no file info\`"
           fi
-
 
           # -----------------------------
           # Discord payload
@@ -180,7 +175,6 @@ jobs:
               ]
             }
             ')
-
 
           curl -f \
             -H "Content-Type: application/json" \

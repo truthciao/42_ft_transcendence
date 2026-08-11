@@ -11,4 +11,15 @@ jobs:
 
     steps:
       - name: Send message to Discord
-        run: echo "PR is ready for review"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          echo "Sending Discord notification..."
+
+          curl -f \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '{"content":"🔔 Test: PR is ready for review"}' \
+            "$DISCORD_WEBHOOK"
+
+          echo "Discord notification sent successfully."

@@ -1,15 +1,19 @@
-import { Outlet, useParams } from 'react-router';
+import { Outlet, useParams, useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { ChatMessage } from '../../api/chat';
 import { getConversationMessages } from '../../api/chat';
 
 export function ConversationPage() {
   const { conversationId } = useParams();
+  const location = useLocation();
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // 1. 加载历史消息（增强了解包容错）
+  const friendName = (location.state as any)?.friendName;
+  const chatTitle = friendName ? `Chat with ${friendName}` : "";
+
   useEffect(() => {
     const fetchMessages = async () => {
       if (!conversationId) return;
@@ -17,9 +21,6 @@ export function ConversationPage() {
       try {
         setIsLoading(true);
         const data: any = await getConversationMessages(conversationId);
-        console.log("📦 拿到的聊天记录原始数据：", data);
-
-        // 兼容直接返回数组，或者返回 { data: [...] } 的情况
         const list = Array.isArray(data) ? data : (data?.data || []);
         setMessages(list);  
       } catch (error) {
@@ -37,18 +38,18 @@ export function ConversationPage() {
     if (!inputText.trim() || !conversationId) return;
 
     try {     
-      alert(`准备发送到房间 ${conversationId}: ${inputText}`);
-      setInputText('');
-      
-      } catch (error: any) {
-      alert(`发送失败: ${error.message}`);
+      setInputText('');      
+      } catch (error: any) { 
     }
   };
 
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
-        <h1 className="font-semibold text-sm">Conversation ID: {conversationId}</h1>
+        <h1 className="font-semibold text-sm flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          {chatTitle}
+        </h1>
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">

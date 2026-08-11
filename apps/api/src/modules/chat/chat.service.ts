@@ -10,7 +10,6 @@ import { ConversationType } from '../../generated/prisma/enums.js';
 @Injectable()
 export class ChatService {
   constructor(private readonly prisma: PrismaService) {}
-
   async createDirectConversation(userId: number, targetUserId: number) {
     if (userId === targetUserId)
       throw new BadRequestException(
@@ -47,13 +46,74 @@ export class ChatService {
     });
   }
 
-  async findAllForUser(userId: number) {
-    return this.prisma.conversation.findMany({
-      where: { members: { some: { userId } } },
-      orderBy: { updatedAt: 'desc' },
-      include: { members: true },
-    });
+  async createByUsername(userId: number, username: string) {
+    const targetUser = await this.prisma.user.findUnique({ where: { username } });
+    if (!targetUser) throw new NotFoundException('User not found');
+    return this.createDirectConversation(userId, targetUser.id);
   }
+
+async findAllForUser(userId: number) { 
+  const conversations = await this.prisma.conversation.findMany({
+    where: { members: { some: { userId } } },
+    orderBy: { updatedAt: 'desc' },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              profile: {
+                select: {
+                  displayName: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+    const friendships = await this.prisma.friendship.findMany({
+      where: {
+        OR: [{ requesterId: userId }, { addresseeId: userId }],
+      },
+      select: { requesterId: true, addresseeId: true },
+    });
+
+    const friendIdSet = new Set(
+      friendships.map((f) => (f.requesterId === userId ? f.addresseeId : f.requesterId)),
+    );
+
+    return conversations.map((conv) => {
+    let conversationName = conv.name;
+    let isFriend = false;
+
+      if (conv.type === ConversationType.DIRECT || !conv.name) {
+        const otherMember = conv.members.find((m) => m.userId !== userId);
+        const otherUser = otherMember?.user;
+
+      if (otherUser) {
+        isFriend = friendIdSet.has(otherUser.id);
+        conversationName =
+          otherUser?.profile?.displayName ||
+          otherUser?.username ||
+          `Chat Room #${conv.id}`;
+      }
+    }
+
+    return {
+      id: conv.id,
+      type: conv.type,
+      name: conversationName, 
+      isFriend,      
+      createdAt: conv.createdAt,
+      updatedAt: conv.updatedAt,
+      members: conv.members,
+    };
+  });
+}
 
   async getMessages(conversationId: number, userId: number) {
     await this.assertMember(conversationId, userId);

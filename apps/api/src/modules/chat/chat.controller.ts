@@ -25,6 +25,14 @@ export class ChatController {
     return this.chatService.createDirectConversation(userId, dto.targetUserId);
   }
 
+  @Post('conversations/by-username')
+  async createByUsername(
+    @CurrentUser('userId') userId: number,
+    @Body('username') username: string,
+  ) {
+    return this.chatService.createByUsername(userId, username);
+  }
+
   @Get('conversations')
   findMine(@CurrentUser('userId') userId: number) {
     return this.chatService.findAllForUser(userId);

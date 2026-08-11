@@ -3,7 +3,7 @@ name: Notify Discord on PR ready for review
 on:
   pull_request:
     types:
-      - ready_for_review
+      - opened
 
 permissions:
   contents: read

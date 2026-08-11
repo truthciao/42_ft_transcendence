@@ -41,6 +41,10 @@ services:
     restart: 'no'
 
   api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
     environment:
       NODE_ENV: development
       PORT: 3000
@@ -55,6 +59,19 @@ services:
       - --filter
       - api
       - dev
+
+    ports:
+      - '3000:3000'
+  
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/web/node_modules
 
   web:
     build:

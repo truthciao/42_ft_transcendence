@@ -301,6 +301,12 @@ pnpm lint
 ```
 
 ---
+Check formatting:
+
+```bash
+pnpm --filter api format:check
+```
+---
 
 Backend only:
 

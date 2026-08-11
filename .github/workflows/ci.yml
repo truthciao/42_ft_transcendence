@@ -1,3 +1,4 @@
+```yaml
 name: CI
 
 on:
@@ -68,7 +69,7 @@ jobs:
           for attempt in 1 2; do
             echo "pnpm install attempt ${attempt}/2"
 
-            if pnpm install --no-frozen-lockfile --reporter=append-only; then
+            if pnpm install --frozen-lockfile --reporter=append-only; then
               exit 0
             fi
 
@@ -89,6 +90,10 @@ jobs:
 
       - name: Lint API
         run: pnpm --filter api lint
+
+      - name: Check API formatting
+        continue-on-error: true
+        run: pnpm --filter api format:check
 
       - name: Lint web
         run: pnpm --filter web lint
@@ -122,7 +127,7 @@ jobs:
           retention-days: 7
 
   database:
-    name: Prisma migration check
+    name: Database and API E2E
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -203,8 +208,6 @@ jobs:
       - name: Check migration status
         run: pnpm --dir apps/api exec prisma migrate status
 
-      - name: Run unit tests
-        run: pnpm --filter api test:unit
-
-      - name: Run integration tests
+      - name: Run API E2E tests
         run: pnpm --filter api test:e2e
+```

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
 
 interface CreateUserData {
@@ -110,6 +110,25 @@ export class UsersService {
     return this.prisma.user.update({
       where: { id: userId },
       data: { isTwoFactorEnabled: isEnabled },
+    });
+  }
+
+  async searchUsers(username: string, currentUserId: number) {
+    return this.prisma.user.findMany({
+      where: {
+        username: {
+          contains: username,
+          mode: 'insensitive',
+        },
+        id: {
+          not: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+      },
+      take: 10,
     });
   }
 }

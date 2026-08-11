@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { WorkspaceRole } from '../../generated/prisma/client';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { WorkspaceRole } from '../../generated/prisma/client.js';
 
 @Injectable()
 export class WorkspacesService {

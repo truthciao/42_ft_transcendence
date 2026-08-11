@@ -1,43 +1,28 @@
-import { httpDelete, httpGet, httpPost } from "../lib/http";
-
-export interface Friend {
-  id: number;
-  username: string;
-  email: string;
-}
-
-export interface PendingRequest {
-  id: number;
-  requesterId: number;
-  addresseeId: number;
-  status: "PENDING";
-  createdAt: string;
-
-  requester: {
-    id: number;
-    username: string;
-    email: string;
-  };
-}
-
-export interface SendFriendRequestDto {
-  addresseeId: number;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { httpDelete, httpGet, httpPost } from '../lib/http';
+import type {
+  Friend,
+  PendingRequest,
+  SendFriendRequestDto,
+  MessageResponse,
+  UserSearchResult,
+} from '@repo/shared-types';
 
 export function getFriends() {
-  return httpGet<Friend[]>("/friends");
+  return httpGet<Friend[]>('/friends');
 }
 
 export function getPendingRequests() {
-  return httpGet<PendingRequest[]>("/friends/requests");
+  return httpGet<PendingRequest[]>('/friends/requests');
+}
+
+export function searchUsers(username: string) {
+  return httpGet<UserSearchResult[]>(
+    `/users/search?username=${encodeURIComponent(username)}`,
+  );
 }
 
 export function sendFriendRequest(data: SendFriendRequestDto) {
-  return httpPost("/friends/requests", data);
+  return httpPost('/friends/requests', data);
 }
 
 export function acceptFriendRequest(requestId: number) {
@@ -45,9 +30,7 @@ export function acceptFriendRequest(requestId: number) {
 }
 
 export function rejectFriendRequest(requestId: number) {
-  return httpPost<MessageResponse>(
-    `/friends/requests/${requestId}/reject`,
-  );
+  return httpPost<MessageResponse>(`/friends/requests/${requestId}/reject`);
 }
 
 export function removeFriend(userId: number) {

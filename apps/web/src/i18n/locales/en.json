@@ -4,61 +4,61 @@
     "logout": "Logout",
     "save": "Save",
     "cancel": "Cancel",
+    "confirm": "Confirm",
     "delete": "Delete",
     "loading": "Loading..."
-	},
+  },
 
-	"home": {
-			"title": "Home",
-			"welcome": "Welcome to ft_transcendence.",
-			"profile": "Profile"
-	},
+  "home": {
+    "title": "Home",
+    "welcome": "Welcome to ft_transcendence.",
+    "profile": "Profile"
+  },
 
-	"notfound": {
-		"title": "404 - Page Not Found",
-		"message": "The page you are looking for does not exist.",
-		"back": "Go back to Home"
-	},
+  "notfound": {
+    "title": "404 - Page Not Found",
+    "message": "The page you are looking for does not exist.",
+    "back": "Go back to Home"
+  },
 
-	"profile": {
-		"title": "Profile",
-		"description": "Manage your public profile information.",
-		"loggedInAs": "Logged in as",
-		"displayName": "Display Name",
-		"displayNamePlaceholder": "Enter your display name",
-		"bio": "Bio",
-		"bioPlaceholder": "Enter your bio",
-		"username": "Username",
-		"email": "Email",
-		"avatar": "Avatar",
-		"avatarPlaceholder": "Enter avatar URL",
-		"preferredLanguage": "Preferred Language",
-		"preferredLanguagePlaceholder": "Enter your preferred language",
-		"update": "Update Profile",
-		"changePassword": "Change Password",
-		"password": "Password",
-		"newPassword": "New Password",
-		"confirmPassword": "Confirm Password",
-		"status": {
-			"updateSuccess": "Profile updated successfully!",
-      		"loadError": "Failed to load profile",
-			"updateError": "Failed to update profile.",
-			"passwordMismatch": "Passwords do not match.",
-			"passwordUpdateSuccess": "Password updated successfully!",
-			"passwordUpdateError": "Failed to update password."
-		}
-	},
+  "profile": {
+    "title": "Profile",
+    "description": "Manage your public profile information.",
+    "loggedInAs": "Logged in as",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your display name",
+    "bio": "Bio",
+    "bioPlaceholder": "Enter your bio",
+    "username": "Username",
+    "email": "Email",
+    "avatar": "Avatar",
+    "avatarPlaceholder": "Enter avatar URL",
+    "preferredLanguage": "Preferred Language",
+    "preferredLanguagePlaceholder": "Enter your preferred language",
+    "update": "Update Profile",
+    "changePassword": "Change Password",
+    "password": "Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "status": {
+      "updateSuccess": "Profile updated successfully!",
+      "updateError": "Failed to update profile.",
+      "passwordMismatch": "Passwords do not match.",
+      "passwordUpdateSuccess": "Password updated successfully!",
+      "passwordUpdateError": "Failed to update password."
+    }
+  },
 
-	"language": {
-		"english": "English",
-		"french": "French",
-		"chinese": "Chinese"
-	},
+  "language": {
+    "english": "English",
+    "french": "French",
+    "chinese": "Chinese"
+  },
 
   "auth": {
     "register": "Register",
-		"registerDescription": "Create a new account to get started.",
-		"username": "Username",
+    "registerDescription": "Create a new account to get started.",
+    "username": "Username",
     "email": "Email",
     "password": "Password",
     "login": "Login",
@@ -69,5 +69,39 @@
     },
     "noAccount": "No account",
     "submitting": "Submitting..."
+  },
+
+  "errors": {
+    "unexpectedTitle": "Something went wrong",
+    "unexpectedMessage": "An unexpected error occurred. Please try again.",
+    "routeTitle": "Error {{status}}",
+    "routeMessage": "We couldn't load this page.",
+    "retry": "Try again",
+    "backHome": "Back to Home"
+  },
+
+  "showcase": {
+    "title": "Component Library",
+    "description": "A quick reference of the shared UI building blocks.",
+    "emptyFriendsTitle": "No friends yet",
+    "emptyFriendsDescription": "When you add friends, they'll show up here.",
+    "emptyFriendsAction": "Add a friend",
+    "actionClicked": "Action clicked",
+    "toastSuccess": "Saved successfully",
+    "toastError": "Something went wrong",
+    "toastInfo": "Here's some information",
+    "triggerSuccess": "Show success toast",
+    "triggerError": "Show error toast",
+    "triggerInfo": "Show info toast",
+    "triggerConfirm": "Delete something",
+    "confirmTitle": "Are you sure?",
+    "confirmDescription": "This action cannot be undone.",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "pageErrorTitle": "Preview error title",
+    "pageErrorMessage": "This is what PageError looks like.",
+    "retryClicked": "Retry clicked",
+    "showPreview": "Show PageError preview",
+    "hidePreview": "Hide PageError preview"
   }
 }

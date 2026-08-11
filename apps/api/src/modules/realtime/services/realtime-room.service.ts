@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { Server, Socket } from 'socket.io';
-import { getUserRoom } from '../utils/room-naming.util';
+import { getUserRoom } from '../utils/room-naming.util.js';
 
 @Injectable()
 export class RealtimeRoomService {

@@ -1,40 +1,26 @@
-import { useUsers } from "../../hooks/useUsers";
-import { useAuth } from "../../auth/useAuth";
-import { useFriends } from "../../hooks/useFriends";
-import { useSendFriendRequest } from "../../hooks/useFriendMutations";
+import { useState } from 'react';
+import { useAuth } from '../../auth/useAuth';
+import { useFriends } from '../../hooks/useFriends';
+import { useUserSearch } from '../../hooks/useUserSearch';
+import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 
 export function AddFriend() {
+  const [username, setUsername] = useState('');
+
   const {
     data: users,
     isLoading: isUsersLoading,
     isError: isUsersError,
-  } = useUsers();
+  } = useUserSearch(username);
 
-	const {
-	user: currentUser,
-	loading: isCurrentUserLoading,
-	} = useAuth();
+  const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
 
-  const {
-    data: friends,
-  } = useFriends();
+  const { data: friends } = useFriends();
 
   const sendFriendRequestMutation = useSendFriendRequest();
 
-  if (isUsersLoading || isCurrentUserLoading) {
-    return (
-      <p className="text-muted-foreground">
-        Loading users...
-      </p>
-    );
-  }
-
-  if (isUsersError) {
-    return (
-      <p className="text-destructive">
-        Failed to load users.
-      </p>
-    );
+  if (isCurrentUserLoading) {
+    return <p>Loading...</p>;
   }
 
   const friendIds = new Set(
@@ -60,9 +46,37 @@ export function AddFriend() {
         Add Friend
       </h2>
 
-      {availableUsers.length === 0 ? (
+      <input
+        type="text"
+        placeholder="Search by username"
+        value={username}
+        onChange={(event) => {
+          setUsername(event.target.value);
+        }}
+        className="
+          w-full
+          rounded-lg
+          border
+          px-3
+          py-2
+        "
+      />
+
+      {username.trim().length < 2 ? (
         <p className="text-muted-foreground">
-          No users available.
+          Enter at least 2 characters to search.
+        </p>
+      ) : isUsersLoading ? (
+        <p className="text-muted-foreground">
+          Searching...
+        </p>
+      ) : isUsersError ? (
+        <p className="text-destructive">
+          Failed to search users.
+        </p>
+      ) : availableUsers.length === 0 ? (
+        <p className="text-muted-foreground">
+          No users found.
         </p>
       ) : (
         <div className="space-y-3">
@@ -78,15 +92,9 @@ export function AddFriend() {
                 p-4
               "
             >
-              <div>
-                <p className="font-medium">
-                  {user.username}
-                </p>
-
-                <p className="text-sm text-muted-foreground">
-                  {user.email}
-                </p>
-              </div>
+              <p className="font-medium">
+                {user.username}
+              </p>
 
               <button
                 className="
@@ -97,7 +105,9 @@ export function AddFriend() {
                   text-primary-foreground
                   disabled:opacity-50
                 "
-                disabled={sendFriendRequestMutation.isPending}
+                disabled={
+                  sendFriendRequestMutation.isPending
+                }
                 onClick={() =>
                   sendFriendRequestMutation.mutate({
                     addresseeId: user.id,
@@ -105,8 +115,8 @@ export function AddFriend() {
                 }
               >
                 {sendFriendRequestMutation.isPending
-                  ? "Sending..."
-                  : "Add Friend"}
+                  ? 'Sending...'
+                  : 'Add Friend'}
               </button>
             </div>
           ))}

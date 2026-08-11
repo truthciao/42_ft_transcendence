@@ -1,18 +1,12 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ZodValidationPipe } from 'nestjs-zod';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ALLOWED_ORIGINS } from './config/cors.config';
+import { AppModule } from './app.module.js';
+import { ALLOWED_ORIGINS } from './config/cors.config.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  app.useGlobalPipes(new ZodValidationPipe());
 
   app.enableCors({
     origin: ALLOWED_ORIGINS,

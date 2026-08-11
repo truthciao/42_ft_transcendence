@@ -1,9 +1,5 @@
 {
-  "moduleFileExtensions": [
-    "js",
-    "json",
-    "ts"
-  ],
+  "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": "test/.*\\.e2e-spec\\.ts$",
@@ -11,11 +7,13 @@
     "^.+\\.ts$": [
       "ts-jest",
       {
-        "tsconfig": "tsconfig.spec.json"
+        "tsconfig": "<rootDir>/test/tsconfig.spec.json",
+        "useESM": false
       }
     ]
   },
   "moduleNameMapper": {
+    "^@repo/shared-types$": "<rootDir>/../../packages/shared-types/src/index.ts",
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
 }

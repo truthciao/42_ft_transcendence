@@ -14,9 +14,9 @@ import { AppLayout } from '@/layouts/AppLayout';
 import {
   ChatEmptyState,
   ChatPage,
-  ConversationListSidebar,
   ConversationPage,
 } from '@/pages/app/ChatPage';
+import { ConversationListSidebar } from '@/components/chat/ChatSidebar';
 import { FriendsPage } from '@/pages/FriendsPage';
 import { FriendsSidebar } from '@/components/friends/FriendsSidebar';
 import { FriendProfilePage } from '@/pages/FriendProfilePage';
@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
           {
             path: 'chat',
             element: <ChatPage />,
-            handle: { SecondarySidebar: () => <ConversationListSidebar /> },
+            handle: { secondarySidebar: () => <ConversationListSidebar /> },
             children: [
               { index: true, element: <ChatEmptyState /> },
               { path: ':conversationId', element: <ConversationPage /> },

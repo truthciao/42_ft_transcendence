@@ -51,6 +51,7 @@ services:
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
       JWT_SECRET: development-secret
       WEB_ORIGIN: http://localhost:5173
+      GENERATE_PRISMA: "true"
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -61,7 +62,7 @@ services:
 
     ports:
       - '3000:3000'
-
+  
     depends_on:
       migrate:
         condition: service_completed_successfully

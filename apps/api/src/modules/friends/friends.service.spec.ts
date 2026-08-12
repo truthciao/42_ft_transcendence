@@ -55,14 +55,15 @@ const deleteFriendship = jest.fn<() => Promise<unknown>>();
 
 const mockChatService = {
   createDirectConversation: jest.fn(
-    async (userId: number, targetUserId: number) => ({
-      id: 1,
-      type: 'DIRECT',
-      name: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      members: [],
-    }),
+    (_userId: number, _targetUserId: number) => 
+      Promise.resolve({
+        id: 1,
+        type: 'DIRECT',
+        name: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        members: [],
+      }),
   ),
 };
 

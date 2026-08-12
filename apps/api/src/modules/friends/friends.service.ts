@@ -1,15 +1,22 @@
 import {
   BadRequestException,
   ForbiddenException,
+  forwardRef,
   Injectable,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { FriendshipStatus } from '../../generated/prisma/enums.js';
+import { ChatService } from '../chat/chat.service.js';
 
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService,
+  ) {}
 
   async sendRequest(requesterId: number, addresseeId: number) {
     if (requesterId === addresseeId)
@@ -62,7 +69,7 @@ export class FriendsService {
   }
 
   async acceptRequest(requestId: number, userId: number) {
-    const friendship = await this.getRequestOrThrow(requestId);
+  const friendship = await this.getRequestOrThrow(requestId);
     if (friendship.addresseeId !== userId) {
       throw new ForbiddenException(
         'Only the recipient can accept this request',
@@ -71,11 +78,26 @@ export class FriendsService {
     if (friendship.status !== FriendshipStatus.PENDING) {
       throw new BadRequestException('This request is no longer pending');
     }
-
-    return this.prisma.friendship.update({
+ 
+    const updatedFriendship = await this.prisma.friendship.update({
       where: { id: requestId },
       data: { status: FriendshipStatus.ACCEPTED },
     });
+
+    const otherUserId =
+      friendship.requesterId === userId
+        ? friendship.addresseeId
+        : friendship.requesterId;
+
+    try {
+      console.log(`[FriendsService] Creating direct conversation between user ${userId} and target user ${otherUserId}`);
+      const conv = await this.chatService.createDirectConversation(userId, otherUserId);
+      console.log('[FriendsService] Created conversation result:', conv?.id);
+    } catch (error) {
+      console.error('[FriendsService Error] Failed to create conversation after accepting friend:', error);
+    }
+ 
+    return updatedFriendship;
   }
 
   async rejectRequest(requestId: number, userId: number) {

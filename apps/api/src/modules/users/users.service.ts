@@ -65,6 +65,33 @@ export class UsersService {
     });
   }
 
+  async findCurrentUser(id: number) {
+  const user = await this.prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      profile: {
+        select: {
+          avatarUrl: true,
+        },
+      },
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    avatarUrl: user.profile?.avatarUrl ?? null,
+  };
+}
+
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({
       where: {

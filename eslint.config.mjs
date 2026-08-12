@@ -94,7 +94,15 @@ export default tseslint.config(
       },
     },
 
-    rules: commonRules,
+    rules: {
+      ...commonRules,
+      // ---- 测试文件专属放宽 ----
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+    }
   },
 
   /*

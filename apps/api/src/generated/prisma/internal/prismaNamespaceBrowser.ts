@@ -56,6 +56,7 @@ export const ModelName = {
   OAuthAccount: 'OAuthAccount',
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
+  WorkspaceInvite: 'WorkspaceInvite',
   Conversation: 'Conversation',
   ConversationMember: 'ConversationMember',
   Message: 'Message',
@@ -120,6 +121,7 @@ export type OAuthAccountScalarFieldEnum = (typeof OAuthAccountScalarFieldEnum)[k
 export const WorkspaceScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -139,10 +141,31 @@ export const WorkspaceMemberScalarFieldEnum = {
 export type WorkspaceMemberScalarFieldEnum = (typeof WorkspaceMemberScalarFieldEnum)[keyof typeof WorkspaceMemberScalarFieldEnum]
 
 
+export const WorkspaceInviteScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  inviterId: 'inviterId',
+  inviteeId: 'inviteeId',
+  email: 'email',
+  role: 'role',
+  status: 'status',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  respondedAt: 'respondedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkspaceInviteScalarFieldEnum = (typeof WorkspaceInviteScalarFieldEnum)[keyof typeof WorkspaceInviteScalarFieldEnum]
+
+
 export const ConversationScalarFieldEnum = {
   id: 'id',
   type: 'type',
   name: 'name',
+  workspaceId: 'workspaceId',
+  isDefault: 'isDefault',
+  createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -18,7 +18,8 @@ interface CustomAuthenticatedRequest extends Request {
 }
 
 export function parseWorkspaceId(req: Request): number {
-  const parsed = Number(req.params.id);
+  const raw = req.params.id ?? req.params.workspaceId;
+  const parsed = Number(raw);
   // ✅ 逻辑修正：如果不是整数，或者小于等于 0，抛出异常
   if (!Number.isInteger(parsed) || parsed <= 0) {
     throw new BadRequestException('Invalid workspace ID');

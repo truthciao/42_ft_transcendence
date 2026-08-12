@@ -35,7 +35,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Req() req: RequestWithUser) {
-    return this.usersService.findById(req.user.userId);
+    return this.usersService.findCurrentUser(req.user.userId);
   }
 
   @Post()

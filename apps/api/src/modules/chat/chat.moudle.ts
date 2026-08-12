@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { RealtimeMoudule } from '../realtime/realtime.module.js';
+import { forwardRef, Module } from '@nestjs/common';
 import { ChatController } from './chat.controller.js';
 import { ChatService } from './chat.service.js';
-import { ChatGateway } from './gateways/chat.gateway.js';
+import { FriendsModule } from '../friends/friends.module.js';
 
 @Module({
-  imports: [RealtimeMoudule],
+  imports: [forwardRef(() => FriendsModule)],
   controllers: [ChatController],
-  providers: [ChatService, ChatGateway],
+  providers: [ChatService],
+  exports: [ChatService],
 })
 export class ChatModule {}

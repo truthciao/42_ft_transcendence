@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { FriendshipStatus } from '../../generated/prisma/client.js';
 import { FriendsService } from './friends.service.js';
+import { ChatService } from '../chat/chat.service.js';
 import { jest } from '@jest/globals';
 
 type MockUser = {
@@ -52,6 +53,20 @@ const updateFriendship = jest.fn<() => Promise<UpdatedFriendship>>();
 
 const deleteFriendship = jest.fn<() => Promise<unknown>>();
 
+const mockChatService = {
+  createDirectConversation: jest.fn(
+    (_userId: number, _targetUserId: number) => 
+      Promise.resolve({
+        id: 1,
+        type: 'DIRECT',
+        name: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        members: [],
+      }),
+  ),
+};
+
 describe('FriendsService', () => {
   let service: FriendsService;
 
@@ -72,7 +87,10 @@ describe('FriendsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    service = new FriendsService(prisma as unknown as PrismaService);
+    service = new FriendsService(
+      prisma as unknown as PrismaService,
+      mockChatService as unknown as ChatService,
+    );
   });
 
   describe('sendRequest', () => {
@@ -278,7 +296,10 @@ describe('FriendsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    service = new FriendsService(prisma as unknown as PrismaService);
+    service = new FriendsService(
+      prisma as unknown as PrismaService,
+      mockChatService as unknown as ChatService,
+    );
   });
 
   describe('sendRequest', () => {

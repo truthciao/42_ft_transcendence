@@ -23,7 +23,23 @@ export function ConversationListSidebar() {
   };
 
   useEffect(() => {
-    fetchConversations();
+      fetchConversations();
+
+      const handleFocus = () => {
+        fetchConversations();
+      };
+
+      const handleRefreshConversations = () => {
+        fetchConversations();
+      };
+
+      window.addEventListener('focus', handleFocus);
+
+      window.addEventListener('refresh_conversations', handleRefreshConversations);
+      return () => {
+        window.removeEventListener('focus', handleFocus);
+        window.removeEventListener('refresh_conversations', handleRefreshConversations);
+      };
   }, []);
 
   const handleStrangerChatSubmit = async (e: React.FormEvent) => {

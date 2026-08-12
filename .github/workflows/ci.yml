@@ -209,4 +209,3 @@ jobs:
 
       - name: Run API E2E tests
         run: pnpm --filter api test:e2e
-```

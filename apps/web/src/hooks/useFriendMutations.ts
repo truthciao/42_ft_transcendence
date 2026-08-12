@@ -35,6 +35,12 @@ export function useAcceptFriendRequest() {
       queryClient.invalidateQueries({
         queryKey: ['friendRequests'],
       });
+
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+
+      if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('refresh_conversations'));
+      }
     },
   });
 }
@@ -63,6 +69,8 @@ export function useRemoveFriend() {
       queryClient.invalidateQueries({
         queryKey: ['friends'],
       });
+
+      window.dispatchEvent(new Event('refresh_conversations'));
     },
   });
 }

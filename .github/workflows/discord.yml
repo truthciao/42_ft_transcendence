@@ -1,9 +1,13 @@
-name: Notify Discord on PR ready for review
+name: Notify Discord on main updates and PR open
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - opened
+      - ready_for_review
 
 permissions:
   contents: read
@@ -19,23 +23,58 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
           ACTOR: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          UPDATED_AT: ${{ github.event.pull_request.updated_at || github.event.head_commit.timestamp }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          UPDATED_AT: ${{ github.event.pull_request.updated_at }}
+          PUSH_MESSAGE: ${{ github.event.head_commit.message }}
+          PUSH_URL: ${{ github.event.head_commit.url }}
         run: |
           set -euo pipefail
 
-          EPOCH=$(date -d "$UPDATED_AT" +%s)
-
-          if [ -n "$PR_BODY" ]; then
-            DESCRIPTION=$(printf '%s' "$PR_BODY" | head -20 | head -c 1000)
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            TITLE="$PR_TITLE"
+            LINK="$PR_URL"
+            DESCRIPTION="${PR_BODY:-No pull request description.}"
+            if [ -n "$PR_BODY" ]; then
+              DESCRIPTION=$(printf '%s' "$PR_BODY" | head -20 | head -c 1000)
+            else
+              DESCRIPTION="No pull request description."
+            fi
+            EMBED_TITLE="🔔 New Pull Request"
           else
-            DESCRIPTION="No pull request description."
+            PR_DATA=$(curl -s \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/$REPOSITORY/commits/$HEAD_SHA/pulls")
+
+            API_TITLE=$(echo "$PR_DATA" | jq -r '.[0].title // empty')
+            API_BODY=$(echo "$PR_DATA" | jq -r '.[0].body // ""')
+            API_URL=$(echo "$PR_DATA" | jq -r '.[0].html_url // empty')
+
+            if [ -n "$API_TITLE" ]; then
+              TITLE="$API_TITLE"
+              LINK="$API_URL"
+              DESCRIPTION="$API_BODY"
+            else
+              TITLE=$(printf '%s' "$PUSH_MESSAGE" | head -1)
+              LINK="$PUSH_URL"
+              DESCRIPTION="No pull request description."
+            fi
+
+            if [ -n "$DESCRIPTION" ] && [ "$DESCRIPTION" != "No pull request description." ]; then
+              DESCRIPTION=$(printf '%s' "$DESCRIPTION" | head -20 | head -c 1000)
+            fi
+
+            EMBED_TITLE="🚀 Main updated"
           fi
+
+          EPOCH=$(date -d "$UPDATED_AT" +%s)
 
           CI_STATUS="⏳ Waiting for CI..."
           RUN_DATA=$(curl -s \
@@ -78,17 +117,18 @@ jobs:
 
           PAYLOAD=$(jq -n \
             --arg actor "$ACTOR" \
-            --arg title "$PR_TITLE" \
+            --arg title "$TITLE" \
             --arg description "$DESCRIPTION" \
             --arg ci "$CI_STATUS" \
-            --arg link "$PR_URL" \
+            --arg link "$LINK" \
             --arg file_list "$FILE_LIST" \
             --argjson epoch "$EPOCH" \
+            --arg embed_title "$EMBED_TITLE" \
             '{
               content: "",
               embeds: [
                 {
-                  title: "🚀 PR ready for review",
+                  title: $embed_title,
                   url: $link,
                   color: 5814783,
                   fields: [

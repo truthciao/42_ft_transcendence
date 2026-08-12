@@ -23,10 +23,12 @@ model User {
   updatedAt     DateTime       @updatedAt
   profile       Profile?
 
-  ownedWorkspaces   Workspace[]
-  workspaceMembers  WorkspaceMember[]
+  ownedWorkspaces       Workspace[]
+  workspaceMembers      WorkspaceMember[]
+  sentSpaceRequests     WorkspaceInvite[]  @relation("InviteSender")
+  receivedSpaceRequests WorkspaceInvite[]  @relation("InviteReceiver")
 
-  ConversationMember  ConversationMember[]
+  conversationMember  ConversationMember[]
   messages            Message[]
 
   sentFriendRequests      Friendship[]  @relation("FriendshipRequester")
@@ -59,15 +61,19 @@ model OAuthAccount {
 model Workspace {
   id        Int               @id @default(autoincrement())
   name      String
+  slug      String?           @unique
   ownerId   Int
   owner     User              @relation(fields: [ownerId], references: [id])
   members  WorkspaceMember[]
+  invites  WorkspaceInvite[]
+  channels Conversation[]
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 }
 
 enum  WorkspaceRole {
   OWNER
+  ADMIN
   MEMBER
 }
 
@@ -81,21 +87,58 @@ model WorkspaceMember {
   joinedAt    DateTime        @default(now())
 
   @@unique([workspaceId, userId])
+  @@index([userId])
+  @@index([workspaceId, role])
+}
+
+enum WorkspaceInviteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  REVOKED
+}
+
+model WorkspaceInvite {
+  id          Int                    @id @default(autoincrement())
+  workspaceId Int
+  workspace   Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  inviterId   Int
+  inviter     User                   @relation("InviteSender", fields: [inviterId], references: [id])
+  inviteeId   Int?
+  invitee     User?                  @relation("InviteReceiver", fields: [inviteeId], references: [id])
+  email       String?
+  role        WorkspaceRole
+  status      WorkspaceInviteStatus
+  token       String                 @unique
+  expiresAt   DateTime
+  respondedAt DateTime?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([inviteeId, status])
+  @@index([workspaceId, status])
 }
 
 enum ConversationType {
   DIRECT
   GROUP
+  CHANNEL
 }
 
 model Conversation {
   id           Int                  @id @default(autoincrement())
   type         ConversationType     @default(DIRECT)
   name         String?
+  workspaceId  Int?
+  workspace    Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  isDefault    Boolean              @default(false)
+  createdById  Int?
   members      ConversationMember[]
   messages     Message[]
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
+
+  @@index([workspaceId, type])
 }
 
 model ConversationMember {

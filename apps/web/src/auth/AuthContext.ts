@@ -1,10 +1,5 @@
 import { createContext } from 'react';
-
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-}
+import type { User } from '@repo/shared-types';
 
 export interface AuthContextType {
   user: User | null;

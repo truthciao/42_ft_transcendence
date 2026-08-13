@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
-import { useAuth } from '../auth/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { httpPost } from '../lib/http';
 

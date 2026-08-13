@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../../auth/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { useFriends } from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';

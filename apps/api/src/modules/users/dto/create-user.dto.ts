@@ -1,4 +1,4 @@
 import { createZodDto } from 'nestjs-zod';
-import { userSchema } from '@repo/shared-types';
+import { createUserSchema } from '@repo/shared-types';
 
-export class CreateUserDto extends createZodDto(userSchema) {}
+export class CreateUserDto extends createZodDto(createUserSchema) {}

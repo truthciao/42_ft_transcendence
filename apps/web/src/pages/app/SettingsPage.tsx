@@ -44,6 +44,7 @@ export function SettingsPage() {
 }
 
 export function AccountSettingsPage() {
+
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
   
   // States to control setup modal, secret key, otpauth url, and verification code input
@@ -55,12 +56,12 @@ export function AccountSettingsPage() {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      try {
-
-        const userData = await httpGet<{ isTwoFactorEnabled: boolean }>('/users/me');
+      try {  
+        const userData = await httpGet<any>('/users/me');
 
         if (userData) {
-          setIsTwoFactorEnabled(userData.isTwoFactorEnabled);
+          const status = userData.isTwoFactorEnabled ?? userData.twoFactorEnabled ?? false;
+          setIsTwoFactorEnabled(Boolean(status));
         }
       } catch (error: any) {
           console.error('Failed to fetch user profile: ', error.message);
@@ -121,7 +122,8 @@ interface TwoFactorGenerateResponse {
     setLoading(true);
     try {
       await httpPost('/auth/2fa/toggle', {
-        enabled: false
+        enabled: false,
+        isTwoFactorEnabled: false,
       });
 
         setIsTwoFactorEnabled(false);

@@ -71,8 +71,10 @@ export function LoginPage() {
       // If 2FA is not enabled, log in successfully directly
       if (data && data.access_token) {
         localStorage.setItem("access_token", data.access_token);
+        
         await refreshUser();
-        navigate("/app/chat");
+       
+        navigate('/app/chat', { replace: true });
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -97,6 +99,10 @@ export function LoginPage() {
 
     if (data && data.access_token) {
       localStorage.setItem('access_token', data.access_token);
+      
+      await refreshUser();
+
+      navigate('/app/chat', { replace: true});
     }
   } catch (error: any) {
     console.error('2FA verification failed:', error.message);

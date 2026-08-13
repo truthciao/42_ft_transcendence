@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react'; // Import QR code rendering library
 import { NavLink } from 'react-router';
+import { httpGet, httpPost } from '../../lib/http';
 
 export function SettingsSidebar() {
   return (
@@ -55,45 +56,38 @@ export function AccountSettingsPage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        const response = await fetch('http://localhost:3000/users/me', { 
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const userData = await response.json();
-        if (response.ok && userData) {
+
+        const userData = await httpGet<{ isTwoFactorEnabled: boolean }>('/users/me');
+
+        if (userData) {
           setIsTwoFactorEnabled(userData.isTwoFactorEnabled);
         }
-      } catch (e) {
-        console.error('Failed to fetch user profile', e);
+      } catch (error: any) {
+          console.error('Failed to fetch user profile: ', error.message);
       }
     };
     fetchUserProfile();
   }, []);
 
+interface TwoFactorGenerateResponse {
+  otpauthUrl: string;
+  secret: string;
+}
+
   // Step 1: Request backend to generate 2FA secret and QR code URL
   const handleStartEnable2FA = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3000/auth/2fa/generate', {
-        method: 'POST',
-        headers: {  
-          'Authorization': `Bearer ${token}`,  
-          'Content-Type': 'application/json'  
-        },
-      });
+      const data = await httpPost<TwoFactorGenerateResponse>('/auth/2fa/generate');
 
-      const data = await response.json();
-      if (response.ok) {
-        setOtpauthUrl(data.otpauthUrl);
-        setSecret(data.secret);
-        setShowSetupModal(true); // Open the QR code configuration setup modal
-      } else {
-        alert(data.message || 'Failed to generate 2FA secret');
-      }
-    } catch (error) {
+    if (data && data.otpauthUrl) {
+      setOtpauthUrl(data.otpauthUrl);
+      setSecret(data.secret);
+      setShowSetupModal(true);
+    }
+    } catch (error: any) {
       console.error('Error generating 2FA:', error);
-      alert('Network error while generating 2FA');
+      alert(error.message || 'Failed to generate 2FA secret');
     } finally {
       setLoading(false);
     }
@@ -104,60 +98,40 @@ export function AccountSettingsPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3000/auth/2fa/turn-on', {
-        method: 'POST',
-        headers: {  
-          'Authorization': `Bearer ${token}`,  
-          'Content-Type': 'application/json'  
-        },
-        body: JSON.stringify({ code: verifyCode.trim() })
+      await httpPost('/auth/2fa/turn-on', { 
+        code: verifyCode.trim(),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        setIsTwoFactorEnabled(true);
-        setShowSetupModal(false); // Close the modal
-        setVerifyCode('');
-        alert('2FA enabled successfully!');
-      } else {
-        alert(data.message || 'Invalid verification code');
-      }
-    } catch (error) {
+    setIsTwoFactorEnabled(true);
+    setShowSetupModal(false); 
+    setVerifyCode('');
+    alert('2FA enabled successfully!');
+
+    } catch (error: any) {
       console.error('Error turning on 2FA:', error);
-      alert('Network error');
+      alert(error.message || 'Invalid verification code');
     } finally {
       setLoading(false);
     }
   };
 
-  // Disable 2FA functionality
-  const handleDisable2FA = async () => {
+ const handleDisable2FA = async () => {
     if (!confirm('Are you sure you want to disable 2FA?')) return;
-    
+   
+    setLoading(true);
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3000/auth/2fa/toggle', {
-        method: 'POST',
-        headers: {  
-          'Authorization': `Bearer ${token}`,  
-          'Content-Type': 'application/json'  
-        },
-        body: JSON.stringify({ enabled: false })
+      await httpPost('/auth/2fa/toggle', {
+        enabled: false
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
         setIsTwoFactorEnabled(false);
         alert('2FA disabled');
-      } else {
-        alert(`Failed to disable 2FA: ${data.message || 'Unknown error'}`);
-      }
-    } catch (error) {
-      console.error('Error disabling 2FA:', error);
-      alert('Network error');
-    }
+     } catch (error: any) {
+        console.error('Error disabling 2FA:', error);
+        alert(`Failed to disable 2FA: ${error.message || 'Unknown error'}`);
+     } finally {
+      setLoading(false);
+     }
   };
 
   return (

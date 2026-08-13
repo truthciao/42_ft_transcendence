@@ -2,15 +2,29 @@ import { useState } from 'react';
 import { useFriends } from '../../hooks/useFriends';
 import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { FriendCard } from './FriendCard';
+import { useConfirm } from '@/lib/confirm-context';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();
 
   const removeFriendMutation = useRemoveFriend();
 
+  const confirm = useConfirm();
+
   const [removingFriendId, setRemovingFriendId] = useState<number | null>(null);
 
-  const handleRemoveFriend = (friendId: number) => {
+  const handleRemoveFriend = async (friendId: number) => {
+    const confirmed = await confirm({
+      title: 'Remove friend?',
+      description: 'Are you sure you want to remove this friend?',
+      confirmLabel: 'Remove',
+      variant: 'destructive',
+    });
+
+    if (!confirmed) {
+      return;
+    }
+    
     setRemovingFriendId(friendId);
 
     removeFriendMutation.mutate(friendId, {

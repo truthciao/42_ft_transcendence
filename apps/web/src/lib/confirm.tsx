@@ -35,7 +35,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       <ConfirmDialog
         open={pending !== null}
         title={pending?.title ?? ''}
-        description={pending?.confirmLabel ?? ''}
+        description={pending?.description ?? ''}
         confirmLabel={pending?.confirmLabel ?? ''}
         cancelLabel={pending?.cancelLabel ?? ''}
         variant={pending?.variant}

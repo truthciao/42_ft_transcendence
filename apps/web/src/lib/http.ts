@@ -79,16 +79,7 @@ export async function http<T>(
     return undefined as T;
   }
 
-  const text = await response.text();
-  if (!text) {
-    return undefined as T;
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    return text as unknown as T;
-  }
+  return response.json() as Promise<T>;
 }
 
 export const httpGet = <T>(path: string, options?: HttpOptions) =>

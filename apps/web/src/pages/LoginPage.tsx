@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router';
 import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
 import { useTranslation } from 'react-i18next';
+import { httpPost } from '../lib/http';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -81,41 +82,27 @@ export function LoginPage() {
     }
   }
 
-  // Stage 2: Submit 6-digit TOTP code to complete final login
   async function handleVerify2FA(event: FormEvent) {
     event.preventDefault();
     setIsSubmitting(true);
     setStatus('loggingIn');
 
-    try {
-      const response = await fetch('http://localhost:3000/auth/login-2fa', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-          code: totpCode.trim(),
-        }),
-      });
+  try {
+    const data = await httpPost<{ access_token: string }>('/auth/login-2fa', {
+      userId: userId,
+      code: totpCode.trim(),
+    }, {
+      auth: false, 
+    });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || '2FA verification failed');
-      }
-
-      if (data && data.access_token) {
-        localStorage.setItem("access_token", data.access_token);
-        await refreshUser();
-        navigate("/app/chat");
-      }
-    } catch (error: any) {
-      console.error('2FA Verification error:', error);
-      setStatus("failed");
-    } finally {
-      setIsSubmitting(false);
+    if (data && data.access_token) {
+      localStorage.setItem('access_token', data.access_token);
     }
+  } catch (error: any) {
+    console.error('2FA verification failed:', error.message);
+    setStatus(error.message);
+  }
+
   }
 
   const handleGoogleLogin = () => {

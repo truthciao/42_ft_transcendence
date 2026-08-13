@@ -72,6 +72,7 @@ export class UsersService {
       id: true,
       email: true,
       username: true,
+      isTwoFactorEnabled: true,
       profile: {
         select: {
           avatarUrl: true,
@@ -88,6 +89,7 @@ export class UsersService {
     id: user.id,
     email: user.email,
     username: user.username,
+    isTwoFactorEnabled: user.isTwoFactorEnabled,
     avatarUrl: user.profile?.avatarUrl ?? null,
   };
 }

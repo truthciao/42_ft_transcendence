@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { AddFriend } from '../components/friends/AddFriend';
-import { FriendList } from '../components/friends/FriendList';
-import { FriendRequests } from '../components/friends/FriendRequests';
+import { AddFriend } from '../../components/friends/AddFriend';
+import { FriendList } from '../../components/friends/FriendList';
+import { FriendRequests } from '../../components/friends/FriendRequests';
 
 export function FriendsPage() {
   const [showAddFriend, setShowAddFriend] = useState(false);

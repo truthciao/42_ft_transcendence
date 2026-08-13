@@ -6,7 +6,7 @@ import { PageError } from '@/components/common/PageError';
 import { SkeletonText } from '@/components/common/Skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useProfile, useUpdateProfile } from '../hooks/useProfile';
+import { useProfile, useUpdateProfile } from '../../hooks/useProfile';
 import { toast } from 'sonner';
 
 export function ProfilePage() {

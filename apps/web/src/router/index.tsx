@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import { HomePage } from '../pages/HomePage';
-import { ProfilePage } from '../pages/ProfilePage';
+import { ProfilePage } from '../pages/app/ProfilePage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { LoginPage } from '../pages/LoginPage';
 import { ProtectedRoute } from '../components/ProtectedRoute';
@@ -17,9 +17,9 @@ import {
   ConversationPage,
 } from '@/pages/app/ChatPage';
 import { ConversationListSidebar } from '@/components/chat/ChatSidebar';
-import { FriendsPage } from '@/pages/FriendsPage';
+import { FriendsPage } from '@/pages/app/FriendsPage';
 import { FriendsSidebar } from '@/components/friends/FriendsSidebar';
-import { FriendProfilePage } from '@/pages/FriendProfilePage';
+import { FriendProfilePage } from '@/pages/app/FriendProfilePage';
 import {
   SpacesPage,
   SpacesSidebar,

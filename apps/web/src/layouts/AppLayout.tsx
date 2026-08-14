@@ -3,7 +3,6 @@ import { Outlet, useMatches } from 'react-router';
 import { TopBar } from '@/components/layout/TopBar';
 import { TabRail } from '@/components/layout/TabRail';
 import { SecondarySidebar } from '@/components/layout/SecondarySidebar';
-import { ConfirmProvider } from '@/lib/confirm';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { Toaster } from 'sonner';
 
@@ -22,7 +21,7 @@ export function AppLayout() {
     .find(Boolean);
 
   return (
-    <ConfirmProvider>
+    <>
       <div className="grid h-dvh min-h-0 grid-cols-[72px_260px_1fr] grid-rows-[56px_minmax(0,1fr)] overflow-hidden bg-background">
         <header className="col-span-3 min-w-0 border-b border-border">
           <TopBar />
@@ -39,6 +38,6 @@ export function AppLayout() {
         </main>
       </div>
       <Toaster />
-    </ConfirmProvider>
+    </>
   );
 }

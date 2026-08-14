@@ -36,5 +36,17 @@ export type {
   ProfileResponse,
 } from './profile.js';
 
-export { userSchema } from './users.js';
-export type { User } from './users.js';
+export {
+  userSchema,
+  createUserSchema,
+  currentUserSchema,
+  userSearchResultSchema,
+  userSearchResultsSchema,
+} from './users.js';
+
+export type {
+  User,
+  CreateUserPayload,
+  CurrentUser,
+  UserSearchResult,
+} from './users.js';

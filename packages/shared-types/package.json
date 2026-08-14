@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "build": "tsc -b --force"
+    "build": "tsc -b --force",
+    "dev": "tsc -b --watch --preserveWatchOutput"
   },
   "dependencies": {
     "zod": "^4.4.3"

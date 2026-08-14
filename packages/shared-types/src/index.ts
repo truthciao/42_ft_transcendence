@@ -13,6 +13,16 @@ export type {
 } from './auth.js';
 
 export {
+  createConversationSchema,
+  sendMessageSchema,
+} from './chat.js';
+
+export type {
+  CreateConversationPayload,
+  SendMessagePayload,
+} from './chat.js';
+
+export {
   friendSchema,
   sendFriendRequestSchema,
   messageResponseSchema,

@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UsePipes } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -14,6 +14,7 @@ import { ChatService } from '../chat.service.js';
 import { SendMessageDto } from '../dto/send-message.dto.js';
 import { getChatRoom } from '../utils/chat-room-naming.util.js';
 import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard.js';
+import { WsZodValidationPipe } from '../../realtime/pipes/ws-zod-validation.pipe.js';
 
 @WebSocketGateway({
   cors: {
@@ -22,6 +23,7 @@ import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard.js';
   },
 })
 @UseGuards(WsJwtGuard)
+@UsePipes(new WsZodValidationPipe())
 export class ChatGateway {
   constructor(
     private readonly chatService: ChatService,
@@ -33,6 +35,9 @@ export class ChatGateway {
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: SendMessageDto,
   ): Promise<void> {
+
+    console.log(' NEW CHAT GATEWAY CODE ');
+
     const senderId = client.data.user.userId;
 
     try {

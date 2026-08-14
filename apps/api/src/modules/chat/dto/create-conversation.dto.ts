@@ -1,7 +1,6 @@
-import { IsInt, Min } from 'class-validator';
+import { createZodDto } from 'nestjs-zod';
+import { createConversationSchema } from '@repo/shared-types';
 
-export class CreateConversationDto {
-  @IsInt()
-  @Min(1)
-  targetUserId!: number;
-}
+export class CreateConversationDto extends createZodDto(
+  createConversationSchema,
+) {}

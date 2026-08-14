@@ -9,6 +9,8 @@ import { FriendshipStatus } from '../../generated/prisma/client.js';
 import { FriendsService } from './friends.service.js';
 import { ChatService } from '../chat/chat.service.js';
 import { jest } from '@jest/globals';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 
 type MockUser = {
   id: number;
@@ -67,6 +69,10 @@ const mockChatService = {
   ),
 };
 
+const mockRealtimeRoomService = {
+  emitTouser: jest.fn(),
+};
+
 describe('FriendsService', () => {
   let service: FriendsService;
 
@@ -90,6 +96,7 @@ describe('FriendsService', () => {
     service = new FriendsService(
       prisma as unknown as PrismaService,
       mockChatService as unknown as ChatService,
+      mockRealtimeRoomService as unknown as RealtimeRoomService,
     );
   });
 
@@ -170,6 +177,14 @@ describe('FriendsService', () => {
           status: FriendshipStatus.PENDING,
         },
       });
+      expect(mockRealtimeRoomService.emitTouser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
+        {
+          friendshipId: 1,
+          requesterId: 1,
+        },
+      );
     });
   });
 
@@ -299,6 +314,7 @@ describe('FriendsService', () => {
     service = new FriendsService(
       prisma as unknown as PrismaService,
       mockChatService as unknown as ChatService,
+      mockRealtimeRoomService as unknown as RealtimeRoomService,
     );
   });
 
@@ -379,6 +395,14 @@ describe('FriendsService', () => {
           status: FriendshipStatus.PENDING,
         },
       });
+      expect(mockRealtimeRoomService.emitTouser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
+        {
+          friendshipId: 1,
+          requesterId: 1,
+        },
+      );
     });
   });
 

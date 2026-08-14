@@ -9,6 +9,8 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { FriendshipStatus } from '../../generated/prisma/enums.js';
 import { ChatService } from '../chat/chat.service.js';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 
 @Injectable()
 export class FriendsService {
@@ -16,6 +18,7 @@ export class FriendsService {
     private readonly prisma: PrismaService,
     @Inject(forwardRef(() => ChatService))
     private readonly chatService: ChatService,
+    private readonly realtimeRoomService: RealtimeRoomService,
   ) {}
 
   async sendRequest(requesterId: number, addresseeId: number) {
@@ -47,13 +50,24 @@ export class FriendsService {
       }
     }
 
-    return this.prisma.friendship.create({
+    const friendship = await this.prisma.friendship.create({
       data: {
         requesterId,
         addresseeId,
         status: FriendshipStatus.PENDING,
       },
     });
+
+    this.realtimeRoomService.emitTouser(
+      addresseeId,
+      REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
+      {
+        friendshipId: friendship.id,
+        requesterId,
+      },
+    );
+
+    return friendship;
   }
 
   async getPendingRequests(userId: number) {

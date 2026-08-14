@@ -49,6 +49,19 @@
     }
   },
 
+  "friends": {
+    "loading": "正在加载好友...",
+    "loadError": "加载好友失败。",
+    "empty": "你还没有好友。",
+    "removeFriend": {
+      "title": "删除好友？",
+      "description": "确定要删除这个好友吗？",
+      "confirm": "删除",
+      "success": "好友已删除",
+      "error": "删除好友失败。"
+    }
+  },
+
   "language": {
     "english": "英语",
     "french": "法语",

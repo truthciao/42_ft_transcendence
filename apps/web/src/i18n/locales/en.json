@@ -49,6 +49,19 @@
     }
   },
 
+  "friends": {
+    "loading": "Loading friends...",
+    "loadError": "Failed to load friends.",
+    "empty": "You don't have any friends yet.",
+    "removeFriend": {
+      "title": "Remove friend?",
+      "description": "Are you sure you want to remove this friend?",
+      "confirm": "Remove",
+      "success": "Friend removed",
+      "error": "Failed to remove friend."
+    }
+  },
+
   "language": {
     "english": "English",
     "french": "French",

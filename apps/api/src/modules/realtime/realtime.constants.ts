@@ -9,4 +9,5 @@ export const REALTIME_EVENTS = {
   ROOM_LEFT: 'room:left',
   ROOM_MEMBER_JOINED: 'room:member-joined',
   ROOM_MEMBER_LEFT: 'room:member-left',
+  FRIEND_REQUEST_RECEIVED: 'friend-request:received',
 } as const;

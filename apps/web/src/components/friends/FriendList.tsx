@@ -3,6 +3,8 @@ import { useFriends } from '../../hooks/useFriends';
 import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { FriendCard } from './FriendCard';
 import { useConfirm } from '@/lib/confirm-context';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();
@@ -13,11 +15,13 @@ export function FriendList() {
 
   const [removingFriendId, setRemovingFriendId] = useState<number | null>(null);
 
+  const { t } = useTranslation();
+
   const handleRemoveFriend = async (friendId: number) => {
     const confirmed = await confirm({
-      title: 'Remove friend?',
-      description: 'Are you sure you want to remove this friend?',
-      confirmLabel: 'Remove',
+      title: t('friends.removeFriend.title'),
+      description: t('friends.removeFriend.description'),
+      confirmLabel: t('friends.removeFriend.confirm'),
       variant: 'destructive',
     });
 
@@ -28,6 +32,12 @@ export function FriendList() {
     setRemovingFriendId(friendId);
 
     removeFriendMutation.mutate(friendId, {
+      onSuccess: () => {
+        toast.success(t('friends.removeFriend.success'));
+      },
+      onError: () => {
+        toast.error(t('friends.removeFriend.error'));
+      },
       onSettled: () => {
         setRemovingFriendId(null);
       },
@@ -35,16 +45,16 @@ export function FriendList() {
   };
 
   if (isLoading) {
-    return <p className="text-muted-foreground">Loading friends...</p>;
+    return <p className="text-muted-foreground">{t('friends.loading')}</p>;
   }
 
   if (isError) {
-    return <p className="text-destructive">Failed to load friends.</p>;
+    return <p className="text-destructive">{t('friends.loadError')}</p>;
   }
 
   if (!friends || friends.length === 0) {
     return (
-      <p className="text-muted-foreground">You don't have any friends yet.</p>
+      <p className="text-muted-foreground">{t('friends.empty')}</p>
     );
   }
 

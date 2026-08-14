@@ -9,13 +9,19 @@ import { AuthProvider } from './auth/AuthProvider';
 import './index.css';
 import './i18n';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ConfirmProvider } from './lib/confirm';
+import { RealtimeProvider } from './realtime/RealtimeProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <RealtimeProvider>
+            <ConfirmProvider>
+              <RouterProvider router={router} />
+            </ConfirmProvider>
+          </RealtimeProvider>
         </AuthProvider>
         {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
       </QueryClientProvider>

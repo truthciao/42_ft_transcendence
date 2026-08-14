@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ArgumentMetadata, Injectable } from '@nestjs/common';
 import {
   ZodValidationException,
   ZodValidationPipe,
@@ -7,10 +7,13 @@ import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class WsZodValidationPipe extends ZodValidationPipe {
-  override transform(value: unknown, metadata: any) {
+  override transform(
+    value: unknown,
+    metadata: ArgumentMetadata,
+  ): unknown {
     try {
       return super.transform(value, metadata);
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof ZodValidationException) {
         const zodError = error.getZodError();
 

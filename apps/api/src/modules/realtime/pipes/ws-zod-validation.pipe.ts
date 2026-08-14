@@ -14,6 +14,7 @@ export class WsZodValidationPipe extends ZodValidationPipe {
     try {
       return super.transform(value, metadata);
     } catch (error: unknown) {
+
       if (error instanceof ZodValidationException) {
         const zodError = error.getZodError();
 

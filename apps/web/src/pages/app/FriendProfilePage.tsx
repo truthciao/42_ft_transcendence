@@ -6,7 +6,7 @@ import { PageError } from '@/components/common/PageError';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
-import { useFriends } from '../hooks/useFriends';
+import { useFriends } from '../../hooks/useFriends';
 
 export function FriendProfilePage() {
   const { t } = useTranslation();

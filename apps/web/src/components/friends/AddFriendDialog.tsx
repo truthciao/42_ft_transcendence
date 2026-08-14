@@ -21,9 +21,7 @@ export function AddFriendDialog() {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>Add Friend</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button>Add Friend</Button>} />
 
       <DialogContent>
         <DialogHeader>

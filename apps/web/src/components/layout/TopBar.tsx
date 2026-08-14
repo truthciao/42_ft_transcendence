@@ -1,7 +1,7 @@
 import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import type { User } from '@repo/shared-types';
 import { AuthContext } from './AuthContext';
-import type { User } from './AuthContext';
-
 import { getCurrentUser } from '../api/users';
+
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards, UsePipes } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -21,6 +21,7 @@ import { RealtimeRoomService } from '../services/realtime-room.service.js';
 import { SocketRegistryService } from '../services/ws-registry.service.js';
 import { WsAuthService } from '../services/ws-auth.service.js';
 import { getUserRoom } from '../utils/room-naming.util.js';
+import { WsZodValidationPipe } from '../pipes/ws-zod-validation.pipe.js';
 
 @WebSocketGateway({
   cors: {
@@ -29,6 +30,7 @@ import { getUserRoom } from '../utils/room-naming.util.js';
   },
 })
 @UseGuards(WsJwtGuard)
+@UsePipes(WsZodValidationPipe)
 export class RealtimeGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -93,6 +95,7 @@ export class RealtimeGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: JoinRoomDto,
   ): Promise<WsResponse<{ room: string; memberCount: number }>> {
+
     await this.roomService.joinRoom(client, dto.room);
     const memberCount = await this.roomService.getRoomMemberCount(dto.room);
 

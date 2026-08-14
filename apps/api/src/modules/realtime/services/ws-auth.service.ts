@@ -32,25 +32,37 @@ export class WsAuthService {
 
   async authenticate(client: Socket): Promise<AuthenticatedUser> {
     const token = this.extractToken(client);
+
     if (!token) {
       throw new WsException('Missing authentication token');
     }
 
     let payload: JwtPayload;
+
     try {
       payload = await this.jwtService.verifyAsync<JwtPayload>(token);
     } catch {
       throw new WsException('Invalid or expired token');
     }
 
+    const userId = Number(payload.sub);
+
+    if (!Number.isInteger(userId) || userId < 1) {
+      throw new WsException('Invalid token payload');
+    }
+
     const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
+      where: { id: userId },
     });
 
     if (!user) {
       throw new WsException('User no longer exists');
     }
 
-    return { userId: user.id, email: user.email, username: user.username };
+    return {
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    };
   }
 }

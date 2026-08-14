@@ -60,3 +60,7 @@ export type {
   CurrentUser,
   UserSearchResult,
 } from './users.js';
+
+export { roomSchema } from './realtime.js';
+
+export type { RoomPayload } from './realtime.js';

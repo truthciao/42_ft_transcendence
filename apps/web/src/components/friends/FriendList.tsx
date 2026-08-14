@@ -3,7 +3,7 @@ import { useFriends } from '../../hooks/useFriends';
 import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { FriendCard } from './FriendCard';
 import { useConfirm } from '@/lib/confirm-context';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();

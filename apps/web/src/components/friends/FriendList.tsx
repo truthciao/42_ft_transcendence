@@ -3,6 +3,7 @@ import { useFriends } from '../../hooks/useFriends';
 import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { FriendCard } from './FriendCard';
 import { useConfirm } from '@/lib/confirm-context';
+import { toast, Toaster } from 'sonner';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();
@@ -28,6 +29,12 @@ export function FriendList() {
     setRemovingFriendId(friendId);
 
     removeFriendMutation.mutate(friendId, {
+      onSuccess: () => {
+        toast.success('Friend removed');
+      },
+      onError: () => {
+        toast.error('Failed to remove friend');
+      },
       onSettled: () => {
         setRemovingFriendId(null);
       },

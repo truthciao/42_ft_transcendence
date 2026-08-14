@@ -49,6 +49,19 @@
     }
   },
 
+  "friends": {
+    "loading": "Chargement des amis...",
+    "loadError": "Échec du chargement des amis.",
+    "empty": "Vous n'avez pas encore d'amis.",
+    "removeFriend": {
+      "title": "Supprimer cet ami ?",
+      "description": "Êtes-vous sûr de vouloir supprimer cet ami ?",
+      "confirm": "Supprimer",
+      "success": "Ami supprimé",
+      "error": "Échec de la suppression de l'ami."
+    }
+  },
+
   "language": {
     "english": "Anglais",
     "french": "Français",

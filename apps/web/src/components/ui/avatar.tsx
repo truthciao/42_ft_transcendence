@@ -8,9 +8,11 @@ import { cn } from '@/lib/utils';
 function Avatar({
   className,
   size = 'default',
+  children,
   ...props
 }: AvatarPrimitive.Root.Props & {
   size?: 'default' | 'sm' | 'lg';
+  children?: React.ReactNode;
 }) {
   return (
     <AvatarPrimitive.Root
@@ -21,7 +23,9 @@ function Avatar({
         className,
       )}
       {...props}
-    />
+    >
+      {children} 
+    </AvatarPrimitive.Root>
   );
 }
 

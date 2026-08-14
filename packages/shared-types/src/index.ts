@@ -37,4 +37,8 @@ export type {
 } from './profile.js';
 
 export { userSchema } from './users.js';
-export type { User } from './users.js';
+
+export type {
+  User,
+  UserSearchResult,
+} from './users.js';

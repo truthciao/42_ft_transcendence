@@ -62,6 +62,8 @@ model Workspace {
   id        Int               @id @default(autoincrement())
   name      String
   slug      String?           @unique
+  description String?
+  icon      String?
   ownerId   Int
   owner     User              @relation(fields: [ownerId], references: [id])
   members  WorkspaceMember[]

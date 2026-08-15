@@ -20,4 +20,4 @@ import { WsAuthService } from './services/ws-auth.service.js';
     WsAuthService,
   ],
 })
-export class RealtimeMoudule {}
+export class RealtimeModule {}

@@ -1,8 +1,4 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { createZodDto } from "nestjs-zod";
+import { createWorkspaceSchema } from "@repo/shared-types";
 
-export class CreateWorkspaceDto {
-  @IsString()
-  @MinLength(1)
-  @MaxLength(100)
-  name!: string;
-}
+export class CreateWorkspaceDto extends createZodDto(createWorkspaceSchema) {}

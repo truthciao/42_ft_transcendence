@@ -12,7 +12,8 @@ import {
   WorkspaceMember,
   WorkspaceRole,
 } from '../../generated/prisma/client.js';
-import { CreateChannelDto, InviteMemberDto } from './dto/invite-member.dto.js';
+import { InviteMemberDto } from './dto/invite-member.dto.js';
+import { CreateChannelDto } from './dto/create-channel.dto.js';
 import { randomBytes } from 'crypto';
 import { atLeast } from './constants/role-rank.js';
 
@@ -20,10 +21,15 @@ import { atLeast } from './constants/role-rank.js';
 export class WorkspacesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(ownerId: number, name: string) {
-    return this.prisma.workspace.create({
+  async create(
+    ownerId: number,
+    dto: { name: string; description?: string; icon?: string }
+  ) {
+    const workspace = await this.prisma.workspace.create({
       data: {
-        name,
+        name: dto.name,
+        description: dto.description,
+        icon: dto.icon,
         ownerId,
         members: {
           create: {
@@ -46,10 +52,15 @@ export class WorkspacesService {
         channels: true,
       },
     });
+
+    return {
+      ...workspace,
+      myMembership: workspace.members?.find((m) => m.userId === ownerId) ?? null,
+    }
   }
 
   async findAllForUser(userId: number) {
-    return this.prisma.workspace.findMany({
+    const workspaces = await this.prisma.workspace.findMany({
       where: {
         members: {
           some: { userId },
@@ -60,6 +71,11 @@ export class WorkspacesService {
         members: true,
       },
     });
+
+    return workspaces.map((workspace) => ({
+      ...workspace,
+      myMembership: workspace.members.find((m) => m.userId === userId) ?? null,
+    }))
   }
 
   async listIncomingInvites(userId: number) {
@@ -141,7 +157,7 @@ export class WorkspacesService {
     return invite;
   }
 
-  async findOne(workspaceId: number) {
+  async findOne(workspaceId: number, membership?: WorkspaceMember) {
     const workspace = await this.prisma.workspace.findUnique({
       where: { id: workspaceId },
       include: { members: true },
@@ -150,7 +166,7 @@ export class WorkspacesService {
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-    return workspace;
+    return { ...workspace, myMembership: membership ?? null };
   }
 
   async listMembers(id: number) {
@@ -161,6 +177,9 @@ export class WorkspacesService {
           orderBy: { joinedAt: 'asc' },
           select: {
             id: true,
+            userId: true,
+            role: true,
+            joinedAt: true,
             user: {
               select: {
                 username: true,
@@ -172,22 +191,27 @@ export class WorkspacesService {
       },
     });
 
-    return workspace?.members;
+    return workspace?.members ?? [];
   }
 
-  async update(workspaceId: number, dto: { name?: string }) {
+  async update(
+    workspaceId: number,
+    dto: { name?: string; description?: string; icon?: string }
+  ) {
     return this.prisma.workspace.update({
       where: { id: workspaceId },
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.description !== undefined && { description: dto.description }),
+        ...(dto.icon !== undefined && { icon: dto.icon }),
       },
       include: { members: true },
     });
   }
 
-  async remove(worksapceId: number) {
+  async remove(workspaceId: number) {
     return this.prisma.workspace.delete({
-      where: { id: worksapceId },
+      where: { id: workspaceId },
     });
   }
 
@@ -355,7 +379,7 @@ export class WorkspacesService {
     });
   }
 
-  async changeMemeberRole(
+  async changeMemberRole(
     workspaceId: number,
     targetUserId: number,
     role: WorkspaceRole,
@@ -448,6 +472,8 @@ export class WorkspacesService {
       }),
     ]);
   }
+
+  // ---- channel ----
 
   async createChannel(
     workspaceId: number,

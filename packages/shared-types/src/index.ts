@@ -64,3 +64,5 @@ export type {
 export { roomSchema } from './realtime.js';
 
 export type { RoomPayload } from './realtime.js';
+
+export * from './workspaces.js'

@@ -4,8 +4,14 @@ import type { ChatMessage } from '../../api/chat';
 import { getConversationMessages } from '../../api/chat';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
+import { useTranslation } from 'react-i18next'; 
+
+type ConversationLocationState = {
+  friendName?: string;
+};
 
 export function ConversationPage() {
+  const { t } = useTranslation();
   const { conversationId } = useParams();
   const location = useLocation();
 
@@ -13,8 +19,14 @@ export function ConversationPage() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const friendName = (location.state as any)?.friendName;
-  const chatTitle = friendName ? `Chat with ${friendName}` : "";
+  const locationState =
+  location.state as ConversationLocationState | null;
+
+  const friendName = locationState?.friendName;
+
+  const chatTitle = friendName
+  ? t('chat.conversation.chatWith', { friendName })
+  : '';
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -22,9 +34,8 @@ export function ConversationPage() {
 
       try {
         setIsLoading(true);
-        const data: any = await getConversationMessages(conversationId);
-        const list = Array.isArray(data) ? data : (data?.data || []);
-        setMessages(list);  
+        const data = await getConversationMessages(conversationId);
+        setMessages(data);  
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {
@@ -39,10 +50,8 @@ export function ConversationPage() {
     e.preventDefault();
     if (!inputText.trim() || !conversationId) return;
 
-    try {     
-      setInputText('');      
-      } catch (error: any) { 
-    }
+    setInputText('');
+
   };
 
   return (
@@ -56,13 +65,19 @@ export function ConversationPage() {
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
         {isLoading ? (
-          <div className="text-center text-muted-foreground text-sm">Loading history...</div>
+          <div className="text-center text-muted-foreground text-sm">
+            {t('chat.conversation.loadingHistory')} 
+          </div>
         ) : messages.length === 0 ? (
-          <div className="text-center text-muted-foreground text-sm">No message history. Say hi below!</div>
+          <div className="text-center text-muted-foreground text-sm">
+            {t('chat.conversation.empty')}
+          </div>
         ) : (
           messages.map((msg) => (
             <div key={msg.id} className="flex flex-col mb-2">
-              <span className="text-[10px] text-muted-foreground mb-1">User {msg.senderId}</span>
+              <span className="text-[10px] text-muted-foreground mb-1">
+                {t('chat.conversation.user')} {msg.senderId}
+              </span>
               <div className="bg-accent text-accent-foreground p-2.5 rounded-lg max-w-[70%] w-fit text-sm">
                 {msg.content}
               </div>
@@ -77,11 +92,11 @@ export function ConversationPage() {
             type="text" 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Type a message..." 
+            placeholder={t('chat.conversation.placeholder')}
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <Button type="submit">
-            Send
+            {t('chat.conversation.send')} 
           </Button>
         </div>
       </form>

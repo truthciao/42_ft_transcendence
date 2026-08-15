@@ -128,6 +128,18 @@
     }
   },
 
+  "chat": {
+    "conversation": {
+    "chatWith": "与 {{friendName}} 聊天",
+    "loadingHistory": "正在加载聊天记录...",
+    "empty": "暂无聊天记录，来打个招呼吧！",
+    "user": "用户",
+    "placeholder": "输入消息...",
+    "send": "发送"
+    }
+  },
+
+
   "showcase": {
     "title": "组件库",
     "description": "共享 UI 基础组件速览。",

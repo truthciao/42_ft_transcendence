@@ -128,6 +128,18 @@
     }
   },
 
+  "chat": {
+  "conversation": {
+    "chatWith": "Discussion avec {{friendName}}",
+    "loadingHistory": "Chargement de l'historique...",
+    "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
+    "user": "Utilisateur",
+    "placeholder": "Écrivez un message...",
+    "send": "Envoyer"
+    }
+  },
+
+
   "showcase": {
     "title": "Bibliothèque de composants",
     "description": "Un aperçu rapide des composants d'interface partagés.",

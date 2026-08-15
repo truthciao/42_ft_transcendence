@@ -128,7 +128,19 @@
     }  
   },
 
-  "showcase": {
+  "chat": {
+  "conversation": {
+    "chatWith": "Chat with {{friendName}}",
+    "loadingHistory": "Loading history...",
+    "empty": "No message history. Say hi below!",
+    "user": "User",
+    "placeholder": "Type a message...",
+    "send": "Send"
+    }
+  },
+
+
+   "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",
     "emptyFriendsTitle": "No friends yet",

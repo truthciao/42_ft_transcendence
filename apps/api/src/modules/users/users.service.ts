@@ -76,6 +76,7 @@ export class UsersService {
       profile: {
         select: {
           avatarUrl: true,
+          preferredLanguage: true,
         },
       },
     },
@@ -91,6 +92,7 @@ export class UsersService {
     username: user.username,
     isTwoFactorEnabled: user.isTwoFactorEnabled,
     avatarUrl: user.profile?.avatarUrl ?? null,
+    preferredLanguage: user.profile?.preferredLanguage ?? null,
   };
 }
 

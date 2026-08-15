@@ -1,9 +1,14 @@
+import { 
+  loginUser,
+  loginWithTwoFactor,
+  type LoginPayload,
+} from '../api/auth';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router';
-import { loginUser, type LoginPayload } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { httpPost } from '../lib/http';
+import { Input } from '../components/ui/input'
+import { Button } from '../components/ui/button';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -58,26 +63,32 @@ export function LoginPage() {
         password: form.password,
       };
 
-      const data: any = await loginUser(payload);
+      const data = await loginUser(payload);
 
       // Core interception check: if the backend requires 2FA verification
-      if (data && data.requiresTwoFactor) {
-        setRequires2FA(true);
-        setUserId(data.userId);
-        setStatus('idle');
-        return;
-      }
+    if ('requiresTwoFactor' in data && data.requiresTwoFactor) {
+      setRequires2FA(true);
+      setUserId(data.userId);
+      setStatus('idle');
+      return;
+    }
+      
 
       // If 2FA is not enabled, log in successfully directly
-      if (data && data.access_token) {
+      if ('access_token' in data) {
         localStorage.setItem("access_token", data.access_token);
         
         await refreshUser();
        
         navigate('/app/chat', { replace: true });
       }
-    } catch (error: any) {
-      console.error('Login error:', error);
+    } catch (error) { 
+      if (error instanceof HttpError)
+      {
+        console.error(error.status, error.message);
+      } else {
+        console.error(error);
+      }
       setStatus('failed');
     } finally {
       setIsSubmitting(false);
@@ -90,23 +101,21 @@ export function LoginPage() {
     setStatus('loggingIn');
 
   try {
-    const data = await httpPost<{ access_token: string }>('/auth/login-2fa', {
-      userId: userId,
-      code: totpCode.trim(),
-    }, {
-      auth: false, 
-    });
+    const data = await loginWithTwoFactor(
+      userId!, 
+      totpCode.trim(),
+    );
 
-    if (data && data.access_token) {
+    if ('access_token' in data) {
       localStorage.setItem('access_token', data.access_token);
       
       await refreshUser();
 
       navigate('/app/chat', { replace: true});
     }
-  } catch (error: any) {
-    console.error('2FA verification failed:', error.message);
-    setStatus(error.message);
+  } catch (error) {
+    console.error('2FA verification failed:', error);
+    setStatus('failed');
   }
 
   }
@@ -125,80 +134,52 @@ export function LoginPage() {
         <form onSubmit={handleLogin} style={{ display: 'grid', gap: '1rem' }}>
           <label>
             <div>{t("auth.email")}</div>
-            <input
+            <Input
               type="text"
               required
               placeholder="user@example.com"
               value={form.email}
               onChange={(event) => setForm({ ...form, email: event.target.value })}
-              style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
+              className="w-full" 
             />
           </label>
 
           <label>
             <div>{t("auth.password")}</div>
-            <input
+            <Input
               type="password"
               required
               value={form.password ?? ''}
               onChange={(event) => setForm({ ...form, password: event.target.value })}
-              style={{ width: '100%', padding: '0.5rem', boxSizing: 'border-box' }}
+              className="w-full" 
             />
           </label>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: '0.75rem 1rem',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              backgroundColor: isSubmitting ? '#ccc' : '#0070f3',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-            }}
-          >
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? t("auth.submitting") : t("auth.login")}
-          </button>
+          </Button>
         </form>
       ) : (
         /* Stage 2: 2FA dynamic code interception form */
         <form onSubmit={handleVerify2FA} style={{ display: 'grid', gap: '1rem' }}>
           <label>
             <div>Google Authenticator 6-digit Code</div>
-            <input
+            <Input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]{6}"
               maxLength={6}
               required
               placeholder="e.g. 482910"
               value={totpCode}
               onChange={(event) => setTotpCode(event.target.value)}
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                boxSizing: 'border-box', 
-                letterSpacing: '4px', 
-                fontSize: '1.2rem',
-                textAlign: 'center' 
-              }}
+              className="w-full text-center text-lg tracking-widest" 
             />
           </label>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: '0.75rem 1rem',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              backgroundColor: isSubmitting ? '#ccc' : '#28a745',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              fontWeight: 'bold',
-            }}
-          >
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Verifying...' : 'Verify & Enter System'}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -209,24 +190,11 @@ export function LoginPage() {
             <span style={{ background: '#fff', padding: '0 10px', color: '#777', fontSize: '0.85rem' }}>OR</span>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={handleGoogleLogin}
-            style={{
-              width: '100%',
-              padding: '0.75rem 1rem',
-              cursor: 'pointer',
-              backgroundColor: '#fff',
-              color: '#3c4043',
-              border: '1px solid #dadce0',
-              borderRadius: '4px',
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-            }}
+            className="w-full gap-2" 
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" />
@@ -235,7 +203,7 @@ export function LoginPage() {
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.16 2.63 1.14 6.6l4.14 3.15c.95-2.84 3.6-4.95 6.72-4.95z" />
             </svg>
             Sign in with Google
-          </button>
+          </Button>
         </>
       )}
 

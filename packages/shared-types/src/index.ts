@@ -3,6 +3,7 @@ export {
   loginSchema,
   authUserSchema,
   authResponseSchema,
+  twoFactorLoginResponseSchema,
 } from './auth.js';
 
 export type {

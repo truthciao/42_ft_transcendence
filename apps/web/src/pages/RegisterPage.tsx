@@ -2,6 +2,9 @@ import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { registerUser, type RegisterPayload } from '../api/auth';
 import { useTranslation } from 'react-i18next';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
+
 type RegisterStatus = 'idle' | 'creating' | 'success' | 'failed';
 
 export function RegisterPage() {
@@ -36,85 +39,64 @@ export function RegisterPage() {
   }
 
   return (
-    <main
-      style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}
-    >
+    <main className="mx-auto max-w-md p-4">
       <h1>{t('auth.register')}</h1>
       <p>{t('auth.registerDescription')}</p>
 
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
+      <form onSubmit={handleSubmit} className="grid gap-4">
         <label>
           <div>{t('auth.email')}</div>
-          <input
+          <Input
             type="email"
             required
             value={form.email}
             onChange={(event) =>
               setForm({ ...form, email: event.target.value })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-              boxSizing: 'border-box',
-            }}
+            className="w-full" 
           />
         </label>
 
         <label>
           <div>{t('auth.username')}</div>
-          <input
+          <Input
             type="text"
             required
             value={form.username}
             onChange={(event) =>
               setForm({ ...form, username: event.target.value })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-              boxSizing: 'border-box',
-            }}
+            className="w-full"
           />
         </label>
 
         <label>
           <div>{t('auth.password')}</div>
-          <input
+          <Input
             type="password"
             required
             value={form.password ?? ''}
             onChange={(event) =>
               setForm({ ...form, password: event.target.value })
             }
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-              boxSizing: 'border-box',
-            }}
+            className="w-full"
           />
         </label>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: '0.75rem 1rem',
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
-        >
+        <Button type="submit" disabled={loading}>
           {loading ? 'Submitting...' : 'Register'}
-        </button>
+        </Button>
       </form>
 
       {status !== 'idle' ? (
-        <p style={{ marginTop: '1rem' }}>{t(`auth.status.${status}`)}</p>
+        <p className="mt-4 text-sm">
+          {t(`auth.status.${status}`)}
+        </p>
       ) : null}
 
-      <div
-        style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}
-      >
+      <div className="mt-6 text-center text-sm">
         Already have an account?{' '}
-        <Link to="/login" style={{ color: '#0070f3' }}>
+        <Link to="/login" className="text-primary hover:underline">
           Login here
         </Link>
       </div>

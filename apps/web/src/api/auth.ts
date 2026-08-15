@@ -20,6 +20,24 @@ export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
   return httpPost<AuthResponse>('/auth/login', payload, { auth: false });
 }
 
+export interface Login2FAResponse {
+  access_token: string;
+}
+
+export async function loginWithTwoFactor(
+  userId: number,
+  code: string,
+): Promise<Login2FAResponse> {
+  return httpPost<Login2FAResponse>(
+    '/auth/login-2fa',
+    {
+      userId,
+      code,
+    },
+    { auth: false },
+  );
+}
+
 export interface TwoFactorGenerateResponse {
   otpauthUrl: string;
   secret: string;

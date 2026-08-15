@@ -1,7 +1,25 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../../components/ui/dialog';
+
+import {
+  generateTwoFactor,
+  turnOnTwoFactor,
+  disableTwoFactor,
+} from '../../api/auth';
+
 import { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react'; // Import QR code rendering library
 import { NavLink } from 'react-router';
-import { httpGet, httpPost } from '../../lib/http';
+import { Input } from '../../components/ui/input';
+import { Button }  from '../../components/ui/button';
+import { getCurrentUser } from '../../api/users';
+import { HttpError } from '@/lib/http';
 
 export function SettingsSidebar() {
   return (
@@ -57,29 +75,28 @@ export function AccountSettingsPage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {  
-        const userData = await httpGet<any>('/users/me');
+        const userData = await getCurrentUser();
 
         if (userData) {
-          const status = userData.isTwoFactorEnabled ?? userData.twoFactorEnabled ?? false;
+          const status = userData.isTwoFactorEnabled;
           setIsTwoFactorEnabled(Boolean(status));
         }
-      } catch (error: any) {
-          console.error('Failed to fetch user profile: ', error.message);
+      } catch (error) {
+        if (error instanceof HttpError) {
+          console.error(error.status, error.message);
+        } else {
+          console.error(error);
+        }
       }
     };
     fetchUserProfile();
   }, []);
 
-interface TwoFactorGenerateResponse {
-  otpauthUrl: string;
-  secret: string;
-}
-
   // Step 1: Request backend to generate 2FA secret and QR code URL
   const handleStartEnable2FA = async () => {
     setLoading(true);
     try {
-      const data = await httpPost<TwoFactorGenerateResponse>('/auth/2fa/generate');
+      const data = await generateTwoFactor();
 
     if (data && data.otpauthUrl) {
       setOtpauthUrl(data.otpauthUrl);
@@ -99,9 +116,7 @@ interface TwoFactorGenerateResponse {
     e.preventDefault();
     setLoading(true);
     try {
-      await httpPost('/auth/2fa/turn-on', { 
-        code: verifyCode.trim(),
-      });
+      await turnOnTwoFactor(verifyCode.trim());
 
     setIsTwoFactorEnabled(true);
     setShowSetupModal(false); 
@@ -121,10 +136,7 @@ interface TwoFactorGenerateResponse {
    
     setLoading(true);
     try {
-      await httpPost('/auth/2fa/toggle', {
-        enabled: false,
-        isTwoFactorEnabled: false,
-      });
+      await disableTwoFactor();
 
         setIsTwoFactorEnabled(false);
         alert('2FA disabled');
@@ -155,77 +167,104 @@ interface TwoFactorGenerateResponse {
         
         {/* Render enable or disable button based on current status */}
         {!isTwoFactorEnabled ? (
-          <button
+          <Button
             onClick={handleStartEnable2FA}
             disabled={loading}
-            className="px-4 py-2 rounded-md text-sm font-medium text-white shadow bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             {loading ? 'Loading...' : 'Enable 2FA'}
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
+            variant="destructive"
             onClick={handleDisable2FA}
-            className="px-4 py-2 rounded-md text-sm font-medium text-white shadow bg-red-600 hover:bg-red-700 transition-colors"
+            disabled={loading} 
           >
             Disable 2FA
-          </button>
+          </Button>
         )}
       </div>
 
       {/* QR code scanning and activation modal panel */}
-      {showSetupModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background border p-6 rounded-lg max-w-md w-full space-y-4 shadow-xl">
-            <h3 className="text-xl font-semibold">Set up Two-Factor Authentication</h3>
-            <p className="text-sm text-muted-foreground">
-              1. Open your authenticator app (like Google Authenticator).<br/>
-              2. Scan the QR code below or enter the key manually.
-            </p>
+        <Dialog
+          open={showSetupModal}
+          onOpenChange={setShowSetupModal}
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                Set up Two-Factor Authentication
+              </DialogTitle>
 
-            {/* Render QR Code canvas */}
-            <div className="flex justify-center p-4 bg-white rounded border">
-              {otpauthUrl && <QRCodeCanvas value={otpauthUrl} size={180} />}
+              <DialogDescription>
+                1. Open your authenticator app (like Google Authenticator).
+                <br />
+                2. Scan the QR code below or enter the key manually.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-center rounded border bg-white p-4">
+              {otpauthUrl && (
+                <QRCodeCanvas
+                  value={otpauthUrl}
+                  size={180}
+                />
+              )}
             </div>
 
-            <div className="text-xs text-muted-foreground break-all text-center">
-              Secret Key: <span className="font-mono font-semibold">{secret}</span>
+            <div className="text-center text-xs text-muted-foreground break-all">
+              Secret Key:{' '}
+              <span className="font-mono font-semibold">
+                {secret}
+              </span>
             </div>
 
-            <form onSubmit={handleVerifyAndTurnOn} className="space-y-3">
+            <form
+              onSubmit={handleVerifyAndTurnOn}
+              className="space-y-3"
+            >
               <div>
-                <label className="text-sm font-medium">Enter 6-digit code from app:</label>
-                <input
+                <label 
+                  htmlFor="two-factor-code"
+                  className="text-sm font-medium">
+                  Enter 6-digit code from app:
+                </label>
+
+                <Input
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
                   maxLength={6}
                   required
                   value={verifyCode}
                   onChange={(e) => setVerifyCode(e.target.value)}
                   placeholder="123456"
-                  className="w-full mt-1 p-2 border rounded text-center tracking-widest text-lg font-mono"
+                  className="mt-1 w-full text-center tracking-widest text-lg font-mono"
                 />
               </div>
 
-              <div className="flex space-x-2 pt-2">
-                <button
+              <DialogFooter className="mx-0 mb-0 rounded-none border-0 bg-transparent p-0 sm:flex-row">
+                <Button
                   type="button"
+                  variant="outline"
+                  className="flex-1"
                   onClick={() => setShowSetupModal(false)}
-                  className="flex-1 px-4 py-2 border rounded text-sm font-medium hover:bg-muted"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+
+                <Button
                   type="submit"
+                  className="flex-1"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded text-sm font-medium hover:bg-green-700"
                 >
                   {loading ? 'Verifying...' : 'Verify & Turn On'}
-                </button>
-              </div>
+                </Button>
+              </DialogFooter>
             </form>
+          </DialogContent>
+          </Dialog>
+
           </div>
-        </div>
-      )}
-    </div>
   );
 }
 

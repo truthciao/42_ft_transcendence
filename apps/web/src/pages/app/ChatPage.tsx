@@ -2,6 +2,8 @@ import { Outlet, useParams, useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { ChatMessage } from '../../api/chat';
 import { getConversationMessages } from '../../api/chat';
+import { Input } from '../../components/ui/input';
+import { Button } from '../../components/ui/button';
 
 export function ConversationPage() {
   const { conversationId } = useParams();
@@ -71,16 +73,16 @@ export function ConversationPage() {
 
       <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">
         <div className="flex gap-2">
-          <input 
+          <Input 
             type="text" 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type a message..." 
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
-          <button type="submit" className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:opacity-90">
+          <Button type="submit">
             Send
-          </button>
+          </Button>
         </div>
       </form>
     </section>

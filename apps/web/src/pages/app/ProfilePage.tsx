@@ -48,7 +48,14 @@ export function ProfilePage() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    mutation.mutate(form, {
+    const payload: UpdateProfilePayload = {
+      displayName: form.displayName || undefined,
+      bio: form.bio || undefined,
+      avatarUrl: form.avatarUrl || undefined,
+      preferredLanguage: form.preferredLanguage,
+    };
+
+    mutation.mutate(payload, {
       onSuccess: () => {
         toast.success(t('profile.status.updateSuccess'));
       },

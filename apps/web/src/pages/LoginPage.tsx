@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button';
+import { HttpError } from '@/lib/http';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 

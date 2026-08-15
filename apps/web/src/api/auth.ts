@@ -19,3 +19,27 @@ export async function registerUser(
 export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
   return httpPost<AuthResponse>('/auth/login', payload, { auth: false });
 }
+
+export interface TwoFactorGenerateResponse {
+  otpauthUrl: string;
+  secret: string;
+}
+
+export function generateTwoFactor() {
+  return httpPost<TwoFactorGenerateResponse>(
+    '/auth/2fa/generate',
+  );
+}
+
+export function turnOnTwoFactor(code: string) {
+  return httpPost('/auth/2fa/turn-on', {
+    code,
+  });
+}
+
+export function disableTwoFactor() {
+  return httpPost('/auth/2fa/toggle', {
+    enabled: false,
+    isTwoFactorEnabled: false,
+  });
+}

@@ -1,8 +1,4 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { createZodDto } from "nestjs-zod";
+import { createChannelSchema } from "@repo/shared-types";
 
-export class CreateChannelDto {
-  @IsString()
-  @MinLength(1)
-  @MaxLength(100)
-  name!: string;
-}
+export class CreateChannelDto extends createZodDto(createChannelSchema) {}

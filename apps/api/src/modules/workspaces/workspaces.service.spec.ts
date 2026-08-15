@@ -168,7 +168,7 @@ describe('WorkspacesService', () => {
         name: 'My Workspace',
       });
 
-      await service.create(1, 'My Workspace');
+      await service.create(1, {name: 'My Workspace'});
 
       expect(prisma.workspace.create).toHaveBeenCalledWith(
         objectContaining({
@@ -477,10 +477,10 @@ describe('WorkspacesService', () => {
     });
   });
 
-  describe('changeMemeberRole', () => {
+  describe('changeMemberRole', () => {
     it('rejects setting role to OWNER', async () => {
       await expect(
-        service.changeMemeberRole(1, 2, WorkspaceRole.OWNER),
+        service.changeMemberRole(1, 2, WorkspaceRole.OWNER),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -488,7 +488,7 @@ describe('WorkspacesService', () => {
       prisma.workspaceMember.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.changeMemeberRole(1, 2, WorkspaceRole.ADMIN),
+        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -500,7 +500,7 @@ describe('WorkspacesService', () => {
       });
 
       await expect(
-        service.changeMemeberRole(1, 2, WorkspaceRole.ADMIN),
+        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -512,7 +512,7 @@ describe('WorkspacesService', () => {
       };
       prisma.workspaceMember.findUnique.mockResolvedValue(target);
 
-      const result = await service.changeMemeberRole(
+      const result = await service.changeMemberRole(
         1,
         2,
         WorkspaceRole.MEMBER,
@@ -532,7 +532,7 @@ describe('WorkspacesService', () => {
         {} as unknown as MockWorkspaceMember,
       );
 
-      await service.changeMemeberRole(1, 2, WorkspaceRole.ADMIN);
+      await service.changeMemberRole(1, 2, WorkspaceRole.ADMIN);
 
       expect(prisma.workspaceMember.update).toHaveBeenCalledWith({
         where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },

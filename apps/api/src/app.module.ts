@@ -5,9 +5,9 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ProfilesModule } from './modules/profiles/profiles.module.js';
-import { WorkspacesMoudule } from './modules/workspaces/workspaces.module.js';
-import { RealtimeMoudule } from './modules/realtime/realtime.module.js';
-import { ChatModule } from './modules/chat/chat.moudle.js';
+import { WorkspacesModule } from './modules/workspaces/workspaces.module.js';
+import { RealtimeModule } from './modules/realtime/realtime.module.js';
+import { ChatModule } from './modules/chat/chat.module.js';
 import { FriendsModule } from './modules/friends/friends.module.js';
 
 @Module({
@@ -19,8 +19,8 @@ import { FriendsModule } from './modules/friends/friends.module.js';
     UsersModule,
     AuthModule,
     ProfilesModule,
-    WorkspacesMoudule,
-    RealtimeMoudule,
+    WorkspacesModule,
+    RealtimeModule,
     ChatModule,
     FriendsModule,
   ],

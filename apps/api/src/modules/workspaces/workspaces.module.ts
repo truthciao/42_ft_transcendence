@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { WorkspaceMemberGuard } from './guards/workspace-member.guard.js';
-import { WorkspaceOwnerGuard } from './guards/workspace-owner.guard.js';
+import { WorkspaceRoleGuard } from './guards/workspace-role.guard.js';
 import { WorkspaceController } from './workspaces.controller.js';
 import { WorkspacesService } from './workspaces.service.js';
 
 @Module({
   controllers: [WorkspaceController],
-  providers: [WorkspacesService, WorkspaceOwnerGuard, WorkspaceMemberGuard],
+  providers: [WorkspacesService, WorkspaceRoleGuard],
 })
-export class WorkspacesMoudule {}
+export class WorkspacesModule {}

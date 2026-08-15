@@ -38,3 +38,5 @@ export type {
 
 export { userSchema } from './users.js';
 export type { User } from './users.js';
+
+export * from './workspaces.js'

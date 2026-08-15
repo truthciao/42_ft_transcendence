@@ -12,10 +12,10 @@ import {
 
 import { CreateWorkspaceDto } from './dto/create-workspace.dto.js';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto.js';
+import { UpdateMemberRoleDto } from './dto/update-member-role.dto.js';
+import { CreateChannelDto } from './dto/create-channel.dto.js';
 import {
-  CreateChannelDto,
   InviteMemberDto,
-  UpdateMemberRoleDto,
 } from './dto/invite-member.dto.js';
 import {
   WorkspaceRole,
@@ -38,7 +38,7 @@ export class WorkspaceController {
     @CurrentUser('userId') userId: number,
     @Body() dto: CreateWorkspaceDto,
   ) {
-    return this.workspaces.create(userId, dto.name);
+    return this.workspaces.create(userId, dto);
   }
 
   @Get()
@@ -81,7 +81,7 @@ export class WorkspaceController {
   }
 
   @Get('invites/token/:token')
-  invitebyToken(
+  inviteByToken(
     @Param('token') token: string,
     @CurrentUser('userId') userId: number,
   ) {
@@ -107,8 +107,11 @@ export class WorkspaceController {
   @UseGuards(WorkspaceRoleGuard)
   @minWorkspaceRole(WorkspaceRole.MEMBER)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.workspaces.findOne(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentMembership() membership: WorkspaceMember,
+  ) {
+    return this.workspaces.findOne(id, membership);
   }
 
   @UseGuards(WorkspaceRoleGuard)
@@ -155,7 +158,7 @@ export class WorkspaceController {
     @Param('memberUserId', ParseIntPipe) memberUserId: number,
     @Body() dto: UpdateMemberRoleDto,
   ) {
-    return this.workspaces.changeMemeberRole(id, memberUserId, dto.role);
+    return this.workspaces.changeMemberRole(id, memberUserId, dto.role);
   }
 
   @UseGuards(WorkspaceRoleGuard)

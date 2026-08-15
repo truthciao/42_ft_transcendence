@@ -93,6 +93,41 @@
     "backHome": "Back to Home"
   },
 
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account settings and preferences.",
+    "profile": "Profile",
+    "account": "Account",
+    "notifications": "Notifications",
+    "accountTitle": "Account Settings",
+    "accountDescription": "Manage your account security and preferences.",
+    "notificationsTitle": "Notification Settings",
+    "notificationsDescription": "Manage your notification preferences.",
+    "twoFactor": {
+      "title": "Two-Factor Authentication (2FA)",
+      "setupTitle": "Set up Two-Factor Authentication",
+      "setupDescription": "1. Open your authenticator app (like Google Authenticator). \n2. Scan the QR code below or enter the key manually.",
+      "status": "Status",
+      "statusEnabled": "Enabled",
+      "statusDisabled": "Disabled",
+      "enable": "Enable 2FA",
+      "disable": "Disable 2FA",
+      "loading": "Loading...",
+      "secretKey": "Secret Key",
+      "codeLabel": "Enter 6-digit code from app:",
+      "codePlaceholder": "123456",
+      "verifying": "Verifying...",
+      "verifyAndTurnOn": "Verify & Turn On",
+      "enableSuccess": "2FA enabled successfully!",
+      "invalidCode": "Invalid verification code",
+      "disableConfirm": "Are you sure you want to disable 2FA?",
+      "disableSuccess": "2FA disabled",
+      "generateError": "Failed to generate 2FA secret",
+      "disableError": "Failed to disable 2FA",
+      "unknownError": "Unknown error"
+    }  
+  },
+
   "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",

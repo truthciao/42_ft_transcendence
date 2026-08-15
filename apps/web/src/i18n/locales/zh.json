@@ -93,6 +93,41 @@
     "backHome": "返回首页"
   },
 
+  "settings": {
+  "title": "设置",
+  "description": "管理您的账户设置和偏好。",
+  "profile": "个人资料",
+  "account": "账户",
+  "notifications": "通知",
+  "accountTitle": "账户设置",
+  "accountDescription": "管理您的账户安全和偏好设置。",
+  "notificationsTitle": "通知设置",
+  "notificationsDescription": "管理您的通知偏好。",
+  "twoFactor": {
+    "title": "双因素身份验证（2FA）",
+    "setupTitle": "设置双因素身份验证",
+    "setupDescription": "1. 打开您的身份验证应用（例如 Google Authenticator）。\n2. 扫描下方的二维码，或手动输入密钥。",
+    "status": "状态",
+    "statusEnabled": "已启用",
+    "statusDisabled": "已禁用",
+    "enable": "启用 2FA",
+    "disable": "禁用 2FA",
+    "loading": "加载中...",
+    "secretKey": "密钥",
+    "codeLabel": "请输入身份验证应用中的 6 位验证码：",
+    "codePlaceholder": "123456",
+    "verifying": "验证中...",
+    "verifyAndTurnOn": "验证并启用",
+    "enableSuccess": "2FA 已成功启用！",
+    "invalidCode": "验证码无效",
+    "disableConfirm": "确定要禁用 2FA 吗？",
+    "disableSuccess": "2FA 已禁用",
+    "generateError": "生成 2FA 密钥失败",
+    "disableError": "禁用 2FA 失败",
+    "unknownError": "未知错误"
+    }
+  },
+
   "showcase": {
     "title": "组件库",
     "description": "共享 UI 基础组件速览。",

@@ -22,7 +22,8 @@ export default function LanguageSwitcher() {
           onClick={() => {
             void i18n.changeLanguage(language.code);
           }}
-          disabled={i18n.language === language.code}
+          disabled={i18n.language.startsWith(language.code)}
+          className="rounded-md px-1 py-1.5 text-sm hover:bg-muted disabled:font-semibold disabled:text-foreground"
         >
           {language.label}
         </button>

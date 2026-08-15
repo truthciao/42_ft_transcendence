@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-
 import type { User } from '@repo/shared-types';
 import { AuthContext } from './AuthContext';
 import { getCurrentUser } from '../api/users';
-
+import i18n from '../i18n'; 
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -22,6 +21,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const currentUser = await getCurrentUser();
 
       setUser(currentUser);
+
+      if (
+        currentUser.preferredLanguage &&
+        currentUser.preferredLanguage !== i18n.language
+      ) {
+        void i18n.changeLanguage(currentUser.preferredLanguage);
+      }
     } catch {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');

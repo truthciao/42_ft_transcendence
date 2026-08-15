@@ -21,8 +21,10 @@ export function ProfilePage() {
     preferredLanguage: 'en',
   });
 
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    if (!profile) return;
+    if (!profile || initialized) return;
 
     setForm({
       displayName: profile.displayName ?? '',
@@ -30,6 +32,8 @@ export function ProfilePage() {
       avatarUrl: profile.avatarUrl ?? '',
       preferredLanguage: profile.preferredLanguage ?? 'en',
     });
+
+    setInitialized(true);
 
     if (
       profile.preferredLanguage &&
@@ -41,7 +45,7 @@ export function ProfilePage() {
 
   const mutation = useUpdateProfile();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     mutation.mutate(form, {
@@ -112,10 +116,10 @@ export function ProfilePage() {
             value={form.displayName}
             placeholder={t('profile.displayNamePlaceholder')}
             onChange={(event) =>
-              setForm({
-                ...form,
+              setForm((prev) => ({
+                ...prev,
                 displayName: event.target.value,
-              })
+              }))
             }
             className="rounded-md border border-input bg-background px-3 py-2"
           />
@@ -129,10 +133,10 @@ export function ProfilePage() {
             value={form.bio}
             placeholder={t('profile.bioPlaceholder')}
             onChange={(event) =>
-              setForm({
-                ...form,
+              setForm((prev) => ({
+                ...prev,
                 bio: event.target.value,
-              })
+              }))
             }
             className="resize-y rounded-md border border-input bg-background px-3 py-2"
           />
@@ -146,10 +150,10 @@ export function ProfilePage() {
             value={form.avatarUrl}
             placeholder={t('profile.avatarPlaceholder')}
             onChange={(event) =>
-              setForm({
-                ...form,
+              setForm((prev) => ({
+                ...prev,
                 avatarUrl: event.target.value,
-              })
+              }))
             }
             className="rounded-md border border-input bg-background px-3 py-2"
           />
@@ -166,10 +170,10 @@ export function ProfilePage() {
               const language = event.target
                 .value as UpdateProfilePayload['preferredLanguage'];
 
-              setForm({
-                ...form,
+              setForm((prev) => ({
+                ...prev,
                 preferredLanguage: language,
-              });
+              }));
 
               void i18n.changeLanguage(language);
             }}

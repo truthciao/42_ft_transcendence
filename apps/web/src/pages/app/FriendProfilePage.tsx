@@ -10,7 +10,7 @@ import { useFriends } from '../../hooks/useFriends';
 
 export function FriendProfilePage() {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { userId } = useParams();
   const navigate = useNavigate();
 
   const {
@@ -55,7 +55,7 @@ export function FriendProfilePage() {
   }
 
   const friend = friends?.find(
-    (friend) => friend.id === Number(id),
+    (friend) => friend.id === Number(userId),
   );
 
   if (!friend) {
@@ -129,9 +129,6 @@ export function FriendProfilePage() {
             {t('friends.profile.message')}
           </Button>
 
-          <Button variant="outline">
-            {t('friends.profile.removeFriend')}
-          </Button>
         </div>
       </div>
     </main>

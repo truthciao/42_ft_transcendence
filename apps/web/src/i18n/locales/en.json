@@ -53,12 +53,31 @@
     "loading": "Loading friends...",
     "loadError": "Failed to load friends.",
     "empty": "You don't have any friends yet.",
+    "addFriend": {
+      "title": "Add Friend",
+      "searchPlaceholder": "Search by username",
+      "minCharacters": "Enter at least 2 characters to search.",
+      "searching": "Searching...",
+      "searchError": "Failed to search users.",
+      "noUsers": "No users found.",
+      "sending": "Sending...",
+      "button": "Add Friend"
+    },
     "removeFriend": {
       "title": "Remove friend?",
       "description": "Are you sure you want to remove this friend?",
       "confirm": "Remove",
+      "removing": "Removing...",
       "success": "Friend removed",
       "error": "Failed to remove friend."
+    },
+    "friendRequests": {
+      "title": "Friend Requests",
+      "loading": "Loading friend requests...",
+      "loadError": "Failed to load friend requests.",
+      "empty": "No pending friend requests.",
+      "accept": "Accept",
+      "reject": "Reject"
     }
   },
 

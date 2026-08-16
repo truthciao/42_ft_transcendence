@@ -53,12 +53,31 @@
     "loading": "正在加载好友...",
     "loadError": "加载好友失败。",
     "empty": "你还没有好友。",
+    "addFriend": {
+      "title": "添加好友",
+      "searchPlaceholder": "按用户名搜索",
+      "minCharacters": "请输入至少 2 个字符进行搜索。",
+      "searching": "搜索中...",
+      "searchError": "搜索用户失败。",
+      "noUsers": "没有找到用户。",
+      "sending": "发送中...",
+      "button": "添加好友"
+    },
     "removeFriend": {
       "title": "删除好友？",
       "description": "确定要删除这个好友吗？",
       "confirm": "删除",
+      "removing": "移除中...",
       "success": "好友已删除",
       "error": "删除好友失败。"
+    },
+    "friendRequests": {
+      "title": "好友请求",
+      "loading": "正在加载好友请求...",
+      "loadError": "加载好友请求失败。",
+      "empty": "没有待处理的好友请求。",
+      "accept": "接受",
+      "reject": "拒绝"
     }
   },
 

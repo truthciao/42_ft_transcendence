@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { useFriends } from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 
 export function AddFriend() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
 
   const {
@@ -20,7 +22,7 @@ export function AddFriend() {
   const sendFriendRequestMutation = useSendFriendRequest();
 
   if (isCurrentUserLoading) {
-    return <p>Loading...</p>;
+    return <p>{t('friends.loading')}</p>;
   }
 
   const friendIds = new Set(
@@ -43,12 +45,12 @@ export function AddFriend() {
   return (
     <section className="space-y-4">
       <h2 className="text-xl font-semibold">
-        Add Friend
+        {t('friends.addFriend.title')}
       </h2>
 
       <input
         type="text"
-        placeholder="Search by username"
+        placeholder={t('friends.addFriend.searchPlaceholder')}
         value={username}
         onChange={(event) => {
           setUsername(event.target.value);
@@ -64,19 +66,19 @@ export function AddFriend() {
 
       {username.trim().length < 2 ? (
         <p className="text-muted-foreground">
-          Enter at least 2 characters to search.
+          {t('friends.addFriend.minCharacters')}
         </p>
       ) : isUsersLoading ? (
         <p className="text-muted-foreground">
-          Searching...
+          {t('friends.addFriend.searching')}
         </p>
       ) : isUsersError ? (
         <p className="text-destructive">
-          Failed to search users.
+          {t('friends.addFriend.searchError')}
         </p>
       ) : availableUsers.length === 0 ? (
         <p className="text-muted-foreground">
-          No users found.
+          {t('friends.addFriend.noUsers')}
         </p>
       ) : (
         <div className="space-y-3">
@@ -115,8 +117,8 @@ export function AddFriend() {
                 }
               >
                 {sendFriendRequestMutation.isPending
-                  ? 'Sending...'
-                  : 'Add Friend'}
+                  ? t('friends.addFriend.sending')
+                  : t('friends.addFriend.button')}
               </button>
             </div>
           ))}

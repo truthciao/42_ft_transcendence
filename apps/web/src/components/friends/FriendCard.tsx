@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import type { Friend } from '@repo/shared-types';
 
 interface FriendCardProps {
@@ -7,6 +8,12 @@ interface FriendCardProps {
 }
 
 export function FriendCard({ friend, isRemoving, onRemove }: FriendCardProps) {
+  const navigate = useNavigate();
+
+  const handleOpenProfile = () => {
+    navigate(`/app/friends/${friend.id}`);
+  };
+
   return (
     <div
       className="
@@ -23,6 +30,21 @@ export function FriendCard({ friend, isRemoving, onRemove }: FriendCardProps) {
 
         <p className="text-sm text-muted-foreground">{friend.email}</p>
       </div>
+      
+      <button
+        type="button"
+        className="
+          text-left
+          hover:underline
+        "
+        onClick={handleOpenProfile}
+      >
+        <p className="font-medium">{friend.username}</p>
+
+        <p className="text-sm text-muted-foreground">
+          {friend.email}
+        </p>
+      </button>
 
       <button
         className="

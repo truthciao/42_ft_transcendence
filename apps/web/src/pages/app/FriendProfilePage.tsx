@@ -10,7 +10,7 @@ import { useFriends } from '../../hooks/useFriends';
 
 export function FriendProfilePage() {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { userId } = useParams();
   const navigate = useNavigate();
 
   const {
@@ -55,7 +55,7 @@ export function FriendProfilePage() {
   }
 
   const friend = friends?.find(
-    (friend) => friend.id === Number(id),
+    (friend) => friend.id === Number(userId),
   );
 
   if (!friend) {
@@ -68,7 +68,7 @@ export function FriendProfilePage() {
 
           <Button
             variant="outline"
-            onClick={() => navigate('/friends')}
+            onClick={() => navigate('/app/friends')}
           >
             {t('friends.profile.backToFriends')}
           </Button>
@@ -82,7 +82,7 @@ export function FriendProfilePage() {
       <Button
         variant="ghost"
         className="mb-6 px-0"
-        onClick={() => navigate('/friends')}
+        onClick={() => navigate('/app/friends')}
       >
         ← {t('common.back')}
       </Button>
@@ -129,9 +129,6 @@ export function FriendProfilePage() {
             {t('friends.profile.message')}
           </Button>
 
-          <Button variant="outline">
-            {t('friends.profile.removeFriend')}
-          </Button>
         </div>
       </div>
     </main>

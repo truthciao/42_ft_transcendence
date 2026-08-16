@@ -53,12 +53,31 @@
     "loading": "Chargement des amis...",
     "loadError": "Échec du chargement des amis.",
     "empty": "Vous n'avez pas encore d'amis.",
+    "addFriend": {
+      "title": "Ajouter un ami",
+      "searchPlaceholder": "Rechercher par nom d'utilisateur",
+      "minCharacters": "Saisissez au moins 2 caractères pour effectuer une recherche.",
+      "searching": "Recherche en cours...",
+      "searchError": "Échec de la recherche des utilisateurs.",
+      "noUsers": "Aucun utilisateur trouvé.",
+      "sending": "Envoi...",
+      "button": "Ajouter"
+    },
     "removeFriend": {
       "title": "Supprimer cet ami ?",
       "description": "Êtes-vous sûr de vouloir supprimer cet ami ?",
       "confirm": "Supprimer",
+      "removing": "Suppression...",
       "success": "Ami supprimé",
       "error": "Échec de la suppression de l'ami."
+    },
+    "friendRequests": {
+      "title": "Demandes d'ami",
+      "loading": "Chargement des demandes d'ami...",
+      "loadError": "Échec du chargement des demandes d'ami.",
+      "empty": "Aucune demande d'ami en attente.",
+      "accept": "Accepter",
+      "reject": "Refuser"
     }
   },
 

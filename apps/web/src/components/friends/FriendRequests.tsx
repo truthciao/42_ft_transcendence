@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useFriendRequests } from '../../hooks/useFriends';
 
 import {
@@ -6,31 +7,42 @@ import {
 } from '../../hooks/useFriendMutations';
 
 export function FriendRequests() {
-  const { data: requests, isLoading, isError } = useFriendRequests();
+  const { t } = useTranslation();
+
+  const {
+    data: requests,
+    isLoading,
+    isError,
+  } = useFriendRequests();
 
   const acceptMutation = useAcceptFriendRequest();
-
   const rejectMutation = useRejectFriendRequest();
 
   if (isLoading) {
-    return <div>Loading friend requests...</div>;
+    return <div>{t('friends.friendRequests.loading')}</div>;
   }
 
   if (isError) {
     return (
-      <div className="text-destructive">Failed to load friend requests.</div>
+      <div className="text-destructive">
+        {t('friends.friendRequests.loadError')}
+      </div>
     );
   }
 
   if (!requests || requests.length === 0) {
     return (
-      <div className="text-muted-foreground">No pending friend requests.</div>
+      <div className="text-muted-foreground">
+        {t('friends.friendRequests.empty')}
+      </div>
     );
   }
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">Friend Requests</h2>
+      <h2 className="text-xl font-semibold">
+        {t('friends.friendRequests.title')}
+      </h2>
 
       <div className="space-y-3">
         {requests.map((request) => (
@@ -46,7 +58,9 @@ export function FriendRequests() {
             "
           >
             <div>
-              <div className="font-medium">{request.requester.username}</div>
+              <div className="font-medium">
+                {request.requester.username}
+              </div>
 
               <div className="text-sm text-muted-foreground">
                 {request.requester.email}
@@ -55,6 +69,7 @@ export function FriendRequests() {
 
             <div className="flex gap-2">
               <button
+                type="button"
                 className="
                   px-3
                   py-1
@@ -63,13 +78,19 @@ export function FriendRequests() {
                   text-primary-foreground
                   disabled:opacity-50
                 "
-                disabled={acceptMutation.isPending || rejectMutation.isPending}
-                onClick={() => acceptMutation.mutate(request.id)}
+                disabled={
+                  acceptMutation.isPending ||
+                  rejectMutation.isPending
+                }
+                onClick={() =>
+                  acceptMutation.mutate(request.id)
+                }
               >
-                Accept
+                {t('friends.friendRequests.accept')}
               </button>
 
               <button
+                type="button"
                 className="
                   px-3
                   py-1
@@ -77,10 +98,15 @@ export function FriendRequests() {
                   border
                   disabled:opacity-50
                 "
-                disabled={acceptMutation.isPending || rejectMutation.isPending}
-                onClick={() => rejectMutation.mutate(request.id)}
+                disabled={
+                  acceptMutation.isPending ||
+                  rejectMutation.isPending
+                }
+                onClick={() =>
+                  rejectMutation.mutate(request.id)
+                }
               >
-                Reject
+                {t('friends.friendRequests.reject')}
               </button>
             </div>
           </div>

@@ -68,7 +68,7 @@ export function FriendProfilePage() {
 
           <Button
             variant="outline"
-            onClick={() => navigate('/friends')}
+            onClick={() => navigate('/app/friends')}
           >
             {t('friends.profile.backToFriends')}
           </Button>
@@ -82,7 +82,7 @@ export function FriendProfilePage() {
       <Button
         variant="ghost"
         className="mb-6 px-0"
-        onClick={() => navigate('/friends')}
+        onClick={() => navigate('/app/friends')}
       >
         ← {t('common.back')}
       </Button>

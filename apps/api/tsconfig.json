@@ -22,9 +22,6 @@
     "noEmit": true,
     "types": ["jest", "node"]
   },
-   "references": [
-    { "path": "../../packages/shared-types" }
-  ],
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

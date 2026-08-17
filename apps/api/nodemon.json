@@ -1,5 +1,0 @@
-{
-  "watch": ["src", "../../packages/shared-types/dist"],
-  "ext": "ts,js,json",
-  "exec": "nest start"
-}

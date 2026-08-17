@@ -11,10 +11,11 @@
     "lint": "pnpm --filter api lint && pnpm --filter web lint",
     "typecheck": "pnpm --filter api typecheck && pnpm --filter web typecheck",
     "test": "pnpm --filter api test:ci",
-    "build": "pnpm --filter api build && pnpm --filter web build",
+    "build": "pnpm --filter @repo/shared-types build && pnpm --filter api build && pnpm --filter web build",
     "prisma:generate": "pnpm --dir apps/api exec prisma generate",
     "prisma:migrate:deploy": "pnpm --dir apps/api exec prisma migrate deploy",
     "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "postinstall": "pnpm --filter @repo/shared-types build",
     "format": "prettier --write ."
   },
   "devDependencies": {

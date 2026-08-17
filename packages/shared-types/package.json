@@ -10,13 +10,10 @@
     }
   },
   "scripts": {
-    "build": "tsc -b --force",
+    "build": "tsc",
     "dev": "tsc -b --watch --preserveWatchOutput"
   },
   "dependencies": {
     "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.3"
   }
 }

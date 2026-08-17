@@ -148,16 +148,20 @@
   },
 
   "chat": {
-  "conversation": {
+    "strangerChat": "Discussion avec un inconnu (nom d'utilisateur)",
+    "usernamePlaceholder": "Entrez un nom d'utilisateur...",
+    "chat": "Discuter",
+    "conversations": "Conversations",
+    "friend": "Ami",
+    "stranger": "Inconnu",
+    "room": "Salon de discussion #{{id}}",
     "chatWith": "Discussion avec {{friendName}}",
     "loadingHistory": "Chargement de l'historique...",
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
     "send": "Envoyer"
-    }
   },
-
 
   "showcase": {
     "title": "Bibliothèque de composants",

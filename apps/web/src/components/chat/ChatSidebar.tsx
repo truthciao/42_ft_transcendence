@@ -6,12 +6,15 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Skeleton } from '../ui/skeleton';
+import { useTranslation } from 'react-i18next';
 
 export function ConversationListSidebar() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [usernameInput, setUsernameInput] = useState('');
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const fetchConversations = async () => {
     try {
@@ -71,11 +74,13 @@ export function ConversationListSidebar() {
     <SecondarySidebar>
       <div className="flex h-full min-h-0 flex-col bg-background">
         <div className="border-b border-border p-3 flex flex-col gap-2 bg-muted/20">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Stranger Chat (Username)</h2>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            {t('chat.strangerChat')} 
+          </h2>
           <form onSubmit={handleStrangerChatSubmit} className="flex gap-2">
             <Input 
               type="text"
-              placeholder="Enter a username..."
+              placeholder={t('chat.usernamePlaceholder')}
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
               className="h-8 text-xs"
@@ -86,15 +91,17 @@ export function ConversationListSidebar() {
              size="sm"
              className="shrink-0"
              >
-              Chat
+              {t('chat.chat')}
             </Button>
           </form>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto p-3 space-y-2">
           <div className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wider flex items-center justify-between px-1">
-            <span>Conversations</span>
-            <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded text-secondary-foreground">{conversations.length}</span>
+            <span>{t('chat.conversations')}</span>
+            <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded text-secondary-foreground">
+              {conversations.length}
+            </span>
           </div>
 
           {isLoading ? (
@@ -106,7 +113,7 @@ export function ConversationListSidebar() {
           ) : (
             <div className="space-y-1">
               {conversations.map((conv) => {
-                const displayName = conv.name || `Chat Room #${conv.id}`;
+                const displayName = conv.name || t('chat.room', { id: conv.id });
                 const avatarLetter = displayName.charAt(0).toUpperCase();
 
                 return (
@@ -132,7 +139,10 @@ export function ConversationListSidebar() {
                           <span className="text-sm font-medium truncate">
                             {displayName}
                           </span>
-                          <span className="text-xs shrink-0" title={conv.isFriend ? 'Friend' : 'Stranger'}>
+                          <span 
+                            className="text-xs shrink-0" 
+                            title={conv.isFriend ? t('chat.friend') : t('chat.stranger')}
+                          >
                             {conv.isFriend ? '🤝' : '👤'}
                           </span>
                         </div>
@@ -144,7 +154,7 @@ export function ConversationListSidebar() {
                         ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
                         : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
                     }`}>
-                      {conv.isFriend ? 'Friend' : 'Stranger'}
+                      {conv.isFriend ? t('chat.friend') : t('chat.stranger')}
                     </span>
                   </div>
                 );

@@ -148,14 +148,19 @@
   },
 
   "chat": {
-    "conversation": {
+    "strangerChat": "陌生人聊天（用户名）",
+    "usernamePlaceholder": "输入用户名...",
+    "chat": "聊天",
+    "conversations": "会话",
+    "friend": "好友",
+    "stranger": "陌生人",
+    "room": "聊天室 #{{id}}",
     "chatWith": "与 {{friendName}} 聊天",
     "loadingHistory": "正在加载聊天记录...",
-    "empty": "暂无聊天记录，来打个招呼吧！",
+    "empty": "暂无聊天记录。在下方打个招呼吧！",
     "user": "用户",
     "placeholder": "输入消息...",
     "send": "发送"
-    }
   },
 
 

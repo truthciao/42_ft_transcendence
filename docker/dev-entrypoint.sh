@@ -7,6 +7,10 @@ pnpm install \
   --frozen-lockfile \
   --config.confirmModulesPurge=false
 
+echo "Building shared types..."
+
+pnpm --filter @repo/shared-types build
+
 if [ "${GENERATE_PRISMA:-false}" = "true" ]; then
   echo "Generating Prisma Client..."
   pnpm --dir apps/api exec prisma generate

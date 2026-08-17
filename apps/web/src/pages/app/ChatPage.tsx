@@ -25,7 +25,7 @@ export function ConversationPage() {
   const friendName = locationState?.friendName;
 
   const chatTitle = friendName
-  ? t('chat.conversation.chatWith', { friendName })
+  ? t('chat.chatWith', { friendName })
   : '';
 
   useEffect(() => {
@@ -66,17 +66,17 @@ export function ConversationPage() {
       <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.conversation.loadingHistory')} 
+            {t('chat.loadingHistory')} 
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.conversation.empty')}
+            {t('chat.empty')}
           </div>
         ) : (
           messages.map((msg) => (
             <div key={msg.id} className="flex flex-col mb-2">
               <span className="text-[10px] text-muted-foreground mb-1">
-                {t('chat.conversation.user')} {msg.senderId}
+                {t('chat.user')} {msg.senderId}
               </span>
               <div className="bg-accent text-accent-foreground p-2.5 rounded-lg max-w-[70%] w-fit text-sm">
                 {msg.content}
@@ -92,11 +92,11 @@ export function ConversationPage() {
             type="text" 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={t('chat.conversation.placeholder')}
+            placeholder={t('chat.placeholder')}
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <Button type="submit">
-            {t('chat.conversation.send')} 
+            {t('chat.send')} 
           </Button>
         </div>
       </form>

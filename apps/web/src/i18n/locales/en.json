@@ -148,14 +148,19 @@
   },
 
   "chat": {
-  "conversation": {
+    "strangerChat": "Stranger Chat (Username)",
+    "usernamePlaceholder": "Enter a username...",
+    "chat": "Chat",
+    "conversations": "Conversations",
+    "friend": "Friend",
+    "stranger": "Stranger",
+    "room" : "Chat Room #{{id}}",
     "chatWith": "Chat with {{friendName}}",
     "loadingHistory": "Loading history...",
     "empty": "No message history. Say hi below!",
     "user": "User",
     "placeholder": "Type a message...",
-    "send": "Send"
-    }
+    "send": "Send" 
   },
 
 

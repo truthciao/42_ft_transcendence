@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build --force",
     "dev": "tsc -b --watch --preserveWatchOutput"
   },
   "dependencies": {

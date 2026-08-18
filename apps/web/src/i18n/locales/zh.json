@@ -50,6 +50,10 @@
   },
 
   "friends": {
+    "title": "好友",
+    "description": "管理你的好友和好友请求。",
+    "close": "关闭",
+    "yourFriends": "我的好友",
     "loading": "正在加载好友...",
     "loadError": "加载好友失败。",
     "empty": "你还没有好友。",

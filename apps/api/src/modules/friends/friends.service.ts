@@ -11,7 +11,6 @@ import { FriendshipStatus } from '../../generated/prisma/enums.js';
 import { ChatService } from '../chat/chat.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
-import { SocketRegistryService } from '../realtime/services/ws-registry.service.js';
 
 @Injectable()
 export class FriendsService {

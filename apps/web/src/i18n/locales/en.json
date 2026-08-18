@@ -65,7 +65,9 @@
       "searchError": "Failed to search users.",
       "noUsers": "No users found.",
       "sending": "Sending...",
-      "button": "Add Friend"
+      "button": "Add Friend",
+      "success": "Friend request sent!",
+      "error": "Failed to send friend request."
     },
     "removeFriend": {
       "title": "Remove friend?",

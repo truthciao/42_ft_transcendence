@@ -65,7 +65,9 @@
       "searchError": "搜索用户失败。",
       "noUsers": "没有找到用户。",
       "sending": "发送中...",
-      "button": "添加好友"
+      "button": "添加好友",
+      "success": "好友请求已发送！",
+      "error": "发送好友请求失败。"
     },
     "removeFriend": {
       "title": "删除好友？",

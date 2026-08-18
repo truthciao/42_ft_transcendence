@@ -65,7 +65,9 @@
       "searchError": "Échec de la recherche des utilisateurs.",
       "noUsers": "Aucun utilisateur trouvé.",
       "sending": "Envoi...",
-      "button": "Ajouter"
+      "button": "Ajouter",
+      "success": "Demande d'ami envoyée !",
+      "error": "Échec de l'envoi de la demande d'ami."
     },
     "removeFriend": {
       "title": "Supprimer cet ami ?",

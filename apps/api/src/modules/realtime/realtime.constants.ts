@@ -3,6 +3,8 @@ export const REALTIME_EVENTS = {
   ERROR: 'exception',
   PING: 'ping',
   PONG: 'pong',
+  USER_ONLINE: 'user:online',
+  USER_OFFLINE: 'user:offline',
   ROOM_JOIN: 'room:join',
   ROOM_JOINED: 'room:joined',
   ROOM_LEAVE: 'room:leave',

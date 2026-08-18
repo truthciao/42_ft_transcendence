@@ -59,6 +59,9 @@ export class RealtimeGateway
       this.socketRegistry.registerSocket(user.userId, client.id);
       await this.roomService.joinRoom(client, getUserRoom(user.userId));
 
+      this.server.emit(REALTIME_EVENTS.USER_ONLINE, {
+        userId: user.userId,
+      });
       this.logger.log(
         `Client connected: socket=${client.id} user=${user.username}`,
       );
@@ -77,6 +80,12 @@ export class RealtimeGateway
   handleDisconnect(client: Socket): void {
     const userId = this.socketRegistry.getUserId(client.id);
     this.socketRegistry.unregisterSocket(client.id);
+
+    if (userId !== undefined && !this.socketRegistry.isUserOnline(userId)) {
+      this.server.emit(REALTIME_EVENTS.USER_OFFLINE, {
+        userId,
+      });
+    }
     this.logger.log(
       `Client disconnected: socket=${client.id} user=${userId ?? 'unknown'}`,
     );

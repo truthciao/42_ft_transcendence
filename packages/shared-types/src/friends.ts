@@ -13,6 +13,8 @@ export const friendSchema = z.object({
   email: z
     .string()
     .email('email must be a valid email address'),
+
+  online: z.boolean(),
 });
 
 export const sendFriendRequestSchema = z.object({

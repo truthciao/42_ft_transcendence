@@ -28,7 +28,7 @@ export const messageResponseSchema = z.object({
   message: z.string(),
 });
 
-export const pendingRequestSchema = z.object({
+export const friendRequestSchema = z.object({
   id: z
     .number()
     .int('id must be an integer')
@@ -49,17 +49,28 @@ export const pendingRequestSchema = z.object({
   createdAt: z
     .string()
     .datetime('createdAt must be a valid ISO datetime'),
+});
 
+export const pendingRequestSchema = friendRequestSchema.extend({
   requester: friendSchema,
 });
 
+export const sentPendingRequestSchema = friendRequestSchema.extend({
+  addressee: friendSchema,
+});
+
 export type Friend = z.infer<typeof friendSchema>;
+
+export type FriendRequest = z.infer<typeof friendRequestSchema>;
+
+export type PendingRequest =
+  z.infer<typeof pendingRequestSchema>;
+
+export type SentPendingRequest =
+  z.infer<typeof sentPendingRequestSchema>;
 
 export type SendFriendRequestDto =
   z.infer<typeof sendFriendRequestSchema>;
 
 export type MessageResponse =
   z.infer<typeof messageResponseSchema>;
-
-export type PendingRequest =
-  z.infer<typeof pendingRequestSchema>;

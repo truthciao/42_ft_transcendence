@@ -86,8 +86,18 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
             cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-sm', isActive ? 'bg-muted font-medium' : 'hover:bg-muted')
           }
         >
+          <Hash className="size-4" /> Overview
+        </ NavLink>
+
+        <NavLink
+          to={`/app/spaces/${workspaceId}/members`}
+          className={({ isActive} ) =>
+            cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-sm', isActive ? 'bg-muted font-medium' : 'hover:bg-muted')
+          }
+        >
           <Users className="size-4" /> Members
         </NavLink>
+
         <NavLink
           to={`/app/spaces/${workspaceId}/settings`}
           className={({ isActive }) =>

@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   Navigate,
-  type LoaderFunctionArgs,
 } from 'react-router';
 import { HomePage } from '../pages/HomePage';
 import { ProfilePage } from '../pages/app/ProfilePage';
@@ -20,14 +19,13 @@ import { ConversationListSidebar } from '@/components/chat/ChatSidebar';
 import { FriendsPage } from '@/pages/app/FriendsPage';
 import { FriendsSidebar } from '@/components/friends/FriendsSidebar';
 import { FriendProfilePage } from '@/pages/app/FriendProfilePage';
-import {
-  SpacesPage,
-  SpacesSidebar,
-  SpaceDetailPage,
-  SpaceChannelPage,
-  SpaceMembersPage,
-  SpaceSettingsPage,
-} from '@/pages/app/SpacesPage';
+import { SpacesIndexPage } from '@/pages/app/spaces/SpacesIndexPage';
+import { SpaceDetailPage } from '@/pages/app/spaces/SpaceDetailPage';
+import { SpaceMembersPage } from '@/pages/app/spaces/SpaceMembersPage';
+import { SpaceSettingPage } from '@/pages/app/spaces/SpaceSettingsPage';
+import { SpaceChannelPage } from '@/pages/app/spaces/SpaceChannelPage';
+import { SpacesSidebar } from '@/components/workspaces/SpacesSidebar';
+import { WorkspaceGuard } from '@/components/workspaces/WorkspaceGuard';
 import {
   SettingsPage,
   SettingsSidebar,
@@ -38,31 +36,15 @@ import { InvitePage } from '@/pages/app/InvitePage';
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 
-function workspaceLoader({ params }: LoaderFunctionArgs) {
-  return { workspaceId: params.workspaceId };
-}
-
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     errorElement: <RouteErrorBoundary />,
     children: [
-      {
-        path: '/',
-        element: <HomePage />,
-      },
-      {
-        path: '/login',
-        element: <LoginPage />,
-      },
-      {
-        path: '/register',
-        element: <RegisterPage />,
-      },
-      {
-        path: '/showcase',
-        element: <ComponentShowcasePage />,
-      },
+      { path: '/', element: <HomePage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+      { path: '/showcase', element: <ComponentShowcasePage /> },
     ],
   },
   {
@@ -95,32 +77,19 @@ export const router = createBrowserRouter([
           },
           {
             path: 'spaces',
-            element: <SpacesPage />,
+            element: <SpacesIndexPage />,
             handle: { secondarySidebar: () => <SpacesSidebar /> },
           },
           {
             path: 'spaces/:workspaceId',
-            loader: workspaceLoader,
-            element: <SpaceDetailPage />,
+            element: <WorkspaceGuard />,
             handle: { secondarySidebar: () => <SpacesSidebar /> },
-          },
-          {
-            path: 'spaces/:workspaceId/c/:channelId',
-            loader: workspaceLoader,
-            element: <SpaceChannelPage />,
-            handle: { secondarySidebar: () => <SpacesSidebar /> },
-          },
-          {
-            path: 'spaces/:workspaceId/members',
-            loader: workspaceLoader,
-            element: <SpaceMembersPage />,
-            handle: { secondarySidebar: () => <SpacesSidebar /> },
-          },
-          {
-            path: 'spaces/:workspaceId/settings',
-            loader: workspaceLoader,
-            element: <SpaceSettingsPage />,
-            handle: { secondarySidebar: () => <SpacesSidebar /> },
+            children: [
+              { index: true, element: <SpaceDetailPage /> },
+              { path: 'c/:channelId', element: <SpaceChannelPage /> },
+              { path: 'members', element: <SpaceMembersPage /> },
+              { path: 'settings', element: <SpaceSettingPage /> },
+            ]
           },
           {
             path: 'settings',

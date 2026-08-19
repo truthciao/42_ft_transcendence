@@ -61,7 +61,7 @@ export function TabRail() {
       {workspaces?.map((space) => (
         <NavLink
           key={space.id}
-          to={`/app/spaces${space.id}`}
+          to={`/app/spaces/${space.id}`}
           title={space.name}
           onMouseEnter={() => prefetchWorkspace(space.id)}
           onFocus={() => prefetchWorkspace(space.id)}

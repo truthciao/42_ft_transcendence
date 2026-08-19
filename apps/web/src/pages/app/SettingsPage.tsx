@@ -1,33 +1,56 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../../components/ui/dialog';
+
+import {
+  generateTwoFactor,
+  turnOnTwoFactor,
+  disableTwoFactor,
+} from '../../api/auth';
+
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { QRCodeCanvas } from 'qrcode.react'; // Import QR code rendering library
 import { NavLink } from 'react-router';
-import { httpGet, httpPost } from '../../lib/http';
+import { Input } from '../../components/ui/input';
+import { Button }  from '../../components/ui/button';
+import { getCurrentUser } from '../../api/users';
+import { HttpError } from '@/lib/http';
 
 export function SettingsSidebar() {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <h3 className="mb-4 font-semibold">Settings</h3>
+      <h3 className="mb-4 font-semibold">
+        {t('settings.title')}
+      </h3>
 
       <nav className="flex flex-col gap-1">
         <NavLink
           to="/app/settings/profile"
           className="rounded-md px-2 py-1.5"
         >
-          Profile
+          {t('settings.profile')}
         </NavLink>
 
         <NavLink
           to="/app/settings/account"
           className="rounded-md px-2 py-1.5"
         >
-          Account
+          {t('settings.account')}
         </NavLink>
 
         <NavLink
           to="/app/settings/notifications"
           className="rounded-md px-2 py-1.5"
         >
-          Notifications
+          {t('settings.notifications')}
         </NavLink>
       </nav>
     </div>
@@ -35,15 +58,23 @@ export function SettingsSidebar() {
 }
 
 export function SettingsPage() {
+  const { t } = useTranslation();
+
   return (
-    <div className="flex-1 bg-background p-4">
-      <h2 className="text-2xl font-semibold">Settings</h2>
-      <p className="text-muted-foreground mt-2">Settings overview</p>
+    <div className="flex-1 bg-background p-6">
+      <h2 className="text-2xl font-semibold">
+        {t('settings.title')}
+      </h2>
+
+      <p className="mt-2 text-muted-foreground">
+        {t('settings.description')}
+      </p>
     </div>
   );
 }
 
 export function AccountSettingsPage() {
+  const { t }  = useTranslation();
 
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
   
@@ -57,38 +88,42 @@ export function AccountSettingsPage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {  
-        const userData = await httpGet<any>('/users/me');
+        const userData = await getCurrentUser();
 
         if (userData) {
-          const status = userData.isTwoFactorEnabled ?? userData.twoFactorEnabled ?? false;
+          const status = userData.isTwoFactorEnabled;
           setIsTwoFactorEnabled(Boolean(status));
         }
-      } catch (error: any) {
-          console.error('Failed to fetch user profile: ', error.message);
+      } catch (error) {
+        if (error instanceof HttpError) {
+          console.error(error.status, error.message);
+        } else {
+          console.error(error);
+        }
       }
     };
     fetchUserProfile();
   }, []);
 
-interface TwoFactorGenerateResponse {
-  otpauthUrl: string;
-  secret: string;
-}
-
   // Step 1: Request backend to generate 2FA secret and QR code URL
   const handleStartEnable2FA = async () => {
     setLoading(true);
     try {
-      const data = await httpPost<TwoFactorGenerateResponse>('/auth/2fa/generate');
+      const data = await generateTwoFactor();
 
     if (data && data.otpauthUrl) {
       setOtpauthUrl(data.otpauthUrl);
       setSecret(data.secret);
       setShowSetupModal(true);
     }
-    } catch (error: any) {
-      console.error('Error generating 2FA:', error);
-      alert(error.message || 'Failed to generate 2FA secret');
+    } catch (error) {
+      if (error instanceof HttpError) {
+        console.error(error.status, error.message);
+        alert(error.message || t('settings.twoFactor.generateError'));
+      } else {
+        console.error(error);
+        alert(t('settings.twoFactor.generateError'));
+      }  
     } finally {
       setLoading(false);
     }
@@ -99,39 +134,52 @@ interface TwoFactorGenerateResponse {
     e.preventDefault();
     setLoading(true);
     try {
-      await httpPost('/auth/2fa/turn-on', { 
-        code: verifyCode.trim(),
-      });
+      await turnOnTwoFactor(verifyCode.trim());
 
     setIsTwoFactorEnabled(true);
     setShowSetupModal(false); 
     setVerifyCode('');
-    alert('2FA enabled successfully!');
+    alert(t('settings.twoFactor.enableSuccess'));
 
-    } catch (error: any) {
-      console.error('Error turning on 2FA:', error);
-      alert(error.message || 'Invalid verification code');
+    } catch (error) {
+      if (error instanceof HttpError) {
+        console.error(error.status, error.message);
+        alert(error.message || t('settings.twoFactor.invalidCode'));
+      } else {
+        console.error(error);
+        alert(t('settings.twoFactor.invalidCode'));
+      }
     } finally {
       setLoading(false);
     }
   };
 
  const handleDisable2FA = async () => {
-    if (!confirm('Are you sure you want to disable 2FA?')) return;
+    if (!confirm(t('settings.twoFactor.disableConfirm'))) return;
    
     setLoading(true);
     try {
-      await httpPost('/auth/2fa/toggle', {
-        enabled: false,
-        isTwoFactorEnabled: false,
-      });
+      await disableTwoFactor();
 
         setIsTwoFactorEnabled(false);
-        alert('2FA disabled');
-     } catch (error: any) {
-        console.error('Error disabling 2FA:', error);
-        alert(`Failed to disable 2FA: ${error.message || 'Unknown error'}`);
-     } finally {
+        alert(t('settings.twoFactor.disableSuccess'));
+     } catch (error) {
+        if (error instanceof HttpError) {
+        console.error(error.status, error.message);
+        alert(
+          `${t('settings.twoFactor.disableError')}: ${
+            error.message || t('settings.twoFactor.unknownError')
+          }`,
+        );
+        } else {
+          console.error(error);
+          alert(
+            `${t('settings.twoFactor.disableError')}: ${
+              t('settings.twoFactor.unknownError')
+            }`,
+          );
+        }
+      } finally {
       setLoading(false);
      }
   };
@@ -139,102 +187,143 @@ interface TwoFactorGenerateResponse {
   return (
     <div className="flex-1 bg-background p-4 space-y-4">
       <div>
-        <h2 className="text-2xl font-semibold">Account Settings</h2>
+        <h2 className="text-2xl font-semibold">
+          {t('settings.accountTitle')} 
+        </h2>
         <p className="text-muted-foreground mt-2">
-          Manage your account security and preferences
+          {t('settings.accountDescription')}
         </p>
       </div>
 
       <div className="p-4 border rounded-lg bg-card flex items-center justify-between max-w-xl">
         <div>
-          <h4 className="font-medium">Two-Factor Authentication (2FA)</h4>
-          <p className="text-sm text-muted-foreground">
-            Status: {isTwoFactorEnabled ? '✅ Enabled' : '❌ Disabled'}
-          </p>
+          <h4 className="font-medium"> 
+            {t('settings.twoFactor.title')}
+          </h4>
+            <p className="text-sm text-muted-foreground">
+              {t('settings.twoFactor.status')}:{' '}
+              {isTwoFactorEnabled
+                ? `✅ ${t('settings.twoFactor.statusEnabled')}`
+                : `❌ ${t('settings.twoFactor.statusDisabled')}`}
+            </p>
         </div>
         
         {/* Render enable or disable button based on current status */}
         {!isTwoFactorEnabled ? (
-          <button
+          <Button
             onClick={handleStartEnable2FA}
             disabled={loading}
-            className="px-4 py-2 rounded-md text-sm font-medium text-white shadow bg-blue-600 hover:bg-blue-700 transition-colors"
           >
-            {loading ? 'Loading...' : 'Enable 2FA'}
-          </button>
+            {loading 
+              ? t('common.loading')
+              : t('settings.twoFactor.enable')}    
+          </Button>
         ) : (
-          <button
+          <Button
+            variant="destructive"
             onClick={handleDisable2FA}
-            className="px-4 py-2 rounded-md text-sm font-medium text-white shadow bg-red-600 hover:bg-red-700 transition-colors"
+            disabled={loading} 
           >
-            Disable 2FA
-          </button>
+          {loading
+            ? t('common.loading')
+            : t('settings.twoFactor.disable')}
+          </Button>
         )}
       </div>
 
       {/* QR code scanning and activation modal panel */}
-      {showSetupModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background border p-6 rounded-lg max-w-md w-full space-y-4 shadow-xl">
-            <h3 className="text-xl font-semibold">Set up Two-Factor Authentication</h3>
-            <p className="text-sm text-muted-foreground">
-              1. Open your authenticator app (like Google Authenticator).<br/>
-              2. Scan the QR code below or enter the key manually.
-            </p>
+        <Dialog
+          open={showSetupModal}
+          onOpenChange={setShowSetupModal}
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {t('settings.twoFactor.setupTitle')} 
+              </DialogTitle>
 
-            {/* Render QR Code canvas */}
-            <div className="flex justify-center p-4 bg-white rounded border">
-              {otpauthUrl && <QRCodeCanvas value={otpauthUrl} size={180} />}
+              <DialogDescription className="whitespace-pre-line">
+                 {t('settings.twoFactor.setupDescription')}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-center rounded border bg-white p-4">
+              {otpauthUrl && (
+                <QRCodeCanvas
+                  value={otpauthUrl}
+                  size={180}
+                />
+              )}
             </div>
 
-            <div className="text-xs text-muted-foreground break-all text-center">
-              Secret Key: <span className="font-mono font-semibold">{secret}</span>
+            <div className="text-center text-xs text-muted-foreground break-all">
+              {t('settings.twoFactor.secretKey')}:{' '}
+              <span className="font-mono font-semibold">
+                {secret}
+              </span>
             </div>
 
-            <form onSubmit={handleVerifyAndTurnOn} className="space-y-3">
+            <form
+              onSubmit={handleVerifyAndTurnOn}
+              className="space-y-3"
+            >
               <div>
-                <label className="text-sm font-medium">Enter 6-digit code from app:</label>
-                <input
+                <label 
+                  htmlFor="two-factor-code"
+                  className="text-sm font-medium">
+                  {t('settings.twoFactor.codeLabel')}
+                </label>
+
+                <Input
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
                   maxLength={6}
                   required
                   value={verifyCode}
                   onChange={(e) => setVerifyCode(e.target.value)}
-                  placeholder="123456"
-                  className="w-full mt-1 p-2 border rounded text-center tracking-widest text-lg font-mono"
+                  placeholder={t('settings.twoFactor.codePlaceholder')}
+                  className="mt-1 w-full text-center tracking-widest text-lg font-mono"
                 />
               </div>
 
-              <div className="flex space-x-2 pt-2">
-                <button
+              <DialogFooter className="mx-0 mb-0 rounded-none border-0 bg-transparent p-0 sm:flex-row">
+                <Button
                   type="button"
+                  variant="outline"
+                  className="flex-1"
                   onClick={() => setShowSetupModal(false)}
-                  className="flex-1 px-4 py-2 border rounded text-sm font-medium hover:bg-muted"
                 >
-                  Cancel
-                </button>
-                <button
+                  {t('common.cancel')}
+                </Button>
+
+                <Button
                   type="submit"
+                  className="flex-1"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded text-sm font-medium hover:bg-green-700"
                 >
-                  {loading ? 'Verifying...' : 'Verify & Turn On'}
-                </button>
-              </div>
+                {loading
+                  ? t('settings.twoFactor.verifying')
+                  : t('settings.twoFactor.verifyAndTurnOn')}
+                </Button>
+              </DialogFooter>
             </form>
+          </DialogContent>
+          </Dialog>
+
           </div>
-        </div>
-      )}
-    </div>
   );
 }
 
 export function NotificationSettingsPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 bg-background p-4">
-      <h2 className="text-2xl font-semibold">Notification Settings</h2>
+      <h2 className="text-2xl font-semibold">
+        {t('settings.notificationsTitle')} 
+      </h2>
       <p className="text-muted-foreground mt-2">
-        Notification settings content
+        {t('settings.notificationsDescription')} 
       </p>
     </div>
   );

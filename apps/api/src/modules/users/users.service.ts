@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
+import type { CreateUserPayload } from '@repo/shared-types';
 
-interface CreateUserData {
-  email: string;
-  username: string;
-  passwordHash?: string; //Optional to skip dto check!
-}
+type CreateUserData = CreateUserPayload & {
+  passwordHash?: string;
+};
 
 @Injectable()
 export class UsersService {
@@ -76,6 +75,7 @@ export class UsersService {
       profile: {
         select: {
           avatarUrl: true,
+          preferredLanguage: true,
         },
       },
     },
@@ -91,6 +91,7 @@ export class UsersService {
     username: user.username,
     isTwoFactorEnabled: user.isTwoFactorEnabled,
     avatarUrl: user.profile?.avatarUrl ?? null,
+    preferredLanguage: user.profile?.preferredLanguage ?? null,
   };
 }
 

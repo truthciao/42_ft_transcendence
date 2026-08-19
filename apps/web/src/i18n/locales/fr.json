@@ -50,15 +50,40 @@
   },
 
   "friends": {
+    "title": "Amis",
+    "description": "Gérez vos amis et vos demandes.",
+    "close": "Fermer",
+    "yourFriends": "Vos amis",
     "loading": "Chargement des amis...",
     "loadError": "Échec du chargement des amis.",
     "empty": "Vous n'avez pas encore d'amis.",
+    "addFriend": {
+      "title": "Ajouter un ami",
+      "searchPlaceholder": "Rechercher par nom d'utilisateur",
+      "minCharacters": "Saisissez au moins 2 caractères pour effectuer une recherche.",
+      "searching": "Recherche en cours...",
+      "searchError": "Échec de la recherche des utilisateurs.",
+      "noUsers": "Aucun utilisateur trouvé.",
+      "sending": "Envoi...",
+      "button": "Ajouter",
+      "success": "Demande d'ami envoyée !",
+      "error": "Échec de l'envoi de la demande d'ami."
+    },
     "removeFriend": {
       "title": "Supprimer cet ami ?",
       "description": "Êtes-vous sûr de vouloir supprimer cet ami ?",
       "confirm": "Supprimer",
+      "removing": "Suppression...",
       "success": "Ami supprimé",
       "error": "Échec de la suppression de l'ami."
+    },
+    "friendRequests": {
+      "title": "Demandes d'ami",
+      "loading": "Chargement des demandes d'ami...",
+      "loadError": "Échec du chargement des demandes d'ami.",
+      "empty": "Aucune demande d'ami en attente.",
+      "accept": "Accepter",
+      "reject": "Refuser"
     }
   },
 
@@ -91,6 +116,57 @@
     "routeMessage": "Impossible de charger cette page.",
     "retry": "Réessayer",
     "backHome": "Retour à l'accueil"
+  },
+
+  "settings": {
+  "title": "Paramètres",
+  "description": "Gérez les paramètres et les préférences de votre compte.",
+  "profile": "Profil",
+  "account": "Compte",
+  "notifications": "Notifications",
+  "accountTitle": "Paramètres du compte",
+  "accountDescription": "Gérez la sécurité et les préférences de votre compte.",
+  "notificationsTitle": "Paramètres des notifications",
+  "notificationsDescription": "Gérez vos préférences de notification.",
+  "twoFactor": {
+    "title": "Authentification à deux facteurs (2FA)",
+    "setupTitle": "Configurer l’authentification à deux facteurs",
+    "setupDescription": "1. Ouvrez votre application d’authentification (comme Google Authenticator).\n2. Scannez le code QR ci-dessous ou saisissez la clé manuellement.",
+    "status": "Statut",
+    "statusEnabled": "Activée",
+    "statusDisabled": "Désactivée",
+    "enable": "Activer la 2FA",
+    "disable": "Désactiver la 2FA",
+    "loading": "Chargement...",
+    "secretKey": "Clé secrète",
+    "codeLabel": "Saisissez le code à 6 chiffres affiché dans l’application :",
+    "codePlaceholder": "123456",
+    "verifying": "Vérification...",
+    "verifyAndTurnOn": "Vérifier et activer",
+    "enableSuccess": "La 2FA a été activée avec succès !",
+    "invalidCode": "Code de vérification invalide",
+    "disableConfirm": "Voulez-vous vraiment désactiver la 2FA ?",
+    "disableSuccess": "La 2FA a été désactivée.",
+    "generateError": "Échec de la génération du secret 2FA",
+    "disableError": "Échec de la désactivation de la 2FA",
+    "unknownError": "Erreur inconnue"
+    }
+  },
+
+  "chat": {
+    "strangerChat": "Discussion avec un inconnu (nom d'utilisateur)",
+    "usernamePlaceholder": "Entrez un nom d'utilisateur...",
+    "chat": "Discuter",
+    "conversations": "Conversations",
+    "friend": "Ami",
+    "stranger": "Inconnu",
+    "room": "Salon de discussion #{{id}}",
+    "chatWith": "Discussion avec {{friendName}}",
+    "loadingHistory": "Chargement de l'historique...",
+    "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
+    "user": "Utilisateur",
+    "placeholder": "Écrivez un message...",
+    "send": "Envoyer"
   },
 
   "showcase": {

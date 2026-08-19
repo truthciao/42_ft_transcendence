@@ -50,15 +50,40 @@
   },
 
   "friends": {
+    "title": "好友",
+    "description": "管理你的好友和好友请求。",
+    "close": "关闭",
+    "yourFriends": "我的好友",
     "loading": "正在加载好友...",
     "loadError": "加载好友失败。",
     "empty": "你还没有好友。",
+    "addFriend": {
+      "title": "添加好友",
+      "searchPlaceholder": "按用户名搜索",
+      "minCharacters": "请输入至少 2 个字符进行搜索。",
+      "searching": "搜索中...",
+      "searchError": "搜索用户失败。",
+      "noUsers": "没有找到用户。",
+      "sending": "发送中...",
+      "button": "添加好友",
+      "success": "好友请求已发送！",
+      "error": "发送好友请求失败。"
+    },
     "removeFriend": {
       "title": "删除好友？",
       "description": "确定要删除这个好友吗？",
       "confirm": "删除",
+      "removing": "移除中...",
       "success": "好友已删除",
       "error": "删除好友失败。"
+    },
+    "friendRequests": {
+      "title": "好友请求",
+      "loading": "正在加载好友请求...",
+      "loadError": "加载好友请求失败。",
+      "empty": "没有待处理的好友请求。",
+      "accept": "接受",
+      "reject": "拒绝"
     }
   },
 
@@ -92,6 +117,58 @@
     "retry": "重试",
     "backHome": "返回首页"
   },
+
+  "settings": {
+  "title": "设置",
+  "description": "管理您的账户设置和偏好。",
+  "profile": "个人资料",
+  "account": "账户",
+  "notifications": "通知",
+  "accountTitle": "账户设置",
+  "accountDescription": "管理您的账户安全和偏好设置。",
+  "notificationsTitle": "通知设置",
+  "notificationsDescription": "管理您的通知偏好。",
+  "twoFactor": {
+    "title": "双因素身份验证（2FA）",
+    "setupTitle": "设置双因素身份验证",
+    "setupDescription": "1. 打开您的身份验证应用（例如 Google Authenticator）。\n2. 扫描下方的二维码，或手动输入密钥。",
+    "status": "状态",
+    "statusEnabled": "已启用",
+    "statusDisabled": "已禁用",
+    "enable": "启用 2FA",
+    "disable": "禁用 2FA",
+    "loading": "加载中...",
+    "secretKey": "密钥",
+    "codeLabel": "请输入身份验证应用中的 6 位验证码：",
+    "codePlaceholder": "123456",
+    "verifying": "验证中...",
+    "verifyAndTurnOn": "验证并启用",
+    "enableSuccess": "2FA 已成功启用！",
+    "invalidCode": "验证码无效",
+    "disableConfirm": "确定要禁用 2FA 吗？",
+    "disableSuccess": "2FA 已禁用",
+    "generateError": "生成 2FA 密钥失败",
+    "disableError": "禁用 2FA 失败",
+    "unknownError": "未知错误"
+    }
+  },
+
+  "chat": {
+    "strangerChat": "陌生人聊天（用户名）",
+    "usernamePlaceholder": "输入用户名...",
+    "chat": "聊天",
+    "conversations": "会话",
+    "friend": "好友",
+    "stranger": "陌生人",
+    "room": "聊天室 #{{id}}",
+    "chatWith": "与 {{friendName}} 聊天",
+    "loadingHistory": "正在加载聊天记录...",
+    "empty": "暂无聊天记录。在下方打个招呼吧！",
+    "user": "用户",
+    "placeholder": "输入消息...",
+    "send": "发送"
+  },
+
 
   "showcase": {
     "title": "组件库",

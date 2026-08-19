@@ -141,11 +141,16 @@ export class FriendsService {
       },
     });
 
-    return friendships.map((friendship) =>
-      friendship.requesterId === userId
-        ? friendship.addressee
-        : friendship.requester,
-    );
+    return friendships.map((friendship) => {
+      const friend =
+        friendship.requesterId === userId
+          ? friendship.addressee
+          : friendship.requester;
+
+      return {
+        ...friend,
+      };
+    });
   }
 
   async removeFriend(userId: number, otherUserId: number) {

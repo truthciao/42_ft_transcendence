@@ -26,6 +26,7 @@ export type User = z.infer<typeof userSchema>;
 
 export const currentUserSchema = userSchema.extend({
   isTwoFactorEnabled: z.boolean(),
+  preferredLanguage: z.string().nullable(),
 });
 
 export type CurrentUser = z.infer<typeof currentUserSchema>;

@@ -49,8 +49,8 @@ export function TopBar() {
           <DropdownMenuTrigger className="cursor-pointer outline-none">
             <Avatar>
               <AvatarImage
-                src={user?.avatarUrl ?? undefined}
-                alt={user?.username ?? 'Avartar'}
+                src={user?.avatarUrl ?? '/images.jpg'}
+                alt={user?.username ?? 'Avatar'}
               />
               <AvatarFallback>{fallback}</AvatarFallback>
             </Avatar>

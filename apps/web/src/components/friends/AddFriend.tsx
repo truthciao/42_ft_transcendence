@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useAuth } from '../../hooks/useAuth';
 import { useFriends } from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 
 export function AddFriend() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
+  const [sendingUserId, setSendingUserId] = useState<number | null>(null);
 
   const {
     data: users,
@@ -20,7 +24,7 @@ export function AddFriend() {
   const sendFriendRequestMutation = useSendFriendRequest();
 
   if (isCurrentUserLoading) {
-    return <p>Loading...</p>;
+    return <p>{t('friends.loading')}</p>;
   }
 
   const friendIds = new Set(
@@ -40,15 +44,36 @@ export function AddFriend() {
       return true;
     }) ?? [];
 
+  const handleSendFriendRequest = (userId: number) => {
+    setSendingUserId(userId);
+
+    sendFriendRequestMutation.mutate(
+      {
+        addresseeId: userId,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t('friends.addFriend.success'));
+        },
+        onError: () => {
+          toast.error(t('friends.addFriend.error'));
+        },
+        onSettled: () => {
+          setSendingUserId(null);
+        },
+      },
+    );
+  };
+
   return (
     <section className="space-y-4">
       <h2 className="text-xl font-semibold">
-        Add Friend
+        {t('friends.addFriend.title')}
       </h2>
 
       <input
         type="text"
-        placeholder="Search by username"
+        placeholder={t('friends.addFriend.searchPlaceholder')}
         value={username}
         onChange={(event) => {
           setUsername(event.target.value);
@@ -64,62 +89,62 @@ export function AddFriend() {
 
       {username.trim().length < 2 ? (
         <p className="text-muted-foreground">
-          Enter at least 2 characters to search.
+          {t('friends.addFriend.minCharacters')}
         </p>
       ) : isUsersLoading ? (
         <p className="text-muted-foreground">
-          Searching...
+          {t('friends.addFriend.searching')}
         </p>
       ) : isUsersError ? (
         <p className="text-destructive">
-          Failed to search users.
+          {t('friends.addFriend.searchError')}
         </p>
       ) : availableUsers.length === 0 ? (
         <p className="text-muted-foreground">
-          No users found.
+          {t('friends.addFriend.noUsers')}
         </p>
       ) : (
         <div className="space-y-3">
-          {availableUsers.map((user) => (
-            <div
-              key={user.id}
-              className="
-                flex
-                items-center
-                justify-between
-                rounded-lg
-                border
-                p-4
-              "
-            >
-              <p className="font-medium">
-                {user.username}
-              </p>
+          {availableUsers.map((user) => {
+            const isSending = sendingUserId === user.id;
 
-              <button
+            return (
+              <div
+                key={user.id}
                 className="
-                  rounded
-                  bg-primary
-                  px-3
-                  py-1
-                  text-primary-foreground
-                  disabled:opacity-50
+                  flex
+                  items-center
+                  justify-between
+                  rounded-lg
+                  border
+                  p-4
                 "
-                disabled={
-                  sendFriendRequestMutation.isPending
-                }
-                onClick={() =>
-                  sendFriendRequestMutation.mutate({
-                    addresseeId: user.id,
-                  })
-                }
               >
-                {sendFriendRequestMutation.isPending
-                  ? 'Sending...'
-                  : 'Add Friend'}
-              </button>
-            </div>
-          ))}
+                <p className="font-medium">
+                  {user.username}
+                </p>
+
+                <button
+                  className="
+                    rounded
+                    bg-primary
+                    px-3
+                    py-1
+                    text-primary-foreground
+                    disabled:opacity-50
+                  "
+                  disabled={sendFriendRequestMutation.isPending}
+                  onClick={() =>
+                    handleSendFriendRequest(user.id)
+                  }
+                >
+                  {isSending
+                    ? t('friends.addFriend.sending')
+                    : t('friends.addFriend.button')}
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </section>

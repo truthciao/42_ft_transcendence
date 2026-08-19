@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const twoFactorLoginResponseSchema = z.object({
+  requiresTwoFactor: z.literal(true),
+  userId: z.number(),
+});
+
 export const registerSchema = z.object({
   email: z.string().email('email must be a valid email address'),
 
@@ -29,10 +34,14 @@ export const authUserSchema = z.object({
   username: z.string(),
 });
 
-export const authResponseSchema = z.object({
-  access_token: z.string(),
-  user: authUserSchema.optional(),
-});
+export const authResponseSchema = z.union([
+  z.object({
+    access_token: z.string(),
+    user: authUserSchema.optional(),
+  }),
+
+  twoFactorLoginResponseSchema,
+]);
 
 export type RegisterPayload = z.infer<typeof registerSchema>;
 export type LoginPayload = z.infer<typeof loginSchema>;

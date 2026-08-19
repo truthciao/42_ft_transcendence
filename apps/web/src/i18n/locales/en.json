@@ -6,7 +6,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "delete": "Delete",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "back": "Go back"
   },
 
   "home": {
@@ -82,6 +83,14 @@
       "loading": "Loading friend requests...",
       "loadError": "Failed to load friend requests.",
       "empty": "No pending friend requests.",
+      "accept": "Accept",
+      "reject": "Reject"
+    },
+    "profile": {
+      "backToFriends": "Back to friends",
+      "username": "Username",
+      "email": "Email",
+      "message": "message",
       "accept": "Accept",
       "reject": "Reject"
     }

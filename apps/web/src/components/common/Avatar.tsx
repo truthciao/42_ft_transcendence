@@ -43,9 +43,13 @@ export function Avatar({ src, name, size = 'md', status, className }: AvatarProp
   return (
     <span className={cn('relative inline-block', className)}>
       <BaseAvatar className={SIZE_CLASS[size]}>
-        {src ? <AvatarImage src={src} alt={name} /> : null}
+        <AvatarImage
+          src={src ?? '/images.jpg'}
+          alt={name}
+        />
         <AvatarFallback>{getInitials(name)}</AvatarFallback>
       </BaseAvatar>
+
       {status ? (
         <span
           aria-label={status}

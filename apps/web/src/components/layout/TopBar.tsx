@@ -2,7 +2,7 @@ import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar } from '../common/Avatar';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -47,13 +47,10 @@ export function TopBar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer outline-none">
-            <Avatar>
-              <AvatarImage
-                src={user?.avatarUrl ?? '/images.jpg'}
-                alt={user?.username ?? 'Avatar'}
-              />
-              <AvatarFallback>{fallback}</AvatarFallback>
-            </Avatar>
+            <Avatar
+              src={user?.avatarUrl}
+              name={user?.username ?? 'Account'}
+            />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-48">

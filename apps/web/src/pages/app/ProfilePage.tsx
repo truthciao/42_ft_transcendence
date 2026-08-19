@@ -89,7 +89,7 @@ export function ProfilePage() {
       <header className="border-b border-border pb-4">
         <div className="flex items-center gap-4">
           <Avatar
-            src={profile.avatarUrl ?? '/images.jpg'}
+            src={profile.avatarUrl}
             name={profile.displayName || profile.user?.username || '?'}
             size="xl"
           />

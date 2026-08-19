@@ -28,6 +28,7 @@ export {
   sendFriendRequestSchema,
   messageResponseSchema,
   pendingRequestSchema,
+  SentPendingRequest,
 } from './friends.js';
 
 export type {

@@ -62,10 +62,9 @@ describe('Friends (e2e)', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -113,6 +112,26 @@ describe('Friends (e2e)', () => {
   }
 
   describe('POST /friends/requests', () => {
+    it('should reject a reverse request while one is pending', async () => {
+      const a = await createAuthenticatedUser(userA);
+      const b = await createAuthenticatedUser(userB);
+
+      await request(server)
+        .post('/friends/requests')
+        .set('Authorization', `Bearer ${a.token}`)
+        .send({
+          addresseeId: b.id,
+        })
+        .expect(201);
+
+      await request(server)
+        .post('/friends/requests')
+        .set('Authorization', `Bearer ${b.token}`)
+        .send({
+          addresseeId: a.id,
+        })
+        .expect(400);
+    });
     it('should reject unauthenticated friend requests', async () => {
       const b = await createAuthenticatedUser(userB);
 
@@ -214,16 +233,36 @@ describe('Friends (e2e)', () => {
         status: 'ACCEPTED',
       });
 
-      const friendsResponse = await request(server)
+      const pendingAfterAcceptResponse = await request(server)
+        .get('/friends/requests')
+        .set('Authorization', `Bearer ${b.token}`)
+        .expect(200);
+
+      expect(pendingAfterAcceptResponse.body).toEqual([]);
+
+      const aFriendsResponse = await request(server)
         .get('/friends')
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
-      expect(friendsResponse.body).toEqual([
+      expect(aFriendsResponse.body).toEqual([
         expect.objectContaining({
           id: b.id,
           username: userB.username,
           email: userB.email,
+        }),
+      ]);
+
+      const bFriendsResponse = await request(server)
+        .get('/friends')
+        .set('Authorization', `Bearer ${b.token}`)
+        .expect(200);
+
+      expect(bFriendsResponse.body).toEqual([
+        expect.objectContaining({
+          id: a.id,
+          username: userA.username,
+          email: userA.email,
         }),
       ]);
 
@@ -238,9 +277,15 @@ describe('Friends (e2e)', () => {
 
       expect(conversations).toHaveLength(1);
 
-      expect(
-        conversations[0]?.members.map((member) => member.userId).sort(),
-      ).toEqual([a.id, b.id].sort());
+      const actualMemberIds = conversations[0]?.members
+        .map((member) => member.userId)
+        .sort((left, right) => left - right);
+
+      const expectedMemberIds = [a.id, b.id].sort(
+        (left, right) => left - right,
+      );
+
+      expect(actualMemberIds).toEqual(expectedMemberIds);
     });
 
     it('should not allow the requester to accept their own request', async () => {
@@ -289,12 +334,19 @@ describe('Friends (e2e)', () => {
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
-      const friendsResponse = await request(server)
+      const aFriendsResponse = await request(server)
         .get('/friends')
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
-      expect(friendsResponse.body).toEqual([]);
+      expect(aFriendsResponse.body).toEqual([]);
+
+      const bFriendsResponse = await request(server)
+        .get('/friends')
+        .set('Authorization', `Bearer ${b.token}`)
+        .expect(200);
+
+      expect(bFriendsResponse.body).toEqual([]);
     });
   });
 });

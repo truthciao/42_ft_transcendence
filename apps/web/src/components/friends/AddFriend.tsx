@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useAuth } from '../../hooks/useAuth';
-import { useFriends } from '../../hooks/useFriends';
+import {
+  useFriends,
+  useSentFriendRequests,
+} from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 
@@ -23,12 +26,18 @@ export function AddFriend() {
 
   const sendFriendRequestMutation = useSendFriendRequest();
 
+  const { data: sentRequests } = useSentFriendRequests();
+
   if (isCurrentUserLoading) {
     return <p>{t('friends.loading')}</p>;
   }
 
   const friendIds = new Set(
     friends?.map((friend) => friend.id) ?? [],
+  );
+
+  const pendingUserIds = new Set(
+    sentRequests?.map((request) => request.addresseeId) ?? [],
   );
 
   const availableUsers =
@@ -107,6 +116,7 @@ export function AddFriend() {
         <div className="space-y-3">
           {availableUsers.map((user) => {
             const isSending = sendingUserId === user.id;
+            const isPending = pendingUserIds.has(user.id);
 
             return (
               <div
@@ -133,14 +143,17 @@ export function AddFriend() {
                     text-primary-foreground
                     disabled:opacity-50
                   "
-                  disabled={sendFriendRequestMutation.isPending}
-                  onClick={() =>
-                    handleSendFriendRequest(user.id)
+                  disabled={
+                    isPending ||
+                    (sendFriendRequestMutation.isPending && isSending)
                   }
+                  onClick={() => handleSendFriendRequest(user.id)}
                 >
                   {isSending
                     ? t('friends.addFriend.sending')
-                    : t('friends.addFriend.button')}
+                    : isPending
+                      ? t('friends.addFriend.pending')
+                      : t('friends.addFriend.button')}
                 </button>
               </div>
             );

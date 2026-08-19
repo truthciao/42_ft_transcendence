@@ -22,8 +22,6 @@ export function TopBar() {
     navigate('/login', { replace: true });
   }
 
-  const fallback = user?.username?.slice(0, 2).toUpperCase() ?? 'ME';
-
   return (
     <div className="flex h-full min-w-0 items-center gap-3 px-4">
       <Link to="app/chat" className="font-semibold tracking-normal">

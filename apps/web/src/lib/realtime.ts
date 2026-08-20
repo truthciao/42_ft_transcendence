@@ -5,7 +5,7 @@ const API_BASE_URI =
 
 let socket: Socket | null = null;
 
-export function getSocket() {
+export function getSocket(): Socket {
   if (!socket) {
     const token = localStorage.getItem('access_token');
 
@@ -19,7 +19,7 @@ export function getSocket() {
   return socket;
 }
 
-export function disconnectSocket() {
+export function disconnectSocket(): void {
   socket?.disconnect();
   socket = null;
 }

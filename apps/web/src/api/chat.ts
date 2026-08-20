@@ -2,6 +2,7 @@ import { httpGet, httpPost } from '../lib/http'; // 复用项目已有的通用�
 
 export interface ChatMessage {
   id: number;
+  conversationId: number;
   content: string;
   senderId: number;
   createdAt: string;

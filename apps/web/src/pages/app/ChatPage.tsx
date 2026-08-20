@@ -6,6 +6,7 @@ import { getConversationMessages } from '../../api/chat';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { useTranslation } from 'react-i18next'; 
+import { useAuth } from '../../hooks/useAuth';
 
 type ConversationLocationState = {
   friendName?: string;
@@ -14,6 +15,9 @@ type ConversationLocationState = {
 export function ConversationPage() {
   const { t } = useTranslation();
   const { conversationId } = useParams();
+  
+  const { user: currentUser }  = useAuth();
+  const currentUserId = currentUser?.id;
   const location = useLocation();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -111,23 +115,39 @@ export function ConversationPage() {
       <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.loadingHistory')} 
+            {t('chat.loadingHistory')}
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center text-muted-foreground text-sm">
             {t('chat.empty')}
           </div>
         ) : (
-          messages.map((msg) => (
-            <div key={msg.id} className="flex flex-col mb-2">
-              <span className="text-[10px] text-muted-foreground mb-1">
-                {t('chat.user')} {msg.senderId}
-              </span>
-              <div className="bg-accent text-accent-foreground p-2.5 rounded-lg max-w-[70%] w-fit text-sm">
-                {msg.content}
+          messages.map((msg) => {
+            const isMine = msg.senderId === currentUser?.id;
+
+            return (
+              <div
+                key={msg.id}
+                className={`flex flex-col mb-2 ${
+                  isMine ? 'items-end' : 'items-start'
+                }`}
+              >
+                <span className="text-[10px] text-muted-foreground mb-1">
+                  {t('chat.user')} {msg.senderId}
+                </span>
+
+                <div
+                  className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
+                    isMine
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-accent text-accent-foreground'
+                  }`}
+                >
+                  {msg.content}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

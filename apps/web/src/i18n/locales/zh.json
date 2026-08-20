@@ -6,7 +6,8 @@
     "cancel": "取消",
     "confirm": "确认",
     "delete": "删除",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "back": "返回"
   },
 
   "home": {
@@ -50,6 +51,10 @@
   },
 
   "friends": {
+    "title": "好友",
+    "description": "管理你的好友和好友请求。",
+    "close": "关闭",
+    "yourFriends": "我的好友",
     "loading": "正在加载好友...",
     "loadError": "加载好友失败。",
     "empty": "你还没有好友。",
@@ -61,7 +66,9 @@
       "searchError": "搜索用户失败。",
       "noUsers": "没有找到用户。",
       "sending": "发送中...",
-      "button": "添加好友"
+      "button": "添加好友",
+      "success": "好友请求已发送！",
+      "error": "发送好友请求失败。"
     },
     "removeFriend": {
       "title": "删除好友？",
@@ -78,6 +85,13 @@
       "empty": "没有待处理的好友请求。",
       "accept": "接受",
       "reject": "拒绝"
+    },
+    "profile": {
+      "backToFriends": "返回好友",
+      "friend":"好友",
+      "username": "用户名",
+      "email": "邮箱",
+      "message": "信息"
     }
   },
 

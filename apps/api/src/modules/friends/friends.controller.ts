@@ -31,6 +31,11 @@ export class FriendsController {
     return this.friendsService.getPendingRequests(userId);
   }
 
+  @Get('requests/sent')
+  getSentPendingRequests(@CurrentUser('userId') userId: number) {
+    return this.friendsService.getSentPendingRequests(userId);
+  }
+
   @Post('requests/:id/accept')
   acceptRequest(
     @Param('id', ParseIntPipe) id: number,

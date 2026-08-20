@@ -15,6 +15,10 @@ export function useSendFriendRequest() {
 
     onSuccess() {
       queryClient.invalidateQueries({
+        queryKey: ['sentFriendRequests'],
+      });
+
+      queryClient.invalidateQueries({
         queryKey: ['friendRequests'],
       });
     },

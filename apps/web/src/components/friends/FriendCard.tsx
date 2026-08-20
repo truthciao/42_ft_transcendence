@@ -4,12 +4,14 @@ import type { Friend } from '@repo/shared-types';
 
 interface FriendCardProps {
   friend: Friend;
+  isOnline: boolean;
   isRemoving: boolean;
   onRemove: (friendId: number) => void;
 }
 
 export function FriendCard({
   friend,
+  isOnline,
   isRemoving,
   onRemove,
 }: FriendCardProps) {
@@ -39,7 +41,16 @@ export function FriendCard({
         "
         onClick={handleOpenProfile}
       >
-        <p className="font-medium">{friend.username}</p>
+        
+        <div className="flex items-center gap-2">
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${
+              isOnline ? 'bg-green-500' : 'bg-muted'
+            }`}
+          />
+
+          <span className="font-medium">{friend.username}</span>
+        </div>
 
         <p className="text-sm text-muted-foreground">
           {friend.email}

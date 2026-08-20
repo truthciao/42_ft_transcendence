@@ -6,7 +6,8 @@
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "delete": "Supprimer",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "back": "Retourner en arrière"
   },
 
   "home": {
@@ -50,6 +51,10 @@
   },
 
   "friends": {
+    "title": "Amis",
+    "description": "Gérez vos amis et vos demandes.",
+    "close": "Fermer",
+    "yourFriends": "Vos amis",
     "loading": "Chargement des amis...",
     "loadError": "Échec du chargement des amis.",
     "empty": "Vous n'avez pas encore d'amis.",
@@ -61,7 +66,9 @@
       "searchError": "Échec de la recherche des utilisateurs.",
       "noUsers": "Aucun utilisateur trouvé.",
       "sending": "Envoi...",
-      "button": "Ajouter"
+      "button": "Ajouter",
+      "success": "Demande d'ami envoyée !",
+      "error": "Échec de l'envoi de la demande d'ami."
     },
     "removeFriend": {
       "title": "Supprimer cet ami ?",
@@ -78,6 +85,13 @@
       "empty": "Aucune demande d'ami en attente.",
       "accept": "Accepter",
       "reject": "Refuser"
+    },
+    "profile": {
+      "backToFriends": "Retour aux amis",
+      "friend":"Ami",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "message": "message"
     }
   },
 

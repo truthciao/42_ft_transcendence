@@ -82,6 +82,25 @@ export class FriendsService {
     });
   }
 
+  async getSentPendingRequests(userId: number) {
+    return this.prisma.friendship.findMany({
+      where: {
+        requesterId: userId,
+        status: FriendshipStatus.PENDING,
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        addressee: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
   async acceptRequest(requestId: number, userId: number) {
   const friendship = await this.getRequestOrThrow(requestId);
     if (friendship.addresseeId !== userId) {
@@ -141,11 +160,16 @@ export class FriendsService {
       },
     });
 
-    return friendships.map((friendship) =>
-      friendship.requesterId === userId
-        ? friendship.addressee
-        : friendship.requester,
-    );
+    return friendships.map((friendship) => {
+      const friend =
+        friendship.requesterId === userId
+          ? friendship.addressee
+          : friendship.requester;
+
+      return {
+        ...friend,
+      };
+    });
   }
 
   async removeFriend(userId: number, otherUserId: number) {

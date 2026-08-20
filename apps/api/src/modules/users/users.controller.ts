@@ -61,4 +61,10 @@ export class UsersController {
   findById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findById(id);
   }
+
+  @Get(':id/profile')
+  @UseGuards(JwtAuthGuard)
+  findPublicProfile(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findPublicProfile(id);
+  }
 }

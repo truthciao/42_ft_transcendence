@@ -6,19 +6,21 @@ import { PageError } from '@/components/common/PageError';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
-import { useFriends } from '../../hooks/useFriends';
+import { useUserProfile } from '../../hooks/useUserProfile';
 
 export function FriendProfilePage() {
   const { t } = useTranslation();
   const { userId } = useParams();
   const navigate = useNavigate();
 
+  const numericUserId = Number(userId);
+
   const {
-    data: friends,
+    data: friend,
     isLoading,
     isError,
     refetch,
-  } = useFriends();
+  } = useUserProfile(numericUserId);
 
   if (isLoading) {
     return (
@@ -53,10 +55,6 @@ export function FriendProfilePage() {
   if (isError) {
     return <PageError onRetry={() => void refetch()} />;
   }
-
-  const friend = friends?.find(
-    (friend) => friend.id === Number(userId),
-  );
 
   if (!friend) {
     return (

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
+import type { CreateUserPayload } from '@repo/shared-types';
 
-interface CreateUserData {
-  email: string;
-  username: string;
-  passwordHash?: string; //Optional to skip dto check!
-}
+type CreateUserData = CreateUserPayload & {
+  passwordHash?: string;
+};
 
 @Injectable()
 export class UsersService {
@@ -63,6 +62,33 @@ export class UsersService {
         isTwoFactorEnabled: true,
       },
     });
+  }
+
+  async findPublicProfile(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        profile: {
+          select: {
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      avatarUrl: user.profile?.avatarUrl ?? null,
+    };
   }
 
   async findCurrentUser(id: number) {

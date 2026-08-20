@@ -64,6 +64,33 @@ export class UsersService {
     });
   }
 
+  async findPublicProfile(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        profile: {
+          select: {
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      avatarUrl: user.profile?.avatarUrl ?? null,
+    };
+  }
+
   async findCurrentUser(id: number) {
   const user = await this.prisma.user.findUnique({
     where: { id },

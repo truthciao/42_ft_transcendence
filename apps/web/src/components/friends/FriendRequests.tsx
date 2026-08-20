@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFriendRequests } from '../../hooks/useFriends';
 
@@ -88,7 +89,12 @@ export function FriendRequests() {
             >
               <div>
                 <div className="font-medium">
-                  {request.requester.username}
+                  <Link
+                    to={`/app/friends/${request.requester.id}`}
+                    className="hover:underline"
+                  >
+                    {request.requester.username}
+                  </Link>
                 </div>
 
                 <div className="text-sm text-muted-foreground">

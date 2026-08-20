@@ -174,7 +174,8 @@
     "empty": "No message history. Say hi below!",
     "user": "User",
     "placeholder": "Type a message...",
-    "send": "Send" 
+    "send": "Send",
+    "me": "Me"
   },
 
 

@@ -1,6 +1,6 @@
 import { Outlet, useParams, useLocation } from 'react-router';
 import { getSocket } from '../../lib/realtime';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChatMessage } from '../../api/chat';
 import { getConversationMessages } from '../../api/chat';
 import { Input } from '../../components/ui/input';
@@ -17,12 +17,13 @@ export function ConversationPage() {
   const { conversationId } = useParams();
   
   const { user: currentUser }  = useAuth();
-  const currentUserId = currentUser?.id;
   const location = useLocation();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const locationState =
   location.state as ConversationLocationState | null;
@@ -51,6 +52,12 @@ export function ConversationPage() {
     fetchMessages();
   }, [conversationId]); 
 
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }, [messages]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -112,44 +119,48 @@ export function ConversationPage() {
         </h1>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
-        {isLoading ? (
-          <div className="text-center text-muted-foreground text-sm">
-            {t('chat.loadingHistory')}
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="text-center text-muted-foreground text-sm">
-            {t('chat.empty')}
-          </div>
-        ) : (
-          messages.map((msg) => {
-            const isMine = msg.senderId === currentUser?.id;
+    <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
+      {isLoading ? (
+        <div className="text-center text-muted-foreground text-sm">
+          {t('chat.loadingHistory')}
+        </div>
+      ) : messages.length === 0 ? (
+        <div className="text-center text-muted-foreground text-sm">
+          {t('chat.empty')}
+        </div>
+      ) : (
+        messages.map((msg) => {
+          const isMine = msg.senderId === currentUser?.id;
 
-            return (
+          return (
+            <div
+              key={msg.id}
+              className={`flex flex-col mb-2 ${
+                isMine ? 'items-end' : 'items-start'
+              }`}
+            >
+              <span className="text-[10px] text-muted-foreground mb-1">
+                {isMine ? t('chat.me') : friendName}
+              </span>
+
               <div
-                key={msg.id}
-                className={`flex flex-col mb-2 ${
-                  isMine ? 'items-end' : 'items-start'
+                className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
+                  isMine
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-accent text-accent-foreground'
                 }`}
               >
-                <span className="text-[10px] text-muted-foreground mb-1">
-                  {t('chat.user')} {msg.senderId}
-                </span>
-
-                <div
-                  className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
-                    isMine
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-accent text-accent-foreground'
-                  }`}
-                >
-                  {msg.content}
-                </div>
+                {msg.content}
               </div>
-            );
-          })
-        )}
-      </div>
+            </div>
+          );
+        })
+      )}
+
+      <div ref={messagesEndRef} />
+    </div>
+
+ 
 
       <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">
         <div className="flex gap-2">

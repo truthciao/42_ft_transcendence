@@ -174,7 +174,8 @@
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "me": "Moi"
   },
 
   "showcase": {

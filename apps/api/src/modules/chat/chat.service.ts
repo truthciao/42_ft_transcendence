@@ -47,13 +47,20 @@ export class ChatService {
   }
 
   async createByUsername(userId: number, username: string) {
+    console.log('🔥 CREATE CONVERSATION BY USERNAME');
+    console.log('🔥 CURRENT USER ID:', userId);
+    console.log('🔥 TARGET USERNAME:', username);
     const targetUser = await this.prisma.user.findUnique({ where: { username } });
+
+    console.log('🔥 TARGET USER:', targetUser);
+
     if (!targetUser) throw new NotFoundException('User not found');
     return this.createDirectConversation(userId, targetUser.id);
   }
 
 async findAllForUser(userId: number) { 
   const conversations = await this.prisma.conversation.findMany({
+
     where: { members: { some: { userId } } },
     orderBy: { updatedAt: 'desc' },
     include: {
@@ -74,6 +81,16 @@ async findAllForUser(userId: number) {
       },
     },
   });
+
+
+  console.log(
+    '🔥 DB CONVERSATIONS FOR USER:',
+    userId,
+    conversations.map((conversation) => ({
+      id: conversation.id,
+      members: conversation.members.map((member) => member.userId),
+    })),
+  );
 
     const friendships = await this.prisma.friendship.findMany({
       where: {
@@ -154,9 +171,16 @@ async findAllForUser(userId: number) {
   }
 
   private async assertMember(conversationId: number, userId: number) {
+    console.log('🔥 ASSERT MEMBER');
+    console.log('🔥 conversationId:', conversationId);
+    console.log('🔥 userId:', userId);
+
     const membership = await this.prisma.conversationMember.findUnique({
       where: { conversationId_userId: { conversationId, userId } },
     });
+
+    console.log('🔥 MEMBERSHIP:', membership);
+
     if (!membership)
       throw new ForbiddenException('You are not a member of this conversation');
 

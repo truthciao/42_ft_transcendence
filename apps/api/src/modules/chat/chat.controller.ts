@@ -35,6 +35,9 @@ export class ChatController {
 
   @Get('conversations')
   findMine(@CurrentUser('userId') userId: number) {
+ 
+    console.log('🔥 FIND MINE USER ID:', userId);
+
     return this.chatService.findAllForUser(userId);
   }
 

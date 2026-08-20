@@ -88,6 +88,7 @@
     },
     "profile": {
       "backToFriends": "Retour aux amis",
+      "friend":"Ami",
       "username": "Nom d'utilisateur",
       "email": "Email",
       "message": "message",

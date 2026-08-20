@@ -8,3 +8,7 @@ export function getCurrentUser() {
 export function getUsers() {
   return httpGet<User[]>('/users');
 }
+
+export function getUserProfile(userId: number) {
+  return httpGet<User>(`/users/${userId}/profile`);
+}

@@ -16,6 +16,7 @@ export type {
 export {
   createConversationSchema,
   sendMessageSchema,
+  joinConversationSchema,
 } from './chat.js';
 
 export type {

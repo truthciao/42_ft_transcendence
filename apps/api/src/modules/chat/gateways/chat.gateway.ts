@@ -2,19 +2,26 @@ import { UseGuards, UsePipes } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
+import type { Server } from 'socket.io';
+
 import { ALLOWED_ORIGINS } from '../../../config/cors.config.js';
+
 import type { AuthenticatedSocket } from '../../realtime/interfaces/authenticated-socket.interface.js';
 import { RealtimeRoomService } from '../../realtime/services/realtime-room.service.js';
+import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard.js';
+import { WsZodValidationPipe } from '../../realtime/pipes/ws-zod-validation.pipe.js';
+
 import { CHAT_EVENTS } from '../chat.constants.js';
 import { ChatService } from '../chat.service.js';
 import { SendMessageDto } from '../dto/send-message.dto.js';
+import { JoinConversationDto } from '../dto/join-conversation.dto.js';
 import { getChatRoom } from '../utils/chat-room-naming.util.js';
-import { WsJwtGuard } from '../../realtime/guards/ws-jwt.guard.js';
-import { WsZodValidationPipe } from '../../realtime/pipes/ws-zod-validation.pipe.js';
 
 @WebSocketGateway({
   cors: {
@@ -24,20 +31,79 @@ import { WsZodValidationPipe } from '../../realtime/pipes/ws-zod-validation.pipe
 })
 @UseGuards(WsJwtGuard)
 @UsePipes(new WsZodValidationPipe())
-export class ChatGateway {
+export class ChatGateway implements OnGatewayInit {
+  @WebSocketServer()
+  server!: Server;
+
   constructor(
     private readonly chatService: ChatService,
     private readonly roomService: RealtimeRoomService,
-  ) {}
+  ) {
+    console.log('🔥🔥🔥 ChatGateway CONSTRUCTOR CREATED');
+  }
+
+  afterInit(server: Server): void {
+    console.log('🔥🔥🔥 CHAT GATEWAY INITIALIZED');
+    console.log('🔥 CHAT SERVER:', !!server);
+
+    server.on('connection', (socket) => {
+      console.log(
+        '🔥🔥🔥 CHAT SERVER SAW CONNECTION:',
+        socket.id,
+      );
+
+      socket.onAny((event, ...args) => {
+        console.log(
+          '🔥🔥🔥 CHAT SERVER SAW EVENT:',
+          event,
+          args,
+        );
+      });
+    });
+  }
+
+  @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)
+  async handleConversationJoin(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: JoinConversationDto,
+  ): Promise<void> {
+    console.log(
+      '🔥🔥🔥 CHAT JOIN RECEIVED:',
+      client.id,
+      dto,
+    );
+
+    const userId = client.data.user.userId;
+
+    try {
+      await this.chatService.verifyMembership(
+        dto.conversationId,
+        userId,
+      );
+
+      await this.roomService.joinRoom(
+        client,
+        getChatRoom(dto.conversationId),
+      );
+
+      console.log(
+        `🔥 JOINED CHAT ROOM: ${getChatRoom(dto.conversationId)}`,
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unable to join conversation';
+
+      throw new WsException(errorMessage);
+    }
+  }
 
   @SubscribeMessage(CHAT_EVENTS.MESSAGE_SEND)
   async handleSendMessage(
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: SendMessageDto,
   ): Promise<void> {
-
-    console.log(' NEW CHAT GATEWAY CODE ');
-
     const senderId = client.data.user.userId;
 
     try {
@@ -54,7 +120,10 @@ export class ChatGateway {
       );
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Unable to send message';
+        error instanceof Error
+          ? error.message
+          : 'Unable to send message';
+
       throw new WsException(errorMessage);
     }
   }

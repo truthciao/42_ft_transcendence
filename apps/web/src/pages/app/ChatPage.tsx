@@ -1,4 +1,5 @@
 import { Outlet, useParams, useLocation } from 'react-router';
+import { getSocket } from '../../lib/realtime';
 import { useEffect, useState } from 'react';
 import type { ChatMessage } from '../../api/chat';
 import { getConversationMessages } from '../../api/chat';
@@ -46,12 +47,63 @@ export function ConversationPage() {
     fetchMessages();
   }, [conversationId]); 
 
+  useEffect(() => {
+    const socket = getSocket();
+
+    const joinConversation = () => {
+      console.log('🔥 JOIN CHAT ROOM:', conversationId);
+
+    if (conversationId) {
+      const payload = {
+        conversationId: Number(conversationId),
+      };
+
+      console.log('🔥 EMITTING JOIN:', payload);
+
+      socket.emit('chat:conversation:join', payload);
+
+      console.log('🔥 JOIN EMITTED');
+    }  
+  };
+
+  if (socket.connected) {
+    joinConversation();
+  } else {
+    socket.once('connect', joinConversation);
+  }
+ 
+    const handleMessageCreated = (message: ChatMessage) => {
+      console.log('🔥 MESSAGE CREATED RECEIVED:', message);
+
+      if (message.conversationId.toString() !== conversationId) {
+        return;
+      }
+
+      setMessages((prev) => [...prev, message]);
+    };
+
+    socket.on('chat:message:created', handleMessageCreated);
+
+    return () => {
+      socket.off('chat:message:created', handleMessageCreated);
+    };
+  }, [conversationId]);
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !conversationId) return;
+
+    const content = inputText.trim();
+
+    if (!content || !conversationId) return;
+
+    const socket = getSocket();
+
+    socket.emit('chat:message:send', {
+      conversationId: Number(conversationId),
+      content,
+    });
 
     setInputText('');
-
   };
 
   return (

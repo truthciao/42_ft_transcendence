@@ -38,28 +38,10 @@ export class ChatGateway implements OnGatewayInit {
   constructor(
     private readonly chatService: ChatService,
     private readonly roomService: RealtimeRoomService,
-  ) {
-    console.log('🔥🔥🔥 ChatGateway CONSTRUCTOR CREATED');
-  }
+  ) {}
 
   afterInit(server: Server): void {
-    console.log('🔥🔥🔥 CHAT GATEWAY INITIALIZED');
-    console.log('🔥 CHAT SERVER:', !!server);
-
-    server.on('connection', (socket) => {
-      console.log(
-        '🔥🔥🔥 CHAT SERVER SAW CONNECTION:',
-        socket.id,
-      );
-
-      socket.onAny((event, ...args) => {
-        console.log(
-          '🔥🔥🔥 CHAT SERVER SAW EVENT:',
-          event,
-          args,
-        );
-      });
-    });
+    this.roomService.setServer(server);
   }
 
   @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)
@@ -67,13 +49,8 @@ export class ChatGateway implements OnGatewayInit {
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: JoinConversationDto,
   ): Promise<void> {
-    console.log(
-      '🔥🔥🔥 CHAT JOIN RECEIVED:',
-      client.id,
-      dto,
-    );
-
     const userId = client.data.user.userId;
+    const room = getChatRoom(dto.conversationId);
 
     try {
       await this.chatService.verifyMembership(
@@ -81,14 +58,7 @@ export class ChatGateway implements OnGatewayInit {
         userId,
       );
 
-      await this.roomService.joinRoom(
-        client,
-        getChatRoom(dto.conversationId),
-      );
-
-      console.log(
-        `🔥 JOINED CHAT ROOM: ${getChatRoom(dto.conversationId)}`,
-      );
+      await this.roomService.joinRoom(client, room);
     } catch (error) {
       const errorMessage =
         error instanceof Error

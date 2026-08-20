@@ -47,34 +47,25 @@ export function ConversationPage() {
     fetchMessages();
   }, [conversationId]); 
 
+
   useEffect(() => {
     const socket = getSocket();
 
     const joinConversation = () => {
-      console.log('🔥 JOIN CHAT ROOM:', conversationId);
+      if (!conversationId) return;
 
-    if (conversationId) {
-      const payload = {
+      socket.emit('chat:conversation:join', {
         conversationId: Number(conversationId),
-      };
+      });
+    };
 
-      console.log('🔥 EMITTING JOIN:', payload);
+    if (socket.connected) {
+      joinConversation();
+    } else {
+      socket.once('connect', joinConversation);
+    }
 
-      socket.emit('chat:conversation:join', payload);
-
-      console.log('🔥 JOIN EMITTED');
-    }  
-  };
-
-  if (socket.connected) {
-    joinConversation();
-  } else {
-    socket.once('connect', joinConversation);
-  }
- 
     const handleMessageCreated = (message: ChatMessage) => {
-      console.log('🔥 MESSAGE CREATED RECEIVED:', message);
-
       if (message.conversationId.toString() !== conversationId) {
         return;
       }
@@ -86,8 +77,10 @@ export function ConversationPage() {
 
     return () => {
       socket.off('chat:message:created', handleMessageCreated);
+      socket.off('connect', joinConversation);
     };
   }, [conversationId]);
+
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

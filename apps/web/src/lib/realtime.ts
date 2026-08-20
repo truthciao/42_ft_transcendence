@@ -5,33 +5,21 @@ const API_BASE_URI =
 
 let socket: Socket | null = null;
 
-export function getSocket() {
+export function getSocket(): Socket {
   if (!socket) {
     const token = localStorage.getItem('access_token');
-
-    console.log('🔥🔥🔥 CREATING SHARED SOCKET');
 
     socket = io(API_BASE_URI, {
       auth: {
         token,
       },
     });
-
-  socket.on('connect', () => {
-  console.log('🔥🔥🔥 SHARED SOCKET CONNECTED:', socket?.id);
-});
-
-  socket.on('disconnect', (reason) => {
-  console.log('🔥🔥🔥 SHARED SOCKET DISCONNECTED:', reason);
-});
-
-
   }
 
   return socket;
 }
 
-export function disconnectSocket() {
+export function disconnectSocket(): void {
   socket?.disconnect();
   socket = null;
 }

@@ -91,9 +91,7 @@
       "friend":"Ami",
       "username": "Nom d'utilisateur",
       "email": "Email",
-      "message": "message",
-      "accept": "Accept",
-      "reject": "Reject"
+      "message": "message"
     }
   },
 

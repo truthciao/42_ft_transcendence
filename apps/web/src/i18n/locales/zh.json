@@ -91,9 +91,7 @@
       "friend":"好友",
       "username": "用户名",
       "email": "邮箱",
-      "message": "信息",
-      "accept": "Accept",
-      "reject": "Reject"
+      "message": "信息"
     }
   },
 

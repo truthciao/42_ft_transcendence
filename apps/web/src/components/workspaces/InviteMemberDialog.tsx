@@ -39,6 +39,7 @@ export function InviteMemberDialog({ workspaceId, open, onOpenChange }: InviteMe
     if (u.id === currentUser?.id) return false;
     if (memberIds.has(u.id)) return false;
     if (invitedIds.has(u.id)) return false;
+    return true;
   })
 
   function handleOpenChange(next: boolean) {

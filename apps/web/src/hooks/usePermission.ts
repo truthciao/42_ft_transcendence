@@ -15,6 +15,7 @@ export interface WorkspacePermissions {
     changeMemberRole: boolean;
     createChannel: boolean;
     leaveWorkspace: boolean;
+    transferOwnership: boolean;
   };
 }
 

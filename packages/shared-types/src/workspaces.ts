@@ -89,3 +89,60 @@ export interface WorkspaceChannel {
   isDefault: boolean;
   _count: { members: number };
 }
+
+// ─────────────────────────────────────────────
+// Invite
+// ─────────────────────────────────────────────
+
+export const inviteMemberSchema = z.object({
+  userId: z.number().int().positive(),
+  email: z.email().optional(),
+  role: z.enum(['ADMIN', 'MEMBER']).optional(),
+});
+export type InviteMemberPayload = z.infer<typeof inviteMemberSchema>;
+
+export const transferOwnershipSchema = z.object({
+  targetUserId: z.number().int().positive(),
+});
+export type transferOwnershipPayload = z.infer<typeof transferOwnershipSchema>;
+
+export type WorkspaceInviteStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'REVOKED';
+
+export interface WorkspaceInviteUserSummary {
+  id: number;
+  username: string;
+  profile: { displayName: string | null; avatarUrl: string | null} | null;
+}
+
+export interface WorkspaceInviteSummary {
+  id: number;
+  status: WorkspaceInviteStatus;
+  expiresAt: string;
+  createdAt: string;
+  respondedAt: string | null;
+  invitee: WorkspaceInviteUserSummary | null;
+  inviter: WorkspaceInviteUserSummary;
+}
+
+export interface IncomingWorkspaceInvite {
+  id: number;
+  workspaceId: number;
+  role: WorkspaceRole;
+  status: WorkspaceInviteStatus;
+  expiresAt: string;
+  createdAt: string;
+  workspace: { id: number; name: string };
+  inviter: WorkspaceInviteUserSummary;
+}
+
+export interface WorkspaceInviteDetail {
+  id: number;
+  workspaceId: number;
+  role: WorkspaceRole;
+  status: WorkspaceInviteStatus;
+  expiresAt: string;
+  createdAt: string;
+  respondedAt: string | null;
+  workspace: { id: number; name: string; _count: { members: number } };
+  inviter: WorkspaceInviteUserSummary;
+}

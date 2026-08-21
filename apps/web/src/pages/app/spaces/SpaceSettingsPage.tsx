@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useConfirm } from "@/lib/confirm-context";
 import { toast } from "sonner";
 import { PermissionButton } from "@/components/workspaces/PermissionButton";
+import { TransferOwnershipDialog } from "@/components/workspaces/TransferOwnershipDialog";
 
 export function SpaceSettingPage() {
   const { workspaceId } = useParams();
@@ -24,6 +25,7 @@ export function SpaceSettingPage() {
   const updateMutation = useUpdateWorkspace(id);
   const deleteMutation = useDeleteWorkspace();
   const leaveMutation = useLeaveWorkspace();
+  const [transferOpen, setTransferOpen] = useState(false);
 
   const {
     register,
@@ -164,6 +166,21 @@ export function SpaceSettingPage() {
 
         <div className="flex items-center justify-between">
           <div>
+            <p className="text-sm font-medium">Transfer ownership</p>
+            <p className="text-xs text-muted-foreground">Hand this workspace over to another member.</p>
+          </div>
+          <PermissionButton
+            allowed={can.transferOwnership}
+            reason="Only the owner can transfer ownership"
+            variant="outline"
+            onClick={() => setTransferOpen(true)}
+          >
+            Transfer
+          </PermissionButton>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div>
             <p className="text-sm font-medium">Delete workspace</p>
             <p className="text-xs text-muted-foreground">Permanently delete this workspace and all its data.</p>
           </div>
@@ -177,6 +194,8 @@ export function SpaceSettingPage() {
           </PermissionButton>
         </div>
       </div>
+
+      <TransferOwnershipDialog workspaceId={id} open={transferOpen} onOpenChange={setTransferOpen} />
     </div>
   )
 }

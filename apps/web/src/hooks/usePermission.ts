@@ -15,6 +15,7 @@ export interface WorkspacePermissions {
     changeMemberRole: boolean;
     createChannel: boolean;
     leaveWorkspace: boolean;
+    transferOwnership: boolean;
   };
 }
 
@@ -42,6 +43,7 @@ export function usePermission(workspaceId: number | undefined): WorkspacePermiss
         changeMemberRole: hasRole('OWNER'),
         createChannel: hasRole('ADMIN'),
         leaveWorkspace: role !== null && role !== 'OWNER',
+        transferOwnership: hasRole('OWNER'),
       }
     }
   }, [role, isLoading]);

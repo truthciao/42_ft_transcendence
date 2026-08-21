@@ -11,6 +11,7 @@ import { ChatModule } from './modules/chat/chat.module.js';
 import { FriendsModule } from './modules/friends/friends.module.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
+import { HealthModule } from './modules/health/health.module.js';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { join } from 'node:path';
       serveRoot: '/uploads',
     }),
     PrismaModule,
+    HealthModule,
     UsersModule,
     AuthModule,
     ProfilesModule,

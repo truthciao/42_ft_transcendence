@@ -1,5 +1,16 @@
 import { httpDelete, httpGet, httpPatch, httpPost } from "@/lib/http";
-import type { Workspace, WorkspaceMemberSummary, WorkspaceChannel, UpdateWorkspacePayload, CreateChannelPayload, updateMemberRolePayload } from "@repo/shared-types";
+import type {
+  Workspace,
+  WorkspaceMemberSummary,
+  WorkspaceChannel,
+  UpdateWorkspacePayload,
+  CreateChannelPayload,
+  updateMemberRolePayload,
+  IncomingWorkspaceInvite,
+  WorkspaceInviteSummary,
+  WorkspaceInviteDetail,
+  InviteMemberPayload,
+  transferOwnershipPayload } from "@repo/shared-types";
 
 export function getWorkspaces() {
   return httpGet<Workspace[]>('/workspaces');
@@ -48,3 +59,40 @@ export function getWorkspacesChannels(id: number) {
 export function createChannel(workspaceId: number, payload: CreateChannelPayload) {
   return httpPost<WorkspaceChannel>(`/workspaces/${workspaceId}/channels`, payload);
 }
+
+// ─────────────────────────────────────────────
+// Invite
+// ─────────────────────────────────────────────
+
+export function getIncomingInvites() {
+  return httpGet<IncomingWorkspaceInvite[]>('/workspaces/invites/incoming');
+}
+
+export function inviteMember(workspaceId: number, payload: InviteMemberPayload) {
+  return httpPost<WorkspaceInviteSummary>(`/workspaces/${workspaceId}/invites`, payload);
+}
+
+export function getWorkspaceInvites(workspaceId: number) {
+  return httpGet<WorkspaceInviteSummary[]>(`/workspaces/${workspaceId}/invites`);
+}
+
+export function getInviteById(inviteId: string) {
+  return httpGet<WorkspaceInviteDetail>(`/workspaces/invites/${inviteId}`);
+}
+
+export function getInviteByToken(token: string) {
+  return httpGet<WorkspaceInviteDetail>(`/workspaces/invites/token/${token}`);
+}
+
+export function acceptInvite(inviteId: number) {
+  return httpPost<{ WorkspaceId: number }>(`/workspaces/invites/${inviteId}/accept`);
+}
+
+export function rejectInvite(inviteId: number) {
+  return httpPost<void>(`/workspaces/invites/${inviteId}/reject`);
+}
+
+export function transferOwnership(workspaceId: number, payload: transferOwnershipPayload) {
+  return httpPost<void>(`/workspaces/${workspaceId}/transfer-ownership`, payload);
+}
+

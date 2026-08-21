@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { SkeletonCard } from "@/components/common/Skeleton";
 import { Button } from "@base-ui/react";
 import { CreateWorkspaceDialog } from "@/components/workspaces/CreateWorkspaceDialog";
+import { IncomingInvitesList } from "@/components/workspaces/IncomingInvitesList";
 
 export function SpacesIndexPage() {
   const { data: workspaces, isLoading } = useWorkspaces();
@@ -14,6 +15,7 @@ export function SpacesIndexPage() {
 
   return (
     <div className="h-full overflow-y-auto p-6">
+      <IncomingInvitesList />
       <header className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold">Spaces</h2>

@@ -1,27 +1,5 @@
-import {
-  IsEmail,
-  IsIn,
-  IsInt,
-  IsOptional,
-  Min,
-} from 'class-validator';
-import { WorkspaceRole } from '../../../generated/prisma/enums.js';
-export class InviteMemberDto {
-  @IsInt()
-  @Min(1)
-  userId!: number;
+import { inviteMemberSchema, transferOwnershipSchema } from '@repo/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-  @IsOptional()
-  @IsEmail()
-  email?: string;
-
-  @IsOptional()
-  @IsIn([WorkspaceRole.ADMIN, WorkspaceRole.MEMBER])
-  role?: WorkspaceRole;
-}
-
-export class TransferOwnershipDto {
-  @IsInt()
-  @Min(1)
-  targetUserId!: number;
-}
+export class InviteMemberDto extends createZodDto(inviteMemberSchema) {}
+export class TransferOwnershipDto extends createZodDto(transferOwnershipSchema) {}

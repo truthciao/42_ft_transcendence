@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { UpdateProfilePayload } from '@repo/shared-types';
 import { Avatar } from '@/components/common/Avatar';
@@ -6,7 +6,7 @@ import { PageError } from '@/components/common/PageError';
 import { SkeletonText } from '@/components/common/Skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useProfile, useUpdateProfile } from '../../hooks/useProfile';
+import { useProfile, useUpdateProfile, useUploadAvatar } from '../../hooks/useProfile';
 import { toast } from 'sonner';
 
 export function ProfilePage() {
@@ -44,6 +44,25 @@ export function ProfilePage() {
   }, [profile, i18n]);
 
   const mutation = useUpdateProfile();
+  const uploadAvatarMutation = useUploadAvatar();
+
+  function handleAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    uploadAvatarMutation.mutate(file, {
+      onSuccess: () => {
+        toast.success('Avatar updated');
+      },
+      onError: () => {
+        toast.error('Failed to update avatar');
+      },
+    });
+
+    // 允许用户再次选择同一个文件
+    event.target.value = '';
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,7 +70,6 @@ export function ProfilePage() {
     const payload: UpdateProfilePayload = {
       displayName: form.displayName || undefined,
       bio: form.bio || undefined,
-      avatarUrl: form.avatarUrl || undefined,
       preferredLanguage: form.preferredLanguage,
     };
 
@@ -88,11 +106,37 @@ export function ProfilePage() {
     <main className="mx-auto max-w-xl space-y-6 p-6">
       <header className="border-b border-border pb-4">
         <div className="flex items-center gap-4">
-          <Avatar
-            src={profile.avatarUrl}
-            name={profile.displayName || profile.user?.username || '?'}
-            size="xl"
-          />
+          <div className="flex shrink-0 flex-col items-center gap-2">
+            <Avatar
+              src={profile.avatarUrl}
+              name={profile.displayName || profile.user?.username || '?'}
+              size="xl"
+            />
+
+            <label className="cursor-pointer">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                asChild
+                disabled={uploadAvatarMutation.isPending}
+              >
+                <span>
+                  {uploadAvatarMutation.isPending
+                    ? 'Uploading...'
+                    : 'Change avatar'}
+                </span>
+              </Button>
+
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleAvatarChange}
+                disabled={uploadAvatarMutation.isPending}
+              />
+            </label>
+          </div>
 
           <div className="min-w-0">
             <h1 className="text-2xl font-semibold">{t('profile.title')}</h1>
@@ -149,7 +193,7 @@ export function ProfilePage() {
           />
         </label>
 
-        <label className="grid gap-2">
+        {/* <label className="grid gap-2">
           <span className="text-sm font-medium">{t('profile.avatar')}</span>
 
           <input
@@ -164,7 +208,7 @@ export function ProfilePage() {
             }
             className="rounded-md border border-input bg-background px-3 py-2"
           />
-        </label>
+        </label> */}
 
         <label className="grid gap-2">
           <span className="text-sm font-medium">

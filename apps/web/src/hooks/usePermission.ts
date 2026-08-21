@@ -42,6 +42,7 @@ export function usePermission(workspaceId: number | undefined): WorkspacePermiss
         changeMemberRole: hasRole('OWNER'),
         createChannel: hasRole('ADMIN'),
         leaveWorkspace: role !== null && role !== 'OWNER',
+        transferOwnership: hasRole('OWNER'),
       }
     }
   }, [role, isLoading]);

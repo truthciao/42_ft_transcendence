@@ -19,6 +19,15 @@ export const sendMessageSchema = z.object({
     .max(4000, 'content must not exceed 4000 characters'),
 });
 
+export const joinConversationSchema = z.object({
+  conversationId: z
+    .number()
+    .int('conversationId must be an integer')
+    .min(1, 'conversationId must be at least 1'),
+});
+
 export type CreateConversationPayload = z.infer<typeof createConversationSchema>;
 
 export type SendMessagePayload = z.infer<typeof sendMessageSchema>;
+
+export type JoinConversationPayload = z.infer<typeof joinConversationSchema>;

@@ -149,6 +149,10 @@ async findAllForUser(userId: number) {
     return message;
   }
 
+  async verifyMembership(conversationId: number, userId: number) {
+    return this.assertMember(conversationId, userId);
+  }
+
   private async assertMember(conversationId: number, userId: number) {
     const membership = await this.prisma.conversationMember.findUnique({
       where: { conversationId_userId: { conversationId, userId } },

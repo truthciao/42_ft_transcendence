@@ -6,7 +6,8 @@
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "delete": "Supprimer",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "back": "Retourner en arrière"
   },
 
   "home": {
@@ -84,6 +85,13 @@
       "empty": "Aucune demande d'ami en attente.",
       "accept": "Accepter",
       "reject": "Refuser"
+    },
+    "profile": {
+      "backToFriends": "Retour aux amis",
+      "friend":"Ami",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "message": "message"
     }
   },
 
@@ -166,7 +174,8 @@
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "me": "Moi"
   },
 
   "showcase": {

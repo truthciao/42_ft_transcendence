@@ -9,6 +9,7 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { ChatModule } from './modules/chat/chat.module.js';
 import { FriendsModule } from './modules/friends/friends.module.js';
+import { HealthModule } from './modules/health/health.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FriendsModule } from './modules/friends/friends.module.js';
       isGlobal: true,
     }),
     PrismaModule,
+    HealthModule,
     UsersModule,
     AuthModule,
     ProfilesModule,

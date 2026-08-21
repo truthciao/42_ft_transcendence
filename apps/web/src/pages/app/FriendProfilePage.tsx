@@ -6,19 +6,22 @@ import { PageError } from '@/components/common/PageError';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
-import { useFriends } from '../../hooks/useFriends';
+import { useUserProfile } from '../../hooks/useUserProfile';
+import { createDirectConversation } from '../../api/chat';
 
 export function FriendProfilePage() {
   const { t } = useTranslation();
   const { userId } = useParams();
   const navigate = useNavigate();
 
+  const numericUserId = Number(userId);
+
   const {
-    data: friends,
+    data: friend,
     isLoading,
     isError,
     refetch,
-  } = useFriends();
+  } = useUserProfile(numericUserId);
 
   if (isLoading) {
     return (
@@ -54,10 +57,6 @@ export function FriendProfilePage() {
     return <PageError onRetry={() => void refetch()} />;
   }
 
-  const friend = friends?.find(
-    (friend) => friend.id === Number(userId),
-  );
-
   if (!friend) {
     return (
       <main className="mx-auto max-w-md p-6">
@@ -77,6 +76,37 @@ export function FriendProfilePage() {
     );
   }
 
+  // const handleMessage = async () => {
+  //   try {
+  //     const data = await createConversationByUsername(friend.username);
+
+  //     if (data?.id) {
+  //       navigate(`/app/chat/${data.id}`, {
+  //         state: { friendName: friend.username },
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Cannot build conversation:', error);
+  //   }
+  // };
+const handleMessage = async () => {
+  console.log('Message button clicked');
+  console.log('friend:', friend);
+
+  try {
+    const data = await createDirectConversation(friend.id);
+
+    console.log('conversation:', data);
+
+    if (data?.id) {
+      navigate(`/app/chat/${data.id}`, {
+        state: { friendName: friend.username },
+      });
+    }
+  } catch (error) {
+    console.error('Cannot build conversation:', error);
+  }
+};
   return (
     <main className="mx-auto max-w-md p-6">
       <Button
@@ -125,10 +155,12 @@ export function FriendProfilePage() {
         </div>
 
         <div className="flex gap-3">
-          <Button className="flex-1">
+          <Button
+            className="flex-1"
+            onClick={() => void handleMessage()}
+          >
             {t('friends.profile.message')}
           </Button>
-
         </div>
       </div>
     </main>

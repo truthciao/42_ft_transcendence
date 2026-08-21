@@ -123,8 +123,8 @@ export function ProfilePage() {
               >
                 <span>
                   {uploadAvatarMutation.isPending
-                    ? 'Uploading...'
-                    : 'Change avatar'}
+                    ? t('profile.uploading')
+                    : t('profile.changeAvatar')}
                 </span>
               </Button>
 
@@ -192,23 +192,6 @@ export function ProfilePage() {
             className="resize-y rounded-md border border-input bg-background px-3 py-2"
           />
         </label>
-
-        {/* <label className="grid gap-2">
-          <span className="text-sm font-medium">{t('profile.avatar')}</span>
-
-          <input
-            type="url"
-            value={form.avatarUrl}
-            placeholder={t('profile.avatarPlaceholder')}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                avatarUrl: event.target.value,
-              }))
-            }
-            className="rounded-md border border-input bg-background px-3 py-2"
-          />
-        </label> */}
 
         <label className="grid gap-2">
           <span className="text-sm font-medium">

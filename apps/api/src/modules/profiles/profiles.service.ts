@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { unlink } from 'node:fs/promises';
+import { join } from 'node:path';
 
 @Injectable()
 export class ProfilesService {
@@ -48,5 +50,48 @@ export class ProfilesService {
     return this.prisma.profile.findUnique({
       where: { userId },
     });
+  }
+
+  async uploadAvatar(userId: number, file: Express.Multer.File) {
+    const profile = await this.prisma.profile.findUnique({
+      where: { userId },
+      select: {
+        avatarUrl: true,
+      },
+    });
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+
+    const avatarUrl = `/uploads/avatars/${file.filename}`;
+
+    const updatedProfile = await this.prisma.profile.update({
+      where: { userId },
+      data: {
+        avatarUrl,
+      },
+    });
+
+    if (profile.avatarUrl) {
+      const oldFilename = profile.avatarUrl.split('/').pop();
+
+      if (oldFilename) {
+        const oldFilePath = join(
+          process.cwd(),
+          'uploads',
+          'avatars',
+          oldFilename,
+        );
+
+        try {
+          await unlink(oldFilePath);
+        } catch {
+          // Old avatar may already have been deleted.
+        }
+      }
+    }
+
+    return updatedProfile;
   }
 }

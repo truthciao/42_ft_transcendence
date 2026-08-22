@@ -32,8 +32,8 @@
     "bioPlaceholder": "输入您的个人简介",
     "username": "用户名",
     "email": "邮箱",
-    "avatar": "头像",
-    "avatarPlaceholder": "输入头像 URL",
+    "uploading": "正在上传……",
+    "changeAvatar": "更换头像",
     "preferredLanguage": "首选语言",
     "preferredLanguagePlaceholder": "输入您的首选语言",
     "update": "更新个人资料",
@@ -84,7 +84,8 @@
       "loadError": "加载好友请求失败。",
       "empty": "没有待处理的好友请求。",
       "accept": "接受",
-      "reject": "拒绝"
+      "reject": "拒绝",
+      "viewAll": "查看全部"
     },
     "profile": {
       "backToFriends": "返回好友",

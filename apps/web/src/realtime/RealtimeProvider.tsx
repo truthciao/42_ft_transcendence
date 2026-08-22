@@ -1,10 +1,19 @@
-import { useEffect, type ReactNode } from 'react';
-import { io } from 'socket.io-client';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
+import { getSocket, disconnectSocket } from '@/lib/realtime';
 
-const API_BASE_URI =
-  import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+interface RealtimeContextValue {
+  onlineUserIds: Set<number>;
+}
+
+const RealtimeContext = createContext<RealtimeContextValue | null>(null);
 
 export function RealtimeProvider({
   children,
@@ -14,22 +23,46 @@ export function RealtimeProvider({
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
 
+  const [onlineUserIds, setOnlineUserIds] = useState<Set<number>>(
+    new Set(),
+  );
+
   useEffect(() => {
     if (loading || !user) {
       return;
     }
 
-    const token = localStorage.getItem('access_token');
+    const socket = getSocket();
 
-    if (!token) {
-      return;
-    }
+    console.log('RealtimeProvider socket:', socket.id);
 
-    const socket = io(API_BASE_URI, {
-      auth: {
-        token,
-      },
-    });
+    const handleOnline = ({ userId }: { userId: number }) => {
+      console.log('USER_ONLINE', userId);
+
+      setOnlineUserIds((current) => {
+        const next = new Set(current);
+        next.add(userId);
+        return next;
+      });
+    };
+    
+    const handleUsersOnline = ({
+      userIds,
+    }: {
+      userIds: number[];
+    }) => {
+      setOnlineUserIds(new Set(userIds));
+    };
+
+    const handleOffline = ({ userId }: { userId: number }) => {
+      console.log('USER_OFFLINE', userId);
+
+      setOnlineUserIds((current) => {
+        const next = new Set(current);
+        next.delete(userId);
+        return next;
+      });
+    };
 
     const handleFriendRequest = () => {
       queryClient.invalidateQueries({
@@ -37,13 +70,37 @@ export function RealtimeProvider({
       });
     };
 
+    socket.on('users:online', handleUsersOnline);
+    socket.on('user:online', handleOnline);
+    socket.on('user:offline', handleOffline);
     socket.on('friend-request:received', handleFriendRequest);
 
     return () => {
+      socket.off('users:online', handleUsersOnline);
+      socket.off('user:online', handleOnline);
+      socket.off('user:offline', handleOffline);
       socket.off('friend-request:received', handleFriendRequest);
-      socket.disconnect();
+
+      disconnectSocket();
+      setOnlineUserIds(new Set());
     };
   }, [loading, user, queryClient]);
 
-  return children;
+  return (
+    <RealtimeContext.Provider value={{ onlineUserIds }}>
+      {children}
+    </RealtimeContext.Provider>
+  );
+}
+
+export function useRealtime() {
+  const context = useContext(RealtimeContext);
+
+  if (!context) {
+    throw new Error(
+      'useRealtime must be used within RealtimeProvider',
+    );
+  }
+
+  return context;
 }

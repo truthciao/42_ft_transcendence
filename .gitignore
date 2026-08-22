@@ -71,3 +71,8 @@ temp/
 apps/api/.agents/
 apps/api/.claude/
 apps/api/.windsurf/
+
+# =========================
+# Avatar
+# =========================
+apps/api/uploads/

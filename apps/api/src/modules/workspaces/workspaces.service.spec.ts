@@ -236,7 +236,7 @@ describe('WorkspacesService', () => {
 
     it('rejects inviting as OWNER role', async () => {
       const dto = {
-        role: WorkspaceRole.OWNER,
+        role: WorkspaceRole.OWNER as WorkspaceRole,
         userId: 3,
       } as InviteMemberDto;
 

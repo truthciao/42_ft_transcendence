@@ -220,7 +220,7 @@ export class WorkspacesService {
     actor: WorkspaceMember,
     dto: InviteMemberDto,
   ) {
-    if (dto.role === WorkspaceRole.OWNER) {
+    if (dto.role as WorkspaceRole === WorkspaceRole.OWNER) {
       throw new BadRequestException('Use transfer-ownership instead');
     }
     if (dto.role === WorkspaceRole.ADMIN && actor.role !== WorkspaceRole.OWNER)
@@ -267,6 +267,13 @@ export class WorkspacesService {
           },
         },
         inviter: {
+          select: {
+            id: true,
+            username: true,
+            profile: { select: { displayName: true, avatarUrl: true } },
+          },
+        },
+        invitee: {
           select: {
             id: true,
             username: true,

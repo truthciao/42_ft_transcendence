@@ -24,12 +24,27 @@ const DOT_SIZE_CLASS = {
   xl: 'size-3.5',
 } as const;
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
 interface AvatarProps {
   src?: string | null;
   name: string;
   size?: keyof typeof SIZE_CLASS;
   status?: AvatarStatus;
   className?: string;
+}
+
+function getAvatarUrl(src?: string | null): string {
+  if (!src) {
+    return '/images.jpg';
+  }
+
+  if (src.startsWith('http://') || src.startsWith('https://')) {
+    return src;
+  }
+
+  return `${API_BASE_URL}${src}`;
 }
 
 function getInitials(name: string): string {
@@ -44,7 +59,7 @@ export function Avatar({ src, name, size = 'md', status, className }: AvatarProp
     <span className={cn('relative inline-block', className)}>
       <BaseAvatar className={SIZE_CLASS[size]}>
         <AvatarImage
-          src={src ?? '/images.jpg'}
+          src={getAvatarUrl(src)}
           alt={name}
         />
         <AvatarFallback>{getInitials(name)}</AvatarFallback>

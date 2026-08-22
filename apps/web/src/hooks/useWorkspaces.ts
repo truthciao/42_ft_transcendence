@@ -1,11 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getWorkspace, getWorkspaces, getWorkspaceMembers, getWorkspacesChannels } from "@/api/workspaces";
+import { getWorkspace, getWorkspaces, getWorkspaceMembers, getWorkspacesChannels, getWorkspaceInvites, getIncomingInvites, getInviteByToken } from "@/api/workspaces";
 
 export const workspaceKeys = {
   all: ['workspaces'] as const,
   detail: (id: number) => ['workspace', id] as const,
   members: (id: number) => ['workspace', id, 'members'] as const,
   channels: (id: number) => ['workspace', id, 'channels'] as const,
+  invites: (id: number) => ['workspace', id, 'invites'] as const,
+  incomingInvites: ['workspace-invites', 'incoming'] as const,
  }
 
  export function useWorkspaces() {
@@ -45,3 +47,30 @@ export function useWorkspaceChannels(id: number | undefined) {
   })
 }
 
+// ─────────────────────────────────────────────
+// Invite
+// ─────────────────────────────────────────────
+
+export function useWorkspaceInvites(id: number | undefined) {
+  return useQuery({
+    queryKey: workspaceKeys.invites(id ?? -1),
+    queryFn: () => getWorkspaceInvites(id as number),
+    enabled: id !== undefined && Number.isInteger(id),
+  });
+}
+
+export function useIncomingInvites() {
+  return useQuery({
+    queryKey: workspaceKeys.incomingInvites,
+    queryFn: getIncomingInvites,
+  });
+}
+
+export function useInviteByToken(token: string | undefined) {
+  return useQuery({
+    queryKey: ['workspace-invite', 'token', token ?? ''],
+    queryFn: () => getInviteByToken(token as string),
+    enabled: !!token,
+    retry: false
+  })
+}

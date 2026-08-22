@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { getProfile, updateProfile } from '../api/profile';
+import { getProfile, updateProfile, uploadAvatar } from '../api/profile';
 import { useAuth } from '@/hooks/useAuth';
 
 export function useProfile() {
@@ -16,6 +16,23 @@ export function useUpdateProfile() {
 
   return useMutation({
     mutationFn: updateProfile,
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['profile'],
+      });
+
+      await refreshUser();
+    },
+  });
+}
+
+export function useUploadAvatar() {
+  const queryClient = useQueryClient();
+  const { refreshUser } = useAuth();
+
+  return useMutation({
+    mutationFn: uploadAvatar,
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({

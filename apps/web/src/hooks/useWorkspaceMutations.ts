@@ -1,6 +1,25 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { createWorkspacePayload, UpdateWorkspacePayload, CreateChannelPayload, updateMemberRolePayload } from "@repo/shared-types";
-import { createWorkspace, updateWorkspace, deleteWorkspace, leaveWorkspace, removeWorkspaceMember, updateMemberRole, createChannel } from "@/api/workspaces";
+import { mutationOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import type {
+  createWorkspacePayload,
+  UpdateWorkspacePayload,
+  CreateChannelPayload,
+  updateMemberRolePayload,
+  InviteMemberPayload,
+  transferOwnershipPayload
+} from "@repo/shared-types";
+import {
+  createWorkspace,
+  updateWorkspace,
+  deleteWorkspace,
+  leaveWorkspace,
+  removeWorkspaceMember,
+  updateMemberRole,
+  createChannel,
+  inviteMember,
+  acceptInvite,
+  rejectInvite,
+  transferOwnership
+} from "@/api/workspaces";
 import { workspaceKeys } from "./useWorkspaces";
 
 export function useCreateWorkspace() {
@@ -18,8 +37,8 @@ export function useUpdateWorkspace(id: number) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: UpdateWorkspacePayload) => updateWorkspace(id, payload),
-    onSuccess: (workspace) => {
-      queryClient.setQueryData(workspaceKeys.detail(id), workspace);
+    onSuccess: () => {
+      queryClient.invalidateQueries( {queryKey: workspaceKeys.detail(id)});
       queryClient.invalidateQueries({ queryKey: workspaceKeys.all });
     }
   })
@@ -75,6 +94,54 @@ export function useCreateChannel(workspaceId: number) {
     mutationFn: (payload: CreateChannelPayload) => createChannel(workspaceId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: workspaceKeys.channels(workspaceId)});
+    }
+  })
+}
+
+// ─────────────────────────────────────────────
+// Invite
+// ─────────────────────────────────────────────
+
+export function useInviteMember(workspaceId: number) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: InviteMemberPayload) => inviteMember(workspaceId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.invites(workspaceId) });
+    },
+  })
+}
+
+export function useAcceptInvite() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (inviteId: number) => acceptInvite(inviteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.all });
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.incomingInvites });
+      queryClient.invalidateQueries({ queryKey: ['workspace-invite']});
+    }
+  })
+}
+
+export function useRejectInvite() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (inviteId: number) => rejectInvite(inviteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.incomingInvites });
+      queryClient.invalidateQueries({ queryKey: ['workspace-invite']});
+    }
+  })
+}
+
+export function useTransferOwnership(workspaceId: number) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: transferOwnershipPayload) => transferOwnership(workspaceId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.detail(workspaceId) });
+      queryClient.invalidateQueries({ queryKey: workspaceKeys.members(workspaceId) });
     }
   })
 }

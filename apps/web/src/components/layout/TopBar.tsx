@@ -1,4 +1,4 @@
-import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
+import { LogOut, Search, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 export function TopBar() {
   const { user } = useAuth();
@@ -39,9 +40,7 @@ export function TopBar() {
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
 
-        <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="size-4" />
-        </Button>
+        <NotificationBell />
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer outline-none">

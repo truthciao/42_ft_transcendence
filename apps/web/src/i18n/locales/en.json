@@ -84,7 +84,8 @@
       "loadError": "Failed to load friend requests.",
       "empty": "No pending friend requests.",
       "accept": "Accept",
-      "reject": "Reject"
+      "reject": "Reject",
+      "viewAll": "View all"
     },
     "profile": {
       "backToFriends": "Back to friends",

@@ -45,6 +45,14 @@ export function RealtimeProvider({
         return next;
       });
     };
+    
+    const handleUsersOnline = ({
+      userIds,
+    }: {
+      userIds: number[];
+    }) => {
+      setOnlineUserIds(new Set(userIds));
+    };
 
     const handleOffline = ({ userId }: { userId: number }) => {
       console.log('USER_OFFLINE', userId);
@@ -62,11 +70,13 @@ export function RealtimeProvider({
       });
     };
 
+    socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
     socket.on('friend-request:received', handleFriendRequest);
 
     return () => {
+      socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
       socket.off('user:offline', handleOffline);
       socket.off('friend-request:received', handleFriendRequest);

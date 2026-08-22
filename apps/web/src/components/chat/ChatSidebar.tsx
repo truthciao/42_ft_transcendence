@@ -20,6 +20,17 @@ export function ConversationListSidebar() {
     try {
       setIsLoading(true);
       const dataList = await getMyConversations();
+
+      console.log(
+        '🔥 CURRENT CONVERSATIONS:',
+      conversations.map((conversation) => ({
+        id: conversation.id,
+        name: conversation.name,
+      })),
+    );
+      
+
+
       if (Array.isArray(dataList)) {
         setConversations(dataList);
       }
@@ -57,7 +68,7 @@ export function ConversationListSidebar() {
 
     try {
       const data = await createConversationByUsername(targetUsername);
-      
+
       if (data && data.id) {
         navigate(`/app/chat/${data.id}`, { 
           state: { friendName: targetUsername } 
@@ -119,7 +130,12 @@ export function ConversationListSidebar() {
                 return (
                   <div
                     key={conv.id}
-                    onClick={() => navigate(`/app/chat/${conv.id}`, { state: { friendName: conv.name } })}
+                  onClick={() => {
+                    navigate(`/app/chat/${conv.id}`, {
+                      state: { friendName: conv.name },
+                    });
+                  }}
+
                     className="flex items-center justify-between rounded-md px-2.5 py-2.5 text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors group"
                   >
                     <div className="font-medium flex items-center gap-2.5 min-w-0 flex-1">

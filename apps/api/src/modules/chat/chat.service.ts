@@ -47,13 +47,14 @@ export class ChatService {
   }
 
   async createByUsername(userId: number, username: string) {
-    const targetUser = await this.prisma.user.findUnique({ where: { username } });
+    const targetUser = await this.prisma.user.findUnique({ where: { username } }); 
     if (!targetUser) throw new NotFoundException('User not found');
     return this.createDirectConversation(userId, targetUser.id);
   }
 
 async findAllForUser(userId: number) { 
   const conversations = await this.prisma.conversation.findMany({
+
     where: { members: { some: { userId } } },
     orderBy: { updatedAt: 'desc' },
     include: {
@@ -157,6 +158,7 @@ async findAllForUser(userId: number) {
     const membership = await this.prisma.conversationMember.findUnique({
       where: { conversationId_userId: { conversationId, userId } },
     });
+
     if (!membership)
       throw new ForbiddenException('You are not a member of this conversation');
 

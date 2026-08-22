@@ -95,18 +95,16 @@ export function ConversationPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const content = inputText.trim();
 
-    if (!content || !conversationId) return;
-
+    if (!content || !conversationId) {
+      return ;
+    }
     const socket = getSocket();
-
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
     });
-
     setInputText('');
   };
 

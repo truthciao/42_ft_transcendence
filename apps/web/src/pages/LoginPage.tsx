@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button';
 import { HttpError } from '@/lib/http';
+import { disconnectSocket } from '@/lib/realtime';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -77,6 +78,7 @@ export function LoginPage() {
 
       // If 2FA is not enabled, log in successfully directly
       if ('access_token' in data) {
+        disconnectSocket();
         localStorage.setItem("access_token", data.access_token);
         
         await refreshUser();
@@ -108,6 +110,7 @@ export function LoginPage() {
     );
 
     if ('access_token' in data) {
+      disconnectSocket();
       localStorage.setItem('access_token', data.access_token);
       
       await refreshUser();

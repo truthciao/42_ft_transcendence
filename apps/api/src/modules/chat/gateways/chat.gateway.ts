@@ -2,6 +2,7 @@ import { UseGuards, UsePipes } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
@@ -31,7 +32,8 @@ import { getChatRoom } from '../utils/chat-room-naming.util.js';
 })
 @UseGuards(WsJwtGuard)
 @UsePipes(new WsZodValidationPipe())
-export class ChatGateway implements OnGatewayInit {
+export class ChatGateway 
+  implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server!: Server;
 
@@ -42,6 +44,9 @@ export class ChatGateway implements OnGatewayInit {
 
   afterInit(server: Server): void {
     this.roomService.setServer(server);
+  }
+
+  handleConnection(_client: AuthenticatedSocket): void {
   }
 
   @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)
@@ -57,8 +62,8 @@ export class ChatGateway implements OnGatewayInit {
         dto.conversationId,
         userId,
       );
-
       await this.roomService.joinRoom(client, room);
+    
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -74,6 +79,7 @@ export class ChatGateway implements OnGatewayInit {
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: SendMessageDto,
   ): Promise<void> {
+
     const senderId = client.data.user.userId;
 
     try {
@@ -82,9 +88,9 @@ export class ChatGateway implements OnGatewayInit {
         senderId,
         dto.content,
       );
-
+      const room = getChatRoom(dto.conversationId);
       this.roomService.emitToRoom(
-        getChatRoom(dto.conversationId),
+        room,
         CHAT_EVENTS.MESSAGE_CREATED,
         message,
       );

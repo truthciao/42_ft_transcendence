@@ -1,6 +1,7 @@
 import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar } from '../common/Avatar';
 import { Button } from '../ui/button';
@@ -11,8 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { useUnreadNotificationCount } from '@/hooks/useNotifications';
-import { useNotifications } from '@/hooks/useNotifications';
+import { 
+  useUnreadNotificationCount, 
+  useMarkAllNotificationsAsRead, 
+  useNotifications 
+} from '@/hooks/useNotifications';
+import type { Notification } from '@/api/notifications';
 
 export function TopBar() {
   const { user } = useAuth();
@@ -20,11 +25,35 @@ export function TopBar() {
   const { data: notifications = [] } = useNotifications();
   const { data: unreadCount = 0 } =
     useUnreadNotificationCount();
+  const markAllAsReadMutation =
+    useMarkAllNotificationsAsRead();
+  const { t } = useTranslation();
 
   function logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     navigate('/login', { replace: true });
+  }
+
+  function getNotificationMessage(notification: Notification) {
+    const username = notification.actor?.username ?? 'Unknown user';
+
+    switch (notification.type) {
+      case 'FRIEND_REQUEST_RECEIVED':
+        return t('notifications.friendRequestReceived', { username });
+
+      case 'FRIEND_REQUEST_ACCEPTED':
+        return t('notifications.friendRequestAccepted', { username });
+
+      case 'FRIEND_REQUEST_REJECTED':
+        return t('notifications.friendRequestRejected', { username });
+
+      case 'FRIEND_REMOVED':
+        return t('notifications.friendRemoved', { username });
+
+      default:
+        return notification.type;
+    }
   }
 
   return (
@@ -44,7 +73,13 @@ export function TopBar() {
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
 
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChange={(open) => {
+          if (open && unreadCount > 0) {
+            markAllAsReadMutation.mutate();
+          }
+        }}
+      >
         <DropdownMenuTrigger
           className="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
           aria-label="Notifications"
@@ -78,14 +113,14 @@ export function TopBar() {
           className="w-80"
         >
           <div className="px-2 py-1.5 text-sm font-semibold">
-            Notifications
+            {t('notifications.title')}
           </div>
 
           <DropdownMenuSeparator />
 
           {notifications.length === 0 ? (
             <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-              No notifications
+              {t('notifications.empty')}
             </div>
           ) : (
             notifications.map((notification) => (
@@ -98,7 +133,7 @@ export function TopBar() {
                 </span>
 
                 <span className="text-xs text-muted-foreground">
-                  {notification.type}
+                  {getNotificationMessage(notification)}
                 </span>
               </DropdownMenuItem>
             ))

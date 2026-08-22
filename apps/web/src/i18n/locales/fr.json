@@ -202,5 +202,13 @@
     "retryClicked": "Réessai cliqué",
     "showPreview": "Afficher l'aperçu de PageError",
     "hidePreview": "Masquer l'aperçu de PageError"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Aucune notification",
+    "friendRequestReceived": "{{username}} vous a envoyé une demande d’ami",
+    "friendRequestAccepted": "{{username}} a accepté votre demande d’ami",
+    "friendRequestRejected": "{{username}} a refusé votre demande d’ami",
+    "friendRemoved": "{{username}} vous a retiré de ses amis"
   }
 }

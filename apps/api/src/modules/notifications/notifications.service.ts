@@ -36,6 +36,20 @@ export class NotificationsService {
     });
   }
 
+  async markAllAsRead(userId: number) {
+  await this.prisma.notification.updateMany({
+      where: {
+      recipientId: userId,
+      read: false,
+      },
+      data: {
+      read: true,
+      },
+  });
+
+  return { success: true };
+  }
+
   async markAsRead(notificationId: number, userId: number) {
     const notification = await this.prisma.notification.findUnique({
       where: {
@@ -55,19 +69,5 @@ export class NotificationsService {
         read: true,
       },
     });
-  }
-
-  async markAllAsRead(userId: number) {
-  await this.prisma.notification.updateMany({
-      where: {
-      recipientId: userId,
-      read: false,
-      },
-      data: {
-      read: true,
-      },
-  });
-
-  return { success: true };
   }
 }

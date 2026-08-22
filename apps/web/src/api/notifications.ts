@@ -1,4 +1,4 @@
-import { httpGet } from '../lib/http';
+import { httpGet, httpPatch } from '../lib/http';
 
 export interface Notification {
   id: number;

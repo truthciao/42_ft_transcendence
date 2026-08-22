@@ -171,9 +171,7 @@ export class FriendsService {
         : friendship.requesterId;
 
     try {
-      console.log(`[FriendsService] Creating direct conversation between user ${userId} and target user ${otherUserId}`);
       const conv = await this.chatService.createDirectConversation(userId, otherUserId);
-      console.log('[FriendsService] Created conversation result:', conv?.id);
     } catch (error) {
       console.error('[FriendsService Error] Failed to create conversation after accepting friend:', error);
     }

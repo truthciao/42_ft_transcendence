@@ -46,7 +46,7 @@ export class ChatGateway
     this.roomService.setServer(server);
   }
 
-  handleConnection(client: AuthenticatedSocket): void {
+  handleConnection(_client: AuthenticatedSocket): void {
   }
 
   @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)

@@ -13,4 +13,7 @@ export const REALTIME_EVENTS = {
   ROOM_MEMBER_JOINED: 'room:member-joined',
   ROOM_MEMBER_LEFT: 'room:member-left',
   FRIEND_REQUEST_RECEIVED: 'friend-request:received',
+  FRIEND_REQUEST_ACCEPTED: 'friend-request:accepted',
+  FRIEND_REQUEST_REJECTED: 'friend-request:rejected',
+  FRIEND_REMOVED: 'friend:removed',
 } as const;

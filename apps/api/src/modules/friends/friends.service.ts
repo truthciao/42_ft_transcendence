@@ -171,9 +171,15 @@ export class FriendsService {
         : friendship.requesterId;
 
     try {
-      const conv = await this.chatService.createDirectConversation(userId, otherUserId);
+      await this.chatService.createDirectConversation(
+        userId,
+        otherUserId,
+      );
     } catch (error) {
-      console.error('[FriendsService Error] Failed to create conversation after accepting friend:', error);
+      console.error(
+        '[FriendsService Error] Failed to create conversation after accepting friend:',
+        error,
+      );
     }
  
     return updatedFriendship;

@@ -203,5 +203,13 @@
     "retryClicked": "Retry clicked",
     "showPreview": "Show PageError preview",
     "hidePreview": "Hide PageError preview"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "friendRequestReceived": "{{username}} sent you a friend request",
+    "friendRequestAccepted": "{{username}} accepted your friend request",
+    "friendRequestRejected": "{{username}} rejected your friend request",
+    "friendRemoved": "{{username}} removed you as a friend"
   }
 }

@@ -203,5 +203,13 @@
     "retryClicked": "已点击重试",
     "showPreview": "显示 PageError 预览",
     "hidePreview": "隐藏 PageError 预览"
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "暂无通知",
+    "friendRequestReceived": "{{username}} 向你发送了好友请求",
+    "friendRequestAccepted": "{{username}} 接受了你的好友请求",
+    "friendRequestRejected": "{{username}} 拒绝了你的好友请求",
+    "friendRemoved": "{{username}} 将你移除了好友"
   }
 }

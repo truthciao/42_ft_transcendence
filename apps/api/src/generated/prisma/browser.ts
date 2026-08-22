@@ -67,3 +67,8 @@ export type Message = Prisma.MessageModel
  * 
  */
 export type Friendship = Prisma.FriendshipModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

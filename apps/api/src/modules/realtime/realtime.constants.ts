@@ -5,6 +5,7 @@ export const REALTIME_EVENTS = {
   PONG: 'pong',
   USER_ONLINE: 'user:online',
   USER_OFFLINE: 'user:offline',
+  USERS_ONLINE: 'users:online',
   ROOM_JOIN: 'room:join',
   ROOM_JOINED: 'room:joined',
   ROOM_LEAVE: 'room:leave',

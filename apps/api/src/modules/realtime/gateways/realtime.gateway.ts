@@ -59,6 +59,9 @@ export class RealtimeGateway
       this.socketRegistry.registerSocket(user.userId, client.id);
       await this.roomService.joinRoom(client, getUserRoom(user.userId));
 
+      client.emit(REALTIME_EVENTS.USERS_ONLINE, {
+        userIds: this.socketRegistry.getOnlineUserIds(),
+      });
       this.server.emit(REALTIME_EVENTS.USER_ONLINE, {
         userId: user.userId,
       });

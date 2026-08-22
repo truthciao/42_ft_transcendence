@@ -95,35 +95,16 @@ export function ConversationPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log('🔥 SEND BUTTON CLICKED');
-
     const content = inputText.trim();
 
-
-    console.log('🔥 INPUT CONTENT:', content);
-    console.log('🔥 CONVERSATION ID:', conversationId);
-
     if (!content || !conversationId) {
-      console.log('🔥 SEND BLOCKED' );
       return ;
-    } 
-
+    }
     const socket = getSocket();
-
-
-    console.log('🔥 SOCKET:', socket);
-    console.log('🔥 SOCKET CONNECTED:', socket.connected);
-    console.log('🔥 SOCKET ID:', socket.id);
-
-
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
     });
-
-    console.log('🔥 MESSAGE SEND EMITTED');
-
     setInputText('');
   };
 

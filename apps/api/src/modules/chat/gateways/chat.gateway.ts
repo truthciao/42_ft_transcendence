@@ -44,12 +44,9 @@ export class ChatGateway
 
   afterInit(server: Server): void {
     this.roomService.setServer(server);
-
-    console.log('🔥 CHAT GATEWAY INITIALIZED');
   }
 
   handleConnection(client: AuthenticatedSocket): void {
-    console.log('🔥 CHAT SOCKET CONNECTED:', client.id);
   }
 
   @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)
@@ -57,30 +54,17 @@ export class ChatGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: JoinConversationDto,
   ): Promise<void> {
-    console.log('🔥 CHAT JOIN RECEIVED');
-    console.log('🔥 SOCKET ID:', client.id);
-    console.log('🔥 USER ID:', client.data.user.userId);
-    console.log('🔥 JOIN DTO:', dto);
-
     const userId = client.data.user.userId;
     const room = getChatRoom(dto.conversationId);
 
     try {
-      console.log('🔥 VERIFYING MEMBERSHIP');
-
       await this.chatService.verifyMembership(
         dto.conversationId,
         userId,
       );
-
-      console.log('🔥 MEMBERSHIP VERIFIED');
-
       await this.roomService.joinRoom(client, room);
-
-      console.log('🔥 JOINED CHAT ROOM:', room);
+    
     } catch (error) {
-      console.error('🔥 CHAT JOIN ERROR:', error);
-
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -95,38 +79,22 @@ export class ChatGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: SendMessageDto,
   ): Promise<void> {
-    console.log('🔥🔥 MESSAGE SEND RECEIVED');
-    console.log('🔥 SOCKET ID:', client.id);
-    console.log('🔥 USER ID:', client.data.user.userId);
-    console.log('🔥 MESSAGE DTO:', dto);
 
     const senderId = client.data.user.userId;
 
     try {
-      console.log('🔥 CREATING MESSAGE');
-
       const message = await this.chatService.createMessage(
         dto.conversationId,
         senderId,
         dto.content,
       );
-
-      console.log('🔥 MESSAGE CREATED:', message);
-
       const room = getChatRoom(dto.conversationId);
-
-      console.log('🔥 EMITTING TO ROOM:', room);
-
       this.roomService.emitToRoom(
         room,
         CHAT_EVENTS.MESSAGE_CREATED,
         message,
       );
-
-      console.log('🔥 MESSAGE CREATED EVENT EMITTED');
     } catch (error) {
-      console.error('🔥 MESSAGE SEND ERROR:', error);
-
       const errorMessage =
         error instanceof Error
           ? error.message

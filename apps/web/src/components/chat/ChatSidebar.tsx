@@ -68,13 +68,8 @@ export function ConversationListSidebar() {
 
     try {
       const data = await createConversationByUsername(targetUsername);
-     
-      console.log('🔥 CREATE CONVERSATION RESPONSE:', data);
-      console.log('🔥 TARGET USERNAME:', targetUsername);
 
       if (data && data.id) {
-        console.log('🔥 NAVIGATING TO CONVERSATION:', data.id);
-
         navigate(`/app/chat/${data.id}`, { 
           state: { friendName: targetUsername } 
         });
@@ -136,11 +131,6 @@ export function ConversationListSidebar() {
                   <div
                     key={conv.id}
                   onClick={() => {
-                    console.log('🔥 CLICK CONVERSATION');
-                    console.log('🔥 CONVERSATION:', conv);
-                    console.log('🔥 CONVERSATION ID:', conv.id);
-                    console.log('🔥 CONVERSATION NAME:', conv.name);
-
                     navigate(`/app/chat/${conv.id}`, {
                       state: { friendName: conv.name },
                     });

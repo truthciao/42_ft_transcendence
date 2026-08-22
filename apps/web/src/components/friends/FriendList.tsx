@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFriends } from '../../hooks/useFriends';
 import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { FriendCard } from './FriendCard';
 import { useConfirm } from '@/lib/confirm-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { getSocket } from '@/lib/realtime';
+import { useRealtime } from '@/realtime/RealtimeProvider';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();
@@ -18,37 +18,7 @@ export function FriendList() {
 
   const { t } = useTranslation();
 
-  const [onlineUserIds, setOnlineUserIds] = useState<Set<number>>(
-    new Set(),
-  );
-
-  useEffect(() => {
-    const socket = getSocket();
-
-    const handleOnline = ({ userId }: { userId: number }) => {
-      setOnlineUserIds((current) => {
-        const next = new Set(current);
-        next.add(userId);
-        return next;
-      });
-    };
-
-    const handleOffline = ({ userId }: { userId: number }) => {
-      setOnlineUserIds((current) => {
-        const next = new Set(current);
-        next.delete(userId);
-        return next;
-      });
-    };
-
-    socket.on('user:online', handleOnline);
-    socket.on('user:offline', handleOffline);
-
-    return () => {
-      socket.off('user:online', handleOnline);
-      socket.off('user:offline', handleOffline);
-    };
-  }, []);
+  const { onlineUserIds } = useRealtime();
 
   const handleRemoveFriend = async (friendId: number) => {
     const confirmed = await confirm({

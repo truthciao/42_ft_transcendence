@@ -76,19 +76,6 @@ export function FriendProfilePage() {
     );
   }
 
-  // const handleMessage = async () => {
-  //   try {
-  //     const data = await createConversationByUsername(friend.username);
-
-  //     if (data?.id) {
-  //       navigate(`/app/chat/${data.id}`, {
-  //         state: { friendName: friend.username },
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error('Cannot build conversation:', error);
-  //   }
-  // };
 const handleMessage = async () => {
   console.log('Message button clicked');
   console.log('friend:', friend);

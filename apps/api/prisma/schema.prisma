@@ -1,8 +1,8 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../src/generated/prisma"
-  moduleFormat = "cjs"
-  engineType   = "binary"
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "cjs"
+  engineType             = "binary"
   generatedFileExtension = "ts"
   importFileExtension    = "js"
 }
@@ -12,27 +12,30 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  username      String         @unique
-  passwordHash  String?
-  isTwoFactorEnabled Boolean   @default(false)
-  twoFactorSecret              String?
-  oauthAccounts OAuthAccount[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  profile       Profile?
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique
+  username           String         @unique
+  passwordHash       String?
+  isTwoFactorEnabled Boolean        @default(false)
+  twoFactorSecret    String?
+  oauthAccounts      OAuthAccount[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  profile            Profile?
 
   ownedWorkspaces       Workspace[]
   workspaceMembers      WorkspaceMember[]
-  sentSpaceRequests     WorkspaceInvite[]  @relation("InviteSender")
-  receivedSpaceRequests WorkspaceInvite[]  @relation("InviteReceiver")
+  sentSpaceRequests     WorkspaceInvite[] @relation("InviteSender")
+  receivedSpaceRequests WorkspaceInvite[] @relation("InviteReceiver")
 
-  conversationMember  ConversationMember[]
-  messages            Message[]
+  conversationMember ConversationMember[]
+  messages           Message[]
 
-  sentFriendRequests      Friendship[]  @relation("FriendshipRequester")
-  receivedFriendRequests  Friendship[]  @relation("FriendshipAddressee")
+  sentFriendRequests     Friendship[] @relation("FriendshipRequester")
+  receivedFriendRequests Friendship[] @relation("FriendshipAddressee")
+
+  notificationsReceived Notification[] @relation("NotificationRecipient")
+  notificationsCreated  Notification[] @relation("NotificationActor")
 }
 
 model Profile {
@@ -59,34 +62,34 @@ model OAuthAccount {
 }
 
 model Workspace {
-  id        Int               @id @default(autoincrement())
-  name      String
-  slug      String?           @unique
+  id          Int               @id @default(autoincrement())
+  name        String
+  slug        String?           @unique
   description String?
-  icon      String?
-  ownerId   Int
-  owner     User              @relation(fields: [ownerId], references: [id])
-  members  WorkspaceMember[]
-  invites  WorkspaceInvite[]
-  channels Conversation[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  icon        String?
+  ownerId     Int
+  owner       User              @relation(fields: [ownerId], references: [id])
+  members     WorkspaceMember[]
+  invites     WorkspaceInvite[]
+  channels    Conversation[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 }
 
-enum  WorkspaceRole {
+enum WorkspaceRole {
   OWNER
   ADMIN
   MEMBER
 }
 
 model WorkspaceMember {
-  id          Int             @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   workspaceId Int
-  workspace   Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   userId      Int
-  user        User            @relation(fields: [userId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
   role        WorkspaceRole
-  joinedAt    DateTime        @default(now())
+  joinedAt    DateTime      @default(now())
 
   @@unique([workspaceId, userId])
   @@index([userId])
@@ -101,21 +104,21 @@ enum WorkspaceInviteStatus {
 }
 
 model WorkspaceInvite {
-  id          Int                    @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   workspaceId Int
-  workspace   Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   inviterId   Int
-  inviter     User                   @relation("InviteSender", fields: [inviterId], references: [id])
+  inviter     User                  @relation("InviteSender", fields: [inviterId], references: [id])
   inviteeId   Int?
-  invitee     User?                  @relation("InviteReceiver", fields: [inviteeId], references: [id])
+  invitee     User?                 @relation("InviteReceiver", fields: [inviteeId], references: [id])
   email       String?
   role        WorkspaceRole
   status      WorkspaceInviteStatus
-  token       String                 @unique
+  token       String                @unique
   expiresAt   DateTime
   respondedAt DateTime?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 
   @@index([inviteeId, status])
   @@index([workspaceId, status])
@@ -128,40 +131,40 @@ enum ConversationType {
 }
 
 model Conversation {
-  id           Int                  @id @default(autoincrement())
-  type         ConversationType     @default(DIRECT)
-  name         String?
-  workspaceId  Int?
-  workspace    Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  isDefault    Boolean              @default(false)
-  createdById  Int?
-  members      ConversationMember[]
-  messages     Message[]
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
+  id          Int                  @id @default(autoincrement())
+  type        ConversationType     @default(DIRECT)
+  name        String?
+  workspaceId Int?
+  workspace   Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  isDefault   Boolean              @default(false)
+  createdById Int?
+  members     ConversationMember[]
+  messages    Message[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
 
   @@index([workspaceId, type])
 }
 
 model ConversationMember {
-  id             Int            @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   conversationId Int
-  conversation   Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   userId         Int
-  user           User           @relation(fields: [userId], references: [id])
-  joinedAt       DateTime       @default(now())
+  user           User         @relation(fields: [userId], references: [id])
+  joinedAt       DateTime     @default(now())
 
   @@unique([conversationId, userId])
 }
 
 model Message {
-  id             Int            @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   conversationId Int
-  conversation   Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   senderId       Int
-  sender         User           @relation(fields: [senderId], references: [id])
+  sender         User         @relation(fields: [senderId], references: [id])
   content        String
-  createdAt      DateTime       @default(now())
+  createdAt      DateTime     @default(now())
 }
 
 enum FriendshipStatus {
@@ -171,16 +174,46 @@ enum FriendshipStatus {
 }
 
 model Friendship {
-  id          Int               @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   requesterId Int
-  requester   User              @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
   addresseeId Int
-  addressee   User              @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
-  status      FriendshipStatus  @default(PENDING)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  notifications Notification[]
 
   @@unique([requesterId, addresseeId])
   @@index([addresseeId, status])
   @@index([requesterId, status])
+}
+
+enum NotificationType {
+  FRIEND_REQUEST_RECEIVED
+  FRIEND_REQUEST_ACCEPTED
+  FRIEND_REQUEST_REJECTED
+  FRIEND_REMOVED
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  recipientId Int
+  recipient   User @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  type NotificationType
+
+  actorId Int?
+  actor   User? @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
+
+  friendshipId Int?
+  friendship   Friendship? @relation(fields: [friendshipId], references: [id], onDelete: SetNull)
+
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([recipientId, read])
+  @@index([recipientId, createdAt])
 }

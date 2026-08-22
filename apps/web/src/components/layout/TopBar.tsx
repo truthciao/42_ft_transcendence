@@ -1,4 +1,4 @@
-import { LogOut, Search, Settings, User } from 'lucide-react';
+import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,11 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { useUnreadNotificationCount } from '@/hooks/useNotifications';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export function TopBar() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { data: notifications = [] } = useNotifications();
+  const { data: unreadCount = 0 } =
+    useUnreadNotificationCount();
 
   function logout() {
     localStorage.removeItem('access_token');
@@ -40,7 +44,67 @@ export function TopBar() {
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
 
-        <NotificationBell />
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
+          aria-label="Notifications"
+        >
+            <Bell className="size-4" />
+
+            {unreadCount > 0 && (
+              <span
+                className="
+                  absolute
+                  -right-1
+                  -top-1
+                  flex
+                  size-5
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-destructive
+                  text-[10px]
+                  font-medium
+                  text-destructive-foreground
+                "
+              >
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          className="w-80"
+        >
+          <div className="px-2 py-1.5 text-sm font-semibold">
+            Notifications
+          </div>
+
+          <DropdownMenuSeparator />
+
+          {notifications.length === 0 ? (
+            <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+              No notifications
+            </div>
+          ) : (
+            notifications.map((notification) => (
+              <DropdownMenuItem
+                key={notification.id}
+                className="flex flex-col items-start gap-1"
+              >
+                <span className="font-medium">
+                  {notification.actor?.username ?? 'Unknown user'}
+                </span>
+
+                <span className="text-xs text-muted-foreground">
+                  {notification.type}
+                </span>
+              </DropdownMenuItem>
+            ))
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer outline-none">

@@ -68,6 +68,14 @@ export function RealtimeProvider({
       queryClient.invalidateQueries({
         queryKey: ['friendRequests'],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
     };
 
     const handleFriendRequestAccepted = () => {
@@ -81,6 +89,14 @@ export function RealtimeProvider({
 
       queryClient.invalidateQueries({
         queryKey: ['conversations'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
       });
     };
 
@@ -120,6 +136,8 @@ export function RealtimeProvider({
     );
 
     return () => {
+      socket.off('friend-request:received', handleFriendRequest);
+
       socket.off(
         'users:online', 
         handleUsersOnline,

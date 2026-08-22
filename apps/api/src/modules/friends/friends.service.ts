@@ -7,7 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { FriendshipStatus } from '../../generated/prisma/enums.js';
+import { FriendshipStatus, NotificationType } from '../../generated/prisma/enums.js';
 import { ChatService } from '../chat/chat.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
@@ -55,6 +55,15 @@ export class FriendsService {
         requesterId,
         addresseeId,
         status: FriendshipStatus.PENDING,
+      },
+    });
+
+    await this.prisma.notification.create({
+      data: {
+        recipientId: addresseeId,
+        actorId: requesterId,
+        type: NotificationType.FRIEND_REQUEST_RECEIVED,
+        friendshipId: friendship.id,
       },
     });
 
@@ -117,8 +126,38 @@ export class FriendsService {
       data: { status: FriendshipStatus.ACCEPTED },
     });
 
+    await this.prisma.notification.create({
+      data: {
+        recipientId: friendship.requesterId,
+        actorId: userId,
+        type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+        friendshipId: friendship.id,
+      },
+    });
+
+    await this.prisma.notification.updateMany({
+      where: {
+        recipientId: userId,
+        friendshipId: friendship.id,
+        type: NotificationType.FRIEND_REQUEST_RECEIVED,
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+
     this.realtimeRoomService.emitTouser(
       friendship.requesterId,
+      REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+      {
+        friendshipId: friendship.id,
+        userId,
+      },
+    );
+
+    this.realtimeRoomService.emitTouser(
+      userId,
       REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
       {
         friendshipId: friendship.id,

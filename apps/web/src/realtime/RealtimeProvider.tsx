@@ -70,16 +70,75 @@ export function RealtimeProvider({
       });
     };
 
+    const handleFriendRequestAccepted = () => {
+      queryClient.invalidateQueries({
+        queryKey: ['friends'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['friendRequests'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['conversations'],
+      });
+    };
+
+    const handleFriendRequestRejected = () => {
+      queryClient.invalidateQueries({
+        queryKey: ['sentFriendRequests'],
+      });
+    };
+
+    const handleFriendRemoved = () => {
+      queryClient.invalidateQueries({
+        queryKey: ['friends'],
+      });
+    };
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
-    socket.on('friend-request:received', handleFriendRequest);
+
+    socket.on(
+      'friend-request:received',
+      handleFriendRequest,
+    );
+
+    socket.on(
+      'friend-request:accepted',
+      handleFriendRequestAccepted,
+    );
+
+    socket.on(
+      'friend-request:rejected',
+      handleFriendRequestRejected,
+    );
+
+    socket.on(
+      'friend:removed',
+      handleFriendRemoved,
+    );
 
     return () => {
-      socket.off('users:online', handleUsersOnline);
-      socket.off('user:online', handleOnline);
-      socket.off('user:offline', handleOffline);
-      socket.off('friend-request:received', handleFriendRequest);
+      socket.off(
+        'users:online', 
+        handleUsersOnline,
+      );
+
+      socket.off(
+        'friend-request:accepted',
+        handleFriendRequestAccepted,
+      );
+
+      socket.off(
+        'friend-request:rejected',
+        handleFriendRequestRejected,
+      );
+
+      socket.off(
+        'friend:removed',
+        handleFriendRemoved,
+      );
 
       disconnectSocket();
       setOnlineUserIds(new Set());

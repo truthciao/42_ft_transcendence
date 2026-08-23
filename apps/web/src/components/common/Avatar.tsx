@@ -6,7 +6,7 @@ export type AvatarStatus = 'online' | 'offline' | 'away' | 'busy';
 const STATUS_COLOR: Record<AvatarStatus, string> = {
   online: 'bg-success',
   offline: 'bg-muted-foreground',
-  away: 'bg-yellow-500',
+  away: 'bg-warning',
   busy: 'bg-destructive',
 };
 

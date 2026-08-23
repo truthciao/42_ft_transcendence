@@ -13,6 +13,46 @@ import {
 import { PageError } from '@/components/common/PageError';
 import { Button } from '@/components/ui/button';
 import { useConfirm } from '@/lib/confirm-context';
+import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
+function ColorSwatch({
+  name,
+  className,
+}: {
+  name: string;
+  className: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className={`h-16 rounded-md border border-border ${className}`} />
+      <p className="text-sm font-medium">{name}</p>
+    </div>
+  );
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -43,6 +83,38 @@ export function ComponentShowcasePage() {
         <h1 className="text-2xl font-bold">{t('showcase.title')}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t('showcase.description')}</p>
       </div>
+
+      <Section title="Colors">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <ColorSwatch name="Primary" className="bg-primary" />
+          <ColorSwatch name="Secondary" className="bg-secondary" />
+          <ColorSwatch name="Accent" className="bg-accent" />
+          <ColorSwatch name="Muted" className="bg-muted" />
+          <ColorSwatch name="Success" className="bg-success" />
+          <ColorSwatch name="Warning" className="bg-warning" />
+          <ColorSwatch name="Destructive" className="bg-destructive" />
+          <ColorSwatch name="Background" className="bg-background" />
+          <ColorSwatch name="Card" className="bg-card" />
+          <ColorSwatch name="Border" className="bg-border" />
+        </div>
+      </Section>
+
+      <Section title="Typography">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold">Heading 1</h1>
+          <h2 className="text-3xl font-semibold">Heading 2</h2>
+          <h3 className="text-2xl font-semibold">Heading 3</h3>
+          <p className="text-base">
+            Body text — The quick brown fox jumps over the lazy dog.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Small / secondary text
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Caption text
+          </p>
+        </div>
+      </Section>
 
       <Section title="Avatar">
         <div className="flex flex-wrap items-center gap-6">
@@ -78,6 +150,14 @@ export function ComponentShowcasePage() {
         </div>
       </Section>
 
+      <Section title="Input">
+        <div className="max-w-sm space-y-3">
+          <Input placeholder="Enter your username..." />
+          <Input defaultValue="Victoria" />
+          <Input disabled placeholder="Disabled input" />
+        </div>
+      </Section>
+
       <Section title="Toast (sonner)">
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => toast.success(t('showcase.toastSuccess'))}>
@@ -90,6 +170,74 @@ export function ComponentShowcasePage() {
             {t('showcase.triggerInfo')}
           </Button>
         </div>
+      </Section>
+
+      <Section title="Dialog">
+        <Dialog>
+          <DialogTrigger render={<Button variant="outline" />}>
+            Open Dialog
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Example Dialog</DialogTitle>
+              <DialogDescription>
+                This is an example of our reusable dialog component.
+              </DialogDescription>
+            </DialogHeader>
+
+            <p className="text-sm text-muted-foreground">
+              Dialog content can be placed here.
+            </p>
+
+            <DialogFooter showCloseButton />
+          </DialogContent>
+        </Dialog>
+      </Section>
+
+      <Section title="Dropdown Menu">
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" />}>
+            Open Menu
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+
+              <DropdownMenuItem onClick={() => toast('Profile clicked')}>
+                Profile
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={() => toast('Settings clicked')}>
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => toast('Sign out clicked')}
+            >
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Section>
+
+      <Section title="Tooltip">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger render={<Button variant="outline" />}>
+              Hover me
+            </TooltipTrigger>
+
+            <TooltipContent>
+              <p>This is a reusable tooltip.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </Section>
 
       <Section title="ConfirmDialog">

@@ -16,4 +16,5 @@ export const REALTIME_EVENTS = {
   FRIEND_REQUEST_ACCEPTED: 'friend-request:accepted',
   FRIEND_REQUEST_REJECTED: 'friend-request:rejected',
   FRIEND_REMOVED: 'friend:removed',
+  CONVERSATION_CREATED: 'conversation.created',
 } as const;

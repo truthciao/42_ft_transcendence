@@ -7,6 +7,7 @@ import { jest } from '@jest/globals';
 
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConversationType } from '../../generated/prisma/enums.js';
+import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 import { ChatService } from './chat.service.js';
 
 type MockUser = {
@@ -51,9 +52,14 @@ type ChatPrismaMock = {
   };
 };
 
+type RealtimeGatewayMock = {
+  notifyConversationCreated: jest.Mock;
+};
+
 describe('ChatService', () => {
   let service: ChatService;
   let prisma: ChatPrismaMock;
+  let realtimeGateway: RealtimeGatewayMock;
 
   beforeEach(() => {
     prisma = {
@@ -75,7 +81,14 @@ describe('ChatService', () => {
       },
     };
 
-    service = new ChatService(prisma as unknown as PrismaService);
+    realtimeGateway = {
+      notifyConversationCreated: jest.fn(),
+    };
+
+    service = new ChatService(
+      prisma as unknown as PrismaService,
+      realtimeGateway as unknown as RealtimeGateway,
+    );
   });
 
   describe('createDirectConversation', () => {
@@ -110,6 +123,10 @@ describe('ChatService', () => {
       });
 
       expect(prisma.conversation.create).not.toHaveBeenCalled();
+
+      expect(
+        realtimeGateway.notifyConversationCreated,
+      ).not.toHaveBeenCalled();
     });
 
     it('creates a new direct conversation with both members when none exists', async () => {
@@ -137,6 +154,10 @@ describe('ChatService', () => {
           members: true,
         },
       });
+
+      expect(
+        realtimeGateway.notifyConversationCreated,
+      ).toHaveBeenCalledWith([1, 2], 11);
     });
   });
 

@@ -39,6 +39,19 @@ export class RealtimeGateway
 
   private readonly logger = new Logger(RealtimeGateway.name);
 
+  notifyConversationCreated(
+  userIds: number[],
+  conversationId: number,
+  ): void {
+    for (const userId of userIds) {
+      this.server
+        .to(getUserRoom(userId))
+        .emit(REALTIME_EVENTS.CONVERSATION_CREATED, {
+          conversationId,
+        });
+    }
+  }
+
   constructor(
     private readonly wsAuthService: WsAuthService,
     private readonly socketRegistry: SocketRegistryService,

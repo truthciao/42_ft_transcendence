@@ -14,6 +14,7 @@ import { WsAuthService } from './services/ws-auth.service.js';
     RealtimeRoomService,
   ],
   exports: [
+    RealtimeGateway,
     RealtimeRoomService,
     SocketRegistryService,
     WsJwtGuard,

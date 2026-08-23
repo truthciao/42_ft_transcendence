@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConversationType } from '../../generated/prisma/enums.js';
+import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtimeGateway: RealtimeGateway,
+  ) {}
   async createDirectConversation(userId: number, targetUserId: number) {
     if (userId === targetUserId)
       throw new BadRequestException(
@@ -33,9 +37,10 @@ export class ChatService {
       },
       include: { members: true },
     });
+
     if (existing) return existing;
 
-    return this.prisma.conversation.create({
+    const conversation = await this.prisma.conversation.create({
       data: {
         type: ConversationType.DIRECT,
         members: {
@@ -44,6 +49,13 @@ export class ChatService {
       },
       include: { members: true },
     });
+
+    this.realtimeGateway.notifyConversationCreated(
+      [userId, targetUserId],
+      conversation.id,
+    );
+
+    return conversation;
   }
 
   async createByUsername(userId: number, username: string) {

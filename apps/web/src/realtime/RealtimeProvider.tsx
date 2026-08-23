@@ -111,6 +111,11 @@ export function RealtimeProvider({
         queryKey: ['friends'],
       });
     };
+
+    const handleConversationCreated = () => {
+      window.dispatchEvent(new Event('refresh_conversations'));
+    };
+
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
@@ -135,6 +140,11 @@ export function RealtimeProvider({
       handleFriendRemoved,
     );
 
+    socket.on(
+      'conversation.created',
+      handleConversationCreated,
+    );
+
     return () => {
       socket.off('friend-request:received', handleFriendRequest);
 
@@ -156,6 +166,11 @@ export function RealtimeProvider({
       socket.off(
         'friend:removed',
         handleFriendRemoved,
+      );
+
+      socket.off(
+        'conversation.created',
+        handleConversationCreated,
       );
 
       disconnectSocket();

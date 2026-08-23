@@ -112,7 +112,7 @@ export function ConversationPage() {
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
         <h1 className="font-semibold text-sm flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          <span className="w-2 h-2 rounded-full bg-success"></span>
           {chatTitle}
         </h1>
       </header>

@@ -42,11 +42,13 @@ export type {
 export {
   updateProfileSchema,
   profileResponseSchema,
+  profileFormSchema,
 } from './profile.js';
 
 export type {
   UpdateProfilePayload,
   ProfileResponse,
+  ProfileFormValues,
 } from './profile.js';
 
 export {

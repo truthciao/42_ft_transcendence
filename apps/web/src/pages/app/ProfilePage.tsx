@@ -1,6 +1,12 @@
-import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import type { UpdateProfilePayload } from '@repo/shared-types';
+import {
+  profileFormSchema,
+  type ProfileFormValues,
+  type UpdateProfilePayload,
+} from '@repo/shared-types';
 import { Avatar } from '@/components/common/Avatar';
 import { PageError } from '@/components/common/PageError';
 import { SkeletonText } from '@/components/common/Skeleton';
@@ -14,11 +20,13 @@ export function ProfilePage() {
 
   const { data: profile, isLoading, isError, refetch } = useProfile();
 
-  const [form, setForm] = useState<UpdateProfilePayload>({
-    displayName: '',
-    bio: '',
-    avatarUrl: '',
-    preferredLanguage: 'en',
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      displayName: '',
+      bio: '',
+      preferredLanguage: 'en',
+    },
   });
 
   const [initialized, setInitialized] = useState(false);
@@ -26,11 +34,10 @@ export function ProfilePage() {
   useEffect(() => {
     if (!profile || initialized) return;
 
-    setForm({
+    form.reset({
       displayName: profile.displayName ?? '',
       bio: profile.bio ?? '',
-      avatarUrl: profile.avatarUrl ?? '',
-      preferredLanguage: profile.preferredLanguage ?? 'en',
+      preferredLanguage: profile.preferredLanguage,
     });
 
     setInitialized(true);
@@ -41,7 +48,7 @@ export function ProfilePage() {
     ) {
       void i18n.changeLanguage(profile.preferredLanguage);
     }
-  }, [profile, i18n]);
+  }, [profile, i18n, form, initialized]);
 
   const mutation = useUpdateProfile();
   const uploadAvatarMutation = useUploadAvatar();
@@ -64,13 +71,19 @@ export function ProfilePage() {
     event.target.value = '';
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  function handleSubmit(values: ProfileFormValues) {
     const payload: UpdateProfilePayload = {
-      displayName: form.displayName || undefined,
-      bio: form.bio || undefined,
-      preferredLanguage: form.preferredLanguage,
+      displayName:
+        values.displayName === ''
+          ? null
+          : values.displayName,
+
+      bio:
+        values.bio === ''
+          ? null
+          : values.bio,
+
+      preferredLanguage: values.preferredLanguage,
     };
 
     mutation.mutate(payload, {
@@ -157,40 +170,40 @@ export function ProfilePage() {
         </div>
       </header>
 
-      <form onSubmit={handleSubmit} className="grid gap-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4">
         <label className="grid gap-2">
           <span className="text-sm font-medium">
             {t('profile.displayName')}
           </span>
 
           <input
-            value={form.displayName}
+            {...form.register('displayName')}
             placeholder={t('profile.displayNamePlaceholder')}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                displayName: event.target.value,
-              }))
-            }
             className="rounded-md border border-input bg-background px-3 py-2"
           />
+
+          {form.formState.errors.displayName && (
+            <p className="text-sm text-destructive">
+              {form.formState.errors.displayName.message}
+            </p>
+          )}
         </label>
 
         <label className="grid gap-2">
           <span className="text-sm font-medium">{t('profile.bio')}</span>
 
           <textarea
+            {...form.register('bio')}
             rows={5}
-            value={form.bio}
             placeholder={t('profile.bioPlaceholder')}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                bio: event.target.value,
-              }))
-            }
             className="resize-y rounded-md border border-input bg-background px-3 py-2"
           />
+
+          {form.formState.errors.bio && (
+            <p className="text-sm text-destructive">
+              {form.formState.errors.bio.message}
+            </p>
+          )}
         </label>
 
         <label className="grid gap-2">
@@ -199,18 +212,11 @@ export function ProfilePage() {
           </span>
 
           <select
-            value={form.preferredLanguage}
-            onChange={(event) => {
-              const language = event.target
-                .value as UpdateProfilePayload['preferredLanguage'];
-
-              setForm((prev) => ({
-                ...prev,
-                preferredLanguage: language,
-              }));
-
-              void i18n.changeLanguage(language);
-            }}
+            {...form.register('preferredLanguage', {
+              onChange: (event) => {
+                void i18n.changeLanguage(event.target.value);
+              },
+            })}
             className="rounded-md border border-input bg-background px-3 py-2"
           >
             <option value="en">{t('language.english')}</option>

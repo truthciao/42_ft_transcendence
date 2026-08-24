@@ -77,8 +77,6 @@ export function FriendProfilePage() {
   }
 
 const handleMessage = async () => {
-  console.log('Message button clicked');
-  console.log('friend:', friend);
 
   try {
     const data = await createDirectConversation(friend.id);

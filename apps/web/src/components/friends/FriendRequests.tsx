@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFriendRequests } from '../../hooks/useFriends';
+import { Avatar } from '@/components/common/Avatar';
 
 import {
   useAcceptFriendRequest,
@@ -43,6 +45,8 @@ export function FriendRequests() {
       },
     });
   };
+
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>{t('friends.friendRequests.loading')}</div>;
@@ -87,18 +91,31 @@ export function FriendRequests() {
                 p-4
               "
             >
-              <div>
-                <div className="font-medium">
-                  <Link
-                    to={`/app/friends/${request.requester.id}`}
-                    className="hover:underline"
-                  >
-                    {request.requester.username}
-                  </Link>
-                </div>
+              <div className="flex items-center gap-3">
+                <Link
+                  to={`/app/friends/${request.requester.id}`}
+                  className="shrink-0"
+                >
+                  <Avatar
+                    src={request.requester.avatarUrl}
+                    name={request.requester.username}
+                    size="md"
+                  />
+                </Link>
 
-                <div className="text-sm text-muted-foreground">
-                  {request.requester.email}
+                <div>
+                  <div className="font-medium">
+                    <Link
+                      to={`/app/friends/${request.requester.id}`}
+                      className="hover:underline"
+                    >
+                      {request.requester.username}
+                    </Link>
+                  </div>
+
+                  <div className="text-sm text-muted-foreground">
+                    {request.requester.email}
+                  </div>
                 </div>
               </div>
 

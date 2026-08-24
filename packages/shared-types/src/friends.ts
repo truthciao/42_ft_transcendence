@@ -10,6 +10,8 @@ export const friendSchema = z.object({
     .string()
     .min(1, 'username must not be empty'),
 
+  avatarUrl: z.string().nullable(),
+  
   email: z
     .string()
     .email('email must be a valid email address'),

@@ -34,10 +34,7 @@ export function RealtimeProvider({
 
     const socket = getSocket();
 
-    console.log('RealtimeProvider socket:', socket.id);
-
     const handleOnline = ({ userId }: { userId: number }) => {
-      console.log('USER_ONLINE', userId);
 
       setOnlineUserIds((current) => {
         const next = new Set(current);
@@ -55,7 +52,6 @@ export function RealtimeProvider({
     };
 
     const handleOffline = ({ userId }: { userId: number }) => {
-      console.log('USER_OFFLINE', userId);
 
       setOnlineUserIds((current) => {
         const next = new Set(current);
@@ -146,11 +142,13 @@ export function RealtimeProvider({
     );
 
     return () => {
-      socket.off('friend-request:received', handleFriendRequest);
+      socket.off('users:online', handleUsersOnline,);
+      socket.off('user:online', handleOnline);
+      socket.off('user:offline', handleOffline);
 
       socket.off(
-        'users:online', 
-        handleUsersOnline,
+        'friend-request:received', 
+        handleFriendRequest
       );
 
       socket.off(

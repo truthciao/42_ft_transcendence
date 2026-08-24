@@ -79,16 +79,38 @@ export class FriendsService {
     return friendship;
   }
 
-  async getPendingRequests(userId: number) {
-    return this.prisma.friendship.findMany({
-      where: { addresseeId: userId, status: FriendshipStatus.PENDING },
+async getPendingRequests(userId: number) {
+    const requests = await this.prisma.friendship.findMany({
+      where: {
+        addresseeId: userId,
+        status: FriendshipStatus.PENDING,
+      },
       orderBy: { createdAt: 'desc' },
       include: {
         requester: {
-          select: { id: true, username: true, email: true },
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            profile: {
+              select: {
+                avatarUrl: true,
+              },
+            },
+          },
         },
       },
     });
+
+    return requests.map((request) => ({
+      ...request,
+      requester: {
+        id: request.requester.id,
+        username: request.requester.username,
+        email: request.requester.email,
+        avatarUrl: request.requester.profile?.avatarUrl ?? null,
+      },
+    }));
   }
 
   async getSentPendingRequests(userId: number) {
@@ -216,8 +238,30 @@ export class FriendsService {
         OR: [{ requesterId: userId }, { addresseeId: userId }],
       },
       include: {
-        requester: { select: { id: true, username: true, email: true } },
-        addressee: { select: { id: true, username: true, email: true } },
+        requester: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            profile: {
+              select: {
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+        addressee: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            profile: {
+              select: {
+                avatarUrl: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -228,7 +272,10 @@ export class FriendsService {
           : friendship.requester;
 
       return {
-        ...friend,
+        id: friend.id,
+        username: friend.username,
+        email: friend.email,
+        avatarUrl: friend.profile?.avatarUrl ?? null,
       };
     });
   }

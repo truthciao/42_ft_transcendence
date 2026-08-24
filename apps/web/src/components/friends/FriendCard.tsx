@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import type { Friend } from '@repo/shared-types';
+import { Avatar } from '@/components/common/Avatar';
 
 interface FriendCardProps {
   friend: Friend;
@@ -35,26 +36,34 @@ export function FriendCard({
     >
       <button
         type="button"
-        className="
-          text-left
-          hover:underline
-        "
+        className="flex items-center gap-3 text-left"
         onClick={handleOpenProfile}
       >
-        
-        <div className="flex items-center gap-2">
+        <div className="relative shrink-0">
+          <Avatar
+            src={friend.avatarUrl}
+            name={friend.username}
+            size="md"
+          />
+
           <span
-            className={`h-2.5 w-2.5 rounded-full ${
+            className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-background ${
               isOnline ? 'bg-success' : 'bg-muted'
             }`}
           />
-
-          <span className="font-medium">{friend.username}</span>
         </div>
 
-        <p className="text-sm text-muted-foreground">
-          {friend.email}
-        </p>
+        <div>
+          <div>
+            <span className="font-medium hover:underline">
+              {friend.username}
+            </span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            {friend.email}
+          </p>
+        </div>
       </button>
 
       <button

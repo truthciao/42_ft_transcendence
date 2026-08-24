@@ -8,11 +8,25 @@ import {
 } from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import {
+  addFriendSearchSchema,
+  type AddFriendSearchValues,
+} from '@repo/shared-types';
 
 export function AddFriend() {
   const { t } = useTranslation();
-  const [username, setUsername] = useState('');
+  const form = useForm<AddFriendSearchValues>({
+    resolver: zodResolver(addFriendSearchSchema),
+    defaultValues: {
+      username: '',
+    },
+  });
   const [sendingUserId, setSendingUserId] = useState<number | null>(null);
+
+  const username = form.watch('username');
 
   const {
     data: users,
@@ -83,10 +97,7 @@ export function AddFriend() {
       <input
         type="text"
         placeholder={t('friends.addFriend.searchPlaceholder')}
-        value={username}
-        onChange={(event) => {
-          setUsername(event.target.value);
-        }}
+        {...form.register('username')}
         className="
           w-full
           rounded-lg
@@ -96,8 +107,8 @@ export function AddFriend() {
         "
       />
 
-      {username.trim().length < 2 ? (
-        <p className="text-muted-foreground">
+      {form.formState.errors.username ? (
+        <p className="text-destructive">
           {t('friends.addFriend.minCharacters')}
         </p>
       ) : isUsersLoading ? (

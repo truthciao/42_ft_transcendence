@@ -255,20 +255,50 @@ describe('FriendsService', () => {
         {
           requesterId: 1,
           addresseeId: 2,
-          requester: { id: 1, username: 'a' },
-          addressee: { id: 2, username: 'b' },
+          requester: {
+            id: 1,
+            username: 'a',
+            email: 'a@test.com',
+            profile: { avatarUrl: null },
+          },
+          addressee: {
+            id: 2,
+            username: 'b',
+            email: 'b@test.com',
+            profile: { avatarUrl: null },
+          },
         },
         {
           requesterId: 3,
           addresseeId: 1,
-          requester: { id: 3, username: 'c' },
-          addressee: { id: 1, username: 'a' },
+          requester: {
+            id: 3,
+            username: 'c',
+            email: 'c@test.com',
+            profile: { avatarUrl: null },
+          },
+          addressee: {
+            id: 1,
+            username: 'a',
+            email: 'a@test.com',
+            profile: { avatarUrl: null },
+          },
         },
       ]);
 
       await expect(service.getFriends(1)).resolves.toEqual([
-        { id: 2, username: 'b' },
-        { id: 3, username: 'c' },
+        {
+          id: 2,
+          username: 'b',
+          email: 'b@test.com',
+          avatarUrl: null,
+        },
+        {
+          id: 3,
+          username: 'c',
+          email: 'c@test.com',
+          avatarUrl: null,
+        },
       ]);
     });
   });

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFriendRequests } from '../../hooks/useFriends';
@@ -45,8 +44,6 @@ export function FriendRequests() {
       },
     });
   };
-
-  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>{t('friends.friendRequests.loading')}</div>;

@@ -179,7 +179,6 @@
     "me": "Me"
   },
 
-
    "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",
@@ -204,6 +203,7 @@
     "showPreview": "Show PageError preview",
     "hidePreview": "Hide PageError preview"
   },
+
   "notifications": {
     "title": "Notifications",
     "empty": "No notifications",
@@ -211,5 +211,135 @@
     "friendRequestAccepted": "{{username}} accepted your friend request",
     "friendRequestRejected": "{{username}} rejected your friend request",
     "friendRemoved": "{{username}} removed you as a friend"
+  },
+
+  "footer": {
+    "copyright": "© 2026 Transcendence",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+
+  "legal": {
+    "lastUpdated": "Last updated: August 24, 2026",
+
+    "privacy": {
+      "title": "Privacy Policy",
+      "sections": {
+        "introduction": {
+          "title": "1. Introduction",
+          "body": "This Privacy Policy explains how our application collects, uses, stores, and protects information when you use our online gaming and social platform. We are committed to respecting your privacy and handling your personal information responsibly."
+        },
+        "information": {
+          "title": "2. Information We Collect",
+          "body": "Depending on how you use the application, we may collect account information such as your username and authentication information; profile information such as your display name, biography, avatar, and preferred language; social information such as friend relationships and requests; communication information such as messages; game-related information such as matches, scores, results, and statistics; and technical information required to operate and secure the service."
+        },
+        "use": {
+          "title": "3. How We Use Information",
+          "body": "We use collected information to create and manage user accounts, provide authentication, display user profiles, provide friendship and social features, enable communication, provide online games and matchmaking, store game results and statistics, provide language preferences, maintain and improve the service, troubleshoot technical problems, and detect and prevent abuse, fraud, and security incidents."
+        },
+        "uploadedContent": {
+          "title": "4. Profile Pictures and Uploaded Content",
+          "body": "If you upload an avatar or other profile content, the application stores and displays that content as part of your profile. You should only upload content that you have the right to use. You remain responsible for the content you upload."
+        },
+        "authentication": {
+          "title": "5. Authentication and Cookies",
+          "body": "The application may use authentication mechanisms such as sessions, cookies, or tokens to keep users authenticated and protect their accounts. Authentication-related information is used to provide secure access to the application and is not intended for advertising purposes."
+        },
+        "security": {
+          "title": "6. Data Storage and Security",
+          "body": "We take reasonable technical and organizational measures to protect personal information against unauthorized access, alteration, disclosure, or destruction. Data may be stored using application databases and server-side storage required to operate the service. However, no internet-based service can guarantee absolute security."
+        },
+        "sharing": {
+          "title": "7. Sharing of Information",
+          "body": "We do not sell your personal information. Information may be processed by technical infrastructure and service providers required to operate the application, such as hosting, database, or communication services. Information may also be disclosed when required by law or when necessary to protect the security and rights of the service and its users."
+        },
+        "retention": {
+          "title": "8. Data Retention",
+          "body": "We retain information for as long as reasonably necessary to provide the service, maintain account functionality, resolve disputes, enforce our terms, maintain security, and meet applicable legal obligations. When information is no longer necessary, it may be deleted or anonymized where appropriate."
+        },
+        "rights": {
+          "title": "9. Your Rights",
+          "body": "Depending on applicable data protection law, you may have rights regarding your personal information, including the right to request access, correction, deletion, restriction of processing, objection to certain processing, and a copy of certain information in a portable format. To exercise applicable rights, please contact the project team using the contact information provided by the application."
+        },
+        "children": {
+          "title": "10. Children's Privacy",
+          "body": "The application is not intended to knowingly collect personal information from children in violation of applicable laws. If you believe that a child has provided personal information without appropriate authorization, please contact us so that we can review and, where appropriate, delete the information."
+        },
+        "changes": {
+          "title": "11. Changes to This Privacy Policy",
+          "body": "We may update this Privacy Policy when the application or its data practices change. When changes are made, the updated version will be published on this page together with a new Last updated date."
+        },
+        "contact": {
+          "title": "12. Contact",
+          "body": "If you have questions about this Privacy Policy or how your information is handled, please contact the project team through the contact method provided by the application."
+        }
+      }
+    },
+
+    "terms": {
+      "title": "Terms of Service",
+      "sections": {
+        "acceptance": {
+          "title": "1. Acceptance of These Terms",
+          "body": "By accessing or using this application, you agree to comply with these Terms of Service. If you do not agree with these terms, you should not use the application."
+        },
+        "service": {
+          "title": "2. Description of the Service",
+          "body": "The application provides an online gaming and social platform that may include user accounts and profiles, online games, matchmaking, game statistics, friend requests, social connections, and communication features. Features may be added, modified, or removed as the project develops."
+        },
+        "accounts": {
+          "title": "3. User Accounts",
+          "body": "You are responsible for maintaining the security of your account and authentication credentials. You must provide accurate information when creating or updating your account. You must not impersonate another person, use another user's account without authorization, or attempt to gain unauthorized access to another account."
+        },
+        "acceptableUse": {
+          "title": "4. Acceptable Use",
+          "body": "You agree to use the application responsibly and in accordance with applicable laws. You must not harass, threaten, or abuse other users; distribute malicious software; attempt to compromise or disrupt the service; exploit security vulnerabilities; manipulate game results through unauthorized methods; interfere with another user's access; or access data that you are not authorized to access."
+        },
+        "communication": {
+          "title": "5. Social and Communication Features",
+          "body": "Users may interact with other users through features such as friend requests and messaging. Users are responsible for the content they submit through these features. Communication features must not be used for harassment, threats, spam, malicious content, unlawful activity, or attempts to obtain another user's private information."
+        },
+        "gaming": {
+          "title": "6. Gaming Rules",
+          "body": "Users must participate in games fairly. You must not modify game data, exploit bugs for competitive advantage, interfere with another player's connection, manipulate scores or results, or use unauthorized software to gain an unfair advantage."
+        },
+        "content": {
+          "title": "7. User-Generated Content",
+          "body": "Users may upload or submit content such as profile pictures, biographies, usernames, and messages. You retain the rights you have in content that you submit. You are responsible for ensuring that your content does not violate applicable laws or the rights of others."
+        },
+        "intellectualProperty": {
+          "title": "8. Intellectual Property",
+          "body": "The application, including its software, design, interface, logos, and original content, is protected by applicable intellectual property laws. Except where otherwise permitted, you may not copy, modify, distribute, reverse engineer, or commercially exploit parts of the application without appropriate authorization. Third-party software and libraries remain subject to their respective licenses."
+        },
+        "termination": {
+          "title": "9. Suspension and Termination",
+          "body": "We may suspend or terminate access to an account when reasonably necessary, including when a user violates these Terms of Service, attempts to compromise the security of the application, abuses other users, uses the service for unlawful purposes, or attempts to manipulate or disrupt the service."
+        },
+        "availability": {
+          "title": "10. Availability of the Service",
+          "body": "We aim to keep the application available and functional, but we do not guarantee uninterrupted availability. The service may temporarily become unavailable because of maintenance, software updates, technical failures, security incidents, infrastructure problems, or circumstances beyond our reasonable control."
+        },
+        "disclaimer": {
+          "title": "11. Disclaimer",
+          "body": "The application is provided on an \"as is\" and \"as available\" basis to the extent permitted by applicable law. We do not guarantee that the application will always be error-free, secure, or available. Users should not rely on the application as a substitute for professional services or advice."
+        },
+        "liability": {
+          "title": "12. Limitation of Liability",
+          "body": "To the maximum extent permitted by applicable law, the project team will not be responsible for indirect, incidental, or consequential damages arising from the use of the application. Nothing in these Terms is intended to exclude or limit liability where such exclusion or limitation is prohibited by applicable law."
+        },
+        "changes": {
+          "title": "13. Changes to These Terms",
+          "body": "We may update these Terms of Service when the application or its functionality changes. Updated terms will be published on this page together with a new Last updated date. Continued use of the application after an update means that you acknowledge the updated terms, to the extent permitted by applicable law."
+        },
+        "law": {
+          "title": "14. Governing Law",
+          "body": "These Terms are subject to applicable law. Any mandatory consumer or data protection rights that apply to users remain unaffected by these Terms."
+        },
+        "contact": {
+          "title": "15. Contact",
+          "body": "If you have questions about these Terms of Service, please contact the project team through the contact method provided by the application."
+        }
+      }
+    }
   }
 }

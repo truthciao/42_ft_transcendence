@@ -1,6 +1,4 @@
 import {
-  createContext,
-  useContext,
   useEffect,
   useState,
   type ReactNode,
@@ -8,12 +6,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { getSocket, disconnectSocket } from '@/lib/realtime';
-
-interface RealtimeContextValue {
-  onlineUserIds: Set<number>;
-}
-
-const RealtimeContext = createContext<RealtimeContextValue | null>(null);
+import { RealtimeContext } from './RealtimeContext';
 
 export function RealtimeProvider({
   children,
@@ -181,16 +174,4 @@ export function RealtimeProvider({
       {children}
     </RealtimeContext.Provider>
   );
-}
-
-export function useRealtime() {
-  const context = useContext(RealtimeContext);
-
-  if (!context) {
-    throw new Error(
-      'useRealtime must be used within RealtimeProvider',
-    );
-  }
-
-  return context;
 }

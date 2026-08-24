@@ -5,7 +5,7 @@ import { FriendCard } from './FriendCard';
 import { useConfirm } from '@/lib/confirm-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { useRealtime } from '@/realtime/RealtimeProvider';
+import { useRealtime } from '../../hooks/useRealtime';
 
 export function FriendList() {
   const { data: friends, isLoading, isError } = useFriends();

@@ -29,10 +29,18 @@ type MockFriendshipWithUsers = {
   requester: {
     id: number;
     username: string;
+    email: string;
+    profile: {
+      avatarUrl: string | null;
+    };
   };
   addressee: {
     id: number;
     username: string;
+    email: string;
+    profile: {
+      avatarUrl: string | null;
+    };
   };
 };
 

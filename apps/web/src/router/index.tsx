@@ -4,6 +4,8 @@ import {
 } from 'react-router';
 import { HomePage } from '../pages/HomePage';
 import { ProfilePage } from '../pages/app/ProfilePage';
+import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage';
+import { TermsOfServicePage } from '@/pages/TermsOfServicePage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { LoginPage } from '../pages/LoginPage';
 import { ProtectedRoute } from '../components/ProtectedRoute';
@@ -45,6 +47,8 @@ export const router = createBrowserRouter([
       { path: '/login', element: <LoginPage /> },
       { path: '/register', element: <RegisterPage /> },
       { path: '/showcase', element: <ComponentShowcasePage /> },
+      { path: '/privacy', element: <PrivacyPolicyPage /> },
+      { path: '/terms', element: <TermsOfServicePage /> },
     ],
   },
   {

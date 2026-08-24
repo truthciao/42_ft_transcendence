@@ -29,14 +29,18 @@ export {
   sendFriendRequestSchema,
   messageResponseSchema,
   pendingRequestSchema,
-  SentPendingRequest,
+  sentPendingRequestSchema,
+  addFriendSearchSchema,
 } from './friends.js';
 
 export type {
   Friend,
+  FriendRequest,
   PendingRequest,
+  SentPendingRequest,
   SendFriendRequestDto,
   MessageResponse,
+  AddFriendSearchValues,
 } from './friends.js';
 
 export {

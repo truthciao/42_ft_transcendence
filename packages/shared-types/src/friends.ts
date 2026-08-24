@@ -51,6 +51,13 @@ export const friendRequestSchema = z.object({
     .datetime('createdAt must be a valid ISO datetime'),
 });
 
+export const addFriendSearchSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(2, 'username must be at least 2 characters long'),
+});
+
 export const pendingRequestSchema = friendRequestSchema.extend({
   requester: friendSchema,
 });
@@ -58,6 +65,10 @@ export const pendingRequestSchema = friendRequestSchema.extend({
 export const sentPendingRequestSchema = friendRequestSchema.extend({
   addressee: friendSchema,
 });
+
+export type AddFriendSearchValues = z.infer<
+  typeof addFriendSearchSchema
+>;
 
 export type Friend = z.infer<typeof friendSchema>;
 

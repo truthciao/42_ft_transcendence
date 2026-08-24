@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import type { Friend } from '@repo/shared-types';
 import { Avatar } from '@/components/common/Avatar';
 
@@ -16,12 +16,7 @@ export function FriendCard({
   isRemoving,
   onRemove,
 }: FriendCardProps) {
-  const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const handleOpenProfile = () => {
-    navigate(`/app/friends/${friend.id}`);
-  };
 
   return (
     <div
@@ -34,37 +29,27 @@ export function FriendCard({
         p-4
       "
     >
-      <button
-        type="button"
+      <Link
+        to={`/app/friends/${friend.id}`}
         className="flex items-center gap-3 text-left"
-        onClick={handleOpenProfile}
       >
-        <div className="relative shrink-0">
-          <Avatar
-            src={friend.avatarUrl}
-            name={friend.username}
-            size="md"
-          />
-
-          <span
-            className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-background ${
-              isOnline ? 'bg-success' : 'bg-muted'
-            }`}
-          />
-        </div>
+        <Avatar
+          src={friend.avatarUrl}
+          name={friend.username}
+          size="md"
+          status={isOnline ? 'online' : 'offline'}
+        />
 
         <div>
-          <div>
-            <span className="font-medium hover:underline">
-              {friend.username}
-            </span>
+          <div className="font-medium hover:underline">
+            {friend.username}
           </div>
 
           <p className="text-sm text-muted-foreground">
             {friend.email}
           </p>
         </div>
-      </button>
+      </Link>
 
       <button
         type="button"

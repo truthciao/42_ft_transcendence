@@ -3,12 +3,14 @@ import { useIncomingInvites } from "@/hooks/useWorkspaces";
 import { useAcceptInvite, useRejectInvite } from "@/hooks/useWorkspaceMutations";
 import { Button} from "@/components/ui/button";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function IncomingInvitesList() {
   const { data: invites, isLoading } = useIncomingInvites();
   const acceptMutation = useAcceptInvite();
   const rejectMutation = useRejectInvite();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const pending = invites?.filter((invite) => invite.status === 'PENDING') ?? [];
 
@@ -18,26 +20,26 @@ export function IncomingInvitesList() {
   async function handleAccept(inviteId: number) {
     try {
       const result = await acceptMutation.mutateAsync(inviteId);
-      toast.success('Invite accepted');
+      toast.success(t('workspaces.invites.acceptSuccess'));
       navigate(`/app/spaces/${result.WorkspaceId}`);
     } catch {
-      toast.error('Failed to accept invite');
+      toast.error(t('workspaces.invites.acceptError'));
     }
   }
 
   async function handleReject(inviteId: number) {
     try {
       await rejectMutation.mutateAsync(inviteId);
-      toast.success('Invite declined');
+      toast.success(t('workspaces.invites.rejectSuccess'));
     } catch {
-      toast.error('Failed to decline invite');
+      toast.error(t('workspaces.invites.rejectError'));
     }
   }
 
   return (
     <section className="mb-6 space-y-2">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        Invitations
+        {t('workspaces.invites.title')}
       </h2>
       <div className="divide-y divide-border rounded-lg border border-border">
         {pending.map((invite) => (
@@ -45,16 +47,18 @@ export function IncomingInvitesList() {
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{invite.workspace.name}</p>
               <p className="truncate text-xs text-muted-foreground">
-                Invited by {invite.inviter.profile?.displayName || invite.inviter.username} · as{' '}
-                {invite.role.toLowerCase()}
+                {t('workspaces.invites.invitedBy', {
+                  name: invite.inviter.profile?.displayName || invite.inviter.username,
+                  role: t(`workspaces.inviteMember.roles.${invite.role}`)
+                })}
               </p>
             </div>
             <div className="flex shrink-0 gap-2">
               <Button size="sm" variant="outline" disabled={rejectMutation.isPending} onClick={() => handleReject(invite.id)}>
-                Decline
+                {t('workspaces.invites.decline')}
               </Button>
               <Button size="sm" disabled={acceptMutation.isPending} onClick={() => handleAccept(invite.id)}>
-                Accept
+                {t('workspaces.invites.accept')}
               </Button>
             </div>
           </div>

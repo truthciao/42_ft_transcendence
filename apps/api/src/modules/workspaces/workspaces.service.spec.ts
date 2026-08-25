@@ -643,20 +643,30 @@ describe('WorkspacesService', () => {
       );
     });
 
-    it('allows a non-owner member to leave', async () => {
-      const membership = {
-        workspaceId: 1,
-        userId: 2,
-        role: WorkspaceRole.MEMBER,
-      } as LeaveMembership;
-      prisma.workspaceMember.delete.mockResolvedValue({});
+  it('allows a non-owner member to leave and removes them from workspace channels', async () => {
+    const membership = {
+      workspaceId: 1,
+      userId: 2,
+      role: WorkspaceRole.MEMBER,
+    } as LeaveMembership;
 
-      await service.leave(1, membership);
+    prisma.conversation.findMany.mockResolvedValue([
+      { id: 10 },
+      { id: 11 },
+    ] as unknown as MockConversation[]);
+    prisma.conversationMember.deleteMany.mockResolvedValue({});
+    prisma.workspaceMember.delete.mockResolvedValue({});
 
-      expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
-        where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
-      });
+    await service.leave(1, membership);
+
+    expect(prisma.conversationMember.deleteMany).toHaveBeenCalledWith({
+      where: { userId: 2, conversationId: { in: [10, 11] } },
     });
+    expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
+      where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
+    });
+
+});
   });
 
   describe('transferOwnership', () => {

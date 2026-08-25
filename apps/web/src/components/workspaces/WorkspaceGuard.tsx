@@ -4,11 +4,13 @@ import { EmptyState } from "../common/EmptyState";
 import { Skeleton } from "../ui/skeleton";
 import { HttpError } from "@/lib/http";
 import { useWorkspace } from "@/hooks/useWorkspaces";
+import { useTranslation } from "react-i18next";
 
 export function WorkspaceGuard() {
   const { workspaceId } = useParams();
   const id = Number(workspaceId);
   const { data, isLoading, isError, error } = useWorkspace(id);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
@@ -26,8 +28,8 @@ export function WorkspaceGuard() {
     return (
       <EmptyState
         icon = {ShieldAlert}
-        title = "Workspace not found"
-        description="This workspace doesn't exist or may have been deleted."
+        title = {t('workspaces.guard.notFoundTitle')}
+        description={t('workspaces.guard.notFoundDescription')}
         className="mt-12"
       />
     );
@@ -37,8 +39,8 @@ export function WorkspaceGuard() {
     return (
       <EmptyState
         icon = {ShieldAlert}
-        title = "You don't have access"
-        description="You're not a member of this workspace. Ask an admin to invite you."
+        title = {t('workspaces.guard.forbiddenTitle')}
+        description={t('workspaces.guard.forbiddenDescription')}
         className="mt-12"
       />
     );

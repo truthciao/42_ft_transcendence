@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCreateWorkspace } from '@/hooks/useWorkspaceMutations';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 const ICON_PRESETS = ['🚀', '💼', '🎮', '🎨', '📚', '🛠️', '🌱', '⚡'];
 
@@ -21,6 +22,7 @@ export function CreateWorkspaceDialog({
   onCreated,
 }: CreateWorkspaceDialogProps) {
   const mutation = useCreateWorkspace();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -45,12 +47,12 @@ export function CreateWorkspaceDialog({
   async function onSubmit(values: createWorkspacePayload) {
     try {
       const workspace = await mutation.mutateAsync(values);
-      toast.success(`"${workspace.name}" created`);
+      toast.success(t('workspaces.create.success', { name: workspace.name }));
       reset();
       onOpenChange(false);
       onCreated?.(workspace.id);
     } catch {
-      toast.error('Failed to create workspace');
+      toast.error(t('workspaces.create.error'));
     }
   }
 
@@ -58,25 +60,25 @@ export function CreateWorkspaceDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create workspace</DialogTitle>
+          <DialogTitle>{t('workspaces.create.title')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
           <div className='space-y-1.5'>
-            <label className='text-sm font-medium' htmlFor='workspace-name'>Name</label>
-            <Input id='workspace-name' placeholder='42 Paris team' {...register('name')} />
+            <label className='text-sm font-medium' htmlFor='workspace-name'>{t('workspaces.create.name')}</label>
+            <Input id='workspace-name' placeholder={t('workspaces.create.namePlaceholder')} {...register('name')} />
             {errors.name ? (
               <p className='text-xs text-destructive'>{errors.name.message}</p>
             ) : null}
           </div>
 
           <div className='space-y-1.5'>
-            <label className='text-sm font-medium' htmlFor='workspace-description'>Description</label>
+            <label className='text-sm font-medium' htmlFor='workspace-description'>{t('workspaces.create.description')}</label>
 
             <textarea
               id='workspace-description'
               rows={3}
-              placeholder="What's this workspace for?"
+              placeholder={t('workspaces.create.descriptionPlaceholder')}
               className='w-full resize-y rounded-md border border-input bg-background px-2.5 py-1.5 text-sm'
               {...register('description')}
             />
@@ -86,7 +88,7 @@ export function CreateWorkspaceDialog({
           </div>
 
           <div className="space-y-1.5">
-            <span className="text-sm font-medium">Icon</span>
+            <span className="text-sm font-medium">{t('workspaces.create.icon')}</span>
             <div className="flex flex-wrap items-center gap-2">
               {ICON_PRESETS.map((preset) => (
                 <button
@@ -106,10 +108,10 @@ export function CreateWorkspaceDialog({
 
           <DialogFooter>
             <Button type='button' variant="outline" onClick={() => handleOpenChange(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create workspace'}
+              {isSubmitting ? t('workspaces.create.submitting') : t('workspaces.create.submit')}
             </Button>
           </DialogFooter>
         </form>

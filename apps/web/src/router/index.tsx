@@ -32,7 +32,6 @@ import {
   AccountSettingsPage,
   NotificationSettingsPage,
 } from '@/pages/app/SettingsPage';
-import { InvitePage } from '@/pages/app/InvitePage';
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 
@@ -111,7 +110,6 @@ export const router = createBrowserRouter([
             element: <NotificationSettingsPage />,
             handle: { secondarySidebar: () => <SettingsSidebar /> },
           },
-          { path: 'invite/:inviteToken', element: <InvitePage /> },
         ],
       },
     ],

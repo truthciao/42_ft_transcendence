@@ -26,8 +26,16 @@ export const joinConversationSchema = z.object({
     .min(1, 'conversationId must be at least 1'),
 });
 
+export const getMessagesSchema = z.object({
+  cursor: z.coerce.number().int().positive().optional(),
+
+  limit: z.coerce.number().int().positive().max(100).default(30),
+});
+
 export type CreateConversationPayload = z.infer<typeof createConversationSchema>;
 
 export type SendMessagePayload = z.infer<typeof sendMessageSchema>;
 
 export type JoinConversationPayload = z.infer<typeof joinConversationSchema>;
+
+export type GetMessagesPayload = z.infer<typeof getMessagesSchema>;

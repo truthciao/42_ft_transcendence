@@ -17,11 +17,13 @@ export {
   createConversationSchema,
   sendMessageSchema,
   joinConversationSchema,
+  getMessagesSchema,
 } from './chat.js';
 
 export type {
   CreateConversationPayload,
   SendMessagePayload,
+  GetMessagesPayload,
 } from './chat.js';
 
 export {

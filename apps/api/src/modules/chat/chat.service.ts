@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConversationType } from '../../generated/prisma/enums.js';
 import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
+import type { GetMessagesPayload } from '@repo/shared-types';
 
 @Injectable()
 export class ChatService {
@@ -128,17 +129,56 @@ async findAllForUser(userId: number) {
   });
 }
 
-  async getMessages(conversationId: number, userId: number) {
-    await this.assertMember(conversationId, userId);
+async getMessages(
+  conversationId: number,
+  userId: number,
+  query: GetMessagesPayload,
+) {
+  await this.assertMember(conversationId, userId);
 
-    return this.prisma.message.findMany({
-      where: { conversationId },
-      orderBy: { createdAt: 'asc' },
-      include: {
-        sender: { select: { id: true, username: true } },
+  const { cursor, limit } = query;
+
+  const messages = await this.prisma.message.findMany({
+    where: {
+      conversationId,
+      ...(cursor !== undefined
+        ? {
+            id: {
+              lt: cursor,
+            },
+          }
+        : {}),
+    },
+
+    orderBy: {
+      id: 'desc',
+    },
+
+    take: limit + 1,
+
+    include: {
+      sender: {
+        select: {
+          id: true,
+          username: true,
+        },
       },
-    });
-  }
+    },
+  });
+
+  const hasMore = messages.length > limit;
+
+  const page = messages.slice(0, limit);
+
+  const nextCursor = hasMore
+    ? page[page.length - 1].id
+    : null;
+
+  return {
+    messages: page,
+    nextCursor,
+  };
+}
 
   async createMessage(
     conversationId: number,

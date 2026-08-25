@@ -41,7 +41,7 @@ export function ConversationPage() {
       try {
         setIsLoading(true);
         const data = await getConversationMessages(conversationId);
-        setMessages(data);  
+        setMessages(data.messages);  
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {

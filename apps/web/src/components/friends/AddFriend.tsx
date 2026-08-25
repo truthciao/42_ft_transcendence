@@ -29,7 +29,7 @@ export function AddFriend() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const parentRef = useRef<HTMLDivElement | null>(null);
   const username = form.watch('username');
-
+  
   const {
     data: searchResult,
     isLoading: isUsersLoading,
@@ -38,51 +38,18 @@ export function AddFriend() {
     hasNextPage,
     isFetchingNextPage,
   } = useUserSearch(username);
-
-  useEffect(() => {
-    const element = loadMoreRef.current;
-
-    if (!element || !hasNextPage) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        threshold: 0.1,
-      },
-    );
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  ]);
+  
+  const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
+  
+  const { data: friends } = useFriends();
+  
+  const sendFriendRequestMutation = useSendFriendRequest();
+  
+  const { data: sentRequests } = useSentFriendRequests();
   
   const users =
-    searchResult?.pages.flatMap((page) => page.users) ?? [];
-
-  const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
-
-  const { data: friends } = useFriends();
-
-  const sendFriendRequestMutation = useSendFriendRequest();
-
-  const { data: sentRequests } = useSentFriendRequests();
-
-  if (isCurrentUserLoading) {
-    return <p>{t('friends.loading')}</p>;
-  }
-
+  searchResult?.pages.flatMap((page) => page.users) ?? [];
+  
   const friendIds = new Set(
     friends?.map((friend) => friend.id) ?? [],
   );
@@ -100,17 +67,50 @@ export function AddFriend() {
       if (friendIds.has(user.id)) {
         return false;
       }
-
+      
       return true;
     }) ?? [];
+    
+    const rowVirtualizer = useVirtualizer({
+      count: availableUsers.length,
+      getScrollElement: () => parentRef.current,
+      estimateSize: () => 72,
+      overscan: 5,
+    });
 
-  const rowVirtualizer = useVirtualizer({
-    count: availableUsers.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 72,
-    overscan: 5,
-  });
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    
+    if (!element || !hasNextPage) {
+      return;
+    }
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+    
+    observer.observe(element);
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  ]);
   
+  if (isCurrentUserLoading) {
+    return <p>{t('friends.loading')}</p>;
+  }
+
   const handleSendFriendRequest = (userId: number) => {
     setSendingUserId(userId);
 

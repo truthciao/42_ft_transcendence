@@ -15,6 +15,7 @@ export function VirtualUsersPage() {
     count: users?.length ?? 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 50,
+    overscan: 5,
   });
 
   if (isLoading) {

@@ -1502,20 +1502,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'PreferredLanguage'
- */
-export type EnumPreferredLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreferredLanguage'>
-    
-
-
-/**
- * Reference to a field of type 'PreferredLanguage[]'
- */
-export type ListEnumPreferredLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreferredLanguage[]'>
-    
-
-
-/**
  * Reference to a field of type 'WorkspaceRole'
  */
 export type EnumWorkspaceRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkspaceRole'>

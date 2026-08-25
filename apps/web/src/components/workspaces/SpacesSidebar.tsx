@@ -5,6 +5,7 @@ import { useWorkspace, useWorkspaces, useWorkspaceChannels, usePrefetchWorkspace
 import { CreateWorkspaceDialog } from "./CreateWorkspaceDialog";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export function SpacesSidebar() {
   const { workspaceId } = useParams();
@@ -20,16 +21,17 @@ function WorkspaceDirectorySidebar() {
   const { data: workspaces, isLoading } = useWorkspaces();
   const prefetchWorkspace = usePrefetchWorkspace();
   const [createOpen, setCreateOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-semibold">Spaces</h3>
+        <h3 className="font-semibold">{t('workspaces.sidebar.spaces')}</h3>
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
           className="flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-          title="Create workspace"
+          title={t('workspaces.sidebar.createTooltip')}
         >
           <Plus className="size-4" />
         </button>
@@ -41,7 +43,7 @@ function WorkspaceDirectorySidebar() {
           <Skeleton className="h-9 w-full" />
         </div>
       ) : !workspaces || workspaces.length === 0 ? (
-        <p className="text-sm text-muted-foreground">You're not in any workspace yet.</p>
+        <p className="text-sm text-muted-foreground">{t('workspaces.sidebar.empty')}</p>
       ) : (
         <div className="space-y-1">
           {workspaces.map((workspace) => (
@@ -70,12 +72,13 @@ function WorkspaceDirectorySidebar() {
 function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
   const { data: workspace } = useWorkspace(workspaceId);
   const { data: channels, isLoading } = useWorkspaceChannels(workspaceId);
+  const { t } = useTranslation();
 
   return (
     <div className="flex h-full flex-col p-4">
       <div className="mb-4 flex min-w-0 items-center gap-2">
         <span className="text-lg">{workspace?.icon || '💻'}</span>
-        <h3 className="truncate font-semibold">{workspace?.name ?? 'Loading'}</h3>
+        <h3 className="truncate font-semibold">{workspace?.name ?? t('workspaces.sidebar.loading')}</h3>
       </div>
 
       <nav className="mb-4 space-y-1">
@@ -86,7 +89,7 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
             cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-sm', isActive ? 'bg-muted font-medium' : 'hover:bg-muted')
           }
         >
-          <Hash className="size-4" /> Overview
+          <Hash className="size-4" /> {t('workspaces.sidebar.overview')}
         </ NavLink>
 
         <NavLink
@@ -95,7 +98,7 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
             cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-sm', isActive ? 'bg-muted font-medium' : 'hover:bg-muted')
           }
         >
-          <Users className="size-4" /> Members
+          <Users className="size-4" /> {t('workspaces.sidebar.members')}
         </NavLink>
 
         <NavLink
@@ -104,13 +107,13 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
             cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-sm', isActive ? 'bg-muted font-medium' : 'hover:bg-muted')
           }
         >
-          <Settings className="size-4" /> Settings
+          <Settings className="size-4" /> {t('workspaces.sidebar.settings')}
         </NavLink>
       </nav>
 
       <div className="min-h-0 flex-1 overflow-auto">
           <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Channels
+            {t('workspaces.sidebar.channels')}
           </p>
           {isLoading ? (
             <div className="space-y1.5 px-2">

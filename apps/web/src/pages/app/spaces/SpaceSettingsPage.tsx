@@ -13,12 +13,14 @@ import { useConfirm } from "@/lib/confirm-context";
 import { toast } from "sonner";
 import { PermissionButton } from "@/components/workspaces/PermissionButton";
 import { TransferOwnershipDialog } from "@/components/workspaces/TransferOwnershipDialog";
+import { useTranslation } from "react-i18next";
 
 export function SpaceSettingPage() {
   const { workspaceId } = useParams();
   const id = Number(workspaceId);
   const navigate = useNavigate()
   const confirm = useConfirm();
+  const { t } = useTranslation();
 
   const { data: workspace, isLoading } = useWorkspace(id);
   const { can } = usePermission(id);
@@ -49,16 +51,16 @@ export function SpaceSettingPage() {
   async function onSubmit(values: UpdateWorkspacePayload) {
     try {
       await updateMutation.mutateAsync(values);
-      toast.success('Workspace updated')
+      toast.success(t('workspaces.pages.settings.updateSuccess'))
     } catch {
-      toast.error('Failed to update workspace')
+      toast.error(t('workspaces.pages.settings.updateError'))
     }
   }
 
   async function handleDelete() {
     const confirmed = await confirm({
-      title: `Delete "${workspace?.name}"?`,
-      description: 'This permanently deletes the workspace, its channels and messages. This cannot be undone.',
+      title: t('workspaces.pages.settings.dangerZone.delete.confirmTitle', { name: workspace?.name }),
+      description: t('workspaces.pages.settings.dangerZone.delete.confirmDesc'),
       variant: 'destructive',
     });
     if (!confirmed)
@@ -66,17 +68,17 @@ export function SpaceSettingPage() {
 
     try {
       await deleteMutation.mutateAsync(id);
-      toast.success('Workspace deleted');
+      toast.success(t('workspaces.pages.settings.dangerZone.delete.success'));
       navigate('/app/spaces');
     } catch {
-      toast.error('Failed to delete workspace');
+      toast.error(t('workspaces.pages.settings.dangerZone.delete.error'));
     }
   }
 
   async function handleLeave() {
     const confirmed = await confirm ({
-      title: 'Leave this workspace?',
-      description: "You'll lose access to its channels and messages.",
+      title: t('workspaces.pages.settings.dangerZone.leave.confirmTitle'),
+      description: t('workspaces.pages.settings.dangerZone.leave.confirmDesc'),
       variant: 'destructive',
     });
     if (!confirmed)
@@ -84,10 +86,10 @@ export function SpaceSettingPage() {
 
     try {
       await leaveMutation.mutateAsync(id);
-      toast.success('You left the workspace');
+      toast.success(t('workspaces.pages.settings.dangerZone.leave.success'));
       navigate('/app/spaces');
     } catch {
-      toast.error('Failed to leave workspace')
+      toast.error(t('workspaces.pages.settings.dangerZone.leave.error'))
     }
   }
 
@@ -105,20 +107,20 @@ export function SpaceSettingPage() {
   return (
     <div className=" mx-auto max-w-xl space-y-8 p-6">
       <header>
-        <h1 className=" text-2xl font-semibold">Workspace settings</h1>
-        <p className=" text-muted-foreground">Manage details for {workspace.name}.</p>
+        <h1 className=" text-2xl font-semibold">{t('workspaces.pages.settings.title')}</h1>
+        <p className=" text-muted-foreground">{t('workspaces.pages.settings.subtitle', { name: workspace.name })}</p>
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)} className=" space-y-4 rounded-lg border border-border p-4">
         <fieldset disabled={!can.updateWorkspace} className="space-y-4">
           <div className=" space-y-1.5">
-            <label className="text-sm font-medium" htmlFor="settings-name">Name</label>
+            <label className="text-sm font-medium" htmlFor="settings-name">{t('workspaces.pages.settings.form.name')}</label>
             <Input id="settings-name" {...register('name')} />
             {errors.name ? <p className="text-sm text-destructive">{errors.name.message}</p> : null}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium" htmlFor="settings-description">Description</label>
+            <label className="text-sm font-medium" htmlFor="settings-description">{t('workspaces.pages.settings.form.description')}</label>
             <textarea
               id="settings-description"
               rows={3}
@@ -128,69 +130,69 @@ export function SpaceSettingPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium" htmlFor="settings-icon">Icon</label>
+            <label className="text-sm font-medium" htmlFor="settings-icon">{t('workspaces.pages.settings.form.icon')}</label>
             <Input id="settings-icon" maxLength={4} className="w-20" {...register('icon')} />
           </div>
         </fieldset>
 
         {!can.updateWorkspace ? (
-          <p className="text-xs text-muted-foreground">Only admins and owners can edit workspace details.</p>
+          <p className="text-xs text-muted-foreground">{t('workspaces.pages.settings.form.unauthorized')}</p>
         ) : null}
 
         <div className="flex justify-end">
           <Button type="submit" disabled={!can.updateWorkspace || !isDirty || isSubmitting} >
-            {isSubmitting ? 'Saving...' : 'Save changes'}
+            {isSubmitting ? t('workspaces.pages.settings.form.saving') : t('workspaces.pages.settings.form.save')}
           </Button>
         </div>
       </form>
 
       <div className="space-y-3 rounded-lg border border-destructive/30 p-4">
-        <h2 className="font-semibold text-destructive">Danger zone</h2>
+        <h2 className="font-semibold text-destructive">{t('workspaces.pages.settings.dangerZone.title')}</h2>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium">Leave workspace</p>
+            <p className="text-sm font-medium">{t('workspaces.pages.settings.dangerZone.leave.title')}</p>
             <p className="text-xs text-muted-foreground">
-              {isOwner ? "Transfer ownership before leaving." : "You'll lose access immediately."}
+              {isOwner ? t('workspaces.pages.settings.dangerZone.leave.ownerDesc') : t('workspaces.pages.settings.dangerZone.leave.memberDesc')}
             </p>
           </div>
           <PermissionButton
             allowed={!isOwner}
-            reason="Owner must transfer ownership before leaving"
+            reason={t('workspaces.pages.settings.dangerZone.leave.tooltip')}
             variant="outline"
             onClick={handleLeave}
           >
-            Leave
+            {t('workspaces.pages.settings.dangerZone.leave.button')}
           </PermissionButton>
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium">Transfer ownership</p>
-            <p className="text-xs text-muted-foreground">Hand this workspace over to another member.</p>
+            <p className="text-sm font-medium">{t('workspaces.pages.settings.dangerZone.transfer.title')}</p>
+            <p className="text-xs text-muted-foreground">{t('workspaces.pages.settings.dangerZone.transfer.desc')}</p>
           </div>
           <PermissionButton
             allowed={can.transferOwnership}
-            reason="Only the owner can transfer ownership"
+            reason={t('workspaces.pages.settings.dangerZone.transfer.tooltip')}
             variant="outline"
             onClick={() => setTransferOpen(true)}
           >
-            Transfer
+            {t('workspaces.pages.settings.dangerZone.transfer.button')}
           </PermissionButton>
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium">Delete workspace</p>
-            <p className="text-xs text-muted-foreground">Permanently delete this workspace and all its data.</p>
+            <p className="text-sm font-medium">{t('workspaces.pages.settings.dangerZone.delete.title')}</p>
+            <p className="text-xs text-muted-foreground">{t('workspaces.pages.settings.dangerZone.delete.desc')}</p>
           </div>
           <PermissionButton
             allowed={can.deleteWorkspace}
-            reason="Only the owner can delete this workspace"
+            reason={t('workspaces.pages.settings.dangerZone.delete.tooltip')}
             variant="destructive"
             onClick={handleDelete}
           >
-            Delete
+            {t('workspaces.pages.settings.dangerZone.delete.button')}
           </PermissionButton>
         </div>
       </div>

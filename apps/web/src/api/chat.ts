@@ -6,6 +6,10 @@ export interface ChatMessage {
   content: string;
   senderId: number;
   createdAt: string;
+  sender?: {
+    id: number;
+    username: string;
+  }
 }
 
 export interface AcceptedFriend {
@@ -30,7 +34,7 @@ export async function getMyConversations(): Promise<ConversationItem[]> {
 }
 
 export async function getFriendsList() {
-  return httpGet('/friends'); 
+  return httpGet('/friends');
 }
 
 export async function createConversationByUsername(username: string): Promise<Conversation> {

@@ -96,6 +96,174 @@
     }
   },
 
+  "workspaces": {
+    "create": {
+      "title": "Créer un espace",
+      "name": "Nom",
+      "namePlaceholder": "Équipe 42 Paris",
+      "description": "Description",
+      "descriptionPlaceholder": "À quoi sert cet espace de travail ?",
+      "icon": "Icône",
+      "submit": "Créer l'espace",
+      "submitting": "Création...",
+      "success": "\"{{name}}\" créé",
+      "error": "Échec de la création de l'espace"
+    },
+    "invites": {
+      "title": "Invitations",
+      "invitedBy": "Invité par {{name}} · en tant que {{role}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "acceptSuccess": "Invitation acceptée",
+      "acceptError": "Échec de l'acceptation de l'invitation",
+      "rejectSuccess": "Invitation refusée",
+      "rejectError": "Échec du refus de l'invitation"
+    },
+    "inviteMember": {
+      "title": "Inviter un membre",
+      "searchPlaceholder": "Rechercher par nom d'utilisateur",
+      "inviteAs": "Inviter en tant que",
+      "roles": {
+        "MEMBER": "Membre",
+        "ADMIN": "Admin"
+      },
+      "minCharacters": "Entrez au moins 2 caractères pour rechercher.",
+      "searching": "Recherche...",
+      "searchError": "Échec de la recherche d'utilisateurs.",
+      "noMatchingUsers": "Aucun utilisateur correspondant à inviter.",
+      "invite": "Inviter",
+      "done": "Terminé",
+      "success": "Invitation envoyée",
+      "error": "Échec de l'envoi de l'invitation"
+    },
+    "sidebar": {
+      "spaces": "Espaces",
+      "createTooltip": "Créer un espace",
+      "empty": "Vous n'êtes dans aucun espace.",
+      "loading": "Chargement",
+      "overview": "Aperçu",
+      "members": "Membres",
+      "settings": "Paramètres",
+      "channels": "Canaux"
+    },
+    "transferOwnership": {
+      "title": "Transférer la propriété",
+      "noCandidates": "Invitez quelqu'un dans cet espace avant de transférer la propriété.",
+      "confirmTitle": "Nommer {{name}} propriétaire ?",
+      "confirmDescription": "Vous serez rétrogradé administrateur. Cette action est irréversible par vous seul.",
+      "transfer": "Transférer",
+      "transferring": "Transfert...",
+      "success": "Propriété transférée",
+      "error": "Échec du transfert de propriété"
+    },
+    "guard": {
+      "notFoundTitle": "Espace introuvable",
+      "notFoundDescription": "Cet espace n'existe pas ou a peut-être été supprimé.",
+      "forbiddenTitle": "Vous n'avez pas accès",
+      "forbiddenDescription": "Vous n'êtes pas membre de cet espace. Demandez à un administrateur de vous inviter."
+    },
+    "pages": {
+      "channel": {
+        "notFoundTitle": "Canal introuvable",
+        "notFoundDesc": "Ce canal n'existe pas ou vous n'y avez plus accès."
+      },
+      "detail": {
+        "inviteTeammates": "Invitez vos coéquipiers pour faire grandir cet espace.",
+        "channels": "Canaux",
+        "newChannelTooltip": "Seuls les administrateurs et le propriétaire peuvent créer des canaux",
+        "newChannel": "Nouveau canal",
+        "membersCount": "{{count}} membres",
+        "createChannel": {
+          "title": "Créer un canal",
+          "nameError": "Utilisez uniquement des lettres minuscules, des chiffres, - et _",
+          "success": "#{{name}} créé",
+          "error": "Échec de la création du canal",
+          "placeholder": "discussion-generale",
+          "submitting": "Création...",
+          "submit": "Créer"
+        }
+      },
+      "index": {
+        "title": "Espaces",
+        "subtitle": "Espaces dont vous faites partie.",
+        "newWorkspace": "Nouvel espace",
+        "emptyTitle": "Aucun espace",
+        "emptyDesc": "Créez un espace pour commencer à organiser des canaux et des coéquipiers.",
+        "createWorkspace": "Créer un espace"
+      },
+      "members": {
+        "title": "Membres",
+        "subtitle": "Gérez qui a accès à cet espace.",
+        "inviteTooltip": "Seuls les administrateurs et les propriétaires peuvent inviter des membres",
+        "invite": "Inviter",
+        "you": "(vous)",
+        "owner": "Propriétaire",
+        "removeTooltip": {
+          "owner": "Le propriétaire ne peut pas être supprimé",
+          "self": "Utilisez \"Quitter l'espace\" dans les paramètres à la place",
+          "default": "Seuls les administrateurs et les propriétaires peuvent supprimer des membres"
+        },
+        "remove": "Supprimer",
+        "removeConfirmTitle": "Supprimer {{name}} ?",
+        "removeConfirmDesc": "Il perdra l'accès à cet espace et à ses canaux.",
+        "removeSuccess": "{{name}} supprimé",
+        "removeError": "Échec de la suppression du membre",
+        "roleUpdateSuccess": "Rôle mis à jour",
+        "roleUpdateError": "Échec de la mise à jour du rôle",
+        "pendingInvites": {
+          "title": "Invitations en attente",
+          "unknown": "Inconnu",
+          "invitedBy": "Invité par {{name}} · expire le {{date}}",
+          "status": "En attente"
+        }
+      },
+      "settings": {
+        "title": "Paramètres de l'espace",
+        "subtitle": "Gérer les détails de {{name}}.",
+        "form": {
+          "name": "Nom",
+          "description": "Description",
+          "icon": "Icône",
+          "unauthorized": "Seuls les administrateurs et les propriétaires peuvent modifier les détails de l'espace.",
+          "saving": "Enregistrement...",
+          "save": "Enregistrer les modifications"
+        },
+        "updateSuccess": "Espace mis à jour",
+        "updateError": "Échec de la mise à jour de l'espace",
+        "dangerZone": {
+          "title": "Zone de danger",
+          "leave": {
+            "title": "Quitter l'espace",
+            "ownerDesc": "Transférer la propriété avant de quitter.",
+            "memberDesc": "Vous perdrez l'accès immédiatement.",
+            "tooltip": "Le propriétaire doit transférer la propriété avant de quitter",
+            "button": "Quitter",
+            "confirmTitle": "Quitter cet espace ?",
+            "confirmDesc": "Vous perdrez l'accès à ses canaux et messages.",
+            "success": "Vous avez quitté l'espace",
+            "error": "Échec pour quitter l'espace"
+          },
+          "transfer": {
+            "title": "Transférer la propriété",
+            "desc": "Transmettre cet espace à un autre membre.",
+            "tooltip": "Seul le propriétaire peut transférer la propriété",
+            "button": "Transférer"
+          },
+          "delete": {
+            "title": "Supprimer l'espace",
+            "desc": "Supprime définitivement cet espace et toutes ses données.",
+            "tooltip": "Seul le propriétaire peut supprimer cet espace",
+            "button": "Supprimer",
+            "confirmTitle": "Supprimer \"{{name}}\" ?",
+            "confirmDesc": "Cela supprime définitivement l'espace, ses canaux et messages. Cette action est irréversible.",
+            "success": "Espace supprimé",
+            "error": "Échec de la suppression de l'espace"
+          }
+        }
+      }
+    }
+  },
+
   "language": {
     "english": "Anglais",
     "french": "Français",

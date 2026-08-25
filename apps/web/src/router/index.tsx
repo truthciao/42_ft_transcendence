@@ -36,6 +36,7 @@ import {
 } from '@/pages/app/SettingsPage';
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
+import { VirtualUsersPage } from '@/pages/VirtualUsersPage';
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
       { path: '/showcase', element: <ComponentShowcasePage /> },
       { path: '/privacy', element: <PrivacyPolicyPage /> },
       { path: '/terms', element: <TermsOfServicePage /> },
+      { path: '/virtual-users', element: <VirtualUsersPage />},
     ],
   },
   {

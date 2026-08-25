@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { searchUsers } from '../api/users';
 
-import { searchUsers } from '../api/friends';
+const PAGE_SIZE = 20;
 
 export function useUserSearch(username: string) {
-  const [debouncedUsername, setDebouncedUsername] = useState(username);
+  return useInfiniteQuery({
+    queryKey: ['users', 'search', username],
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedUsername(username);
-    }, 300);
+    queryFn: ({ pageParam }) =>
+      searchUsers(username, PAGE_SIZE, pageParam),
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [username]);
+    initialPageParam: 0,
 
-  return useQuery({
-    queryKey: ['user-search', debouncedUsername],
-    queryFn: () => searchUsers(debouncedUsername),
-    enabled: debouncedUsername.trim().length >= 2,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.hasMore) {
+        return undefined;
+      }
+
+      return allPages.length * PAGE_SIZE;
+    },
+
+    enabled: username.trim().length >= 2,
   });
 }

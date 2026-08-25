@@ -17,6 +17,7 @@ import { useInviteMember } from '@/hooks/useWorkspaceMutations';
 import { usePermission } from '@/hooks/usePermission';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { useTranslation } from "react-i18next";
 
 interface InviteMemberDialogProps {
   workspaceId: number;
@@ -34,6 +35,7 @@ export function InviteMemberDialog({
 
   const [username, setUsername] = useState('');
   const [inviteRole, setInviteRole] = useState<'ADMIN' | 'MEMBER'>('MEMBER');
+  const { t } = useTranslation();
 
   const {
     data: searchResult,
@@ -82,9 +84,9 @@ export function InviteMemberDialog({
         role: inviteRole,
       });
 
-      toast.success('Invite sent');
+      toast.success(t('workspaces.inviteMember.success'));
     } catch {
-      toast.error('Failed to send invite');
+      toast.error(t('workspaces.inviteMember.error'));
     }
   }
 
@@ -92,19 +94,19 @@ export function InviteMemberDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Invite member</DialogTitle>
+          <DialogTitle>{t('workspaces.inviteMember.title')}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <Input
-            placeholder="Search by username"
+            placeholder={t('workspaces.inviteMember.searchPlaceholder')}
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
 
           {role === 'OWNER' ? (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Invite as</span>
+              <span className="text-muted-foreground">{t('workspaces.inviteMember.inviteAs')}</span>
 
               <select
                 className="rounded-md border border-input bg-background px-2 py-1 text-sm"
@@ -113,25 +115,27 @@ export function InviteMemberDialog({
                   setInviteRole(event.target.value as 'ADMIN' | 'MEMBER')
                 }
               >
-                <option value="MEMBER">Member</option>
-                <option value="ADMIN">Admin</option>
+                <option value="MEMBER">{t('workspaces.inviteMember.roles.MEMBER')}</option>
+                <option value="ADMIN">{t('workspaces.inviteMember.roles.ADMIN')}</option>
               </select>
             </div>
           ) : null}
 
           {username.trim().length < 2 ? (
             <p className="text-sm text-muted-foreground">
-              Enter at least 2 characters to search.
+              {t('workspaces.inviteMember.minCharacters')}
             </p>
           ) : isLoading ? (
-            <p className="text-sm text-muted-foreground">Searching...</p>
+            <p className="text-sm text-muted-foreground">
+              {t('workspaces.inviteMember.searching')}
+            </p>
           ) : isError ? (
             <p className="text-sm text-destructive">
-              Failed to search users.
+              {t('workspaces.inviteMember.searchError')}
             </p>
           ) : availableUsers.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No matching users to invite.
+              {t('workspaces.inviteMember.noMatchingUsers')}
             </p>
           ) : (
             <div className="max-h-64 space-y-1 overflow-y-auto">
@@ -147,7 +151,7 @@ export function InviteMemberDialog({
                     disabled={inviteMutation.isPending}
                     onClick={() => handleInvite(u.id)}
                   >
-                    Invite
+                    {t('workspaces.inviteMember.invite')}
                   </Button>
                 </div>
               ))}
@@ -160,7 +164,7 @@ export function InviteMemberDialog({
             variant="outline"
             onClick={() => handleOpenChange(false)}
           >
-            Done
+            {t('workspaces.inviteMember.done')}
           </Button>
         </DialogFooter>
       </DialogContent>

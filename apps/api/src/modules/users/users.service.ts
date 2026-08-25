@@ -170,8 +170,13 @@ export class UsersService {
     });
   }
 
-  async searchUsers(username: string, currentUserId: number) {
-    return this.prisma.user.findMany({
+  async searchUsers(
+    username: string,
+    currentUserId: number,
+    limit: number,
+    offset: number,
+  ) {
+    const users = await this.prisma.user.findMany({
       where: {
         username: {
           contains: username,
@@ -181,11 +186,45 @@ export class UsersService {
           not: currentUserId,
         },
       },
+
       select: {
         id: true,
         username: true,
+        email: true,
       },
-      take: 10,
+
+      orderBy: {
+        id: 'asc',
+      },
+
+      take: limit + 1,
+      skip: offset,
+    });
+
+    const hasMore = users.length > limit;
+
+    return {
+      users: users.slice(0, limit),
+      hasMore,
+    };
+  }
+
+  async getTestUsers() {
+    return this.prisma.user.findMany({
+      where: {
+        username: {
+          startsWith: 'virtual-user-',
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
+
 }

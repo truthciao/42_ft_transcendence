@@ -52,9 +52,22 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   searchUsers(
     @Query('username') username: string,
+    @Query('limit') limit = '20',
+    @Query('offset') offset = '0',
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.usersService.searchUsers(username, req.user.userId);
+    return this.usersService.searchUsers(
+      username,
+      req.user.userId,
+      Number(limit),
+      Number(offset),
+    );
+  }
+
+  @Get('test-users')
+  @UseGuards(JwtAuthGuard)
+  getTestUsers() {
+    return this.usersService.getTestUsers();
   }
 
   @Get(':id')
@@ -67,4 +80,5 @@ export class UsersController {
   findPublicProfile(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findPublicProfile(id);
   }
+
 }

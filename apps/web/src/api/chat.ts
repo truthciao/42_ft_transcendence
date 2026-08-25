@@ -27,6 +27,11 @@ export interface Conversation {
   updatedAt?: string;
 }
 
+export interface MessagePage {
+  messages: ChatMessage[];
+  nextCursor: number | null;
+}
+
 export type ConversationItem = Conversation;
 
 export async function getMyConversations(): Promise<ConversationItem[]> {
@@ -45,6 +50,20 @@ export async function createDirectConversation(targetUserId: number): Promise<Co
   return httpPost<Conversation>('/chat/conversations', { targetUserId });
 }
 
-export async function getConversationMessages(conversationId: string | number): Promise<ChatMessage[]> {
-  return httpGet<ChatMessage[]>(`/chat/conversations/${conversationId}/message`);
+export async function getConversationMessages(
+  conversationId: string | number,
+  cursor?: number,
+  limit = 30,
+): Promise<MessagePage> {
+  const params = new URLSearchParams();
+
+  params.set('limit', String(limit));
+
+  if (cursor !== undefined) {
+    params.set('cursor', String(cursor));
+  }
+
+  return httpGet<MessagePage>(
+    `/chat/conversations/${conversationId}/message?${params.toString()}`,
+  );
 }

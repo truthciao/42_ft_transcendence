@@ -5,12 +5,14 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { ChatService } from './chat.service.js';
 import { CreateConversationDto } from './dto/create-conversation.dto.js';
+import { GetMessagesDto } from './dto/get-messages.dto.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
@@ -42,7 +44,8 @@ export class ChatController {
   getMessage(
     @CurrentUser('userId') userId: number,
     @Param('id', ParseIntPipe) id: number,
+    @Query() query: GetMessagesDto,
   ) {
-    return this.chatService.getMessages(id, userId);
+    return this.chatService.getMessages(id, userId, query);
   }
 }

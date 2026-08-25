@@ -21,16 +21,6 @@ export function ConversationListSidebar() {
       setIsLoading(true);
       const dataList = await getMyConversations();
 
-      console.log(
-        '🔥 CURRENT CONVERSATIONS:',
-      conversations.map((conversation) => ({
-        id: conversation.id,
-        name: conversation.name,
-      })),
-    );
-      
-
-
       if (Array.isArray(dataList)) {
         setConversations(dataList);
       }

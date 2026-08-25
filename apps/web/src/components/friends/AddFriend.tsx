@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useAuth } from '../../hooks/useAuth';
@@ -25,14 +26,50 @@ export function AddFriend() {
     },
   });
   const [sendingUserId, setSendingUserId] = useState<number | null>(null);
-
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const parentRef = useRef<HTMLDivElement | null>(null);
   const username = form.watch('username');
 
   const {
-    data: users,
+    data: searchResult,
     isLoading: isUsersLoading,
     isError: isUsersError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useUserSearch(username);
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+
+    if (!element || !hasNextPage) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  ]);
+  
+  const users =
+    searchResult?.pages.flatMap((page) => page.users) ?? [];
 
   const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
 
@@ -67,6 +104,13 @@ export function AddFriend() {
       return true;
     }) ?? [];
 
+  const rowVirtualizer = useVirtualizer({
+    count: availableUsers.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 72,
+    overscan: 5,
+  });
+  
   const handleSendFriendRequest = (userId: number) => {
     setSendingUserId(userId);
 
@@ -124,52 +168,88 @@ export function AddFriend() {
           {t('friends.addFriend.noUsers')}
         </p>
       ) : (
-        <div className="space-y-3">
-          {availableUsers.map((user) => {
-            const isSending = sendingUserId === user.id;
-            const isPending = pendingUserIds.has(user.id);
+        <>
+          <div
+            ref={parentRef}
+            className="h-64 overflow-y-auto"
+          >
+            <div
+              className="relative w-full"
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const user = availableUsers[virtualRow.index];
 
-            return (
-              <div
-                key={user.id}
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  rounded-lg
-                  border
-                  p-4
-                "
-              >
-                <p className="font-medium">
-                  {user.username}
-                </p>
+                if (!user) {
+                  return null;
+                }
 
-                <button
-                  className="
-                    rounded
-                    bg-primary
-                    px-3
-                    py-1
-                    text-primary-foreground
-                    disabled:opacity-50
-                  "
-                  disabled={
-                    isPending ||
-                    (sendFriendRequestMutation.isPending && isSending)
-                  }
-                  onClick={() => handleSendFriendRequest(user.id)}
-                >
-                  {isSending
-                    ? t('friends.addFriend.sending')
-                    : isPending
-                      ? t('friends.addFriend.pending')
-                      : t('friends.addFriend.button')}
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                const isSending = sendingUserId === user.id;
+                const isPending = pendingUserIds.has(user.id);
+
+                return (
+                  <div
+                    key={user.id}
+                    className="
+                      absolute
+                      left-0
+                      top-0
+                      flex
+                      w-full
+                      items-center
+                      justify-between
+                      rounded-lg
+                      border
+                      p-4
+                    "
+                    style={{
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    <p className="font-medium">
+                      {user.username}
+                    </p>
+
+                    <button
+                      className="
+                        rounded
+                        bg-primary
+                        px-3
+                        py-1
+                        text-primary-foreground
+                        disabled:opacity-50
+                      "
+                      disabled={
+                        isPending ||
+                        (sendFriendRequestMutation.isPending && isSending)
+                      }
+                      onClick={() => handleSendFriendRequest(user.id)}
+                    >
+                      {isSending
+                        ? t('friends.addFriend.sending')
+                        : isPending
+                          ? t('friends.addFriend.pending')
+                          : t('friends.addFriend.button')}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {hasNextPage && (
+              <div ref={loadMoreRef} className="h-1" />
+            )}
+
+            {isFetchingNextPage && (
+              <p className="py-2 text-center text-sm text-muted-foreground">
+                {t('friends.addFriend.searching')}
+              </p>
+            )}
+          </div>
+        </>
       )}
     </section>
   );

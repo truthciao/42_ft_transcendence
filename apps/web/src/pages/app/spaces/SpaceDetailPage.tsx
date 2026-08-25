@@ -11,11 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function SpaceDetailPage() {
   const { workspaceId } = useParams();
   const id = Number(workspaceId);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: workspace, isLoading } = useWorkspace(id);
   const { data: channels, isLoading: channelsLoading } = useWorkspaceChannels(id);
@@ -47,23 +49,23 @@ export function SpaceDetailPage() {
 
       <PermissionGate workspaceId={id} minRole="ADMIN">
         <div className="mb-6 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-          Invite teammates to grow this workspace.
+          {t('workspaces.pages.detail.inviteTeammates')}
         </div>
       </PermissionGate>
 
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Channels
+            {t('workspaces.pages.detail.channels')}
           </h2>
           <PermissionButton
             allowed={can.createChannel}
-            reason="Only admins and owner can create channels"
+            reason={t('workspaces.pages.detail.newChannelTooltip')}
             size="sm"
             variant="outline"
             onClick={() => setCreateChannelOpen(true)}
           >
-            <Plus className="size-4" /> New channel
+            <Plus className="size-4" /> {t('workspaces.pages.detail.newChannel')}
           </PermissionButton>
         </div>
 
@@ -83,7 +85,7 @@ export function SpaceDetailPage() {
                 <Hash className="size-4 text-muted-foreground" />
                 <span className="flex-1 truncate">{channel.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {channel._count?.members ?? 0} members
+                  {t('workspaces.pages.detail.membersCount', { count: channel._count?.members ?? 0 })}
                 </span>
               </button>
             ))}
@@ -112,23 +114,24 @@ function CreateChannelDialog({
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const mutation = useCreateChannel(workspaceId);
+  const { t } = useTranslation();
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
 
     if (!/^[a-z0-9-_]+$/.test(name)) {
-      setError('Use lowercase letters, numbers - and _ only');
+      setError(t('workspaces.pages.detail.createChannel.nameError'));
       return;
     }
 
     try {
       await mutation.mutateAsync({name});
-      toast.success(`#${name} created`);
+      toast.success(t('workspaces.pages.detail.createChannel.success', { name }));
       setName('');
       setError(null);
       onOpenChange(false);
     } catch {
-      toast.error('Failed to create channel');
+      toast.error(t('workspaces.pages.detail.createChannel.error'));
     }
   }
 
@@ -136,21 +139,21 @@ function CreateChannelDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create channel</DialogTitle>
+          <DialogTitle>{t('workspaces.pages.detail.createChannel.title')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input
-            placeholder="general-discussion"
+            placeholder={t('workspaces.pages.detail.createChannel.placeholder')}
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
           {error ? <p className="text-xs text-destructive">{error}</p> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Creating" : "Create"}
+              {mutation.isPending ? t('workspaces.pages.detail.createChannel.submitting') : t('workspaces.pages.detail.createChannel.submit')}
             </Button>
           </DialogFooter>
         </form>

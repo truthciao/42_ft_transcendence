@@ -96,6 +96,174 @@
     }
   },
 
+  "workspaces": {
+    "create": {
+      "title": "创建工作区",
+      "name": "名称",
+      "namePlaceholder": "42 巴黎团队",
+      "description": "描述",
+      "descriptionPlaceholder": "这个工作区是用来做什么的？",
+      "icon": "图标",
+      "submit": "创建工作区",
+      "submitting": "创建中...",
+      "success": "“{{name}}” 已创建",
+      "error": "创建工作区失败"
+    },
+    "invites": {
+      "title": "邀请",
+      "invitedBy": "由 {{name}} 邀请 · 作为 {{role}}",
+      "accept": "接受",
+      "decline": "拒绝",
+      "acceptSuccess": "已接受邀请",
+      "acceptError": "接受邀请失败",
+      "rejectSuccess": "已拒绝邀请",
+      "rejectError": "拒绝邀请失败"
+    },
+    "inviteMember": {
+      "title": "邀请成员",
+      "searchPlaceholder": "按用户名搜索",
+      "inviteAs": "邀请为",
+      "roles": {
+        "MEMBER": "成员",
+        "ADMIN": "管理员"
+      },
+      "minCharacters": "至少输入 2 个字符进行搜索。",
+      "searching": "搜索中...",
+      "searchError": "搜索用户失败。",
+      "noMatchingUsers": "没有匹配的用户可邀请。",
+      "invite": "邀请",
+      "done": "完成",
+      "success": "邀请已发送",
+      "error": "发送邀请失败"
+    },
+    "sidebar": {
+      "spaces": "工作区",
+      "createTooltip": "创建工作区",
+      "empty": "您尚未加入任何工作区。",
+      "loading": "加载中",
+      "overview": "概览",
+      "members": "成员",
+      "settings": "设置",
+      "channels": "频道"
+    },
+    "transferOwnership": {
+      "title": "转移所有权",
+      "noCandidates": "在转移所有权之前，请先邀请其他人加入此工作区。",
+      "confirmTitle": "将 {{name}} 设为所有者？",
+      "confirmDescription": "您将被降级为管理员。您无法单方面撤销此操作。",
+      "transfer": "转移",
+      "transferring": "转移中...",
+      "success": "所有权已转移",
+      "error": "转移所有权失败"
+    },
+    "guard": {
+      "notFoundTitle": "未找到工作区",
+      "notFoundDescription": "此工作区不存在或可能已被删除。",
+      "forbiddenTitle": "您没有访问权限",
+      "forbiddenDescription": "您不是此工作区的成员。请让管理员邀请您加入。"
+    },
+    "pages": {
+      "channel": {
+        "notFoundTitle": "频道未找到",
+        "notFoundDesc": "此频道不存在或您不再具有访问权限。"
+      },
+      "detail": {
+        "inviteTeammates": "邀请队友加入，共同建设此工作区。",
+        "channels": "频道",
+        "newChannelTooltip": "只有管理员和所有者可以创建频道",
+        "newChannel": "新频道",
+        "membersCount": "{{count}} 名成员",
+        "createChannel": {
+          "title": "创建频道",
+          "nameError": "只能使用小写字母、数字、- 和 _",
+          "success": "#{{name}} 已创建",
+          "error": "创建频道失败",
+          "placeholder": "general-discussion",
+          "submitting": "创建中...",
+          "submit": "创建"
+        }
+      },
+      "index": {
+        "title": "工作区",
+        "subtitle": "您加入的工作区。",
+        "newWorkspace": "新工作区",
+        "emptyTitle": "暂无工作区",
+        "emptyDesc": "创建一个工作区以开始组织频道和队友。",
+        "createWorkspace": "创建工作区"
+      },
+      "members": {
+        "title": "成员",
+        "subtitle": "管理谁可以访问此工作区。",
+        "inviteTooltip": "只有管理员和所有者可以邀请成员",
+        "invite": "邀请",
+        "you": "（您）",
+        "owner": "所有者",
+        "removeTooltip": {
+          "owner": "不能移除所有者",
+          "self": "请改用设置中的“离开工作区”",
+          "default": "只有管理员和所有者可以移除成员"
+        },
+        "remove": "移除",
+        "removeConfirmTitle": "移除 {{name}}？",
+        "removeConfirmDesc": "他们将失去访问此工作区及其频道的权限。",
+        "removeSuccess": "{{name}} 已移除",
+        "removeError": "移除成员失败",
+        "roleUpdateSuccess": "角色已更新",
+        "roleUpdateError": "更新角色失败",
+        "pendingInvites": {
+          "title": "待处理的邀请",
+          "unknown": "未知",
+          "invitedBy": "由 {{name}} 邀请 · 过期时间：{{date}}",
+          "status": "待处理"
+        }
+      },
+      "settings": {
+        "title": "工作区设置",
+        "subtitle": "管理 {{name}} 的详细信息。",
+        "form": {
+          "name": "名称",
+          "description": "描述",
+          "icon": "图标",
+          "unauthorized": "只有管理员和所有者可以编辑工作区详细信息。",
+          "saving": "保存中...",
+          "save": "保存更改"
+        },
+        "updateSuccess": "工作区已更新",
+        "updateError": "更新工作区失败",
+        "dangerZone": {
+          "title": "危险区域",
+          "leave": {
+            "title": "离开工作区",
+            "ownerDesc": "离开前请转移所有权。",
+            "memberDesc": "您将立即失去访问权限。",
+            "tooltip": "所有者必须在离开前转移所有权",
+            "button": "离开",
+            "confirmTitle": "离开此工作区？",
+            "confirmDesc": "您将失去访问其频道和消息的权限。",
+            "success": "您已离开该工作区",
+            "error": "离开工作区失败"
+          },
+          "transfer": {
+            "title": "转移所有权",
+            "desc": "将此工作区转交给其他成员。",
+            "tooltip": "只有所有者可以转移所有权",
+            "button": "转移"
+          },
+          "delete": {
+            "title": "删除工作区",
+            "desc": "永久删除此工作区及其所有数据。",
+            "tooltip": "只有所有者可以删除此工作区",
+            "button": "删除",
+            "confirmTitle": "删除“{{name}}”？",
+            "confirmDesc": "这将永久删除该工作区及其频道和消息。此操作无法撤销。",
+            "success": "工作区已删除",
+            "error": "删除工作区失败"
+          }
+        }
+      }
+    }
+  },
+
   "language": {
     "english": "英语",
     "french": "法语",

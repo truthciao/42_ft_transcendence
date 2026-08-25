@@ -96,6 +96,174 @@
     }
   },
 
+  "workspaces": {
+    "create": {
+      "title": "Create workspace",
+      "name": "Name",
+      "namePlaceholder": "42 Paris team",
+      "description": "Description",
+      "descriptionPlaceholder": "What's this workspace for?",
+      "icon": "Icon",
+      "submit": "Create workspace",
+      "submitting": "Creating...",
+      "success": "\"{{name}}\" created",
+      "error": "Failed to create workspace"
+    },
+    "invites": {
+      "title": "Invitations",
+      "invitedBy": "Invited by {{name}} · as {{role}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "acceptSuccess": "Invite accepted",
+      "acceptError": "Failed to accept invite",
+      "rejectSuccess": "Invite declined",
+      "rejectError": "Failed to decline invite"
+    },
+    "inviteMember": {
+      "title": "Invite member",
+      "searchPlaceholder": "Search by username",
+      "inviteAs": "Invite as",
+      "roles": {
+        "MEMBER": "Member",
+        "ADMIN": "Admin"
+      },
+      "minCharacters": "Enter at least 2 characters to search.",
+      "searching": "Searching...",
+      "searchError": "Failed to search users.",
+      "noMatchingUsers": "No matching users to invite.",
+      "invite": "Invite",
+      "done": "Done",
+      "success": "Invite sent",
+      "error": "Failed to send invite"
+    },
+    "sidebar": {
+      "spaces": "Spaces",
+      "createTooltip": "Create workspace",
+      "empty": "You're not in any workspace yet.",
+      "loading": "Loading",
+      "overview": "Overview",
+      "members": "Members",
+      "settings": "Settings",
+      "channels": "Channels"
+    },
+    "transferOwnership": {
+      "title": "Transfer ownership",
+      "noCandidates": "Invite someone to this workspace before transferring ownership.",
+      "confirmTitle": "Make {{name}} the Owner?",
+      "confirmDescription": "You will be demoted to admin. This can't be undone by you alone.",
+      "transfer": "Transfer",
+      "transferring": "Transferring...",
+      "success": "Ownership transferred",
+      "error": "Failed to transfer ownership"
+    },
+    "guard": {
+      "notFoundTitle": "Workspace not found",
+      "notFoundDescription": "This workspace doesn't exist or may have been deleted.",
+      "forbiddenTitle": "You don't have access",
+      "forbiddenDescription": "You're not a member of this workspace. Ask an admin to invite you."
+    },
+    "pages": {
+      "channel": {
+        "notFoundTitle": "Channel not found",
+        "notFoundDesc": "This channel doesn't exist or you no longer have access to it."
+      },
+      "detail": {
+        "inviteTeammates": "Invite teammates to grow this workspace.",
+        "channels": "Channels",
+        "newChannelTooltip": "Only admins and owner can create channels",
+        "newChannel": "New channel",
+        "membersCount": "{{count}} members",
+        "createChannel": {
+          "title": "Create channel",
+          "nameError": "Use lowercase letters, numbers - and _ only",
+          "success": "#{{name}} created",
+          "error": "Failed to create channel",
+          "placeholder": "general-discussion",
+          "submitting": "Creating",
+          "submit": "Create"
+        }
+      },
+      "index": {
+        "title": "Spaces",
+        "subtitle": "Workspaces you're a part of.",
+        "newWorkspace": "New workspace",
+        "emptyTitle": "No workspaces yet",
+        "emptyDesc": "Create a workspace to start organizing channels and teammates.",
+        "createWorkspace": "Create workspace"
+      },
+      "members": {
+        "title": "Members",
+        "subtitle": "Manage who has access to this workspace.",
+        "inviteTooltip": "Only admins and owners can invite members",
+        "invite": "Invite",
+        "you": "(you)",
+        "owner": "Owner",
+        "removeTooltip": {
+          "owner": "The owner can't be removed",
+          "self": "Use \"Leave workspace\" in Settings instead",
+          "default": "Only admins and owners can remove members"
+        },
+        "remove": "Remove",
+        "removeConfirmTitle": "Remove {{name}}?",
+        "removeConfirmDesc": "They will lose access to this workspace and its channels.",
+        "removeSuccess": "{{name}} removed",
+        "removeError": "Failed to remove member",
+        "roleUpdateSuccess": "Role updated",
+        "roleUpdateError": "Failed to update role",
+        "pendingInvites": {
+          "title": "Pending invites",
+          "unknown": "Unknown",
+          "invitedBy": "Invited by {{name}} · expires {{date}}",
+          "status": "Pending"
+        }
+      },
+      "settings": {
+        "title": "Workspace settings",
+        "subtitle": "Manage details for {{name}}.",
+        "form": {
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "unauthorized": "Only admins and owners can edit workspace details.",
+          "saving": "Saving...",
+          "save": "Save changes"
+        },
+        "updateSuccess": "Workspace updated",
+        "updateError": "Failed to update workspace",
+        "dangerZone": {
+          "title": "Danger zone",
+          "leave": {
+            "title": "Leave workspace",
+            "ownerDesc": "Transfer ownership before leaving.",
+            "memberDesc": "You'll lose access immediately.",
+            "tooltip": "Owner must transfer ownership before leaving",
+            "button": "Leave",
+            "confirmTitle": "Leave this workspace?",
+            "confirmDesc": "You'll lose access to its channels and messages.",
+            "success": "You left the workspace",
+            "error": "Failed to leave workspace"
+          },
+          "transfer": {
+            "title": "Transfer ownership",
+            "desc": "Hand this workspace over to another member.",
+            "tooltip": "Only the owner can transfer ownership",
+            "button": "Transfer"
+          },
+          "delete": {
+            "title": "Delete workspace",
+            "desc": "Permanently delete this workspace and all its data.",
+            "tooltip": "Only the owner can delete this workspace",
+            "button": "Delete",
+            "confirmTitle": "Delete \"{{name}}\"?",
+            "confirmDesc": "This permanently deletes the workspace, its channels and messages. This cannot be undone.",
+            "success": "Workspace deleted",
+            "error": "Failed to delete workspace"
+          }
+        }
+      }
+    }
+  },
+
   "language": {
     "english": "English",
     "french": "French",

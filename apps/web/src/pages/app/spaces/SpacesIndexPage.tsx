@@ -7,23 +7,25 @@ import { SkeletonCard } from "@/components/common/Skeleton";
 import { Button } from "@base-ui/react";
 import { CreateWorkspaceDialog } from "@/components/workspaces/CreateWorkspaceDialog";
 import { IncomingInvitesList } from "@/components/workspaces/IncomingInvitesList";
+import { useTranslation } from "react-i18next";
 
 export function SpacesIndexPage() {
   const { data: workspaces, isLoading } = useWorkspaces();
   const [createOpen, setCreateOpen] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="h-full overflow-y-auto p-6">
       <IncomingInvitesList />
       <header className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold">Spaces</h2>
-          <p className="mt-1 text-muted-foreground">Workspaces you're a part of.</p>
+          <h2 className="text-2xl font-semibold">{t('workspaces.pages.index.title')}</h2>
+          <p className="mt-1 text-muted-foreground">{t('workspaces.pages.index.subtitle')}</p>
         </div>
       </header>
       <Button onClick={() => setCreateOpen(true)}>
-        <Plus className="size-4" /> New workspace
+        <Plus className="size-4" /> {t('workspaces.pages.index.newWorkspace')}
       </Button>
 
       {isLoading ? (
@@ -34,9 +36,9 @@ export function SpacesIndexPage() {
         </div>
       ): !workspaces || workspaces.length === 0 ? (
         <EmptyState
-          title="No workspaces yet"
-          description="Create a workspace to start organizing channels and teammates."
-          action={{ label: 'Create workspace', onClick: () => setCreateOpen(true) }}
+          title={t('workspaces.pages.index.emptyTitle')}
+          description={t('workspaces.pages.index.emptyDesc')}
+          action={{ label: t('workspaces.pages.index.createWorkspace'), onClick: () => setCreateOpen(true) }}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -53,7 +55,7 @@ export function SpacesIndexPage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{workspace.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {workspace.myMembership?.role ?? 'MEMBER'}
+                    {workspace.myMembership?.role ? t(`workspaces.inviteMember.roles.${workspace.myMembership.role}`) : t('workspaces.inviteMember.roles.MEMBER')}
                   </p>
                 </div>
               </div>

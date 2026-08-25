@@ -5,6 +5,7 @@ import { useWorkspaceMembers } from "@/hooks/useWorkspaces";
 import { useTransferOwnership } from "@/hooks/useWorkspaceMutations";
 import { useConfirm } from "@/lib/confirm-context";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface TransferOwnershipDialogProps {
   workspaceId: number;
@@ -21,6 +22,7 @@ export function TransferOwnershipDialog ({
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
   const mutation = useTransferOwnership(workspaceId);
   const confirm = useConfirm();
+  const { t } = useTranslation();
 
   const candidates = members?.filter((m) => m.role !== 'OWNER') ?? [];
 
@@ -36,8 +38,8 @@ export function TransferOwnershipDialog ({
     const target = candidates.find((m) => m.userId === selectedUserId);
 
     const confirmed = await confirm({
-      title: `Make ${target?.user.username} the Owner?`,
-      description: "You will be demoted to admin. This can't be undone by you alone.",
+      title: t('workspaces.transferOwnership.confirmTitle', { name: target?.user.username }),
+      description: t('workspaces.transferOwnership.confirmDescription'),
       variant: 'destructive'
     });
     if (!confirmed)
@@ -45,10 +47,10 @@ export function TransferOwnershipDialog ({
 
     try {
       await mutation.mutateAsync({ targetUserId: selectedUserId});
-      toast.success('Ownership transferred');
+      toast.success(t('workspaces.transferOwnership.success'));
       handleOpenChange(false);
     } catch {
-      toast.error('Failed to transfer ownership');
+      toast.error(t('workspaces.transferOwnership.error'));
     }
   }
 
@@ -56,12 +58,12 @@ export function TransferOwnershipDialog ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Transfer ownership</DialogTitle>
+          <DialogTitle>{t('workspaces.transferOwnership.title')}</DialogTitle>
         </DialogHeader>
 
         {candidates.length === 0 ? (
           <p className=" text-sm text-muted-foreground">
-            Invite someone to this workspace before transferring ownership.
+            {t('workspaces.transferOwnership.noCandidates')}
           </p>
         ) : (
           <div className=" max-h-64 space-y-1 overflow-y-auto">
@@ -87,14 +89,14 @@ export function TransferOwnershipDialog ({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="destructive"
-            disabled={setSelectedUserId === null || mutation.isPending}
+            disabled={selectedUserId === null || mutation.isPending}
             onClick={handleTransfer}
           >
-            {mutation.isPending ? 'Transferring...' : "Transfer"}
+            {mutation.isPending ? t('workspaces.transferOwnership.transferring') : t('workspaces.transferOwnership.transfer')}
           </Button>
         </DialogFooter>
       </DialogContent>

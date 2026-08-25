@@ -450,8 +450,20 @@ export class WorkspacesService {
         'Transfer ownership before leaving, or delete the workspace',
       );
 
-    return this.prisma.workspaceMember.delete({
-      where: { workspaceId_userId: { workspaceId, userId: m.userId } },
+    return this.prisma.$transaction(async (tx) => {
+      const channels = await tx.conversation.findMany({
+        where: { workspaceId, type: 'CHANNEL' },
+        select: { id: true },
+      });
+      await tx.conversationMember.deleteMany({
+        where: {
+          userId: m.userId,
+          conversationId: { in: channels.map((c) => c.id) },
+        },
+      });
+      return tx.workspaceMember.delete({
+        where: { workspaceId_userId: { workspaceId, userId: m.userId } },
+      });
     });
   }
 

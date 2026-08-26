@@ -1,4 +1,4 @@
-import { httpGet, httpPatch } from '@/lib/http';
+import { httpGet, httpPatch, httpPost } from '@/lib/http';
 
 export interface Document {
   id: number;
@@ -10,9 +10,20 @@ export interface Document {
   updatedAt: string;
 }
 
+export interface CreateDocumentPayload {
+  title: string;
+  content?: string;
+}
+
 export interface UpdateDocumentPayload {
   title?: string;
   content?: string;
+}
+
+export function getDocuments(workspaceId: number) {
+  return httpGet<Document[]>(
+    `/workspaces/${workspaceId}/documents`,
+  );
 }
 
 export function getDocument(
@@ -21,6 +32,16 @@ export function getDocument(
 ) {
   return httpGet<Document>(
     `/workspaces/${workspaceId}/documents/${documentId}`,
+  );
+}
+
+export function createDocument(
+  workspaceId: number,
+  payload: CreateDocumentPayload,
+) {
+  return httpPost<Document>(
+    `/workspaces/${workspaceId}/documents`,
+    payload,
   );
 }
 

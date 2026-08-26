@@ -51,9 +51,6 @@ export const router = createBrowserRouter([
       { path: '/privacy', element: <PrivacyPolicyPage /> },
       { path: '/terms', element: <TermsOfServicePage /> },
       { path: '/virtual-users', element: <VirtualUsersPage />},
-      { path: '/workspaces/:workspaceId/documents/:documentId',
-        element: <DocumentPage />,
-      },
     ],
   },
   {
@@ -98,7 +95,11 @@ export const router = createBrowserRouter([
               { path: 'c/:channelId', element: <SpaceChannelPage /> },
               { path: 'members', element: <SpaceMembersPage /> },
               { path: 'settings', element: <SpaceSettingPage /> },
-            ]
+              {
+                path: 'documents/:documentId',
+                element: <DocumentPage />,
+              },
+            ],
           },
           {
             path: 'settings',

@@ -181,6 +181,18 @@
           "placeholder": "general-discussion",
           "submitting": "Creating",
           "submit": "Create"
+        },
+        "documents": "Documents",
+        "newDocument": "New Document",
+        "untitledDocument": "Untitled document",
+        "createDocument": {
+          "title": "Create document",
+          "placeholder": "Document title",
+          "cancel": "Cancel",
+          "creating": "Creating...",
+          "create": "Create",
+          "success": "Document created",
+          "error": "Failed to create document"
         }
       },
       "index": {
@@ -260,6 +272,16 @@
             "error": "Failed to delete workspace"
           }
         }
+      },
+      "document": {
+        "back": "Workspace",
+        "saving": "Saving...",
+        "saved": "Saved",
+        "saveError": "Failed to save",
+        "notFound": "Document not found",
+        "loadError": "This document could not be loaded.",
+        "untitled": "Untitled document",
+        "startWriting": "Start writing..."
       }
     }
   },

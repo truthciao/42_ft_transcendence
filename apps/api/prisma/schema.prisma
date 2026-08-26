@@ -25,6 +25,7 @@ model User {
 
   ownedWorkspaces       Workspace[]
   workspaceMembers      WorkspaceMember[]
+  createdDocuments      Document[]
   sentSpaceRequests     WorkspaceInvite[] @relation("InviteSender")
   receivedSpaceRequests WorkspaceInvite[] @relation("InviteReceiver")
 
@@ -78,6 +79,7 @@ model Workspace {
   members     WorkspaceMember[]
   invites     WorkspaceInvite[]
   channels    Conversation[]
+  documents   Document[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 }
@@ -222,4 +224,21 @@ model Notification {
 
   @@index([recipientId, read])
   @@index([recipientId, createdAt])
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   @default("")
+  workspaceId Int
+  creatorId   Int
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  creator     User      @relation(fields: [creatorId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([creatorId])
 }

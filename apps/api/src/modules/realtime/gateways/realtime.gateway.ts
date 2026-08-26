@@ -22,6 +22,8 @@ import { SocketRegistryService } from '../services/ws-registry.service.js';
 import { WsAuthService } from '../services/ws-auth.service.js';
 import { getUserRoom } from '../utils/room-naming.util.js';
 import { WsZodValidationPipe } from '../pipes/ws-zod-validation.pipe.js';
+import { DocumentsService } from '../../documents/documents.service.js';
+import { getDocumentRoom } from '../utils/document-room-naming.util.js';
 
 @WebSocketGateway({
   cors: {
@@ -56,6 +58,7 @@ export class RealtimeGateway
     private readonly wsAuthService: WsAuthService,
     private readonly socketRegistry: SocketRegistryService,
     private readonly roomService: RealtimeRoomService,
+    private readonly documentsService: DocumentsService,
   ) {}
 
   afterInit(server: Server): void {
@@ -163,4 +166,81 @@ export class RealtimeGateway
       data: { room: dto.room, memberCount },
     };
   }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_JOIN)
+  async handleDocumentJoin(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: { documentId: number },
+  ): Promise<WsResponse<{ documentId: number }>> {
+    await this.documentsService.findByIdForUser(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const room = getDocumentRoom(dto.documentId);
+
+    await this.roomService.joinRoom(client, room);
+
+    return {
+      event: REALTIME_EVENTS.DOCUMENT_JOINED,
+      data: {
+        documentId: dto.documentId,
+      },
+    };
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_LEAVE)
+  async handleDocumentLeave(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: { documentId: number },
+  ): Promise<WsResponse<{ documentId: number }>> {
+    const room = getDocumentRoom(dto.documentId);
+
+    await this.roomService.leaveRoom(client, room);
+
+    return {
+      event: REALTIME_EVENTS.DOCUMENT_LEFT,
+      data: {
+        documentId: dto.documentId,
+      },
+    };
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_UPDATED)
+  async handleDocumentUpdate(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody()
+    dto: {
+      documentId: number;
+      title?: string;
+      content?: string;
+    },
+  ) {
+    const document = await this.documentsService.findByIdForUser(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const updated = await this.documentsService.update(
+      document.workspaceId,
+      dto.documentId,
+      {
+        title: dto.title,
+        content: dto.content,
+      },
+    );
+
+    const room = getDocumentRoom(dto.documentId);
+
+    client.to(room).emit(
+      REALTIME_EVENTS.DOCUMENT_UPDATED,
+      updated,
+    );
+
+    return {
+      event: REALTIME_EVENTS.DOCUMENT_UPDATED,
+      data: updated,
+    };
+  }
+
 }

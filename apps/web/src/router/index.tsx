@@ -37,6 +37,7 @@ import {
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 import { VirtualUsersPage } from '@/pages/VirtualUsersPage';
+import { RealtimeDocumentTest } from '@/components/documents/RealtimeDocumentTest';
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,8 @@ export const router = createBrowserRouter([
       { path: '/privacy', element: <PrivacyPolicyPage /> },
       { path: '/terms', element: <TermsOfServicePage /> },
       { path: '/virtual-users', element: <VirtualUsersPage />},
+      { path: '/realtime-test', element: <RealtimeDocumentTest />,
+}
     ],
   },
   {

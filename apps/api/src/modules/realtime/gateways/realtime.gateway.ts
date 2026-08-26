@@ -221,7 +221,7 @@ export class RealtimeGateway
       client.data.user.userId,
     );
 
-    const updated = await this.documentsService.update(
+    await this.documentsService.update(
       document.workspaceId,
       dto.documentId,
       {
@@ -232,14 +232,24 @@ export class RealtimeGateway
 
     const room = getDocumentRoom(dto.documentId);
 
+    const patch = {
+      documentId: dto.documentId,
+      ...(dto.title !== undefined && {
+        title: dto.title,
+      }),
+      ...(dto.content !== undefined && {
+        content: dto.content,
+      }),
+    };
+
     client.to(room).emit(
       REALTIME_EVENTS.DOCUMENT_UPDATED,
-      updated,
+      patch,
     );
 
     return {
       event: REALTIME_EVENTS.DOCUMENT_UPDATED,
-      data: updated,
+      data: patch,
     };
   }
 

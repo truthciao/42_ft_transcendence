@@ -24,11 +24,11 @@ export class FilesService {
   async deleteFile(fileId: string, userId: number) {
     const attachment = await this.prisma.attachment.findUnique({ where: { id: fileId } });
     if (!attachment) {
-      throw new NotFoundException('文件不存在');
+      throw new NotFoundException('FILE_NOT_FOUND');
     }
 
     if (attachment.uploaderId !== userId) {
-      throw new ForbiddenException('您没有权限删除此文件');
+      throw new ForbiddenException('PERMISSION_DENIED');
     }
 
     const filePath = path.join(process.cwd(), attachment.fileUrl);
@@ -37,6 +37,6 @@ export class FilesService {
     }
 
     await this.prisma.attachment.delete({ where: { id: fileId } });
-    return { message: '文件删除成功' };
+    return { message: 'FILE_DELETED_SUCCESSFULLY' };
   }
 }

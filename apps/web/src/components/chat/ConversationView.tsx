@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
 import { mergeMessages } from "@/lib/chat-messages"
 import type { InfiniteData } from "@tanstack/react-query";
+import { FileUpload, type AttachmentType } from '@/components/common/FileUpload';
 
 interface ConversationViewProps {
   conversationId: string;
@@ -185,10 +186,24 @@ export function ConversationView({
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
+      type: 'text'
     });
 
     setInputText('');
   }
+
+  // 发送文件消息
+  const handleFileUploadSuccess = (attachment: AttachmentType) => {
+    const socket = getSocket();
+    const messageType = attachment.fileType.startsWith('image/') ? 'image' : 'file';
+
+    socket.emit('chat:message:send', {
+      conversationId: Number(conversationId),
+      content: attachment.fileUrl, 
+      type: messageType,
+    });
+  };
+
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
@@ -204,11 +219,11 @@ export function ConversationView({
       >
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.loadingHistory')}
+            {t('chat.loadingHistory', 'Loading history...')}
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.empty')}
+            {t('chat.empty', 'No message history. Say hi below!')}
           </div>
         ) : (
           <>
@@ -221,8 +236,8 @@ export function ConversationView({
                   disabled={isFetchingNextPage}
                 >
                   {isFetchingNextPage
-                    ? 'Loading...'
-                    : 'Load older messages'}
+                    ? t('common.loading', 'Loading...')
+                    : t('chat.loadOlder', 'Load older messages')}
                 </Button>
               </div>
             )}
@@ -230,8 +245,8 @@ export function ConversationView({
             {messages.map((msg) => {
               const isMine = msg.senderId === currentUser?.id;
               const senderLabel = isMine
-                ? t('chat.me')
-                : (msg.sender?.username ?? t('chat.user'));
+                ? t('chat.me', 'Me')
+                : (msg.sender?.username ?? t('chat.user', 'User'));
 
               return (
                 <div
@@ -251,7 +266,17 @@ export function ConversationView({
                         : 'bg-accent text-accent-foreground'
                     }`}
                   >
-                    {msg.content}
+                    {/* 分支渲染：处理不同类型的消息内容 */}
+                    {msg.type === 'image' ? (
+                       <img src={msg.content} alt="attachment" className="max-w-full rounded-md cursor-pointer hover:opacity-90" />
+                    ) : msg.type === 'file' ? (
+                       <a href={msg.content} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 underline underline-offset-2">
+                         📎 {t('chat.downloadFile', 'Download File')}
+                       </a>
+                    ) : (
+                      msg.content
+                    )}
+
                   </div>
                 </div>
               );
@@ -261,20 +286,23 @@ export function ConversationView({
       </div>
 
       <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+
+          {/* 左侧：文件上传组件 */}
+          <FileUpload onUploadSuccess={handleFileUploadSuccess} context="chat" />
+          {/* 右侧：文本输入与发送按钮 */}
           <Input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={t('chat.placeholder')}
+            placeholder={t('chat.placeholder', 'Type a message...')}
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <Button type="submit">
-            {t('chat.send')}
+            {t('chat.send', 'Send')}
           </Button>
         </div>
       </form>
     </section>
   );
-
 }

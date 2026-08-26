@@ -292,7 +292,9 @@
     "routeTitle": "错误 {{status}}",
     "routeMessage": "无法加载此页面。",
     "retry": "重试",
-    "backHome": "返回首页"
+    "backHome": "返回首页",
+    "noPermission": "您没有权限执行此操作。",
+    "fileNotFound": "文件不存在或已被删除。"
   },
 
   "settings": {
@@ -341,6 +343,8 @@
     "chatWith": "与 {{friendName}} 聊天",
     "loadingHistory": "正在加载聊天记录...",
     "empty": "暂无聊天记录。在下方打个招呼吧！",
+    "loadOlder": "加载更早的消息",
+    "downloadFile": "下载文件",
     "user": "用户",
     "placeholder": "输入消息...",
     "send": "发送",
@@ -380,6 +384,12 @@
     "friendRequestAccepted": "{{username}} 接受了你的好友请求",
     "friendRequestRejected": "{{username}} 拒绝了你的好友请求",
     "friendRemoved": "{{username}} 将你移除了好友"
+  },
+
+  "fileUpload": {
+    "sizeLimit": "文件大小不能超过 5MB！",
+    "uploadFailed": "上传失败，请重试。",
+    "uploading": "上传中"
   },
 
   "footer": {

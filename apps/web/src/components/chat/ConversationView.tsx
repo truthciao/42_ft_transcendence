@@ -37,6 +37,8 @@ export function ConversationView({
 
   const previousScrollHeightRef = useRef<number | null>(null);
 
+  const shouldScrollToBottomRef = useRef(true);
+
   const {
     data,
     isLoading,
@@ -62,7 +64,18 @@ export function ConversationView({
 
   });
 
-    const handleLoadOlderMessages = () => {
+  const isNearBottom = (container: HTMLDivElement) => {
+    const threshold = 100;
+
+    return (
+      container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight <
+      threshold
+    );
+  };
+
+  const handleLoadOlderMessages = () => {
     const container = messagesContainerRef.current;
 
     if (!container || isFetchingNextPage || !hasNextPage) {
@@ -74,6 +87,24 @@ export function ConversationView({
     fetchNextPage();
   };
 
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const handleScroll = () => {
+      shouldScrollToBottomRef.current = isNearBottom(container);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const messages = data?.pages
     .flatMap((page) => page.messages)
     .sort(
@@ -81,7 +112,7 @@ export function ConversationView({
         new Date(a.createdAt).getTime() -
         new Date(b.createdAt).getTime(),
     ) ?? [];
-
+    
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
@@ -115,9 +146,10 @@ export function ConversationView({
       return;
     }
 
-    container.scrollTop = container.scrollHeight;
-
-  }, [conversationId, isLoading]);
+    if (shouldScrollToBottomRef.current) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [conversationId, isLoading, messages.length]);
 
   useEffect(() => {
     const socket = getSocket();

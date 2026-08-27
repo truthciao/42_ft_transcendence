@@ -4,14 +4,23 @@ import { getMyConversations, createConversationByUsername, type ConversationItem
 import { SecondarySidebar } from '../layout/SecondarySidebar';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Skeleton } from '../ui/skeleton';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../hooks/useAuth';
+import { getSocket } from '@/lib/realtime';
+import type { ChatMessage } from '@/api/chat';
+
+const API_BASE_URI =
+  import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export function ConversationListSidebar() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [usernameInput, setUsernameInput] = useState('');
+
+  const { user: currentUser } = useAuth();
+
   const navigate = useNavigate();
 
   const { t } = useTranslation();
@@ -36,6 +45,35 @@ export function ConversationListSidebar() {
   };
 
   useEffect(() => {
+  const socket = getSocket();
+
+  const handleMessageCreated = (message: ChatMessage) => {
+    setConversations((current) => {
+      const updated = current.map((conversation) =>
+        Number(conversation.id) === message.conversationId
+          ? {
+              ...conversation,
+              lastMessage: {
+                content: message.content,
+                createdAt: message.createdAt,
+                senderId: message.senderId,
+              },
+              updatedAt: message.createdAt,
+            }
+          : conversation,
+      );
+      return updated;
+    });
+  };
+
+  socket.on('chat:message:created', handleMessageCreated);
+
+  return () => {
+    socket.off('chat:message:created', handleMessageCreated);
+  };
+}, []);
+
+   useEffect(() => {
       fetchConversations();
 
       const handleFocus = () => {
@@ -121,6 +159,16 @@ export function ConversationListSidebar() {
                 const displayName = conv.name || t('chat.room', { id: conv.id });
                 const avatarLetter = displayName.charAt(0).toUpperCase();
 
+                const otherMember = conv.members?.find(
+                  (member) => member.userId !== currentUser?.id
+                );
+
+                const avatarUrl = otherMember?.user.profile?.avatarUrl
+                  ? `${API_BASE_URI}${otherMember.user.profile.avatarUrl}`
+                  : undefined; 
+
+                const lastMessage = conv.lastMessage;
+
                 return (
                   <div
                     key={conv.id}
@@ -134,6 +182,13 @@ export function ConversationListSidebar() {
                   >
                     <div className="font-medium flex items-center gap-2.5 min-w-0 flex-1">
                       <Avatar size="sm">
+                        {avatarUrl && (
+                          <AvatarImage
+                            src={avatarUrl}
+                            alt={displayName}
+                          />
+                        )}
+
                         <AvatarFallback
                           className={
                             conv.isFriend
@@ -156,6 +211,11 @@ export function ConversationListSidebar() {
                             {conv.isFriend ? '🤝' : '👤'}
                           </span>
                         </div>
+                          <span className="text-xs text-muted-foreground truncate">
+                            {lastMessage
+                              ? `${lastMessage.senderId === currentUser?.id ? t('chat.me') : displayName}: ${lastMessage.content}`
+                              : t('chat.empty')} 
+                          </span>
                       </div>
                     </div>
 

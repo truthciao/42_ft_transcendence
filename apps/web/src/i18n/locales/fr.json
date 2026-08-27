@@ -356,7 +356,7 @@
     "strangerChat": "Discussion avec un inconnu (nom d'utilisateur)",
     "usernamePlaceholder": "Entrez un nom d'utilisateur...",
     "chat": "Discuter",
-    "conversations": "Conversations",
+    "conversations": "Message direct",
     "friend": "Ami",
     "stranger": "Inconnu",
     "room": "Salon de discussion #{{id}}",

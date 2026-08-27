@@ -80,10 +80,23 @@ async findAllForUser(userId: number) {
               profile: {
                 select: {
                   displayName: true,
+                  avatarUrl: true,
                 },
               },
             },
           },
+        },
+      },
+
+      messages: {
+        orderBy: {
+          id: 'desc',
+        },
+        take: 1,
+        select: {
+          content: true,
+          createdAt: true,
+          senderId: true,
         },
       },
     },
@@ -117,6 +130,8 @@ async findAllForUser(userId: number) {
       }
     }
 
+  const lastMessage = conv.messages[0] ?? null;
+
     return {
       id: conv.id,
       type: conv.type,
@@ -124,6 +139,7 @@ async findAllForUser(userId: number) {
       isFriend,      
       createdAt: conv.createdAt,
       updatedAt: conv.updatedAt,
+      lastMessage,
       members: conv.members,
     };
   });

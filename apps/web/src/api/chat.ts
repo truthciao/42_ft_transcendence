@@ -25,6 +25,24 @@ export interface Conversation {
   isFriend?: boolean;
   createdAt?: string;
   updatedAt?: string;
+
+  lastMessage?: {
+    content: string;
+    createdAt: string;
+    senderId: number;
+  } | null;
+
+  members?: Array<{
+    userId: number;
+    user: {
+      id: number;
+      username: string;
+      profile?: {
+        displayName?: string;
+        avatarUrl?: string;
+      } | null;
+    };
+  }>;
 }
 
 export interface MessagePage {

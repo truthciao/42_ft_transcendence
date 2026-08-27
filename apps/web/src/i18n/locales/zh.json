@@ -181,6 +181,18 @@
           "placeholder": "general-discussion",
           "submitting": "创建中...",
           "submit": "创建"
+        },
+        "documents": "文档",
+        "newDocument": "新建文档",
+        "untitledDocument": "未命名文档",
+        "createDocument": {
+          "title": "创建文档",
+          "placeholder": "文档标题",
+          "cancel": "取消",
+          "creating": "创建中...",
+          "create": "创建",
+          "success": "文档创建成功",
+          "error": "文档创建失败"
         }
       },
       "index": {
@@ -260,6 +272,16 @@
             "error": "删除工作区失败"
           }
         }
+      },
+      "document": {
+        "back": "工作区",
+        "saving": "保存中...",
+        "saved": "已保存",
+        "saveError": "保存失败",
+        "notFound": "文档不存在",
+        "loadError": "无法加载此文档。",
+        "untitled": "无标题文档",
+        "startWriting": "开始写作..."
       }
     }
   },

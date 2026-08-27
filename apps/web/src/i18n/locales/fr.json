@@ -181,6 +181,18 @@
           "placeholder": "discussion-generale",
           "submitting": "Création...",
           "submit": "Créer"
+        },
+        "documents": "Documents",
+        "newDocument": "Nouveau document",
+        "untitledDocument": "Document sans titre",
+        "createDocument": {
+          "title": "Créer un document",
+          "placeholder": "Titre du document",
+          "cancel": "Annuler",
+          "creating": "Création...",
+          "create": "Créer",
+          "success": "Document créé",
+          "error": "Échec de la création du document"
         }
       },
       "index": {
@@ -260,6 +272,16 @@
             "error": "Échec de la suppression de l'espace"
           }
         }
+      },
+      "document": {
+        "back": "Espace de travail",
+        "saving": "Enregistrement...",
+        "saved": "Enregistré",
+        "saveError": "Échec de l'enregistrement",
+        "notFound": "Document introuvable",
+        "loadError": "Impossible de charger ce document.",
+        "untitled": "Document sans titre",
+        "startWriting": "Commencez à écrire..."
       }
     }
   },

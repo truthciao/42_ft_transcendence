@@ -5,7 +5,7 @@ import {
 } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { getSocket, disconnectSocket } from '@/lib/realtime';
+import { getSocket } from '@/lib/realtime';
 import { RealtimeContext } from './RealtimeContext';
 
 export function RealtimeProvider({
@@ -159,13 +159,13 @@ export function RealtimeProvider({
     );
 
     return () => {
-      socket.off('users:online', handleUsersOnline,);
+      socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
       socket.off('user:offline', handleOffline);
 
       socket.off(
         'friend-request:received',
-        handleFriendRequest
+        handleFriendRequest,
       );
 
       socket.off(
@@ -188,7 +188,6 @@ export function RealtimeProvider({
         handleConversationCreated,
       );
 
-      disconnectSocket();
       setOnlineUserIds(new Set());
     };
   }, [loading, user, queryClient]);

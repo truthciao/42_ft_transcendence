@@ -12,12 +12,9 @@ import {
   updateDocument,
   type Document,
 } from '@/api/documents';
-import {
-  updateDocument as updateDocumentRealtime,
-  useDocumentRealtime,
-  type DocumentUpdatePatch,
-} from '@/hooks/useDocumentRealtime';
 import { useTranslation } from 'react-i18next';
+import { DocumentEditor } from '@/components/documents/DocumentEditor';
+import { getSocket } from '@/lib/realtime';
 
 type SaveStatus = 'saved' | 'saving' | 'error';
 
@@ -54,49 +51,6 @@ export function DocumentPage() {
 
   const blocker = useBlocker(hasPendingChanges);
 
-  const handleUpdated = useCallback(
-    (data: DocumentUpdatePatch) => {
-      if (data.title !== undefined) {
-        setTitle(data.title);
-      }
-
-      if (data.content !== undefined) {
-        setContent(data.content);
-      }
-
-      queryClient.setQueryData<Document[]>(
-        documentKeys.workspace(workspaceId),
-        (documents) => {
-          if (!documents) {
-            return documents;
-          }
-
-          return documents.map((document) =>
-            document.id === documentId
-              ? {
-                  ...document,
-                  ...data,
-                }
-              : document,
-          );
-        },
-      );
-
-      queryClient.setQueryData<Document>(
-        documentKeys.detail(workspaceId, documentId),
-        (document) =>
-          document
-            ? {
-                ...document,
-                ...data,
-              }
-            : document,
-      );
-    },
-    [workspaceId, documentId, queryClient],
-  );
-
-  useDocumentRealtime(documentId, handleUpdated);
   useEffect(() => {
     if (!document) {
       return;
@@ -262,52 +216,57 @@ export function DocumentPage() {
     documentId,
     queryClient,
   ]);
+useEffect(() => {
+  const socket = getSocket();
 
+  const handleTitleUpdated = (data: {
+    documentId: number;
+    title: string;
+  }) => {
+    if (data.documentId !== documentId) {
+      return;
+    }
+
+    setTitle(data.title);
+  };
+
+  socket.on(
+    'document:title-updated',
+    handleTitleUpdated,
+  );
+
+  return () => {
+    socket.off(
+      'document:title-updated',
+      handleTitleUpdated,
+    );
+  };
+}, [documentId]);
   const handleBack = () => {
     navigate(`/app/spaces/${workspaceId}`);
   };
 
-  const handleTitleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const value = event.target.value;
+const handleTitleChange = (
+  event: React.ChangeEvent<HTMLInputElement>,
+) => {
+  const value = event.target.value;
 
-    setTitle(value);
+  setTitle(value);
 
-    // realtime
-    updateDocumentRealtime(
-      {
-        title: value,
-      },
+  const socket = getSocket();
+
+  socket.emit(
+    'document:title-updated',
+    {
       documentId,
-    );
-
-    // persistence
-    scheduleSave({
       title: value,
-    });
-  };
+    },
+  );
 
-  const handleContentChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const value = event.target.value;
-
-    setContent(value);
-
-    // realtime
-    updateDocumentRealtime(
-      {
-        content: value,
-      },
-      documentId,
-    );
-
-    // persistence
-    scheduleSave({
-      content: value,
-    });
-  };
+  scheduleSave({
+    title: value,
+  });
+};
 
   if (isLoading) {
     return (
@@ -377,11 +336,10 @@ export function DocumentPage() {
           className="mb-6 w-full border-none bg-transparent text-4xl font-bold tracking-tight outline-none placeholder:text-muted-foreground"
         />
 
-        <textarea
-          value={content}
-          onChange={handleContentChange}
-          placeholder={t('workspaces.pages.document.startWriting')}
-          className="min-h-100 flex-1 resize-none border-none bg-transparent text-base leading-8 outline-none placeholder:text-muted-foreground"
+        <DocumentEditor
+          documentId={documentId}
+          content={content}
+          onChange={setContent}
         />
       </main>
     </div>

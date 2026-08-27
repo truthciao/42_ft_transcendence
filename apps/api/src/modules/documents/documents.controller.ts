@@ -7,9 +7,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
-
 import { DocumentsService } from './documents.service.js';
 import { CreateDocumentDto } from './dto/create-document.dto.js';
 import { UpdateDocumentDto } from './dto/update-document.dto.js';
@@ -22,10 +23,17 @@ import type {
   WorkspaceMember,
 } from '../../generated/prisma/client.js';
 
+import type { Request } from 'express';
+
+import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { WorkspaceRoleGuard } from '../workspaces/guards/workspace-role.guard.js';
 import { CurrentMembership } from '../workspaces/decorators/current-membership.decorator.js';
 import { minWorkspaceRole } from '../workspaces/decorators/min-workspace-role.decorator.js';
+
+interface AuthenticatedRequest extends Request {
+  user: AuthenticatedUser;
+}
 
 @UseGuards(JwtAuthGuard)
 @Controller('workspaces/:workspaceId/documents')
@@ -91,4 +99,39 @@ export class DocumentsController {
       membership,
     );
   }
+
+  @Get(':documentId/state')
+  async getYDocState(
+    @Param('documentId', ParseIntPipe) documentId: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const state = await this.documents.getYDocState(
+      documentId,
+      req.user.userId,
+    );
+
+    return {
+      state: Buffer.from(state).toString('base64'),
+    };
+  }
+
+  @Put(':documentId/state')
+  async saveYDocState(
+    @Param('documentId', ParseIntPipe) documentId: number,
+   @Req() req: AuthenticatedRequest,
+    @Body() body: { state: string },
+  ) {
+    const state = Buffer.from(body.state, 'base64');
+
+    await this.documents.saveYDocState(
+      documentId,
+      req.user.userId,
+      state,
+    );
+
+    return {
+      success: true,
+    };
+  }
+
 }

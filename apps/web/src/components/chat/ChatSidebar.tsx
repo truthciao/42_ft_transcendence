@@ -45,52 +45,112 @@ export function ConversationListSidebar() {
   };
 
   useEffect(() => {
-  const socket = getSocket();
+    const socket = getSocket();
 
-  const handleMessageCreated = (message: ChatMessage) => {
-    setConversations((current) => {
-      const updated = current.map((conversation) =>
-        Number(conversation.id) === message.conversationId
-          ? {
-              ...conversation,
-              lastMessage: {
-                content: message.content,
-                createdAt: message.createdAt,
-                senderId: message.senderId,
-              },
-              updatedAt: message.createdAt,
-            }
-          : conversation,
+    const currentConversationId = Number(
+      location.pathname.split('/').pop(),
+    );
+
+    const handleMessageCreated = (message: ChatMessage) => {
+      setConversations((current) =>
+        current.map((conversation) => {
+          if (Number(conversation.id) !== message.conversationId) {
+            return conversation;
+          }
+
+          const isMine = message.senderId === currentUser?.id;
+
+          const isCurrentConversation =
+            currentConversationId === message.conversationId;
+
+          const currentUnreadCount =
+            conversation.unreadCount ?? 0;
+
+          return {
+            ...conversation,
+
+            lastMessage: {
+              id: message.id,
+              content: message.content,
+              createdAt: message.createdAt,
+              senderId: message.senderId,
+            },
+
+            updatedAt: message.createdAt,
+
+            unreadCount:
+              isMine || isCurrentConversation
+                ? 0
+                : currentUnreadCount + 1,
+          };
+        }),
       );
-      return updated;
-    });
-  };
+    };
 
-  socket.on('chat:message:created', handleMessageCreated);
+    socket.on('chat:message:created', handleMessageCreated);
 
-  return () => {
-    socket.off('chat:message:created', handleMessageCreated);
-  };
-}, []);
+    return () => {
+      socket.off('chat:message:created', handleMessageCreated);
+    };
+  }, [currentUser?.id, location.pathname]);
 
-   useEffect(() => {
+
+  useEffect(() => {
+    fetchConversations();
+
+    const handleRefreshConversations = () => {
       fetchConversations();
+    };
 
-      const handleFocus = () => {
-        fetchConversations();
-      };
+    window.addEventListener(
+      'refresh_conversations',
+      handleRefreshConversations,
+    );
 
-      const handleRefreshConversations = () => {
-        fetchConversations();
-      };
+    return () => {
+      window.removeEventListener(
+        'refresh_conversations',
+        handleRefreshConversations,
+      );
+    };
+  }, []);
 
-      window.addEventListener('focus', handleFocus);
+  useEffect(() => {
+    const handleConversationRead = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        conversationId: number;
+      }>;
 
-      window.addEventListener('refresh_conversations', handleRefreshConversations);
-      return () => {
-        window.removeEventListener('focus', handleFocus);
-        window.removeEventListener('refresh_conversations', handleRefreshConversations);
-      };
+      const conversationId = customEvent.detail.conversationId;
+
+      setConversations((current) =>
+        current.map((conversation) => {
+          if (Number(conversation.id) !== conversationId) {
+            return conversation;
+          }
+
+          const lastMessage = conversation.lastMessage;
+
+          return {
+            ...conversation,
+            lastReadMessageId: lastMessage?.id ?? null,
+            unreadCount: 0,
+          };
+        }),
+      );
+    };
+
+    window.addEventListener(
+      'conversation_read',
+      handleConversationRead,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'conversation_read',
+        handleConversationRead,
+      );
+    };
   }, []);
 
     const formatMessageTime = (dateString: string) => {
@@ -204,6 +264,8 @@ export function ConversationListSidebar() {
                   : undefined; 
 
                 const lastMessage = conv.lastMessage;
+ 
+                const unreadCount = conv.unreadCount ?? 0;
 
                 const lastMessageTime = lastMessage
                     ? formatMessageTime(lastMessage.createdAt)
@@ -212,37 +274,65 @@ export function ConversationListSidebar() {
                 return (
                   <div
                     key={conv.id}
-                  onClick={() => {
-                    navigate(`/app/chat/${conv.id}`, {
-                      state: { friendName: conv.name },
-                    });
-                  }}
+                 onClick={() => {
+                  setConversations((current) =>
+                    current.map((conversation) =>
+                      Number(conversation.id) === Number(conv.id)
+                        ? {
+                            ...conversation,
+                            unreadCount: 0,
+                            lastReadMessageId: conversation.lastMessage?.id ?? null,
+                          }
+                        : conversation,
+                    ),
+                  );
 
+                  navigate(`/app/chat/${conv.id}`, {
+                    state: { friendName: conv.name },
+                  });
+                }} 
+                           
                     className="flex items-center justify-between rounded-md px-2.5 py-2.5 text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors group"
                   >
                     <div className="font-medium flex items-center gap-2.5 min-w-0 flex-1">
-                      <Avatar size="sm">
-                        {avatarUrl && (
-                          <AvatarImage
-                            src={avatarUrl}
-                            alt={displayName}
-                          />
-                        )}
+                      <div className="relative shrink-0">
+                        <Avatar className="size-10">
+                          {avatarUrl && (
+                            <AvatarImage
+                              src={avatarUrl}
+                              alt={displayName}
+                            />
+                          )}
 
-                        <AvatarFallback
-                          className={
-                            conv.isFriend
-                              ? 'bg-primary/10 text-primary'
-                              : 'bg-muted text-muted-foreground'
-                          }
-                        >
-                          {avatarLetter}
-                        </AvatarFallback>
-                      </Avatar>
+                          <AvatarFallback
+                            className={
+                              conv.isFriend
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-muted text-muted-foreground'
+                            }
+                          >
+                            {avatarLetter}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        {unreadCount > 0 && (
+                          <span
+                            className="absolute -right-0.5 -bottom-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-background"
+                            aria-label={`${unreadCount} unread messages`}
+                          >
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                          </span>
+                        )}
+                      </div>
+
                         <div className="flex flex-col min-w-0 flex-1">
 
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-medium truncate">
+                            <span
+                              className={`text-sm truncate ${
+                                unreadCount > 0 ? 'font-bold' : 'font-medium'
+                              }`}
+                            >
                               {displayName}
                             </span>
                             <span
@@ -253,8 +343,7 @@ export function ConversationListSidebar() {
                               }`}
                             >
                               {conv.isFriend ? t('chat.friend') : t('chat.stranger')}
-                            </span>
-                                                        
+                            </span> 
                           </div>
 
                           <div className="flex items-center justify-between gap-2">

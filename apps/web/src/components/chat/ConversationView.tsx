@@ -9,7 +9,11 @@ import {
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { getSocket } from "@/lib/realtime";
-import { getConversationMessages, type ChatMessage, type MessagePage } from "@/api/chat";
+import { 
+  getConversationMessages,
+  markConversationAsRead,
+  type ChatMessage,
+  type MessagePage } from "@/api/chat";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
@@ -193,6 +197,16 @@ export function ConversationView({
         };
       },
     );
+
+    markConversationAsRead(conversationId)
+      .then(() => {
+        window.dispatchEvent(
+          new CustomEvent('refresh_conversations'),
+        );
+      })
+      .catch((error) => {
+        console.error('Failed to mark conversation as read:', error);
+      });
   };
 
     socket.on('chat:message:created', handleMessageCreated);
@@ -202,6 +216,23 @@ export function ConversationView({
       socket.off('connect', joinConversation);
     };
   }, [conversationId, queryClient]);
+
+  useEffect(() => {
+    markConversationAsRead(conversationId)
+      .then(() => {
+        window.dispatchEvent(
+          new CustomEvent('conversation_read', {
+            detail: {
+              conversationId: Number(conversationId),
+            },
+          }),
+        );
+      })
+      .catch((error) => {
+        console.error('Failed to mark conversation as read:', error);
+      });
+  }, [conversationId]);
+
 
   function handleSendMessage(e: SubmitEvent) {
     e.preventDefault();

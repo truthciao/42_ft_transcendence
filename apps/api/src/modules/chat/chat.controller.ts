@@ -51,15 +51,13 @@ export class ChatController {
   }
 
   @Patch('conversations/:id/message')
-  markAsRead(
+  async markAsRead(
     @CurrentUser('userId') userId: number,
     @Param('id', ParseIntPipe) id: number,
-    @Body('messageId', ParseIntPipe) messageId: number,
   ) {
-    return this.chatService.markAsRead(
-      userId, 
-      id,
-    );
+    await this.chatService.markAsRead(userId, id);
+
+    return { success: true };
   }
 
 }

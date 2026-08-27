@@ -80,10 +80,24 @@ async findAllForUser(userId: number) {
               profile: {
                 select: {
                   displayName: true,
+                  avatarUrl: true,
                 },
               },
             },
           },
+        },
+      },
+
+      messages: {
+        orderBy: {
+          id: 'desc',
+        },
+        take: 1,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          senderId: true,
         },
       },
     },
@@ -101,32 +115,48 @@ async findAllForUser(userId: number) {
     );
 
     return conversations.map((conv) => {
-    let conversationName = conv.name;
-    let isFriend = false;
+      let conversationName = conv.name;
+      let isFriend = false;
 
       if (conv.type === ConversationType.DIRECT || !conv.name) {
-        const otherMember = conv.members.find((m) => m.userId !== userId);
+        const otherMember = conv.members.find(
+          (m) => m.userId !== userId,
+        );
+
         const otherUser = otherMember?.user;
 
-      if (otherUser) {
-        isFriend = friendIdSet.has(otherUser.id);
-        conversationName =
-          otherUser?.profile?.displayName ||
-          otherUser?.username ||
-          `Chat Room #${conv.id}`;
-      }
-    }
+        if (otherUser) {
+          isFriend = friendIdSet.has(otherUser.id);
 
-    return {
-      id: conv.id,
-      type: conv.type,
-      name: conversationName, 
-      isFriend,      
-      createdAt: conv.createdAt,
-      updatedAt: conv.updatedAt,
-      members: conv.members,
-    };
-  });
+          conversationName =
+            otherUser.profile?.displayName ||
+            otherUser.username ||
+            `Chat Room #${conv.id}`;
+        }
+      }
+
+      const lastMessage = conv.messages[0] ?? null;
+
+
+      const currentMember = conv.members.find(
+        (member) => member.userId === userId,
+      );
+
+      const lastReadMessageId =
+        currentMember?.lastReadMessageId ?? null;
+
+      return {
+        id: conv.id,
+        type: conv.type,
+        name: conversationName,
+        isFriend,
+        createdAt: conv.createdAt,
+        updatedAt: conv.updatedAt,
+        lastMessage,
+        lastReadMessageId,
+        members: conv.members,
+      };
+  }); 
 }
 
 async getMessages(
@@ -200,6 +230,38 @@ async getMessages(
     });
 
     return message;
+  }
+
+  async markAsRead(userId: number, conversationId: number) {
+    await this.assertMember(conversationId, userId);
+
+    const lastMessage = await this.prisma.message.findFirst({
+      where: {
+        conversationId,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!lastMessage) {
+      return;
+    }
+
+    await this.prisma.conversationMember.update({
+      where: {
+        conversationId_userId: {
+          conversationId,
+          userId,
+        },
+      },
+      data: {
+        lastReadMessageId: lastMessage.id,
+      },
+    });
   }
 
   async verifyMembership(conversationId: number, userId: number) {

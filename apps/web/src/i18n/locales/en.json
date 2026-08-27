@@ -356,7 +356,7 @@
     "strangerChat": "Stranger Chat (Username)",
     "usernamePlaceholder": "Enter a username...",
     "chat": "Chat",
-    "conversations": "Conversations",
+    "conversations": "Direct Messages",
     "friend": "Friend",
     "stranger": "Stranger",
     "room" : "Chat Room #{{id}}",
@@ -366,7 +366,8 @@
     "user": "User",
     "placeholder": "Type a message...",
     "send": "Send",
-    "me": "Me"
+    "me": "Me",
+    "yesterday": "yesterday"
   },
 
    "showcase": {

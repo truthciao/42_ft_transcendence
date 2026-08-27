@@ -162,7 +162,7 @@ model ConversationMember {
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
   joinedAt       DateTime     @default(now())
-
+  lastReadMessageId        Int?
   @@unique([conversationId, userId])
 }
 

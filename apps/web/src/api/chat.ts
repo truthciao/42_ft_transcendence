@@ -1,4 +1,4 @@
-import { httpGet, httpPost } from '../lib/http'; // 复用项目已有的通用请求工具
+import { httpGet, httpPatch, httpPost } from '../lib/http'; // 复用项目已有的通用请求工具
 
 export interface ChatMessage {
   id: number;
@@ -25,6 +25,28 @@ export interface Conversation {
   isFriend?: boolean;
   createdAt?: string;
   updatedAt?: string;
+
+  lastReadMessageId?: number | null;
+  unreadCount?: number;
+
+  lastMessage?: {
+    id: number,
+    content: string;
+    createdAt: string;
+    senderId: number;
+  } | null;
+
+  members?: Array<{
+    userId: number;
+    user: {
+      id: number;
+      username: string;
+      profile?: {
+        displayName?: string;
+        avatarUrl?: string;
+      } | null;
+    };
+  }>;
 }
 
 export interface MessagePage {
@@ -65,5 +87,13 @@ export async function getConversationMessages(
 
   return httpGet<MessagePage>(
     `/chat/conversations/${conversationId}/message?${params.toString()}`,
+  );
+}
+
+export async function markConversationAsRead(
+  conversationId: string | number,
+) {
+  return httpPatch(
+    `/chat/conversations/${conversationId}/message`,
   );
 }

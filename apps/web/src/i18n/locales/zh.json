@@ -356,7 +356,7 @@
     "strangerChat": "陌生人聊天（用户名）",
     "usernamePlaceholder": "输入用户名...",
     "chat": "聊天",
-    "conversations": "会话",
+    "conversations": "私信",
     "friend": "好友",
     "stranger": "陌生人",
     "room": "聊天室 #{{id}}",
@@ -366,7 +366,8 @@
     "user": "用户",
     "placeholder": "输入消息...",
     "send": "发送",
-    "me": "我"
+    "me": "我",
+    "yesterday": "昨天"
   },
 
 

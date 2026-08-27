@@ -9,7 +9,11 @@ import {
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { getSocket } from "@/lib/realtime";
-import { getConversationMessages, type ChatMessage, type MessagePage } from "@/api/chat";
+import { 
+  getConversationMessages,
+  markConversationAsRead,
+  type ChatMessage,
+  type MessagePage } from "@/api/chat";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
@@ -37,6 +41,8 @@ export function ConversationView({
 
   const previousScrollHeightRef = useRef<number | null>(null);
 
+  const shouldScrollToBottomRef = useRef(true);
+
   const {
     data,
     isLoading,
@@ -62,7 +68,18 @@ export function ConversationView({
 
   });
 
-    const handleLoadOlderMessages = () => {
+  const isNearBottom = (container: HTMLDivElement) => {
+    const threshold = 100;
+
+    return (
+      container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight <
+      threshold
+    );
+  };
+
+  const handleLoadOlderMessages = () => {
     const container = messagesContainerRef.current;
 
     if (!container || isFetchingNextPage || !hasNextPage) {
@@ -74,6 +91,24 @@ export function ConversationView({
     fetchNextPage();
   };
 
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const handleScroll = () => {
+      shouldScrollToBottomRef.current = isNearBottom(container);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const messages = data?.pages
     .flatMap((page) => page.messages)
     .sort(
@@ -81,7 +116,7 @@ export function ConversationView({
         new Date(a.createdAt).getTime() -
         new Date(b.createdAt).getTime(),
     ) ?? [];
-
+    
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
@@ -115,9 +150,10 @@ export function ConversationView({
       return;
     }
 
-    container.scrollTop = container.scrollHeight;
-
-  }, [conversationId, isLoading]);
+    if (shouldScrollToBottomRef.current) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [conversationId, isLoading, messages.length]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -161,6 +197,16 @@ export function ConversationView({
         };
       },
     );
+
+    markConversationAsRead(conversationId)
+      .then(() => {
+        window.dispatchEvent(
+          new CustomEvent('refresh_conversations'),
+        );
+      })
+      .catch((error) => {
+        console.error('Failed to mark conversation as read:', error);
+      });
   };
 
     socket.on('chat:message:created', handleMessageCreated);
@@ -170,6 +216,23 @@ export function ConversationView({
       socket.off('connect', joinConversation);
     };
   }, [conversationId, queryClient]);
+
+  useEffect(() => {
+    markConversationAsRead(conversationId)
+      .then(() => {
+        window.dispatchEvent(
+          new CustomEvent('conversation_read', {
+            detail: {
+              conversationId: Number(conversationId),
+            },
+          }),
+        );
+      })
+      .catch((error) => {
+        console.error('Failed to mark conversation as read:', error);
+      });
+  }, [conversationId]);
+
 
   function handleSendMessage(e: SubmitEvent) {
     e.preventDefault();
@@ -245,7 +308,7 @@ export function ConversationView({
                   </span>
 
                   <div
-                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
+                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
                       isMine
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-accent text-accent-foreground'

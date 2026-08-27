@@ -93,6 +93,42 @@ export function ConversationListSidebar() {
       };
   }, []);
 
+    const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+
+    const isToday =
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear();
+
+    if (isToday) {
+      return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    const isYesterday =
+      date.getDate() === yesterday.getDate() &&
+      date.getMonth() === yesterday.getMonth() &&
+      date.getFullYear() === yesterday.getFullYear();
+
+    if (isYesterday) {
+      return t('chat.yesterday');
+    }
+
+    return date.toLocaleDateString([], {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
+
   const handleStrangerChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const targetUsername = usernameInput.trim();
@@ -169,6 +205,10 @@ export function ConversationListSidebar() {
 
                 const lastMessage = conv.lastMessage;
 
+                const lastMessageTime = lastMessage
+                    ? formatMessageTime(lastMessage.createdAt)
+                  : '';
+
                 return (
                   <div
                     key={conv.id}
@@ -199,33 +239,41 @@ export function ConversationListSidebar() {
                           {avatarLetter}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-medium truncate">
-                            {displayName}
-                          </span>
-                          <span 
-                            className="text-xs shrink-0" 
-                            title={conv.isFriend ? t('chat.friend') : t('chat.stranger')}
-                          >
-                            {conv.isFriend ? '🤝' : '👤'}
-                          </span>
-                        </div>
-                          <span className="text-xs text-muted-foreground truncate">
-                            {lastMessage
-                              ? `${lastMessage.senderId === currentUser?.id ? t('chat.me') : displayName}: ${lastMessage.content}`
-                              : t('chat.empty')} 
-                          </span>
-                      </div>
-                    </div>
+                        <div className="flex flex-col min-w-0 flex-1">
 
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 font-normal ${
-                      conv.isFriend 
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
-                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                    }`}>
-                      {conv.isFriend ? t('chat.friend') : t('chat.stranger')}
-                    </span>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-medium truncate">
+                              {displayName}
+                            </span>
+                            <span
+                              className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 font-normal ${
+                                conv.isFriend
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                              }`}
+                            >
+                              {conv.isFriend ? t('chat.friend') : t('chat.stranger')}
+                            </span>
+                                                        
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs text-muted-foreground truncate min-w-0">
+                              {lastMessage
+                                ? `${lastMessage.senderId === currentUser?.id
+                                    ? t('chat.me')
+                                    : displayName}: ${lastMessage.content}`
+                                : t('chat.empty')}
+                            </span>
+
+                            {lastMessageTime && (
+                              <span className="text-[10px] text-muted-foreground shrink-0">
+                                {lastMessageTime}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                    </div>
                   </div>
                 );
               })}

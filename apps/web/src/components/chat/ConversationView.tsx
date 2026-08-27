@@ -277,7 +277,7 @@ export function ConversationView({
                   </span>
 
                   <div
-                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
+                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
                       isMine
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-accent text-accent-foreground'

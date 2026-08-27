@@ -366,7 +366,8 @@
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
     "send": "Envoyer",
-    "me": "Moi"
+    "me": "Moi",
+    "yesterday": "Hier"
   },
 
   "showcase": {

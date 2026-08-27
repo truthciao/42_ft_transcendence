@@ -218,6 +218,40 @@ async getMessages(
     return message;
   }
 
+  async markAsRead(userId: number, conversationId: number) {
+    await this.assertMember(conversationId, userId);
+
+    const lastMessage = await this.prisma.message.findFirst({
+      where: {
+        conversationId,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!lastMessage) {
+      return;
+    }
+
+    await this.prisma.conversationMember.update({
+      where: {
+        conversationId_userId: {
+          conversationId,
+          userId,
+        },
+      },
+      data: {
+        lastReadMessageId: lastMessage.id,
+      },
+    });
+  }
+
+
+
   async verifyMembership(conversationId: number, userId: number) {
     return this.assertMember(conversationId, userId);
   }

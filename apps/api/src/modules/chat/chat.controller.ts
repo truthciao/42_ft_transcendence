@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -48,4 +49,17 @@ export class ChatController {
   ) {
     return this.chatService.getMessages(id, userId, query);
   }
+
+  @Patch('conversations/:id/message')
+  markAsRead(
+    @CurrentUser('userId') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body('messageId', ParseIntPipe) messageId: number,
+  ) {
+    return this.chatService.markAsRead(
+      userId, 
+      id,
+    );
+  }
+
 }

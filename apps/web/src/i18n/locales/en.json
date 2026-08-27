@@ -366,7 +366,8 @@
     "user": "User",
     "placeholder": "Type a message...",
     "send": "Send",
-    "me": "Me"
+    "me": "Me",
+    "yesterday": "yesterday"
   },
 
    "showcase": {

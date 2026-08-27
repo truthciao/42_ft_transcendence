@@ -1,10 +1,20 @@
-import { type SubmitEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type SubmitEvent,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { getSocket } from "@/lib/realtime";
-import { getConversationMessages, type ChatMessage } from "@/api/chat";
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { getConversationMessages, type ChatMessage, type MessagePage } from "@/api/chat";
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
+import { mergeMessages } from "@/lib/chat-messages"
+import type { InfiniteData } from "@tanstack/react-query";
 
 interface ConversationViewProps {
   conversationId: string;
@@ -12,49 +22,111 @@ interface ConversationViewProps {
   headerIcon?: ReactNode;
 }
 
-export function ConversationView({ conversationId, title, headerIcon }: ConversationViewProps) {
+export function ConversationView({
+  conversationId,
+  title,
+  headerIcon,
+}: ConversationViewProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
+  const queryClient = useQueryClient();
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const previousScrollHeightRef = useRef<number | null>(null);
 
-    async function fetchMessages() {
-      try {
-        setIsLoading(true);
-        const data = await getConversationMessages(conversationId as string);
-        if(!cancelled)
-          setMessages(data);
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-      } finally {
-        if (!cancelled)
-          setIsLoading(false);
-      }
+  const {
+    data,
+    isLoading,
+    //isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['chat-messages', conversationId],
+
+    queryFn: ({ pageParam }) =>
+      getConversationMessages(
+        conversationId,
+        pageParam,
+        30,
+      ),
+
+    initialPageParam: undefined as number | undefined,
+
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined;
+    },
+
+  });
+
+    const handleLoadOlderMessages = () => {
+    const container = messagesContainerRef.current;
+
+    if (!container || isFetchingNextPage || !hasNextPage) {
+      return;
     }
 
-    fetchMessages();
-    return () => {
-      cancelled = true;
+    previousScrollHeightRef.current = container.scrollHeight;
+
+    fetchNextPage();
+  };
+
+  const messages = data?.pages
+    .flatMap((page) => page.messages)
+    .sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() -
+        new Date(b.createdAt).getTime(),
+    ) ?? [];
+
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current;
+
+    if (!container) {
+      return;
     }
-  }, [conversationId]);
+
+    const previousScrollHeight = previousScrollHeightRef.current;
+
+    if (previousScrollHeight === null) {
+      return;
+    }
+
+    const heightDifference =
+      container.scrollHeight - previousScrollHeight;
+
+    container.scrollTop += heightDifference;
+
+    previousScrollHeightRef.current = null;
+ 
+  }, [messages]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth'})
-  }, [messages])
+    const container = messagesContainerRef.current;
+
+    if (!container || isLoading) {
+      return;
+    }
+
+    if (previousScrollHeightRef.current !== null) {
+      return;
+    }
+
+    container.scrollTop = container.scrollHeight;
+
+  }, [conversationId, isLoading]);
 
   useEffect(() => {
     const socket = getSocket();
 
     const joinConversation = () => {
-      socket.emit('chat:conversation:join', { conversationId: Number(conversationId) });
-    }
+      socket.emit('chat:conversation:join', {
+        conversationId: Number(conversationId),
+      });
+    };
 
     if (socket.connected) {
       joinConversation();
@@ -62,34 +134,61 @@ export function ConversationView({ conversationId, title, headerIcon }: Conversa
       socket.once('connect', joinConversation);
     }
 
-    const handleMessageCreated = (message: ChatMessage) => {
-      if (message.conversationId.toString() !== conversationId)
-        return;
-      setMessages((prev) => [...prev, message]);
+  const handleMessageCreated = (message: ChatMessage) => {
+    if (message.conversationId.toString() !== conversationId) {
+      return;
     }
+
+    queryClient.setQueryData<InfiniteData<MessagePage>>(
+      ['chat-messages', conversationId],
+      (oldData) => {
+        if (!oldData) {
+          return oldData;
+        }
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page, index) => {
+            if (index !== 0) {
+              return page;
+            }
+
+            return {
+              ...page,
+              messages: mergeMessages(page.messages, message),
+            };
+          }),
+        };
+      },
+    );
+  };
 
     socket.on('chat:message:created', handleMessageCreated);
 
     return () => {
       socket.off('chat:message:created', handleMessageCreated);
       socket.off('connect', joinConversation);
-    }
-  }, [conversationId]);
+    };
+  }, [conversationId, queryClient]);
 
   function handleSendMessage(e: SubmitEvent) {
     e.preventDefault();
+
     const content = inputText.trim();
-    if (!content)
+
+    if (!content) {
       return;
+    }
 
     const socket = getSocket();
+
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
     });
+
     setInputText('');
   }
-
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
@@ -99,7 +198,10 @@ export function ConversationView({ conversationId, title, headerIcon }: Conversa
         </h1>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4">
+      <div
+        ref={messagesContainerRef}
+        className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4"
+      >
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
             {t('chat.loadingHistory')}
@@ -109,35 +211,53 @@ export function ConversationView({ conversationId, title, headerIcon }: Conversa
             {t('chat.empty')}
           </div>
         ) : (
-          messages.map((msg) => {
-            const isMine = msg.senderId === currentUser?.id;
-            const senderLabel = isMine ? t('chat.me') : (msg.sender?.username ?? t('chat.user'));
+          <>
+            {hasNextPage && (
+              <div className="flex justify-center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={handleLoadOlderMessages}
+                  disabled={isFetchingNextPage}
+                >
+                  {isFetchingNextPage
+                    ? 'Loading...'
+                    : 'Load older messages'}
+                </Button>
+              </div>
+            )}
 
-            return (
-              <div
-                key={msg.id}
-                className={`flex flex-col mb-2 ${
-                  isMine ? 'items-end' : 'items-start'
-                }`}
-              >
-                <span className="text-[10px] text-muted-foreground mb-1">
-                  {senderLabel}
-                </span>
+            {messages.map((msg) => {
+              const isMine = msg.senderId === currentUser?.id;
+              const senderLabel = isMine
+                ? t('chat.me')
+                : (msg.sender?.username ?? t('chat.user'));
 
+              return (
                 <div
-                  className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
-                    isMine
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-accent text-accent-foreground'
+                  key={msg.id}
+                  className={`flex flex-col mb-2 ${
+                    isMine ? 'items-end' : 'items-start'
                   }`}
                 >
-                  {msg.content}
+                  <span className="text-[10px] text-muted-foreground mb-1">
+                    {senderLabel}
+                  </span>
+
+                  <div
+                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm ${
+                      isMine
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-accent text-accent-foreground'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">

@@ -153,7 +153,7 @@ async findAllForUser(userId: number) {
         createdAt: conv.createdAt,
         updatedAt: conv.updatedAt,
         lastMessage,
-        lastReadMessageId: currentMember?.lastReadMessageId ?? null,
+        lastReadMessageId,
         members: conv.members,
       };
   }); 

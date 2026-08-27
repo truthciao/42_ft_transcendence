@@ -158,6 +158,26 @@ export function RealtimeProvider({
       handleConversationCreated,
     );
 
+    socket.on(
+      'workspace-invite:received',
+      handleWorkspaceInviteReceived,
+    );
+
+    socket.on(
+      'workspace-invite:accepted',
+      handleWorkspaceInviteAccepted,
+    );
+
+    socket.on(
+      'workspace-member:removed',
+      handleWorkspaceMemberRemoved,
+    );
+
+    socket.on(
+      'workspace-role:changed',
+      handleWorkspaceRoleChanged,
+    );
+
     return () => {
       socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
@@ -186,6 +206,26 @@ export function RealtimeProvider({
       socket.off(
         'conversation.created',
         handleConversationCreated,
+      );
+
+      socket.off(
+        'workspace-invite:received',
+        handleWorkspaceInviteReceived,
+      );
+
+      socket.off(
+        'workspace-invite:accepted',
+        handleWorkspaceInviteAccepted,
+      );
+
+      socket.off(
+        'workspace-member:removed',
+        handleWorkspaceMemberRemoved,
+      );
+
+      socket.off(
+        'workspace-role:changed',
+        handleWorkspaceRoleChanged,
       );
 
       setOnlineUserIds(new Set());

@@ -83,7 +83,7 @@ jobs:
 
       - name: Build shared types
         run: pnpm --filter @repo/shared-types build
-
+      
       - name: Generate Prisma Client
         run: pnpm --filter api exec prisma generate
 
@@ -91,6 +91,7 @@ jobs:
         run: pnpm --filter api lint
 
       - name: Check API formatting
+      # TODO: Remove continue-on-error after existing API formatting issues are fixed.
         continue-on-error: true
         run: pnpm --filter api format:check
 
@@ -101,19 +102,19 @@ jobs:
         run: pnpm --filter api typecheck
 
       - name: Typecheck web
-        # TODO: Remove continue-on-error after frontend WIP type errors are fixed.
-        continue-on-error: true
         run: pnpm --filter web typecheck
 
       - name: Run API unit tests
         run: pnpm --filter api test:ci
+
+      - name: Run web unit tests
+        run: pnpm --filter web test:run
 
       - name: Build API
         run: pnpm --filter api build
 
       - name: Build web
         id: web_build
-        continue-on-error: true
         run: pnpm --filter web build
 
       - name: Upload web build
@@ -124,7 +125,6 @@ jobs:
           path: apps/web/dist
           if-no-files-found: error
           retention-days: 7
-
   database:
     name: Database and API E2E
     runs-on: ubuntu-latest

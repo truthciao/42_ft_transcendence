@@ -6,11 +6,17 @@ export interface Notification {
   recipientId: number;
   actorId: number | null;
   friendshipId: number | null;
+  workspaceId: number | null
   read: boolean;
   createdAt: string;
   actor: {
     id: number;
     username: string;
+  } | null;
+  workspace: {
+    id: number,
+    name: string,
+    icon: string | null;
   } | null;
 }
 

@@ -157,8 +157,9 @@ export class WorkspaceController {
     @Param('id', ParseIntPipe) id: number,
     @Param('memberUserId', ParseIntPipe) memberUserId: number,
     @Body() dto: UpdateMemberRoleDto,
+    @CurrentMembership() actor: WorkspaceMember,
   ) {
-    return this.workspaces.changeMemberRole(id, memberUserId, dto.role);
+    return this.workspaces.changeMemberRole(id, memberUserId, dto.role, actor);
   }
 
   @UseGuards(WorkspaceRoleGuard)

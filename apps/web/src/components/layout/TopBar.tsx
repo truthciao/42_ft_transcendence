@@ -12,10 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { 
-  useUnreadNotificationCount, 
-  useMarkAllNotificationsAsRead, 
-  useNotifications 
+import {
+  useUnreadNotificationCount,
+  useMarkAllNotificationsAsRead,
+  useNotifications
 } from '@/hooks/useNotifications';
 import type { Notification } from '@/api/notifications';
 
@@ -37,6 +37,7 @@ export function TopBar() {
 
   function getNotificationMessage(notification: Notification) {
     const username = notification.actor?.username ?? 'Unknown user';
+    const workspaceName = notification.workspace?.name ?? 'a workspace';
 
     switch (notification.type) {
       case 'FRIEND_REQUEST_RECEIVED':
@@ -51,6 +52,18 @@ export function TopBar() {
       case 'FRIEND_REMOVED':
         return t('notifications.friendRemoved', { username });
 
+      case 'WORKSPACE_INVITE_RECEIVED':
+        return t('notifications.workspaceInviteReceived', { username, workspaceName });
+
+      case 'WORKSPACE_INVITE_ACCEPTED':
+        return t('notifications.workspaceInviteAccepted', { username, workspaceName });
+
+      case 'WORKSPACE_MEMBER_REMOVED':
+        return t('notifications.workspaceMemberRemoved', { workspaceName });
+
+      case 'WORKSPACE_ROLE_CHANGED':
+        return t('notifications.workspaceRoleChanged', { workspaceName });
+
       default:
         return notification.type;
     }
@@ -58,7 +71,7 @@ export function TopBar() {
 
   return (
     <div className="flex h-full min-w-0 items-center gap-3 px-4">
-      <Link to="app/chat" className="font-semibold tracking-normal">
+      <Link to="/" className="font-semibold tracking-normal">
         transcendence
       </Link>
 
@@ -127,6 +140,16 @@ export function TopBar() {
               <DropdownMenuItem
                 key={notification.id}
                 className="flex flex-col items-start gap-1"
+                onClick={() => {
+                  const workspaceId = notification.workspace?.id;
+                  if (!workspaceId)
+                    return;
+                  if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
+                    navigate('/app/spaces');
+                  } else if(notification.type.startsWith('WORKSPACE')) {
+                    navigate(`/app/spaces/${workspaceId}`)
+                  }
+                }}
               >
                 <span className="font-medium">
                   {notification.actor?.username ?? 'Unknown user'}

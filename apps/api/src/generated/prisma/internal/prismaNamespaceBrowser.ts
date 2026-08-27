@@ -216,6 +216,7 @@ export const NotificationScalarFieldEnum = {
   type: 'type',
   actorId: 'actorId',
   friendshipId: 'friendshipId',
+  workspaceId: 'workspaceId',
   read: 'read',
   createdAt: 'createdAt'
 } as const

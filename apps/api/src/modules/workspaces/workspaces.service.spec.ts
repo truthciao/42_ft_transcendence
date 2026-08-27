@@ -11,6 +11,7 @@ import {
   WorkspaceRole,
 } from '../../generated/prisma/client.js';
 import { WorkspacesService } from './workspaces.service.js';
+import type { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 import { jest } from '@jest/globals';
 
 const objectContaining = <T extends object>(shape: T): T =>
@@ -99,6 +100,9 @@ const deleteManyConversationMember = jest.fn<() => Promise<unknown>>();
 // ---- $transaction ----
 const transaction = jest.fn();
 
+const emitToUser = jest.fn();
+const realtimeRoomServiceMock = { emitToUser };
+
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
   const prisma = {
@@ -158,8 +162,10 @@ describe('WorkspacesService', () => {
       return Promise.all(arg as Promise<unknown>[]);
     });
 
-    service = new WorkspacesService(prisma as unknown as PrismaService);
-  });
+    service = new WorkspacesService(
+      prisma as unknown as PrismaService,
+      realtimeRoomServiceMock as unknown as RealtimeRoomService,
+    );  });
 
   describe('create', () => {
     it('creates a workspace with the creator as OWNER member and a default #general channel', async () => {

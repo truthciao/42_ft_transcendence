@@ -349,7 +349,7 @@
       "generateError": "Failed to generate 2FA secret",
       "disableError": "Failed to disable 2FA",
       "unknownError": "Unknown error"
-    }  
+    }
   },
 
   "chat": {
@@ -400,7 +400,11 @@
     "friendRequestReceived": "{{username}} sent you a friend request",
     "friendRequestAccepted": "{{username}} accepted your friend request",
     "friendRequestRejected": "{{username}} rejected your friend request",
-    "friendRemoved": "{{username}} removed you as a friend"
+    "friendRemoved": "{{username}} removed you as a friend",
+    "workspaceInviteReceived": "{{username}} invited you to join {{workspaceName}}",
+    "workspaceInviteAccepted": "{{username}} accepted your invite to {{workspaceName}}",
+    "workspaceMemberRemoved": "You were removed from {{workspaceName}}",
+    "workspaceRoleChanged": "Your role in {{workspaceName}} was updated"
   },
 
   "footer": {

@@ -22,4 +22,8 @@ export const REALTIME_EVENTS = {
   DOCUMENT_LEAVE: 'document:leave',
   DOCUMENT_LEFT: 'document:left',
   DOCUMENT_UPDATED: 'document:updated',
+  WORKSPACE_INVITE_RECEIVED: 'workspace-invite:received',
+  WORKSPACE_INVITE_ACCEPTED: 'workspace-invite:accepted',
+  WORKSPACE_MEMBER_REMOVED: 'workspace-member:removed',
+  WORKSPACE_ROLE_CHANGED: 'workspace-role:changed',
 } as const;

@@ -24,7 +24,7 @@ export function SpacesIndexPage() {
           <p className="mt-1 text-muted-foreground">{t('workspaces.pages.index.subtitle')}</p>
         </div>
       </header>
-      <Button onClick={() => setCreateOpen(true)}>
+      <Button className="inline-flex items-center gap-2 py-3" onClick={() => setCreateOpen(true)}>
         <Plus className="size-4" /> {t('workspaces.pages.index.newWorkspace')}
       </Button>
 
@@ -55,7 +55,7 @@ export function SpacesIndexPage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{workspace.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {workspace.myMembership?.role ? t(`workspaces.inviteMember.roles.${workspace.myMembership.role}`) : t('workspaces.inviteMember.roles.MEMBER')}
+                    {workspace.myMembership?.role ? `${workspace.myMembership.role}` : t('workspaces.inviteMember.roles.MEMBER')}
                   </p>
                 </div>
               </div>

@@ -17,4 +17,8 @@ export const REALTIME_EVENTS = {
   FRIEND_REQUEST_REJECTED: 'friend-request:rejected',
   FRIEND_REMOVED: 'friend:removed',
   CONVERSATION_CREATED: 'conversation.created',
+  WORKSPACE_INVITE_RECEIVED: 'workspace-invite:received',
+  WORKSPACE_INVITE_ACCEPTED: 'workspace-invite:accepted',
+  WORKSPACE_MEMBER_REMOVED: 'workspace-member:removed',
+  WORKSPACE_ROLE_CHANGED: 'workspace-role:changed',
 } as const;

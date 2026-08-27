@@ -78,6 +78,7 @@ model Workspace {
   members     WorkspaceMember[]
   invites     WorkspaceInvite[]
   channels    Conversation[]
+  notifications Notification[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 }
@@ -201,6 +202,10 @@ enum NotificationType {
   FRIEND_REQUEST_ACCEPTED
   FRIEND_REQUEST_REJECTED
   FRIEND_REMOVED
+  WORKSPACE_INVITE_RECEIVED
+  WORKSPACE_INVITE_ACCEPTED
+  WORKSPACE_MEMBER_REMOVED
+  WORKSPACE_ROLE_CHANGED
 }
 
 model Notification {
@@ -216,6 +221,9 @@ model Notification {
 
   friendshipId Int?
   friendship   Friendship? @relation(fields: [friendshipId], references: [id], onDelete: SetNull)
+
+  workspaceId Int?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
 
   read      Boolean  @default(false)
   createdAt DateTime @default(now())

@@ -371,14 +371,18 @@
     "showPreview": "Afficher l'aperçu de PageError",
     "hidePreview": "Masquer l'aperçu de PageError"
   },
-  
+
   "notifications": {
     "title": "Notifications",
     "empty": "Aucune notification",
     "friendRequestReceived": "{{username}} vous a envoyé une demande d’ami",
     "friendRequestAccepted": "{{username}} a accepté votre demande d’ami",
     "friendRequestRejected": "{{username}} a refusé votre demande d’ami",
-    "friendRemoved": "{{username}} vous a retiré de ses amis"
+    "friendRemoved": "{{username}} vous a retiré de ses amis",
+    "workspaceInviteReceived": "{{username}} vous a invité à rejoindre {{workspaceName}}",
+    "workspaceInviteAccepted": "{{username}} a accepté votre invitation à {{workspaceName}}",
+    "workspaceMemberRemoved": "Vous avez été retiré de {{workspaceName}}",
+    "workspaceRoleChanged": "Votre rôle dans {{workspaceName}} a été mis à jour"
   },
 
   "footer": {

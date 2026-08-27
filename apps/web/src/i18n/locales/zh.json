@@ -379,7 +379,11 @@
     "friendRequestReceived": "{{username}} 向你发送了好友请求",
     "friendRequestAccepted": "{{username}} 接受了你的好友请求",
     "friendRequestRejected": "{{username}} 拒绝了你的好友请求",
-    "friendRemoved": "{{username}} 将你移除了好友"
+    "friendRemoved": "{{username}} 将你移除了好友",
+    "workspaceInviteReceived": "{{username}} 邀请你加入 {{workspaceName}}",
+    "workspaceInviteAccepted": "{{username}} 接受了你加入 {{workspaceName}} 的邀请",
+    "workspaceMemberRemoved": "你已被移出 {{workspaceName}}",
+    "workspaceRoleChanged": "你在 {{workspaceName}} 中的角色已更新"
   },
 
   "footer": {

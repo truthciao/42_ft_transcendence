@@ -35,7 +35,7 @@ export function RealtimeProvider({
         return next;
       });
     };
-    
+
     const handleUsersOnline = ({
       userIds,
     }: {
@@ -105,6 +105,30 @@ export function RealtimeProvider({
       window.dispatchEvent(new Event('refresh_conversations'));
     };
 
+    const handleWorkspaceInviteReceived = () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace-invites', 'incoming']})
+    }
+
+    const handleWorkspaceInviteAccepted = () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+    }
+
+    const handleWorkspaceMemberRemoved = ( payload: {workspaceId: number}) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
+    }
+
+    const handleWorkspaceRoleChanged = ( payload: {workspaceId: number}) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
+      queryClient.invalidateQueries({ queryKey: ['workspaces']})
+    }
+
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
@@ -140,7 +164,7 @@ export function RealtimeProvider({
       socket.off('user:offline', handleOffline);
 
       socket.off(
-        'friend-request:received', 
+        'friend-request:received',
         handleFriendRequest
       );
 

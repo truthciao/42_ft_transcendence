@@ -53,7 +53,7 @@ export class RealtimeRoomService {
     client.to(room).emit(event, payload);
   }
 
-  emitTouser<T>(userId: number, event: string, payload: T): void {
+  emitToUser<T>(userId: number, event: string, payload: T): void {
     this.emitToRoom(getUserRoom(userId), event, payload);
   }
 }

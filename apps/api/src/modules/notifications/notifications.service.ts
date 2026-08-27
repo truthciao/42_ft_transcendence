@@ -23,6 +23,13 @@ export class NotificationsService {
             username: true,
           },
         },
+        workspace: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          }
+        }
       },
     });
   }
@@ -56,11 +63,11 @@ export class NotificationsService {
         id: notificationId,
       },
     });
-  
+
     if (!notification || notification.recipientId !== userId) {
       throw new NotFoundException('Notification not found');
     }
-  
+
     return this.prisma.notification.update({
       where: {
         id: notificationId,

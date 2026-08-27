@@ -85,7 +85,7 @@ export function getInviteByToken(token: string) {
 }
 
 export function acceptInvite(inviteId: number) {
-  return httpPost<{ WorkspaceId: number }>(`/workspaces/invites/${inviteId}/accept`);
+  return httpPost<{ workspaceId: number }>(`/workspaces/invites/${inviteId}/accept`);
 }
 
 export function rejectInvite(inviteId: number) {

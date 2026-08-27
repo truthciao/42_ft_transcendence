@@ -21,7 +21,7 @@ export function IncomingInvitesList() {
     try {
       const result = await acceptMutation.mutateAsync(inviteId);
       toast.success(t('workspaces.invites.acceptSuccess'));
-      navigate(`/app/spaces/${result.WorkspaceId}`);
+      navigate(`/app/spaces/${result.workspaceId}`);
     } catch {
       toast.error(t('workspaces.invites.acceptError'));
     }

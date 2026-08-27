@@ -22,8 +22,12 @@ export function ConversationListSidebar() {
       const dataList = await getMyConversations();
 
       if (Array.isArray(dataList)) {
-        setConversations(dataList);
-      }
+        const directConversations = dataList.filter(
+          (conversation) => conversation.type === 'DIRECT',
+        );
+      setConversations(directConversations);
+    }
+      
     } catch (error) {
       console.error('Failed to fetch conversations:', error);
     } finally {

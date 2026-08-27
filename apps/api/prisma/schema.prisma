@@ -238,6 +238,7 @@ model Document {
   id          Int      @id @default(autoincrement())
   title       String
   content     String   @default("")
+  yjsState    Bytes?
   workspaceId Int
   creatorId   Int
 

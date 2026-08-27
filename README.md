@@ -392,6 +392,11 @@ If only the generated client needs updating:
 pnpm --filter api exec prisma generate
 ```
 
+Regenerate the Prisma db seed:
+
+```bash
+pnpm --filter api exec prisma db seed
+```
 ---
 
 # Docker Tips

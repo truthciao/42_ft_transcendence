@@ -1502,6 +1502,7 @@ export const DocumentScalarFieldEnum = {
   id: 'id',
   title: 'title',
   content: 'content',
+  yjsState: 'yjsState',
   workspaceId: 'workspaceId',
   creatorId: 'creatorId',
   createdAt: 'createdAt',
@@ -1671,6 +1672,20 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
 

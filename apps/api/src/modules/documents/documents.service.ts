@@ -8,6 +8,7 @@ import { CreateDocumentDto } from './dto/create-document.dto.js';
 import { UpdateDocumentDto } from './dto/update-document.dto.js';
 import { WorkspaceRole } from '../../generated/prisma/client.js';
 import type { WorkspaceMember } from '../../generated/prisma/client.js';
+import * as Y from 'yjs';
 
 @Injectable()
 export class DocumentsService {
@@ -154,4 +155,37 @@ export class DocumentsService {
     return document;
   }
 
+  async getYDocState(documentId: number, userId: number) {
+    const document = await this.findByIdForUser(
+      documentId,
+      userId,
+    );
+
+    if (!document.yjsState) {
+      const ydoc = new Y.Doc();
+
+      const update = Y.encodeStateAsUpdate(ydoc);
+
+      return Buffer.from(update);
+    }
+
+    return Buffer.from(document.yjsState);
+  }
+
+  async saveYDocState(
+    documentId: number,
+    userId: number,
+    state: Uint8Array,
+  ) {
+    await this.findByIdForUser(documentId, userId);
+
+    return this.prisma.document.update({
+      where: {
+        id: documentId,
+      },
+      data: {
+        yjsState: Buffer.from(state),
+      },
+    });
+  }
 }

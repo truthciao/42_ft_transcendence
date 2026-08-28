@@ -37,7 +37,6 @@ export function DocumentPage() {
     isError,
   } = useDocument(workspaceId, documentId);
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -57,7 +56,6 @@ export function DocumentPage() {
     }
 
     setTitle(document.title);
-    setContent(document.content);
   }, [document]);
 
   const scheduleSave = useCallback(
@@ -134,12 +132,21 @@ export function DocumentPage() {
     },
     [workspaceId, documentId, queryClient],
   );
+  
   const { t } = useTranslation();
+
+  const titleRealtimeTimerRef = useRef<
+    ReturnType<typeof setTimeout> | null
+  >(null);
 
   useEffect(() => {
     return () => {
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
+      }
+
+      if (titleRealtimeTimerRef.current) {
+        clearTimeout(titleRealtimeTimerRef.current);
       }
     };
   }, []);
@@ -216,57 +223,62 @@ export function DocumentPage() {
     documentId,
     queryClient,
   ]);
-useEffect(() => {
-  const socket = getSocket();
 
-  const handleTitleUpdated = (data: {
-    documentId: number;
-    title: string;
-  }) => {
-    if (data.documentId !== documentId) {
-      return;
-    }
+  useEffect(() => {
+    const socket = getSocket();
 
-    setTitle(data.title);
-  };
+    const handleTitleUpdated = (data: {
+      documentId: number;
+      title: string;
+    }) => {
+      if (data.documentId !== documentId) {
+        return;
+      }
 
-  socket.on(
-    'document:title-updated',
-    handleTitleUpdated,
-  );
+      setTitle(data.title);
+    };
 
-  return () => {
-    socket.off(
+    socket.on(
       'document:title-updated',
       handleTitleUpdated,
     );
-  };
-}, [documentId]);
+
+    return () => {
+      socket.off(
+        'document:title-updated',
+        handleTitleUpdated,
+      );
+    };
+  }, [documentId]);
+
   const handleBack = () => {
     navigate(`/app/spaces/${workspaceId}`);
   };
 
-const handleTitleChange = (
-  event: React.ChangeEvent<HTMLInputElement>,
-) => {
-  const value = event.target.value;
+  const handleTitleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value;
 
-  setTitle(value);
+    setTitle(value);
 
-  const socket = getSocket();
-
-  socket.emit(
-    'document:title-updated',
-    {
-      documentId,
+    scheduleSave({
       title: value,
-    },
-  );
+    });
 
-  scheduleSave({
-    title: value,
-  });
-};
+    if (titleRealtimeTimerRef.current) {
+      clearTimeout(titleRealtimeTimerRef.current);
+    }
+
+    titleRealtimeTimerRef.current = setTimeout(() => {
+      const socket = getSocket();
+
+      socket.emit('document:title-updated', {
+        documentId,
+        title: value,
+      });
+    }, 400);
+  };
 
   if (isLoading) {
     return (
@@ -336,11 +348,7 @@ const handleTitleChange = (
           className="mb-6 w-full border-none bg-transparent text-4xl font-bold tracking-tight outline-none placeholder:text-muted-foreground"
         />
 
-        <DocumentEditor
-          documentId={documentId}
-          content={content}
-          onChange={setContent}
-        />
+        <DocumentEditor documentId={documentId} />
       </main>
     </div>
   );

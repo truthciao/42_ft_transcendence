@@ -42,6 +42,10 @@ export class RealtimeGateway
   server!: Server;
 
   private readonly logger = new Logger(RealtimeGateway.name);
+  private readonly socketDocuments = new Map<
+    string,
+    Set<number>
+  >();
 
   notifyConversationCreated(
     userIds: number[],
@@ -99,15 +103,37 @@ export class RealtimeGateway
     }
   }
 
-  handleDisconnect(client: Socket): void {
+  async handleDisconnect(client: Socket): Promise<void> {
     const userId = this.socketRegistry.getUserId(client.id);
+
+    const documents = this.socketDocuments.get(client.id);
+
+    if (documents) {
+      for (const documentId of documents) {
+        const room = getDocumentRoom(documentId);
+
+        const memberCount =
+          await this.roomService.getRoomMemberCount(room);
+
+        if (memberCount === 1) {
+          this.documentsYjsService.removeDoc(documentId);
+        }
+      }
+
+      this.socketDocuments.delete(client.id);
+    }
+
     this.socketRegistry.unregisterSocket(client.id);
 
-    if (userId !== undefined && !this.socketRegistry.isUserOnline(userId)) {
+    if (
+      userId !== undefined &&
+      !this.socketRegistry.isUserOnline(userId)
+    ) {
       this.server.emit(REALTIME_EVENTS.USER_OFFLINE, {
         userId,
       });
     }
+
     this.logger.log(
       `Client disconnected: socket=${client.id} user=${userId ?? 'unknown'}`,
     );
@@ -174,6 +200,9 @@ export class RealtimeGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: { documentId: number },
   ): Promise<WsResponse<{ documentId: number }>> {
+this.logger.log(
+  `[DOCUMENT JOIN] socket=${client.id} document=${dto.documentId}`,
+);
     await this.documentsService.findByIdForUser(
       dto.documentId,
       client.data.user.userId,
@@ -182,6 +211,15 @@ export class RealtimeGateway
     const room = getDocumentRoom(dto.documentId);
 
     await this.roomService.joinRoom(client, room);
+
+    let documents = this.socketDocuments.get(client.id);
+
+    if (!documents) {
+      documents = new Set<number>();
+      this.socketDocuments.set(client.id, documents);
+    }
+
+    documents.add(dto.documentId);
 
     const ydoc = await this.documentsYjsService.getDoc(
       dto.documentId,
@@ -211,6 +249,21 @@ export class RealtimeGateway
     const room = getDocumentRoom(dto.documentId);
 
     await this.roomService.leaveRoom(client, room);
+
+    const documents = this.socketDocuments.get(client.id);
+
+    documents?.delete(dto.documentId);
+
+    if (documents?.size === 0) {
+      this.socketDocuments.delete(client.id);
+    }
+
+    const memberCount =
+      await this.roomService.getRoomMemberCount(room);
+
+    if (memberCount === 0) {
+      this.documentsYjsService.removeDoc(dto.documentId);
+    }
 
     return {
       event: REALTIME_EVENTS.DOCUMENT_LEFT,

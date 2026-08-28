@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -574,57 +575,50 @@ export function RotatingCube({
   /* Render                                                                 */
   /* ---------------------------------------------------------------------- */
 
-  const renderCube =
-    () => {
-      const globalMatrix =
-        mat4FromQuat(
-          quaternion.current,
+  const renderCube = useCallback(() => {
+    const globalMatrix =
+      mat4FromQuat(
+        quaternion.current,
+      );
+
+    for (
+      let i = 0;
+      i < FACES.length;
+      i++
+    ) {
+      const element =
+        faceRefs.current[i];
+
+      if (!element) {
+        continue;
+      }
+
+      const combined =
+        mat4Mul(
+          globalMatrix,
+          localMatrices[i],
         );
 
-      for (
-        let i = 0;
-        i < FACES.length;
-        i++
+      element.style.transform =
+        mat4ToCss(combined);
+
+      const zIndex =
+        Math.round(
+          combined[11] * 100,
+        ) + 1000;
+
+      if (
+        lastZRef.current[i] !==
+        zIndex
       ) {
-        const element =
-          faceRefs.current[i];
+        element.style.zIndex =
+          String(zIndex);
 
-        if (!element) {
-          continue;
-        }
-
-        const combined =
-          mat4Mul(
-            globalMatrix,
-            localMatrices[i],
-          );
-
-        element.style.transform =
-          mat4ToCss(combined);
-
-        /*
-         * combined[11] is the Z translation
-         * in our row-major matrix.
-         *
-         * Larger Z = closer to the viewer.
-         */
-        const zIndex =
-          Math.round(
-            combined[11] * 100,
-          ) + 1000;
-
-        if (
-          lastZRef.current[i] !==
-          zIndex
-        ) {
-          element.style.zIndex =
-            String(zIndex);
-
-          lastZRef.current[i] =
-            zIndex;
-        }
+        lastZRef.current[i] =
+          zIndex;
       }
-    };
+    }
+  }, [localMatrices]);
 
   /* ---------------------------------------------------------------------- */
   /* Animation                                                              */
@@ -729,7 +723,7 @@ export function RotatingCube({
         animationFrame,
       );
     };
-  }, [localMatrices]);
+  }, [renderCube]);
 
   /* ---------------------------------------------------------------------- */
   /* Pointer interaction                                                   */
@@ -933,7 +927,7 @@ export function RotatingCube({
         handlePointerUp,
       );
     };
-  }, [localMatrices]);
+  }, [renderCube]);
 
   /* ---------------------------------------------------------------------- */
   /* JSX                                                                    */

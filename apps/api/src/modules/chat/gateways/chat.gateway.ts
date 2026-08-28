@@ -82,6 +82,10 @@ export class ChatGateway
 
     const senderId = client.data.user.userId;
 
+    const memberIds = await this.chatService.getConversationMemberIds(
+      dto.conversationId,
+    );
+
     try {
       const message = await this.chatService.createMessage(
         dto.conversationId,
@@ -94,6 +98,14 @@ export class ChatGateway
         CHAT_EVENTS.MESSAGE_CREATED,
         message,
       );
+
+      for (const memberId of memberIds) {
+        this.roomService.emitToUser(
+          memberId,
+          CHAT_EVENTS.MESSAGE_RECEIVED,
+          message,
+        );
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error

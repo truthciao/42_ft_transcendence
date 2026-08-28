@@ -10,10 +10,6 @@ export function ConversationPage() {
   const { t } = useTranslation();
   const { conversationId } = useParams();
   const location = useLocation();
-
-  console.log('🔥 PARAM: ', conversationId);
-
-
   const locationState = location.state as ConversationLocationState | null;
   const friendName = locationState?.friendName;
   const title = friendName ? t('chat.chatWith', { friendName }) : '';

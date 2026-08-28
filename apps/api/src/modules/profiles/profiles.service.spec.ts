@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { ProfilesService } from './profiles.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { jest } from '@jest/globals';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 
 type MockProfile = {
   id: number;
@@ -23,7 +24,10 @@ describe('ProfilesService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    service = new ProfilesService(prisma as unknown as PrismaService);
+    service = new ProfilesService(
+      prisma as unknown as PrismaService,
+      RealtimeRoomService as unknown as RealtimeRoomService,
+    );
   });
 
   it('returns the current user profile when it exists', async () => {

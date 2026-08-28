@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { usePrefetchWorkspace, useWorkspaces } from '@/hooks/useWorkspaces';
 import { useState } from 'react';
 import { CreateWorkspaceDialog } from '../workspaces/CreateWorkspaceDialog';
+import { Button } from '../ui/button';
 
 const tabs = [
   { to: '/app/chat', label: 'Messages', icon: MessageCircle },
@@ -83,15 +84,17 @@ export function TabRail() {
         </NavLink>
       ))}
 
-      <button
-        type='button'
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
         title="Create workspace"
         onClick={() => setCreateOpen(true)}
-        className="flex size-11 items-center justify-center rounded-full border border-dashed border-sidebar-border text-sidebar-foreground/60 transition-colors hover:border-solid hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        className="size-11 rounded-full border border-dashed border-sidebar-border text-sidebar-foreground/60 transition-colors hover:border-solid hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
-        <Plus className='size-5' />
-        <span className='sr-only'>Create workspace</span>
-      </button>
+        <Plus className="size-5" />
+        <span className="sr-only">Create workspace</span>
+      </Button>
 
       <CreateWorkspaceDialog
         open={createOpen}

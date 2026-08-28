@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AddFriend } from '../../components/friends/AddFriend';
 import { FriendList } from '../../components/friends/FriendList';
 import { FriendRequests } from '../../components/friends/FriendRequests';
+import { Button } from '@/components/ui/button';
 
 export function FriendsPage() {
   const { t } = useTranslation();
@@ -17,18 +18,9 @@ export function FriendsPage() {
           {t('friends.description')}
         </p>
 
-        <button
-          className="
-            rounded
-            bg-primary
-            px-4
-            py-2
-            text-primary-foreground
-          "
-          onClick={() => setShowAddFriend((prev) => !prev)}
-        >
+        <Button onClick={() => setShowAddFriend((prev) => !prev)}>
           {showAddFriend ? t('friends.close') : t('friends.addFriend.title')}
-        </button>
+        </Button>
       </header>
 
       {showAddFriend && <AddFriend />}

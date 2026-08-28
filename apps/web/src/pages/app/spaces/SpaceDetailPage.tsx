@@ -81,17 +81,18 @@ export function SpaceDetailPage() {
         ) : (
           <div className="divide-y divide-border rounded-lg border border-border">
             {channels?.map((channel) => (
-              <button
-                key = {channel.id}
+              <Button
+                key={channel.id}
+                variant="ghost"
+                className="h-auto w-full justify-start gap-2 rounded-none px-4 py-3 text-left text-sm font-normal"
                 onClick={() => navigate(`/app/spaces/${id}/c/${channel.id}`)}
-                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-muted/50"
               >
                 <Hash className="size-4 text-muted-foreground" />
                 <span className="flex-1 truncate">{channel.name}</span>
                 <span className="text-xs text-muted-foreground">
                   {t('workspaces.pages.detail.membersCount', { count: channel._count?.members ?? 0 })}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -121,14 +122,13 @@ export function SpaceDetailPage() {
         ) : (
           <div className="divide-y divide-border rounded-lg border border-border">
             {documents?.map((document) => (
-              <button
+              <Button
                 key={document.id}
+                variant="ghost"
+                className="h-auto w-full justify-start gap-2 rounded-none px-4 py-3 text-left text-sm font-normal"
                 onClick={() =>
-                  navigate(
-                    `/app/spaces/${id}/documents/${document.id}`,
-                  )
+                  navigate(`/app/spaces/${id}/documents/${document.id}`)
                 }
-                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-muted/50"
               >
                 <FileText className="size-4 text-muted-foreground" />
 
@@ -136,7 +136,7 @@ export function SpaceDetailPage() {
                   {document.title ||
                     t('workspaces.pages.detail.untitledDocument')}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         )}

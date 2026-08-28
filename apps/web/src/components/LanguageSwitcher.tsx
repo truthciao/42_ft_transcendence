@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
 
 type Language = {
   code: 'en' | 'fr' | 'zh';
@@ -15,19 +16,24 @@ export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
 
   return (
-    <div>
-      {languages.map((language) => (
-        <button
-          key={language.code}
-          onClick={() => {
-            void i18n.changeLanguage(language.code);
-          }}
-          disabled={i18n.language.startsWith(language.code)}
-          className="rounded-md px-1 py-1.5 text-sm hover:bg-muted disabled:font-semibold disabled:text-foreground"
-        >
-          {language.label}
-        </button>
-      ))}
+    <div className="flex items-center gap-1">
+      {languages.map((language) => {
+        const isActive = i18n.language.startsWith(language.code);
+
+        return (
+          <Button
+            key={language.code}
+            variant={isActive ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => {
+              void i18n.changeLanguage(language.code);
+            }}
+            disabled={isActive}
+          >
+            {language.label}
+          </Button>
+        );
+      })}
     </div>
   );
 }

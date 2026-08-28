@@ -76,6 +76,7 @@ export async function getConversationMessages(
   conversationId: string | number,
   cursor?: number,
   limit = 30,
+  search?: string,
 ): Promise<MessagePage> {
   const params = new URLSearchParams();
 
@@ -83,6 +84,10 @@ export async function getConversationMessages(
 
   if (cursor !== undefined) {
     params.set('cursor', String(cursor));
+  }
+
+  if (search?.trim()) {
+    params.set('search', search.trim());
   }
 
   return httpGet<MessagePage>(

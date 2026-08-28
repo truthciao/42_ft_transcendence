@@ -1,3 +1,14 @@
+import { useUserSearch } from '../../hooks/useUserSearch';
+import {
+  Search,
+  X,
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { getMyConversations, createConversationByUsername, type ConversationItem } from '../../api/chat';
@@ -17,13 +28,21 @@ const API_BASE_URI =
 export function ConversationListSidebar() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [usernameInput, setUsernameInput] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCreatingConversation, setIsCreatingConversation] =
+    useState(false);
 
   const { user: currentUser } = useAuth();
 
   const navigate = useNavigate();
 
   const { t } = useTranslation();
+
+  const userSearch = useUserSearch(searchQuery);
+
+  const searchResults =
+    userSearch.data?.pages.flatMap((page) => page.users) ?? [];
 
   const fetchConversations = async () => {
     try {
@@ -249,52 +268,92 @@ export function ConversationListSidebar() {
     });
   };
 
-
-  const handleStrangerChatSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const targetUsername = usernameInput.trim();
-    if (!targetUsername) return;
+  const handleUserSelect = async (username: string) => {
+    if (isCreatingConversation) {
+      return;
+    }
 
     try {
-      const data = await createConversationByUsername(targetUsername);
+      setIsCreatingConversation(true);
 
-      if (data && data.id) {
-        navigate(`/app/chat/${data.id}`, { 
-          state: { friendName: targetUsername } 
-        });
-        fetchConversations();
+      const conversation =
+        await createConversationByUsername(username);
+
+      if (!conversation?.id) {
+        return;
       }
-      setUsernameInput('');
-    } catch (error: any) {
-      console.error('Cannot build conversation:', error);
+
+      setConversations((current) => {
+        const existingIndex = current.findIndex(
+          (item) => Number(item.id) === Number(conversation.id),
+        );
+
+        if (existingIndex !== -1) {
+          const existing = current[existingIndex];
+
+          const updated = {
+            ...existing,
+            updatedAt:
+              conversation.updatedAt ?? existing.updatedAt,
+          };
+
+          return [
+            updated,
+            ...current.filter(
+              (_, index) => index !== existingIndex,
+            ),
+          ];
+        }
+
+        const newConversation =
+          conversation as ConversationItem;
+
+        return [
+          newConversation,
+          ...current,
+        ];
+      });
+
+      setIsSearchOpen(false);
+      setSearchQuery('');
+
+      navigate(`/app/chat/${conversation.id}`, {
+        state: {
+          friendName: username,
+        },
+      });
+    } catch (error) {
+      console.error(
+        'Cannot create conversation:',
+        error,
+      );
+    } finally {
+      setIsCreatingConversation(false);
     }
   };
 
   return (
     <SecondarySidebar>
       <div className="flex h-full min-h-0 flex-col bg-background">
-        <div className="border-b border-border p-3 flex flex-col gap-2 bg-muted/20">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            {t('chat.strangerChat')} 
-          </h2>
-          <form onSubmit={handleStrangerChatSubmit} className="flex gap-2">
-            <Input 
-              type="text"
-              placeholder={t('chat.usernamePlaceholder')}
-              value={usernameInput}
-              onChange={(e) => setUsernameInput(e.target.value)}
-              className="h-8 text-xs"
-              required
-            />
+        <div className="border-b border-border p-3 bg-muted/20">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {t('chat.searchPeople')}
+            </h2>
+
             <Button
-             type="submit"
-             size="sm"
-             className="shrink-0"
-             >
-              {t('chat.chat')}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-8 text-primary hover:bg-primary/10 hover:text-primary"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Search users"
+            >
+              <Search className="size-4" />
             </Button>
-          </form>
+          </div>
         </div>
+
 
         <div className="min-h-0 flex-1 overflow-y-auto p-3 space-y-2">
           <div className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wider flex items-center justify-between px-1">
@@ -431,6 +490,91 @@ export function ConversationListSidebar() {
           )} 
         </div>
       </div>
-    </SecondarySidebar>
-  );
+        <Dialog
+          open={isSearchOpen}
+          onOpenChange={(open) => {
+            setIsSearchOpen(open);
+
+            if (!open) {
+              setSearchQuery('');
+            }
+          }}
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                Search people
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+
+                <Input
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) =>
+                    setSearchQuery(e.target.value)
+                  }
+                  placeholder="Search username..."
+                  className="pl-9"
+                />
+              </div>
+
+              {searchQuery.trim().length < 2 && (
+                <p className="text-xs text-muted-foreground">
+                  Enter at least 2 characters to search.
+                </p>
+              )}
+
+              {userSearch.isLoading && (
+                <div className="space-y-2">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              )}
+
+              {!userSearch.isLoading &&
+                searchQuery.trim().length >= 2 &&
+                searchResults.length === 0 && (
+                  <p className="py-6 text-center text-sm text-muted-foreground">
+                    No users found.
+                  </p>
+                )}
+
+              <div className="max-h-80 overflow-y-auto space-y-1">
+                {searchResults.map((user) => {
+                  const displayName = user.username;
+                  return (
+                    <button
+                      key={user.id}
+                      type="button"
+                      disabled={
+                        isCreatingConversation ||
+                        user.id === currentUser?.id
+                      }
+                      onClick={() =>
+                        handleUserSelect(user.username)
+                      }
+                      className="flex w-full items-center gap-3 rounded-md p-2 text-left hover:bg-accent disabled:opacity-50"
+                    >
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium">
+                          {displayName}
+                        </div>
+
+                        <div className="truncate text-xs text-muted-foreground">
+                          @{user.username}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </SecondarySidebar>
+    );
 }

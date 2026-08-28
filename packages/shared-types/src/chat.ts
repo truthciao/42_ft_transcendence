@@ -30,6 +30,8 @@ export const getMessagesSchema = z.object({
   cursor: z.coerce.number().int().positive().optional(),
 
   limit: z.coerce.number().int().positive().max(100).default(30),
+
+  search: z.string().trim().min(1).optional(),
 });
 
 export type CreateConversationPayload = z.infer<typeof createConversationSchema>;

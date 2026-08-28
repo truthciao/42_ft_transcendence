@@ -1,3 +1,4 @@
+import { Search, X } from 'lucide-react';
 import {
   type SubmitEvent,
   type ReactNode,
@@ -36,6 +37,9 @@ export function ConversationView({
   const queryClient = useQueryClient();
 
   const [inputText, setInputText] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
 
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -46,18 +50,18 @@ export function ConversationView({
   const {
     data,
     isLoading,
-    //isError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['chat-messages', conversationId],
+    queryKey: ['chat-messages', conversationId, activeSearch],
 
     queryFn: ({ pageParam }) =>
       getConversationMessages(
         conversationId,
         pageParam,
         30,
+        searchQuery,
       ),
 
     initialPageParam: undefined as number | undefined,
@@ -116,6 +120,8 @@ export function ConversationView({
         new Date(a.createdAt).getTime() -
         new Date(b.createdAt).getTime(),
     ) ?? [];
+
+    const isSearchMode = activeSearch.trim().length > 0;
     
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
@@ -255,16 +261,76 @@ export function ConversationView({
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
-        <h1 className="font-semibold text-sm flex items-center gap-2">
-          {headerIcon ?? <span className="w-2 h-2 rounded-full bg-success" />}
-          {title}
-        </h1>
-      </header>
+      <h1 className="font-semibold text-sm flex items-center gap-2">
+        {headerIcon ?? <span className="w-2 h-2 rounded-full bg-success" />}
+        {title}
+      </h1>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        onClick={() => setIsSearchOpen((current) => !current)}
+        aria-label="Search messages"
+      >
+        <Search className="size-4" />
+      </Button>
+    </header>
+
+    {isSearchOpen && (
+      <div className="border-b border-border px-5 py-2 bg-muted/20">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+
+
+          <Input
+            autoFocus
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setActiveSearch(searchQuery.trim());
+              }
+            }}
+            placeholder="Search messages..."
+            className="pl-9 pr-9"
+          />
+              
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-1 top-1/2 size-7 -translate-y-1/2"
+            onClick={() => {
+              setSearchQuery('');
+              setActiveSearch('');
+              setIsSearchOpen(false);
+            }}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+      </div>
+    )}
+
+
 
       <div
         ref={messagesContainerRef}
         className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4"
       >
+        {isSearchMode && !isLoading && (
+          <div className="mb-4 text-xs text-muted-foreground">
+            {messages.length === 0
+              ? `No messages found for "${activeSearch}"`
+              : `${messages.length} ${
+                messages.length === 1 ? 'message' : 'messages'
+                } found`}
+          </div>
+        )}
+
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
             {t('chat.loadingHistory')}

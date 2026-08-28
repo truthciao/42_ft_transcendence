@@ -83,38 +83,24 @@ export function NotificationBell() {
                   </Link>
 
                   <div className="mt-2 flex gap-2">
-                    <button
+                    <Button
                       type="button"
+                      size="sm"
                       disabled={isProcessing}
                       onClick={() => handleAccept(request.id)}
-                      className="
-                        rounded
-                        bg-primary
-                        px-2
-                        py-1
-                        text-xs
-                        text-primary-foreground
-                        disabled:opacity-50
-                      "
                     >
                       {t('friends.friendRequests.accept')}
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       type="button"
+                      size="sm"
+                      variant="outline"
                       disabled={isProcessing}
                       onClick={() => handleReject(request.id)}
-                      className="
-                        rounded
-                        border
-                        px-2
-                        py-1
-                        text-xs
-                        disabled:opacity-50
-                      "
                     >
                       {t('friends.friendRequests.reject')}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );

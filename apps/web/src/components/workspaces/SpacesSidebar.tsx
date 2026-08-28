@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useWorkspace, useWorkspaces, useWorkspaceChannels, usePrefetchWorkspace } from "@/hooks/useWorkspaces";
 import { CreateWorkspaceDialog } from "./CreateWorkspaceDialog";
 import { Skeleton } from "../ui/skeleton";
+import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -27,14 +28,18 @@ function WorkspaceDirectorySidebar() {
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="font-semibold">{t('workspaces.sidebar.spaces')}</h3>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => setCreateOpen(true)}
-          className="flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
           title={t('workspaces.sidebar.createTooltip')}
         >
           <Plus className="size-4" />
-        </button>
+          <span className="sr-only">
+            {t('workspaces.sidebar.createTooltip')}
+          </span>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -116,7 +121,7 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
             {t('workspaces.sidebar.channels')}
           </p>
           {isLoading ? (
-            <div className="space-y1.5 px-2">
+            <div className="space-y-1.5 px-2">
               <Skeleton className="h-6 w-full" />
               <Skeleton className="h-6 w-full" />
             </div>
@@ -128,7 +133,7 @@ function WorkspaceNavSidebar({ workspaceId }: { workspaceId: number}) {
                   to={`/app/spaces/${workspaceId}/c/${channel.id}`}
                   className={({ isActive }) =>
                     cn('flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground',
-                      isActive? 'bg-muted font-medium text-foreground' : 'hover: bg-muted',
+                      isActive? 'bg-muted font-medium text-foreground' : 'hover:bg-muted',
                     )
                   }
                 >

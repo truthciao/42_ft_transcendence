@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { DocumentEditor } from '@/components/documents/DocumentEditor';
 import { getSocket } from '@/lib/realtime';
+import { Button } from '@/components/ui/button';
 
 type SaveStatus = 'saved' | 'saving' | 'error';
 
@@ -309,13 +310,15 @@ export function DocumentPage() {
   return (
     <div className="flex h-full flex-col">
       <header className="flex h-14 shrink-0 items-center border-b px-6">
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={handleBack}
         >
           <ArrowLeft className="size-4" />
           <span>{t('workspaces.pages.document.back')}</span>
-        </button>
+        </Button>
 
         <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
           {saveStatus === 'saving' && (

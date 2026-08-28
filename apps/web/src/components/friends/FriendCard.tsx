@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import type { Friend } from '@repo/shared-types';
 import { Avatar } from '@/components/common/Avatar';
+import { Button } from '../ui/button';
 
 interface FriendCardProps {
   friend: Friend;
@@ -51,26 +52,16 @@ export function FriendCard({
         </div>
       </Link>
 
-      <button
+      <Button
         type="button"
-        className="
-          rounded
-          border
-          px-3
-          py-1
-          text-destructive
-          transition-colors
-          hover:bg-destructive/10
-          disabled:cursor-not-allowed
-          disabled:opacity-50
-        "
+        variant="destructive"
         disabled={isRemoving}
         onClick={() => onRemove(friend.id)}
       >
         {isRemoving
           ? t('friends.removeFriend.removing')
           : t('friends.removeFriend.confirm')}
-      </button>
+      </Button>
     </div>
   );
 }

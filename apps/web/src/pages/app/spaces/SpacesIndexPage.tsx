@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { EmptyState } from "@/components/common/EmptyState";
 import { SkeletonCard } from "@/components/common/Skeleton";
-import { Button } from "@base-ui/react";
+import { Button } from "@/components/ui/button";
 import { CreateWorkspaceDialog } from "@/components/workspaces/CreateWorkspaceDialog";
 import { IncomingInvitesList } from "@/components/workspaces/IncomingInvitesList";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ export function SpacesIndexPage() {
           <p className="mt-1 text-muted-foreground">{t('workspaces.pages.index.subtitle')}</p>
         </div>
       </header>
-      <Button className="inline-flex items-center gap-2 py-3" onClick={() => setCreateOpen(true)}>
+      <Button onClick={() => setCreateOpen(true)}>
         <Plus className="size-4" /> {t('workspaces.pages.index.newWorkspace')}
       </Button>
 
@@ -43,10 +43,12 @@ export function SpacesIndexPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {workspaces.map((workspace) => (
-            <button
-             key={workspace.id}
-             onClick={() => navigate(`/app/spaces/${workspace.id}`)}
-             className="flex flex-col gap-3 rounded-lg border border-border p-4 text-left transition-colors hover:bg-muted/50"
+            <Button
+              key={workspace.id}
+              type="button"
+              variant="outline"
+              className="h-auto w-full flex-col items-stretch gap-3 p-4 text-left"
+              onClick={() => navigate(`/app/spaces/${workspace.id}`)}
             >
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-full bg-muted text-lg">
@@ -62,7 +64,7 @@ export function SpacesIndexPage() {
               {workspace.description ? (
                 <p className="line-clamp-2 text-sm text-muted-foreground">{workspace.description}</p>
               ) : null }
-            </button>
+            </Button>
           ))}
         </div>
       )}

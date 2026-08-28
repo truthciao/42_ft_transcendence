@@ -91,16 +91,22 @@ export function CreateWorkspaceDialog({
             <span className="text-sm font-medium">{t('workspaces.create.icon')}</span>
             <div className="flex flex-wrap items-center gap-2">
               {ICON_PRESETS.map((preset) => (
-                <button
+                <Button
                   key={preset}
                   type="button"
-                  onClick={() => setValue('icon', preset, { shouldValidate: true })}
-                  className={`flex size-9 items-center justify-center rounded-full border text-lg transition-colors ${
-                    icon === preset ? 'border-ring bg-accent' : 'border-input hover:bg-accent'
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setValue('icon', preset, { shouldValidate: true })
+                  }
+                  className={`rounded-full text-lg ${
+                    icon === preset
+                      ? 'border-ring bg-accent'
+                      : 'hover:bg-accent'
                   }`}
                 >
                   {preset}
-                </button>
+                </Button>
               ))}
               <Input className="w-16 text-center" maxLength={4} placeholder="🙂" {...register('icon')} />
             </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFriendRequests } from '../../hooks/useFriends';
 import { Avatar } from '@/components/common/Avatar';
-
+import { Button } from '../ui/button';
 import {
   useAcceptFriendRequest,
   useRejectFriendRequest,
@@ -117,40 +117,26 @@ export function FriendRequests() {
               </div>
 
               <div className="flex gap-2">
-                <button
+                <Button
                   type="button"
-                  className="
-                    px-3
-                    py-1
-                    rounded
-                    bg-primary
-                    text-primary-foreground
-                    disabled:opacity-50
-                  "
                   disabled={isProcessing}
                   onClick={() => handleAccept(request.id)}
                 >
                   {isProcessing && acceptMutation.isPending
                     ? t('friends.friendRequests.accepting')
                     : t('friends.friendRequests.accept')}
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
-                  className="
-                    px-3
-                    py-1
-                    rounded
-                    border
-                    disabled:opacity-50
-                  "
+                  variant="outline"
                   disabled={isProcessing}
                   onClick={() => handleReject(request.id)}
                 >
                   {isProcessing && rejectMutation.isPending
                     ? t('friends.friendRequests.rejecting')
                     : t('friends.friendRequests.reject')}
-                </button>
+                </Button>
               </div>
             </div>
           );

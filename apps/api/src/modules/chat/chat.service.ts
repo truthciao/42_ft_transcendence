@@ -184,11 +184,21 @@ async getMessages(
 ) {
   await this.assertMember(conversationId, userId);
 
-  const { cursor, limit } = query;
+  const { cursor, limit, search } = query;
 
   const messages = await this.prisma.message.findMany({
     where: {
       conversationId,
+
+      ...(search
+        ? {
+            content: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+
       ...(cursor !== undefined
         ? {
             id: {
@@ -214,6 +224,7 @@ async getMessages(
     },
   });
 
+
   const hasMore = messages.length > limit;
 
   const page = messages.slice(0, limit);
@@ -226,6 +237,42 @@ async getMessages(
     messages: page,
     nextCursor,
   };
+}
+
+async searchMessages(
+  conversationId: number,
+  userId: number,
+  query: string,
+) {
+  await this.assertMember(conversationId, userId);
+
+  const keyword = query.trim();
+
+  if (!keyword) {
+    return [];
+  }
+
+  return this.prisma.message.findMany({
+    where: {
+      conversationId,
+      content: {
+        contains: keyword,
+        mode: 'insensitive',
+      },
+    },
+    orderBy: {
+      id: 'desc',
+    },
+    take: 50,
+    include: {
+      sender: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
 }
 
   async createMessage(

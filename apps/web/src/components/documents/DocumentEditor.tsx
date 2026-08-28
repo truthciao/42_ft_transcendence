@@ -7,14 +7,10 @@ import { getSocket } from '@/lib/realtime';
 
 interface DocumentEditorProps {
   documentId: number;
-  content: string;
-  onChange?: (content: string) => void;
 }
 
 export function DocumentEditor({
   documentId,
-  content,
-  onChange,
 }: DocumentEditorProps) {
   const ydoc = useMemo(() => new Y.Doc(), []);
 
@@ -29,22 +25,7 @@ export function DocumentEditor({
         field: 'default',
       }),
     ],
-
-    onUpdate({ editor }) {
-      onChange?.(editor.getHTML());
-    },
   });
-
-  // Initialize the editor with the document content.
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    if (editor.isEmpty && content) {
-      editor.commands.setContent(content);
-    }
-  }, [editor, content]);
 
   // Join the document room and receive Yjs updates.
   useEffect(() => {
@@ -86,7 +67,10 @@ export function DocumentEditor({
     socket.emit('document:join', {
       documentId,
     });
-
+console.log('[DocumentEditor] joining document', {
+  documentId,
+  socketId: socket.id,
+});
     return () => {
       socket.emit('document:leave', {
         documentId,

@@ -141,13 +141,19 @@ export function TopBar() {
                 key={notification.id}
                 className="flex flex-col items-start gap-1"
                 onClick={() => {
-                  const workspaceId = notification.workspace?.id;
-                  if (!workspaceId)
+                  if (notification.type === 'FRIEND_REQUEST_RECEIVED') {
+                    navigate('/app/friends');
                     return;
+                  }
+
+                  const workspaceId = notification.workspace?.id;
+
+                  if (!workspaceId) return;
+
                   if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
                     navigate('/app/spaces');
-                  } else if(notification.type.startsWith('WORKSPACE')) {
-                    navigate(`/app/spaces/${workspaceId}`)
+                  } else if (notification.type.startsWith('WORKSPACE')) {
+                    navigate(`/app/spaces/${workspaceId}`);
                   }
                 }}
               >

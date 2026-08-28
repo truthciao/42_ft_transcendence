@@ -51,9 +51,9 @@ export function ConversationListSidebar() {
       location.pathname.split('/').pop(),
     );
 
-    const handleMessageCreated = (message: ChatMessage) => {
-      setConversations((current) =>
-        current.map((conversation) => {
+    const handleMessageCreated = (message: ChatMessage) => {  
+      setConversations((current) => {
+        const updated = current.map((conversation) => {
           if (Number(conversation.id) !== message.conversationId) {
             return conversation;
           }
@@ -83,14 +83,32 @@ export function ConversationListSidebar() {
                 ? 0
                 : currentUnreadCount + 1,
           };
-        }),
-      );
+        });
+
+        const conversationIndex = updated.findIndex(
+          (conversation) =>
+            Number(conversation.id) === message.conversationId,
+        );
+
+        if (conversationIndex === -1) {
+          return updated;
+        }
+
+        const [conversation] = updated.splice(
+          conversationIndex,
+          1,
+        );
+
+        return [conversation, ...updated];
+      });
+
+      
     };
 
-    socket.on('chat:message:created', handleMessageCreated);
+    socket.on('chat:message:received', handleMessageCreated);
 
     return () => {
-      socket.off('chat:message:created', handleMessageCreated);
+      socket.off('chat:message:received', handleMessageCreated);
     };
   }, [currentUser?.id, location.pathname]);
 

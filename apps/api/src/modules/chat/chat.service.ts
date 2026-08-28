@@ -114,49 +114,67 @@ async findAllForUser(userId: number) {
       friendships.map((f) => (f.requesterId === userId ? f.addresseeId : f.requesterId)),
     );
 
-    return conversations.map((conv) => {
-      let conversationName = conv.name;
-      let isFriend = false;
+    return Promise.all(
+      conversations.map(async (conv) => {
+        let conversationName = conv.name;
+        let isFriend = false;
 
-      if (conv.type === ConversationType.DIRECT || !conv.name) {
-        const otherMember = conv.members.find(
-          (m) => m.userId !== userId,
+        if (conv.type === ConversationType.DIRECT || !conv.name) {
+          const otherMember = conv.members.find(
+            (m) => m.userId !== userId,
+          );
+
+          const otherUser = otherMember?.user;
+
+          if (otherUser) {
+            isFriend = friendIdSet.has(otherUser.id);
+
+            conversationName =
+              otherUser.profile?.displayName ||
+              otherUser.username ||
+              `Chat Room #${conv.id}`;
+          }
+        }
+
+        const lastMessage = conv.messages[0] ?? null;
+
+        const currentMember = conv.members.find(
+          (member) => member.userId === userId,
         );
 
-        const otherUser = otherMember?.user;
+        const lastReadMessageId =
+          currentMember?.lastReadMessageId ?? null;
 
-        if (otherUser) {
-          isFriend = friendIdSet.has(otherUser.id);
+        const unreadCount = await this.prisma.message.count({
+          where: {
+            conversationId: conv.id,
+            senderId: {
+              not: userId,
+            },
+            ...(lastReadMessageId !== null
+              ? {
+                  id: {
+                    gt: lastReadMessageId,
+                  },
+                }
+              : {}),
+          },
+        });
 
-          conversationName =
-            otherUser.profile?.displayName ||
-            otherUser.username ||
-            `Chat Room #${conv.id}`;
-        }
-      }
-
-      const lastMessage = conv.messages[0] ?? null;
-
-
-      const currentMember = conv.members.find(
-        (member) => member.userId === userId,
-      );
-
-      const lastReadMessageId =
-        currentMember?.lastReadMessageId ?? null;
-
-      return {
-        id: conv.id,
-        type: conv.type,
-        name: conversationName,
-        isFriend,
-        createdAt: conv.createdAt,
-        updatedAt: conv.updatedAt,
-        lastMessage,
-        lastReadMessageId,
-        members: conv.members,
-      };
-  }); 
+        return {
+          id: conv.id,
+          type: conv.type,
+          name: conversationName,
+          isFriend,
+          createdAt: conv.createdAt,
+          updatedAt: conv.updatedAt,
+          lastMessage,
+          lastReadMessageId,
+          unreadCount,
+          members: conv.members,
+        };
+      }),
+  );
 }
 
 async getMessages(
@@ -230,6 +248,19 @@ async getMessages(
     });
 
     return message;
+  }
+
+  async getConversationMemberIds(conversationId: number): Promise<number[]> {
+    const members = await this.prisma.conversationMember.findMany({
+      where: {
+        conversationId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    return members.map((member) => member.userId);
   }
 
   async markAsRead(userId: number, conversationId: number) {

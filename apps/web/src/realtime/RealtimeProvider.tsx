@@ -105,6 +105,23 @@ export function RealtimeProvider({
       window.dispatchEvent(new Event('refresh_conversations'));
     };
 
+    const handleUserProfileUpdated = ({
+      userId,
+      avatarUrl,
+    }: {
+      userId: number;
+      avatarUrl: string;
+    }) => {
+      window.dispatchEvent(
+        new CustomEvent('user_profile_updated', {
+          detail: {
+            userId,
+            avatarUrl,
+          },
+        }),
+      );
+    };
+
     const handleWorkspaceInviteReceived = () => {
       queryClient.invalidateQueries({ queryKey: ['notifications']});
       queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
@@ -159,6 +176,11 @@ export function RealtimeProvider({
     );
 
     socket.on(
+      'user:profile-updated',
+      handleUserProfileUpdated,
+    );
+
+    socket.on(
       'workspace-invite:received',
       handleWorkspaceInviteReceived,
     );
@@ -206,6 +228,11 @@ export function RealtimeProvider({
       socket.off(
         'conversation.created',
         handleConversationCreated,
+      );
+
+      socket.off(
+        'user:profile-updated',
+        handleUserProfileUpdated,
       );
 
       socket.off(

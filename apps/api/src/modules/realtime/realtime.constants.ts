@@ -6,6 +6,7 @@ export const REALTIME_EVENTS = {
   USER_ONLINE: 'user:online',
   USER_OFFLINE: 'user:offline',
   USERS_ONLINE: 'users:online',
+  USER_PROFILE_UPDATED: 'user:profile-updated',
   ROOM_JOIN: 'room:join',
   ROOM_JOINED: 'room:joined',
   ROOM_LEAVE: 'room:leave',

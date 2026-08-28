@@ -102,18 +102,61 @@ export function ConversationListSidebar() {
       fetchConversations();
     };
 
-    window.addEventListener(
+    const handleUserProfileUpdated = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        userId: number;
+        avatarUrl: string;
+      }>;
+
+      const { userId, avatarUrl } = customEvent.detail;
+
+      setConversations((current) => {
+        return current.map((conversation) => ({
+          ...conversation,
+          members: conversation.members?.map((member) => {
+            if (member.userId !== userId) {
+              return member;
+            }
+
+            return {
+              ...member,
+              user: {
+                ...member.user,
+                profile: {
+                  ...(member.user.profile ?? {}),
+                  avatarUrl,
+                },
+              },
+            };
+          }),
+        }));
+      });
+    };
+
+  window.addEventListener(
+    'refresh_conversations',
+    handleRefreshConversations,
+  );
+
+  window.addEventListener(
+    'user_profile_updated',
+    handleUserProfileUpdated,
+  );
+
+  return () => {
+    window.removeEventListener(
       'refresh_conversations',
       handleRefreshConversations,
     );
 
-    return () => {
-      window.removeEventListener(
-        'refresh_conversations',
-        handleRefreshConversations,
-      );
-    };
-  }, []);
+    window.removeEventListener(
+      'user_profile_updated',
+      handleUserProfileUpdated,
+    );
+  };
+}, []);
+
+
 
   useEffect(() => {
     const handleConversationRead = (event: Event) => {

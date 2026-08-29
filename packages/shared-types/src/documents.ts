@@ -37,6 +37,7 @@ export const createDocumentSchema = z.object({
     .trim()
     .min(1, 'title must not be empty')
     .max(200, 'title must be at most 200 characters'),
+
   content: z.string().default(''),
 });
 
@@ -54,5 +55,5 @@ export const updateDocumentSchema = z.object({
 });
 
 export type Document = z.infer<typeof documentSchema>;
-export type CreateDocumentPayload = z.infer<typeof createDocumentSchema>;
+export type CreateDocumentPayload = z.input<typeof createDocumentSchema>;
 export type UpdateDocumentPayload = z.infer<typeof updateDocumentSchema>;

@@ -17,7 +17,7 @@ import {
   useMarkAllNotificationsAsRead,
   useNotifications
 } from '@/hooks/useNotifications';
-import type { Notification } from '@/api/notifications';
+import type { Notification } from '@repo/shared-types';
 
 export function TopBar() {
   const { user } = useAuth();

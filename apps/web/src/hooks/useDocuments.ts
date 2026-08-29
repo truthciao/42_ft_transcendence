@@ -10,6 +10,7 @@ import {
   getDocument,
   deleteDocument,
   type Document,
+  type CreateDocumentPayload,
 } from '@/api/documents';
 
 export const documentKeys = {
@@ -60,11 +61,9 @@ export function useCreateDocument(workspaceId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: {
-      title: string;
-      content?: string;
-    }) => createDocument(workspaceId, payload),
-
+    mutationFn: (payload: CreateDocumentPayload) =>
+      createDocument(workspaceId, payload),
+    
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: documentKeys.workspace(workspaceId),

@@ -1,24 +1,16 @@
 import { httpGet, httpPatch, httpPost, httpDelete } from '@/lib/http';
 
-export interface Document {
-  id: number;
-  title: string;
-  content: string;
-  workspaceId: number;
-  creatorId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import type {
+  Document,
+  CreateDocumentPayload,
+  UpdateDocumentPayload,
+} from '@repo/shared-types';
 
-export interface CreateDocumentPayload {
-  title: string;
-  content?: string;
-}
-
-export interface UpdateDocumentPayload {
-  title?: string;
-  content?: string;
-}
+export type {
+  Document,
+  CreateDocumentPayload,
+  UpdateDocumentPayload,
+} from '@repo/shared-types';
 
 export function getDocuments(workspaceId: number) {
   return httpGet<Document[]>(

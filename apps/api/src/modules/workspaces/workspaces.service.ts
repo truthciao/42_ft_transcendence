@@ -446,7 +446,7 @@ export class WorkspacesService {
     workspaceId: number,
     targetUserId: number,
     role: WorkspaceRole,
-    actor?: WorkspaceMember,
+    actor: WorkspaceMember,
   ) {
     if (role === WorkspaceRole.OWNER)
       throw new BadRequestException(

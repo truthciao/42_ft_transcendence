@@ -97,6 +97,7 @@
   },
 
   "workspaces": {
+    "title": "Espaces",
     "create": {
       "title": "Créer un espace",
       "name": "Nom",
@@ -364,6 +365,7 @@
   },
 
   "chat": {
+    "title": "Messages",
     "strangerChat": "Discussion avec un inconnu (nom d'utilisateur)",
     "usernamePlaceholder": "Entrez un nom d'utilisateur...",
     "chat": "Discuter",

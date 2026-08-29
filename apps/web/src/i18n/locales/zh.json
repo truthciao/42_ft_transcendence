@@ -97,6 +97,7 @@
   },
 
   "workspaces": {
+    "title": "空间",
     "create": {
       "title": "创建工作区",
       "name": "名称",
@@ -364,6 +365,7 @@
   },
 
   "chat": {
+    "title": "消息",
     "strangerChat": "陌生人聊天（用户名）",
     "usernamePlaceholder": "输入用户名...",
     "chat": "聊天",

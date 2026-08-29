@@ -5,13 +5,8 @@ import { usePrefetchWorkspace, useWorkspaces } from '@/hooks/useWorkspaces';
 import { useState } from 'react';
 import { CreateWorkspaceDialog } from '../workspaces/CreateWorkspaceDialog';
 import { Button } from '../ui/button';
+import { useTranslation } from 'react-i18next';
 
-const tabs = [
-  { to: '/app/chat', label: 'Messages', icon: MessageCircle },
-  { to: '/app/friends', label: 'Friends', icon: Users },
-  { to: '/app/spaces', label: 'Spaces', icon: Waypoints },
-  { to: '/app/settings/profile', label: 'Settings', icon: Settings },
-];
 
 const PALETTE = [
   'bg-indigo-500', 'bg-orange-500', 'bg-emerald-500', 'bg-rose-500',
@@ -24,15 +19,23 @@ function paletteFor(id: number): string {
 
 function initials(name: string): string {
   return name
-    .trim()
-    .split(/\s+/)
-    .map((word) => word[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
+  .trim()
+  .split(/\s+/)
+  .map((word) => word[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
 }
 
 export function TabRail() {
+  const { t } = useTranslation();
+  
+  const tabs = [
+    { to: '/app/chat', label: t('chat.title'), icon: MessageCircle },
+    { to: '/app/friends', label: t('friends.title'), icon: Users },
+    { to: '/app/spaces', label: t('workspaces.title'), icon: Waypoints },
+    { to: '/app/settings/profile', label: t('settings.title'), icon: Settings },
+  ];
   const { data: workspaces } = useWorkspaces();
   const prefetchWorkspace = usePrefetchWorkspace();
   const navigate = useNavigate();

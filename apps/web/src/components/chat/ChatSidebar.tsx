@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getMyConversations, createConversationByUsername, type ConversationItem } from '../../api/chat';
 import { SecondarySidebar } from '../layout/SecondarySidebar';
@@ -33,6 +34,8 @@ export function ConversationListSidebar() {
   const { user: currentUser } = useAuth();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const { t } = useTranslation();
 

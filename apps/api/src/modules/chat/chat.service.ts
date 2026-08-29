@@ -184,20 +184,11 @@ async getMessages(
 ) {
   await this.assertMember(conversationId, userId);
 
-  const { cursor, limit, search } = query;
+  const { cursor, limit } = query;
 
   const messages = await this.prisma.message.findMany({
     where: {
       conversationId,
-
-      ...(search
-        ? {
-            content: {
-              contains: search,
-              mode: 'insensitive',
-            },
-          }
-        : {}),
 
       ...(cursor !== undefined
         ? {
@@ -223,7 +214,6 @@ async getMessages(
       },
     },
   });
-
 
   const hasMore = messages.length > limit;
 

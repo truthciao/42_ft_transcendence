@@ -89,3 +89,16 @@ export type {
   CreateDocumentPayload,
   UpdateDocumentPayload,
 } from './documents.js';
+
+export {
+  notificationTypeSchema,
+  notificationActorSchema,
+  notificationWorkspaceSchema,
+  notificationSchema,
+  notificationsSchema,
+} from './notifications.js';
+
+export type {
+  NotificationType,
+  Notification,
+} from './notifications.js';

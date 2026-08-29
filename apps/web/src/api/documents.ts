@@ -1,4 +1,4 @@
-import { httpGet, httpPatch, httpPost } from '@/lib/http';
+import { httpGet, httpPatch, httpPost, httpDelete } from '@/lib/http';
 
 export interface Document {
   id: number;
@@ -53,5 +53,14 @@ export function updateDocument(
   return httpPatch<Document>(
     `/workspaces/${workspaceId}/documents/${documentId}`,
     payload,
+  );
+}
+
+export async function deleteDocument(
+  workspaceId: number,
+  documentId: number,
+) {
+  return httpDelete<Document>(
+    `/workspaces/${workspaceId}/documents/${documentId}`,
   );
 }

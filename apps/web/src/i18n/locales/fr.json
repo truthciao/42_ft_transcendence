@@ -270,6 +270,17 @@
             "confirmDesc": "Cela supprime définitivement l'espace, ses canaux et messages. Cette action est irréversible.",
             "success": "Espace supprimé",
             "error": "Échec de la suppression de l'espace"
+          },
+          "document": {
+            "title": "Supprimer le document",
+            "desc": "Supprimez définitivement des documents de cet espace.",
+            "button": "Supprimer",
+            "tooltip": "Seuls les administrateurs de l’espace peuvent supprimer des documents",
+            "confirmTitle": "Supprimer « {{name}} » ?",
+            "confirmDesc": "Cette action supprimera définitivement le document. Elle est irréversible.",
+            "success": "Document supprimé avec succès",
+            "error": "Échec de la suppression du document",
+            "empty": "Aucun document à supprimer."
           }
         }
       },

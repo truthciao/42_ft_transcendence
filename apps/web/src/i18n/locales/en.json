@@ -270,6 +270,17 @@
             "confirmDesc": "This permanently deletes the workspace, its channels and messages. This cannot be undone.",
             "success": "Workspace deleted",
             "error": "Failed to delete workspace"
+          },
+          "document": {
+            "title": "Delete document",
+            "desc": "Permanently delete documents from this workspace.",
+            "button": "Delete",
+            "tooltip": "Only workspace admins can delete documents",
+            "confirmTitle": "Delete \"{{name}}\"?",
+            "confirmDesc": "This permanently deletes the document. This cannot be undone.",
+            "success": "Document deleted successfully",
+            "error": "Failed to delete document",
+            "empty": "No documents to delete."
           }
         }
       },

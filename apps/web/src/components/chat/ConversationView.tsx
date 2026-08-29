@@ -4,6 +4,7 @@ import {
   type ReactNode,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -61,7 +62,7 @@ export function ConversationView({
         conversationId,
         pageParam,
         30,
-        searchQuery,
+        activeSearch,
       ),
 
     initialPageParam: undefined as number | undefined,
@@ -113,15 +114,19 @@ export function ConversationView({
     };
   }, []);
 
-  const messages = data?.pages
-    .flatMap((page) => page.messages)
-    .sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() -
-        new Date(b.createdAt).getTime(),
-    ) ?? [];
+  const messages = useMemo(
+    () =>
+      data?.pages
+        .flatMap((page) => page.messages)
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() -
+            new Date(b.createdAt).getTime(),
+        ) ?? [],
+    [data],
+  );
 
-    const isSearchMode = activeSearch.trim().length > 0;
+  const isSearchMode = activeSearch.trim().length > 0;
     
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
@@ -182,7 +187,7 @@ export function ConversationView({
     }
 
     queryClient.setQueryData<InfiniteData<MessagePage>>(
-      ['chat-messages', conversationId],
+      ['chat-messages', conversationId, activeSearch],
       (oldData) => {
         if (!oldData) {
           return oldData;
@@ -215,13 +220,13 @@ export function ConversationView({
       });
   };
 
-    socket.on('chat:message:created', handleMessageCreated);
+    socket.on('chat:message:received', handleMessageCreated);
 
     return () => {
-      socket.off('chat:message:created', handleMessageCreated);
+      socket.off('chat:message:received', handleMessageCreated);
       socket.off('connect', joinConversation);
     };
-  }, [conversationId, queryClient]);
+  }, [conversationId, queryClient, activeSearch]);
 
   useEffect(() => {
     markConversationAsRead(conversationId)

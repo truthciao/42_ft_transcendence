@@ -8,7 +8,7 @@ describe('cn', () => {
   });
 
   it('ignores falsy conditional classes', () => {
-    expect(cn('base', false && 'hidden', undefined, null)).toBe('base');
+    expect(cn('base', false, undefined, null)).toBe('base');
   });
 
   it('resolves conflicting Tailwind classes', () => {

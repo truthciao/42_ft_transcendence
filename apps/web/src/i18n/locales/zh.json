@@ -379,9 +379,13 @@
     "placeholder": "输入消息...",
     "send": "发送",
     "me": "我",
-    "yesterday": "昨天"
+    "yesterday": "昨天",
+    "searchMessages": "搜索消息",
+    "loading": "加载中...",
+    "loadOlderMessages": "加载更早的消息",
+    "searchMessagesPlaceholder": "搜索消息...",
+    "noMessagesFound": "未找到消息。"
   },
-
 
   "showcase": {
     "title": "组件库",

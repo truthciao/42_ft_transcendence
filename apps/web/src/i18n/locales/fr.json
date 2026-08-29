@@ -379,7 +379,12 @@
     "placeholder": "Écrivez un message...",
     "send": "Envoyer",
     "me": "Moi",
-    "yesterday": "Hier"
+    "yesterday": "Hier",
+    "searchMessages": "Rechercher des messages",
+    "loading": "Chargement...",
+    "loadOlderMessages": "Charger les anciens messages",
+    "searchMessagesPlaceholder": "Rechercher des messages...",
+    "noMessagesFound": "Aucun message trouvé."
   },
 
   "showcase": {

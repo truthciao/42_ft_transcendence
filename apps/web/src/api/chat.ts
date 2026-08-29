@@ -1,4 +1,4 @@
-import { httpGet, httpPatch, httpPost } from '../lib/http'; // 复用项目已有的通用请求工具
+import { httpGet, httpPatch, httpPost } from '../lib/http'; 
 
 export interface ChatMessage {
   id: number;
@@ -76,7 +76,6 @@ export async function getConversationMessages(
   conversationId: string | number,
   cursor?: number,
   limit = 30,
-  search?: string,
 ): Promise<MessagePage> {
   const params = new URLSearchParams();
 
@@ -86,12 +85,21 @@ export async function getConversationMessages(
     params.set('cursor', String(cursor));
   }
 
-  if (search?.trim()) {
-    params.set('search', search.trim());
-  }
-
   return httpGet<MessagePage>(
     `/chat/conversations/${conversationId}/message?${params.toString()}`,
+  );
+}
+
+export async function searchConversationMessages(
+  conversationId: string | number,
+  query: string,
+): Promise<ChatMessage[]> {
+  const params = new URLSearchParams();
+
+  params.set('q', query.trim());
+
+  return httpGet<ChatMessage[]>(
+    `/chat/conversations/${conversationId}/messages/search?${params.toString()}`,
   );
 }
 

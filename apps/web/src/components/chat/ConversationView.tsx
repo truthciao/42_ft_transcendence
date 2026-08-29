@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import {
   type SubmitEvent,
   type ReactNode,
@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
 import { mergeMessages } from "@/lib/chat-messages"
 import type { InfiniteData } from "@tanstack/react-query";
+import { MessageSearchDialog } from './MessageSearchDialog';
 
 interface ConversationViewProps {
   conversationId: string;
@@ -39,8 +40,7 @@ export function ConversationView({
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeSearch, setActiveSearch] = useState('');
+  const [highlightedMessageId, setHighlightedMessageId] = useState<number | null>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -55,14 +55,13 @@ export function ConversationView({
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['chat-messages', conversationId, activeSearch],
+    queryKey: ['chat-messages', conversationId],
 
     queryFn: ({ pageParam }) =>
       getConversationMessages(
         conversationId,
         pageParam,
         30,
-        activeSearch,
       ),
 
     initialPageParam: undefined as number | undefined,
@@ -96,6 +95,50 @@ export function ConversationView({
     fetchNextPage();
   };
 
+  const handleSelectMessage = async (message: ChatMessage) => {
+    setIsSearchOpen(false);
+
+    while (!document.getElementById(`message-${message.id}`) && hasNextPage) {
+      previousScrollHeightRef.current =
+        messagesContainerRef.current?.scrollHeight ?? null;
+
+      const result = await fetchNextPage();
+
+      const loadedMessages =
+        result.data?.pages.flatMap((page) => page.messages) ?? [];
+
+      if (loadedMessages.some((msg) => msg.id === message.id)) {
+        break;
+      }
+
+      if (!result.hasNextPage) {
+        break;
+      }
+    }
+
+    requestAnimationFrame(() => {
+      const element = document.getElementById(
+        `message-${message.id}`,
+      );
+
+      if (!element) {
+        return;
+      }
+
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+
+      setHighlightedMessageId(message.id);
+
+      setTimeout(() => {
+        setHighlightedMessageId(null);
+      }, 2000);
+    });
+  };
+      
+
   useEffect(() => {
     const container = messagesContainerRef.current;
 
@@ -125,9 +168,7 @@ export function ConversationView({
         ) ?? [],
     [data],
   );
-
-  const isSearchMode = activeSearch.trim().length > 0;
-    
+ 
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
@@ -187,7 +228,7 @@ export function ConversationView({
     }
 
     queryClient.setQueryData<InfiniteData<MessagePage>>(
-      ['chat-messages', conversationId, activeSearch],
+      ['chat-messages', conversationId],
       (oldData) => {
         if (!oldData) {
           return oldData;
@@ -209,6 +250,10 @@ export function ConversationView({
       },
     );
 
+    queryClient.invalidateQueries({
+      queryKey: ['chat-message-search', conversationId],
+    });
+
     markConversationAsRead(conversationId)
       .then(() => {
         window.dispatchEvent(
@@ -226,7 +271,7 @@ export function ConversationView({
       socket.off('chat:message:received', handleMessageCreated);
       socket.off('connect', joinConversation);
     };
-  }, [conversationId, queryClient, activeSearch]);
+  }, [conversationId, queryClient]);
 
   useEffect(() => {
     markConversationAsRead(conversationId)
@@ -243,7 +288,6 @@ export function ConversationView({
         console.error('Failed to mark conversation as read:', error);
       });
   }, [conversationId]);
-
 
   function handleSendMessage(e: SubmitEvent) {
     e.preventDefault();
@@ -276,65 +320,17 @@ export function ConversationView({
         variant="ghost"
         size="icon"
         className="size-8"
-        onClick={() => setIsSearchOpen((current) => !current)}
-        aria-label="Search messages"
+        onClick={() => setIsSearchOpen(true)} 
+        aria-label={t('chat.searchMessages')}
       >
         <Search className="size-4" />
       </Button>
     </header>
 
-    {isSearchOpen && (
-      <div className="border-b border-border px-5 py-2 bg-muted/20">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-
-
-          <Input
-            autoFocus
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                setActiveSearch(searchQuery.trim());
-              }
-            }}
-            placeholder="Search messages..."
-            className="pl-9 pr-9"
-          />
-              
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-1/2 size-7 -translate-y-1/2"
-            onClick={() => {
-              setSearchQuery('');
-              setActiveSearch('');
-              setIsSearchOpen(false);
-            }}
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
-      </div>
-    )}
-
-
-
       <div
         ref={messagesContainerRef}
         className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4"
       >
-        {isSearchMode && !isLoading && (
-          <div className="mb-4 text-xs text-muted-foreground">
-            {messages.length === 0
-              ? `No messages found for "${activeSearch}"`
-              : `${messages.length} ${
-                messages.length === 1 ? 'message' : 'messages'
-                } found`}
-          </div>
-        )}
 
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
@@ -353,10 +349,10 @@ export function ConversationView({
                   variant="ghost"
                   onClick={handleLoadOlderMessages}
                   disabled={isFetchingNextPage}
-                >
+                  className="border-primary/30 text-primary hover:bg-primary/10 hover:text-primary">
                   {isFetchingNextPage
-                    ? 'Loading...'
-                    : 'Load older messages'}
+                    ? t('chat.loading')
+                    : t('chat.loadOlderMessages')}
                 </Button>
               </div>
             )}
@@ -370,6 +366,7 @@ export function ConversationView({
               return (
                 <div
                   key={msg.id}
+                  id={`message-${msg.id}`}
                   className={`flex flex-col mb-2 ${
                     isMine ? 'items-end' : 'items-start'
                   }`}
@@ -377,12 +374,15 @@ export function ConversationView({
                   <span className="text-[10px] text-muted-foreground mb-1">
                     {senderLabel}
                   </span>
-
-                  <div
+                    <div
                     className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
                       isMine
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-accent text-accent-foreground'
+                    } ${
+                      highlightedMessageId === msg.id
+                        ? 'ring-2 ring-amber-400 shadow-md shadow-amber-400/30'
+                        : ''
                     }`}
                   >
                     {msg.content}
@@ -408,6 +408,12 @@ export function ConversationView({
           </Button>
         </div>
       </form>
+        <MessageSearchDialog
+            open={isSearchOpen}
+            onOpenChange={setIsSearchOpen}
+            conversationId={conversationId}
+            onSelectMessage={handleSelectMessage}
+        />
     </section>
   );
 

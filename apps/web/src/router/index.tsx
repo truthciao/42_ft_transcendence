@@ -37,7 +37,7 @@ import {
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 import { VirtualUsersPage } from '@/pages/VirtualUsersPage';
-import { DocumentPage } from '@/pages/DocumentPage';
+import { DocumentPage } from '@/pages/app/spaces/DocumentPage';
 
 export const router = createBrowserRouter([
   {

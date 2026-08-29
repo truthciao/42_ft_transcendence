@@ -10,6 +10,7 @@ export interface WorkspacePermissions {
   can: {
     updateWorkspace: boolean;
     deleteWorkspace: boolean;
+    deleteDocument: boolean;
     inviteMember: boolean;
     removeMember: boolean;
     changeMemberRole: boolean;
@@ -38,6 +39,7 @@ export function usePermission(workspaceId: number | undefined): WorkspacePermiss
       can: {
         updateWorkspace: hasRole('ADMIN'),
         deleteWorkspace: hasRole('OWNER'),
+        deleteDocument: hasRole('ADMIN'),
         inviteMember: hasRole('ADMIN'),
         removeMember: hasRole('ADMIN'),
         changeMemberRole: hasRole('OWNER'),

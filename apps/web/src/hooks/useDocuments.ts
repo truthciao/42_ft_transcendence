@@ -8,6 +8,7 @@ import {
   createDocument,
   getDocuments,
   getDocument,
+  deleteDocument,
   type Document,
 } from '@/api/documents';
 
@@ -65,6 +66,28 @@ export function useCreateDocument(workspaceId: number) {
     }) => createDocument(workspaceId, payload),
 
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: documentKeys.workspace(workspaceId),
+      });
+    },
+  });
+}
+
+export function useDeleteDocument(workspaceId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (documentId: number) =>
+      deleteDocument(workspaceId, documentId),
+
+    onSuccess: (_, documentId) => {
+      queryClient.removeQueries({
+        queryKey: documentKeys.detail(
+          workspaceId,
+          documentId,
+        ),
+      });
+
       queryClient.invalidateQueries({
         queryKey: documentKeys.workspace(workspaceId),
       });

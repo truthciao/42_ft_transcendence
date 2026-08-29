@@ -1,4 +1,5 @@
 import { NavLink, type NavLinkRenderProps } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 function getNavLinkClass({ isActive }: NavLinkRenderProps): string {
@@ -11,23 +12,25 @@ function getNavLinkClass({ isActive }: NavLinkRenderProps): string {
 }
 
 export function Navbar() {
+  const { t } = useTranslation();
+
   return (
     <header className="border-b border-border">
       <nav style={{ display: 'flex', padding: '1rem', alignItems: 'center' }}>
         <NavLink to="/" end className={getNavLinkClass}>
-          Home
+          {t('home.title')}
         </NavLink>
 
         <NavLink to="/login" className={getNavLinkClass}>
-          Login
+          {t('common.login')}
         </NavLink>
 
         <NavLink to="/register" className={getNavLinkClass}>
-          Register
+          {t('auth.register')}
         </NavLink>
 
         <NavLink to="/showcase" className={getNavLinkClass}>
-          Showcase
+          {t('showcase.title')}
         </NavLink>
 
         <div style={{ marginLeft: 'auto' }}>

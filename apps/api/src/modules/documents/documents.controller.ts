@@ -30,6 +30,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { WorkspaceRoleGuard } from '../workspaces/guards/workspace-role.guard.js';
 import { CurrentMembership } from '../workspaces/decorators/current-membership.decorator.js';
 import { minWorkspaceRole } from '../workspaces/decorators/min-workspace-role.decorator.js';
+import { DocumentsYjsService } from './documents-yjs.service.js';
 
 interface AuthenticatedRequest extends Request {
   user: AuthenticatedUser;
@@ -38,7 +39,10 @@ interface AuthenticatedRequest extends Request {
 @UseGuards(JwtAuthGuard)
 @Controller('workspaces/:workspaceId/documents')
 export class DocumentsController {
-  constructor(private readonly documents: DocumentsService) {}
+  constructor(
+    private readonly documents: DocumentsService,
+    private readonly documentsYjs: DocumentsYjsService,
+  ) {}
 
   @UseGuards(WorkspaceRoleGuard)
   @minWorkspaceRole(WorkspaceRole.MEMBER)
@@ -88,16 +92,20 @@ export class DocumentsController {
   @UseGuards(WorkspaceRoleGuard)
   @minWorkspaceRole(WorkspaceRole.ADMIN)
   @Delete(':documentId')
-  remove(
+  async remove(
     @Param('workspaceId', ParseIntPipe) workspaceId: number,
     @Param('documentId', ParseIntPipe) documentId: number,
     @CurrentMembership() membership: WorkspaceMember,
   ) {
-    return this.documents.remove(
+    const document = await this.documents.remove(
       workspaceId,
       documentId,
       membership,
     );
+
+    this.documentsYjs.removeDoc(documentId);
+
+    return document;
   }
 
   @Get(':documentId/state')

@@ -38,7 +38,7 @@ export const notificationSchema = z.object({
   workspace: notificationWorkspaceSchema.nullable(),
 
   read: z.boolean(),
-  createdAt: z.coerce.date(),
+  createdAt: z.string(),
 });
 
 export const notificationsSchema = z.array(notificationSchema);

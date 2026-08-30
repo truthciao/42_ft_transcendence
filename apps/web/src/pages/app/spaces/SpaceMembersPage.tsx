@@ -110,12 +110,12 @@ export function SpaceMembersPage() {
                   >
                     {ROLE_OPTIONS.map((role) => (
                       <option key={role} value={role}>
-                        {t(`workspaces.inviteMember.roles.${role}`)}
+                        {t(`workspaces.roles.${role}`)}
                       </option>
                     ))}
                   </select>
                 ) : (
-                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium">{t(`workspaces.inviteMember.roles.${member.role}`)}</span>
+                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium">{t(`workspaces.roles.${member.role}`)}</span>
                 )}
 
                 <PermissionButton

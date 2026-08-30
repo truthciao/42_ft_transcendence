@@ -120,14 +120,15 @@
       "rejectSuccess": "Invite declined",
       "rejectError": "Failed to decline invite"
     },
+    "roles": {
+      "OWNER": "Owner",
+      "MEMBER": "Member",
+      "ADMIN": "Admin"
+    },
     "inviteMember": {
       "title": "Invite member",
       "searchPlaceholder": "Search by username",
       "inviteAs": "Invite as",
-      "roles": {
-        "MEMBER": "Member",
-        "ADMIN": "Admin"
-      },
       "minCharacters": "Enter at least 2 characters to search.",
       "searching": "Searching...",
       "searchError": "Failed to search users.",

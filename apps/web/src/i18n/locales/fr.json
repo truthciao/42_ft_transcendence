@@ -120,14 +120,15 @@
       "rejectSuccess": "Invitation refusée",
       "rejectError": "Échec du refus de l'invitation"
     },
+    "roles": {
+      "OWNER": "Propriétaire",
+      "MEMBER": "Membre",
+      "ADMIN": "Admin"
+    },
     "inviteMember": {
       "title": "Inviter un membre",
       "searchPlaceholder": "Rechercher par nom d'utilisateur",
       "inviteAs": "Inviter en tant que",
-      "roles": {
-        "MEMBER": "Membre",
-        "ADMIN": "Admin"
-      },
       "minCharacters": "Entrez au moins 2 caractères pour rechercher.",
       "searching": "Recherche...",
       "searchError": "Échec de la recherche d'utilisateurs.",

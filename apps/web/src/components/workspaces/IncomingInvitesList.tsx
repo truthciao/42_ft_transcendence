@@ -49,7 +49,7 @@ export function IncomingInvitesList() {
               <p className="truncate text-xs text-muted-foreground">
                 {t('workspaces.invites.invitedBy', {
                   name: invite.inviter.profile?.displayName || invite.inviter.username,
-                  role: t(`workspaces.inviteMember.roles.${invite.role}`)
+                  role: t(`workspaces.roles.${invite.role}`)
                 })}
               </p>
             </div>

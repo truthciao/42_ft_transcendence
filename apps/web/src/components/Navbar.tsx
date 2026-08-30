@@ -16,7 +16,7 @@ export function Navbar() {
 
   return (
     <header className="border-b border-border">
-      <nav style={{ display: 'flex', padding: '1rem', alignItems: 'center' }}>
+      <nav className="flex items-center p-4">
         <NavLink to="/" end className={getNavLinkClass}>
           {t('home.title')}
         </NavLink>
@@ -33,7 +33,7 @@ export function Navbar() {
           {t('showcase.title')}
         </NavLink>
 
-        <div style={{ marginLeft: 'auto' }}>
+        <div className="ml-auto">
           <LanguageSwitcher />
         </div>
       </nav>

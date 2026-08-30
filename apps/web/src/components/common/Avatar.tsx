@@ -101,7 +101,7 @@ export function Avatar({
       {unreadCount > 0 && (
         <span
           aria-label={`${unreadCount} unread messages`}
-          className="absolute -right-1 -bottom-1 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold leading-none flex items-center justify-center ring-2 ring-background"
+          className="absolute -right-1 -bottom-1 min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold leading-none flex items-center justify-center ring-2 ring-background"
         >
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>

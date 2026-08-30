@@ -247,7 +247,7 @@ export function AccountSettingsPage() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="flex justify-center rounded border bg-white p-4">
+            <div className="flex justify-center rounded border bg-background p-4">
               {otpauthUrl && (
                 <QRCodeCanvas
                   value={otpauthUrl}

@@ -11,6 +11,7 @@ import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button';
 import { HttpError } from '@/lib/http';
 import { disconnectSocket } from '@/lib/realtime';
+import { cn } from '@/lib/utils';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -129,13 +130,13 @@ export function LoginPage() {
   };
 
   return (
-    <main style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
+    <main className="mx-auto max-w-[400px] font-sans">
       <h1>{t("auth.login")}</h1>
       <p>{requires2FA ? "Please enter your Google Authenticator 6-digit code to complete login" : t("auth.description")}</p>
 
       {!requires2FA ? (
         /* Stage 1: Standard email and password form */
-        <form onSubmit={handleLogin} style={{ display: 'grid', gap: '1rem' }}>
+        <form onSubmit={handleLogin} className="grid gap-4">
           <label>
             <div>{t("auth.email")}</div>
             <Input
@@ -165,7 +166,7 @@ export function LoginPage() {
         </form>
       ) : (
         /* Stage 2: 2FA dynamic code interception form */
-        <form onSubmit={handleVerify2FA} style={{ display: 'grid', gap: '1rem' }}>
+        <form onSubmit={handleVerify2FA} className="grid gap-4">
           <label>
             <div>Google Authenticator 6-digit Code</div>
             <Input
@@ -190,8 +191,10 @@ export function LoginPage() {
       {/* Show third-party login and registration link only when 2FA is not required */}
       {!requires2FA && (
         <>
-          <div style={{ margin: '1.5rem 0', textAlign: 'center', borderBottom: '1px solid #ddd', lineHeight: '0.1em' }}>
-            <span style={{ background: '#fff', padding: '0 10px', color: '#777', fontSize: '0.85rem' }}>OR</span>
+          <div className="my-6 text-center leading-[0.1em] border-b border-border">
+            <span className="bg-background px-2.5 text-sm text-muted-foreground">
+              OR
+            </span>
           </div>
 
           <Button
@@ -212,14 +215,25 @@ export function LoginPage() {
       )}
 
       {status !== 'idle' ? (
-        <p style={{ marginTop: '1rem', color: status === 'failed' ? 'red' : 'inherit', textAlign: 'center' }}>
+        <p
+          className={cn(
+            'mt-4 text-center',
+            status === 'failed' && 'text-destructive',
+          )}
+        >
           {status === 'failed' ? 'Login or 2FA verification failed, please check your input' : t(`auth.status.${status}`)}
         </p>
       ) : null}
 
       {!requires2FA && (
-        <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>
-          {t("auth.noAccount")}? <Link to="/register" style={{ color: '#0070f3' }}>{t("auth.register")}</Link>
+        <div className="mt-6 text-center text-sm">
+          {t("auth.noAccount")}? 
+          <Link
+            to="/register"
+            className="text-primary hover:underline"
+          >
+            {t('auth.register')}
+          </Link>
         </div>
       )}
     </main>

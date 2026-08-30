@@ -391,27 +391,81 @@
 
   "showcase": {
     "title": "Bibliothèque de composants",
-    "description": "Un aperçu rapide des composants d'interface partagés.",
-    "emptyFriendsTitle": "Aucun ami pour l'instant",
+    "description": "Une référence rapide des composants d'interface partagés.",
+
+    "sections": {
+      "colors": "Couleurs",
+      "typography": "Typographie",
+      "avatar": "Avatar",
+      "emptyState": "EmptyState",
+      "skeleton": "Skeleton",
+      "input": "Input",
+      "toast": "Toast (sonner)",
+      "dialog": "Dialog",
+      "dropdownMenu": "Menu déroulant",
+      "tooltip": "Tooltip",
+      "confirmDialog": "Boîte de confirmation",
+      "pageError": "Erreur de page"
+    },
+
+    "typography": {
+      "body": "Texte principal — Le vif renard brun saute par-dessus le chien paresseux.",
+      "small": "Petit texte / texte secondaire",
+      "caption": "Texte de légende"
+    },
+
+    "input": {
+      "usernamePlaceholder": "Entrez votre nom d'utilisateur...",
+      "disabledPlaceholder": "Champ désactivé"
+    },
+
+    "dialog": {
+      "open": "Ouvrir la boîte de dialogue",
+      "title": "Boîte de dialogue exemple",
+      "description": "Ceci est un exemple de notre composant de boîte de dialogue réutilisable.",
+      "content": "Le contenu de la boîte de dialogue peut être placé ici."
+    },
+
+    "dropdown": {
+      "open": "Ouvrir le menu",
+      "account": "Compte",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "signOut": "Se déconnecter",
+      "profileClicked": "Profil sélectionné",
+      "settingsClicked": "Paramètres sélectionnés",
+      "signOutClicked": "Déconnexion sélectionnée"
+    },
+
+    "tooltip": {
+      "trigger": "Survolez-moi",
+      "content": "Ceci est un tooltip réutilisable."
+    },
+
+    "emptyFriendsTitle": "Pas encore d'amis",
     "emptyFriendsDescription": "Lorsque vous ajouterez des amis, ils apparaîtront ici.",
     "emptyFriendsAction": "Ajouter un ami",
-    "actionClicked": "Action déclenchée",
+    "actionClicked": "Action sélectionnée",
+
     "toastSuccess": "Enregistré avec succès",
-    "toastError": "Une erreur est survenue",
+    "toastError": "Une erreur s'est produite",
     "toastInfo": "Voici une information",
+
     "triggerSuccess": "Afficher un toast de succès",
     "triggerError": "Afficher un toast d'erreur",
     "triggerInfo": "Afficher un toast d'information",
-    "triggerConfirm": "Supprimer un élément",
+    "triggerConfirm": "Supprimer quelque chose",
+
     "confirmTitle": "Êtes-vous sûr ?",
     "confirmDescription": "Cette action est irréversible.",
     "confirmed": "Confirmé",
     "cancelled": "Annulé",
-    "pageErrorTitle": "Titre d'aperçu d'erreur",
-    "pageErrorMessage": "Voici à quoi ressemble PageError.",
-    "retryClicked": "Réessai cliqué",
-    "showPreview": "Afficher l'aperçu de PageError",
-    "hidePreview": "Masquer l'aperçu de PageError"
+
+    "showPreview": "Afficher l'aperçu",
+    "hidePreview": "Masquer l'aperçu",
+    "pageErrorTitle": "Une erreur s'est produite",
+    "pageErrorMessage": "Une erreur s'est produite lors du chargement de cette page.",
+    "retryClicked": "Réessayer sélectionné"
   },
 
   "notifications": {

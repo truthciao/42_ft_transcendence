@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service'; // 对应你们的准确路径
+import { PrismaService } from '../../prisma/prisma.service.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -8,11 +8,16 @@ export class FilesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async saveFileRecord(userId: number, file: Express.Multer.File, context: string) {
-    const fileUrl = `/uploads/${file.filename}`;
+    const subFolder = context === 'avatar' ? 'avatars' : 'attachments';
+    const fileUrl = `/uploads/${subFolder}/${file.filename}`;
 
     return this.prisma.attachment.create({
       data: {
-        uploaderId: userId,
+        // 放弃直接写 uploaderId，改用 Prisma 的 connect 语法！
+        // 这句话的意思是：“把这个文件，挂载到 ID 为 userId 的用户身上”
+        uploader: {
+          connect: { id: userId }
+        },
         fileName: file.originalname,
         fileUrl: fileUrl,
         fileType: file.mimetype,

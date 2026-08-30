@@ -17,6 +17,9 @@ import { mergeMessages } from "@/lib/chat-messages"
 import type { InfiniteData } from "@tanstack/react-query";
 import { FileUpload, type AttachmentType } from '@/components/common/FileUpload';
 
+// 新增：定义后端服务器的地址
+const API_BASE_URI = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
 interface ConversationViewProps {
   conversationId: string;
   title: ReactNode;
@@ -248,6 +251,15 @@ export function ConversationView({
                 ? t('chat.me', 'Me')
                 : (msg.sender?.username ?? t('chat.user', 'User'));
 
+              // 🛠️ 新增：智能嗅探真实的消息类型 (绕过后端缺陷)
+              const isImageUrl = msg.content.startsWith('/uploads/') && msg.content.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+              const isFileUrl = msg.content.startsWith('/uploads/') && !isImageUrl;
+              
+              // 决定最终的渲染类型
+              const renderType = (msg.type === 'image' || isImageUrl) ? 'image' 
+                               : (msg.type === 'file' || isFileUrl) ? 'file' 
+                               : 'text';
+
               return (
                 <div
                   key={msg.id}
@@ -266,11 +278,11 @@ export function ConversationView({
                         : 'bg-accent text-accent-foreground'
                     }`}
                   >
-                    {/* 分支渲染：处理不同类型的消息内容 */}
-                    {msg.type === 'image' ? (
-                       <img src={msg.content} alt="attachment" className="max-w-full rounded-md cursor-pointer hover:opacity-90" />
-                    ) : msg.type === 'file' ? (
-                       <a href={msg.content} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 underline underline-offset-2">
+                    {/* 🛠️ 修改：使用我们刚刚计算出的 renderType 来判断 ; 分支渲染：处理不同类型的消息内容 */}
+                    {renderType === 'image' ? (
+                       <img src={`${API_BASE_URI}${msg.content}`} alt="attachment" className="max-w-full rounded-md cursor-pointer hover:opacity-90" />
+                    ) : renderType === 'file' ? (
+                       <a href={`${API_BASE_URI}${msg.content}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 underline underline-offset-2">
                          📎 {t('chat.downloadFile', 'Download File')}
                        </a>
                     ) : (

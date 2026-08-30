@@ -294,7 +294,8 @@
     "retry": "Réessayer",
     "backHome": "Retour à l'accueil",
     "noPermission": "Vous n'avez pas l'autorisation d'effectuer cette action.",
-    "fileNotFound": "Fichier introuvable ou déjà supprimé."
+    "fileNotFound": "Fichier introuvable ou déjà supprimé.",
+    "unsupportedFileType": "Type de fichier non pris en charge."
   },
 
   "settings": {

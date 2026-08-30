@@ -75,7 +75,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess, context
       else if (status === 413) {
         // Multer 如果校验文件太大，默认会返回 413 Payload Too Large
         alert(t('fileUpload.sizeLimit', 'File size cannot exceed 5MB!'));
-      } 
+      }
+      else if (status === 400 || backendMessage === 'UNSUPPORTED_FILE_TYPE') {
+        // 精准捕获文件类型不支持的错误
+        alert(t('errors.unsupportedFileType', 'Unsupported file type.'));
+      }
       else {
         // 通用兜底错误
         alert(t('fileUpload.uploadFailed', 'Upload failed, please try again.'));

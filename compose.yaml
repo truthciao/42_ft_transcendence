@@ -72,6 +72,7 @@ services:
       - /app/node_modules
       - /app/apps/api/node_modules
       - /app/apps/web/node_modules
+      - upload_data:/app/apps/api/uploads
 
   web:
     build:
@@ -102,3 +103,4 @@ services:
 
 volumes:
   postgres_data:
+  upload_data:

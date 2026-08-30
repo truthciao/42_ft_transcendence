@@ -4,16 +4,20 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-// 上传目录设置在项目根目录的 uploads 文件夹
-const uploadPath = './uploads';
-if (!existsSync(uploadPath)) {
-  mkdirSync(uploadPath, { recursive: true });
-}
-
 export const multerOptions = {
   storage: diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadPath);
+    destination: (req: any, file: any, cb: any) => {
+      // 根据 URL query 中的 context 动态决定子目录
+      const context = req.query?.context || 'chat';
+      const subFolder = context === 'avatar' ? 'avatars' : 'attachments';
+      const targetPath = `./uploads/${subFolder}`;
+
+      // 如果对应的子文件夹不存在，自动递归创建
+      if (!existsSync(targetPath)) {
+        mkdirSync(targetPath, { recursive: true });
+      }
+
+      cb(null, targetPath);
     },
     filename: (req, file, cb) => {
       const ext = extname(file.originalname).toLowerCase();
@@ -28,7 +32,10 @@ export const multerOptions = {
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new HttpException('不支持的文件类型', HttpStatus.BAD_REQUEST), false);
+      cb(
+        new HttpException('UNSUPPORTED_FILE_TYPE', HttpStatus.BAD_REQUEST), 
+        false
+      );
     }
   },
 };

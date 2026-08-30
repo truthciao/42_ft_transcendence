@@ -294,7 +294,8 @@
     "retry": "Try again",
     "backHome": "Back to Home",
     "noPermission": "You do not have permission to perform this action.",
-    "fileNotFound": "File not found or already deleted."
+    "fileNotFound": "File not found or already deleted.",
+    "unsupportedFileType": "Unsupported file type."
   },
 
   "settings": {

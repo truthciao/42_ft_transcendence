@@ -294,7 +294,8 @@
     "retry": "重试",
     "backHome": "返回首页",
     "noPermission": "您没有权限执行此操作。",
-    "fileNotFound": "文件不存在或已被删除。"
+    "fileNotFound": "文件不存在或已被删除。",
+    "unsupportedFileType": "不支持的文件类型。"
   },
 
   "settings": {

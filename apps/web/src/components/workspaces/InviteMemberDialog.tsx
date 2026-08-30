@@ -115,8 +115,8 @@ export function InviteMemberDialog({
                   setInviteRole(event.target.value as 'ADMIN' | 'MEMBER')
                 }
               >
-                <option value="MEMBER">{t('workspaces.inviteMember.roles.MEMBER')}</option>
-                <option value="ADMIN">{t('workspaces.inviteMember.roles.ADMIN')}</option>
+                <option value="MEMBER">{t('workspaces.roles.MEMBER')}</option>
+                <option value="ADMIN">{t('workspaces.roles.ADMIN')}</option>
               </select>
             </div>
           ) : null}

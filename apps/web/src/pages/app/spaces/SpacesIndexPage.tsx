@@ -57,7 +57,9 @@ export function SpacesIndexPage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{workspace.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {workspace.myMembership?.role ? `${workspace.myMembership.role}` : t('workspaces.inviteMember.roles.MEMBER')}
+                    {workspace.myMembership?.role
+                      ? t(`workspaces.roles.${workspace.myMembership.role}`)
+                      : null}
                   </p>
                 </div>
               </div>

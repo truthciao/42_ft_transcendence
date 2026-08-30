@@ -391,27 +391,81 @@
 
   "showcase": {
     "title": "组件库",
-    "description": "共享 UI 基础组件速览。",
-    "emptyFriendsTitle": "暂无好友",
+    "description": "共享 UI 组件的快速参考。",
+
+    "sections": {
+      "colors": "颜色",
+      "typography": "排版",
+      "avatar": "头像",
+      "emptyState": "空状态",
+      "skeleton": "骨架屏",
+      "input": "输入框",
+      "toast": "Toast（Sonner）",
+      "dialog": "对话框",
+      "dropdownMenu": "下拉菜单",
+      "tooltip": "提示框",
+      "confirmDialog": "确认对话框",
+      "pageError": "页面错误"
+    },
+
+    "typography": {
+      "body": "正文 — The quick brown fox jumps over the lazy dog.",
+      "small": "小号 / 次要文本",
+      "caption": "说明文字"
+    },
+
+    "input": {
+      "usernamePlaceholder": "输入你的用户名...",
+      "disabledPlaceholder": "禁用的输入框"
+    },
+
+    "dialog": {
+      "open": "打开对话框",
+      "title": "示例对话框",
+      "description": "这是一个可复用对话框组件的示例。",
+      "content": "这里可以放置对话框内容。"
+    },
+
+    "dropdown": {
+      "open": "打开菜单",
+      "account": "账户",
+      "profile": "个人资料",
+      "settings": "设置",
+      "signOut": "退出登录",
+      "profileClicked": "已点击个人资料",
+      "settingsClicked": "已点击设置",
+      "signOutClicked": "已点击退出登录"
+    },
+
+    "tooltip": {
+      "trigger": "悬停查看",
+      "content": "这是一个可复用的提示框。"
+    },
+
+    "emptyFriendsTitle": "还没有好友",
     "emptyFriendsDescription": "添加好友后，他们会显示在这里。",
     "emptyFriendsAction": "添加好友",
     "actionClicked": "已点击操作",
+
     "toastSuccess": "保存成功",
-    "toastError": "发生错误",
-    "toastInfo": "这是一条提示信息",
-    "triggerSuccess": "显示成功提示",
-    "triggerError": "显示错误提示",
-    "triggerInfo": "显示信息提示",
-    "triggerConfirm": "删除某项内容",
-    "confirmTitle": "确定要执行此操作吗？",
+    "toastError": "发生了一些问题",
+    "toastInfo": "这里有一条信息",
+
+    "triggerSuccess": "显示成功 Toast",
+    "triggerError": "显示错误 Toast",
+    "triggerInfo": "显示信息 Toast",
+    "triggerConfirm": "删除某项",
+
+    "confirmTitle": "确定吗？",
     "confirmDescription": "此操作无法撤销。",
     "confirmed": "已确认",
     "cancelled": "已取消",
-    "pageErrorTitle": "错误预览标题",
-    "pageErrorMessage": "这是 PageError 组件的效果预览。",
-    "retryClicked": "已点击重试",
-    "showPreview": "显示 PageError 预览",
-    "hidePreview": "隐藏 PageError 预览"
+
+    "showPreview": "显示预览",
+    "hidePreview": "隐藏预览",
+    "pageErrorTitle": "发生了一些问题",
+    "pageErrorMessage": "加载此页面时发生错误。",
+    "retryClicked": "已点击重试"
   },
 
   "notifications": {

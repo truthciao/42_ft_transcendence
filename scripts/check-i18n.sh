@@ -10,7 +10,6 @@ echo "        i18n audit for web"
 echo "========================================"
 echo
 
-# Count non-empty lines in a result.
 count_matches() {
   if [[ -n "$1" ]]; then
     printf '%s\n' "$1" | grep -c .
@@ -19,7 +18,6 @@ count_matches() {
   fi
 }
 
-# Add issues to the global counter.
 add_issues() {
   local count="$1"
   total_issues=$((total_issues + count))
@@ -33,16 +31,14 @@ echo "1. Hardcoded JSX text"
 echo "----------------------------------------"
 
 matches=$(
-  rg -n \
-    --glob '*.tsx' \
-    --glob '!**/ui/**' \
-    '<(h[1-6]|p|span|div|label|button|a|li|option|td|th)[^>]*>[[:space:]]*[A-Za-z][^<{]*[A-Za-z][^<{]*</' \
-    "$WEB_SRC" \
+  node scripts/check-i18n.mjs \
+    2>/dev/null \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
+
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -68,6 +64,7 @@ matches=$(
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
+
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -93,6 +90,7 @@ matches=$(
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
+
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -118,6 +116,7 @@ matches=$(
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
+
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -143,6 +142,7 @@ matches=$(
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
+
   count=$(count_matches "$matches")
   add_issues "$count"
 else

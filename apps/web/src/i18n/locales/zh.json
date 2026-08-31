@@ -323,6 +323,8 @@
     "alreadyHaveAccount": "已有账户？",
     "loginHere": "在此登录",
     "twoFactorDescription": "请输入您的 Google Authenticator 六位数验证码以完成登录",
+    "twoFactorCodeLabel": "Google Authenticator 六位数验证码",
+    "codePlaceholder": "例如：482910",
     "loginFailed": "登录或双重身份验证失败，请检查您输入的信息"
   },
 

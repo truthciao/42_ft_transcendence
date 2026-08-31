@@ -168,14 +168,14 @@ export function LoginPage() {
         /* Stage 2: 2FA dynamic code interception form */
         <form onSubmit={handleVerify2FA} className="grid gap-4">
           <label>
-            <div>Google Authenticator 6-digit Code</div>
+            <div>{t('auth.twoFactorCodeLabel')}</div>
             <Input
               type="text"
               inputMode="numeric"
               pattern="[0-9]{6}"
               maxLength={6}
               required
-              placeholder="e.g. 482910"
+              placeholder={t('auth.codePlaceholder')}
               value={totpCode}
               onChange={(event) => setTotpCode(event.target.value)}
               className="w-full text-center text-lg tracking-widest" 

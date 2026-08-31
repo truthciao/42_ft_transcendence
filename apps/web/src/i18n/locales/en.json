@@ -323,6 +323,8 @@
     "alreadyHaveAccount": "Already have an account?",
     "loginHere": "Login here",
     "twoFactorDescription": "Please enter your Google Authenticator 6-digit code to complete login",
+    "twoFactorCodeLabel": "Google Authenticator 6-digit Code",
+    "codePlaceholder": "e.g. 482910",
     "loginFailed": "Login or 2FA verification failed, please check your input"
   },
 

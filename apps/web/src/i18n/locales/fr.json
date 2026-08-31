@@ -390,6 +390,10 @@
     "noMessagesFound": "Aucun message trouvé."
   },
 
+  "eval": {
+      "title": "Évaluation"
+    },
+
   "showcase": {
     "title": "Bibliothèque de composants",
     "description": "Une référence rapide des composants d'interface partagés.",

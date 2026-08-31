@@ -33,6 +33,10 @@ export function Navbar() {
           {t('showcase.title')}
         </NavLink>
 
+        <NavLink to="/eval" className={getNavLinkClass}>
+          {t('eval.title')}
+        </NavLink>
+
         <div className="ml-auto">
           <LanguageSwitcher />
         </div>

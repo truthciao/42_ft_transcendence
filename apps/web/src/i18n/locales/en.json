@@ -390,6 +390,10 @@
     "noMessagesFound": "No messages found."
   },
 
+  "eval": {
+      "title": "Evaluation"
+    },
+
   "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",

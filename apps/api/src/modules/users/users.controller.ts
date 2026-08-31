@@ -39,11 +39,13 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   createUser(@Body() dto: CreateUserDto) {
     return this.usersService.createUser(dto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
   }
@@ -71,6 +73,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findById(id);
   }

@@ -24,7 +24,7 @@ export function SpacesIndexPage() {
           <p className="mt-1 text-muted-foreground">{t('workspaces.pages.index.subtitle')}</p>
         </div>
       </header>
-      <Button onClick={() => setCreateOpen(true)}>
+      <Button onClick={() => setCreateOpen(true)} className="mb-6">
         <Plus className="size-4" /> {t('workspaces.pages.index.newWorkspace')}
       </Button>
 

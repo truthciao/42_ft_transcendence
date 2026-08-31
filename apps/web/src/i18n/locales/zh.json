@@ -68,7 +68,8 @@
       "sending": "发送中...",
       "button": "添加好友",
       "success": "好友请求已发送！",
-      "error": "发送好友请求失败。"
+      "error": "发送好友请求失败。",
+      "pending": "待处理"
     },
     "removeFriend": {
       "title": "删除好友？",

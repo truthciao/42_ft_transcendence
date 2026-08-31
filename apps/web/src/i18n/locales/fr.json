@@ -68,7 +68,8 @@
       "sending": "Envoi...",
       "button": "Ajouter",
       "success": "Demande d'ami envoyée !",
-      "error": "Échec de l'envoi de la demande d'ami."
+      "error": "Échec de l'envoi de la demande d'ami.",
+      "pending": "En attente"
     },
     "removeFriend": {
       "title": "Supprimer cet ami ?",

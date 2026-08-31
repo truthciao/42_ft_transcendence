@@ -68,7 +68,8 @@
       "sending": "Sending...",
       "button": "Add Friend",
       "success": "Friend request sent!",
-      "error": "Failed to send friend request."
+      "error": "Failed to send friend request.",
+      "pending": "Pending"
     },
     "removeFriend": {
       "title": "Remove friend?",

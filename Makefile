@@ -1,11 +1,16 @@
-.PHONY: help install dev build lint typecheck test test-api test-web test-e2e \
-        ci db-up db-down db-logs db-migrate db-generate clean
+.PHONY: help install dev start stop restart build lint typecheck \
+        test test-api test-web test-e2e ci \
+        db-up db-down db-logs db-migrate db-generate db-reset \
+        clean fclean
 
 help:
 	@echo "Available commands:"
 	@echo "  make install       Install dependencies"
-	@echo "  make dev           Start API and web in dev mode"
-	@echo "  make build         Build the project"
+	@echo "  make dev           Start API and web locally in development mode"
+	@echo "  make start         Start the full Docker stack"
+	@echo "  make stop          Stop the Docker stack"
+	@echo "  make restart       Restart the Docker stack"
+	@echo "  make build         Build API and web"
 	@echo "  make lint          Run linters"
 	@echo "  make typecheck     Run TypeScript checks"
 	@echo "  make test          Run API + web unit tests"
@@ -13,18 +18,32 @@ help:
 	@echo "  make test-web      Run web unit tests"
 	@echo "  make test-e2e      Run API E2E tests"
 	@echo "  make ci            Run local CI checks"
-	@echo "  make db-up         Start PostgreSQL"
+	@echo "  make db-up         Start PostgreSQL only"
 	@echo "  make db-down       Stop PostgreSQL"
 	@echo "  make db-logs       Show PostgreSQL logs"
 	@echo "  make db-generate   Generate Prisma client"
 	@echo "  make db-migrate    Apply Prisma migrations"
+	@echo "  make db-reset      Reset the development database"
 	@echo "  make clean         Remove build artifacts"
+	@echo "  make fclean        Remove containers, volumes and build artifacts"
 
 install:
 	pnpm install
 
+# Local development
 dev:
 	pnpm dev
+
+# Full Docker environment
+start:
+	docker compose up -d --build
+
+stop:
+	docker compose down
+
+restart:
+	docker compose down
+	docker compose up -d --build
 
 build:
 	pnpm build
@@ -68,6 +87,14 @@ db-generate:
 db-migrate:
 	pnpm --dir apps/api exec prisma migrate deploy
 
+db-reset:
+	pnpm --dir apps/api exec prisma migrate reset
+
 clean:
 	rm -rf apps/api/dist
 	rm -rf apps/web/dist
+
+fclean: stop clean
+	docker compose down -v --remove-orphans
+
+re: fclean start

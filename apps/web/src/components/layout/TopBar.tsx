@@ -75,14 +75,6 @@ export function TopBar() {
         transcendence
       </Link>
 
-      <Button
-        variant="outline"
-        className="ml-3 w-full max-w-md justify-start text-muted-foreground"
-      >
-        <Search className="size-4" />
-        Search
-      </Button>
-
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
 
@@ -186,18 +178,18 @@ export function TopBar() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/app/settings/profile')}>
               <User className="size-4" />
-              Profile
+              {t('profile.title')}
             </DropdownMenuItem>
 
             <DropdownMenuItem onClick={() => navigate('/app/settings/account')}>
               <Settings className="size-4" />
-              Account
+              {t('settings.account')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
             <DropdownMenuItem variant="destructive" onClick={logout}>
               <LogOut className="size-4" />
-              Logout
+              {t('common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

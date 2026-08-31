@@ -1,4 +1,4 @@
-import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
+import { Bell, LogOut, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';

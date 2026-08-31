@@ -13,12 +13,12 @@ import { getMyConversations, createConversationByUsername, type ConversationItem
 import { SecondarySidebar } from '../layout/SecondarySidebar';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Skeleton } from '../ui/skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { getSocket } from '@/lib/realtime';
 import type { ChatMessage } from '@/api/chat';
+import { Avatar } from '@/components/common/Avatar';
 
 const API_BASE_URI =
   import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -373,7 +373,6 @@ export function ConversationListSidebar() {
             <div className="space-y-1">
               {conversations.map((conv) => {
                 const displayName = conv.name || t('chat.room', { id: conv.id });
-                const avatarLetter = displayName.charAt(0).toUpperCase();
 
                 const otherMember = conv.members?.find(
                   (member) => member.userId !== currentUser?.id
@@ -415,35 +414,12 @@ export function ConversationListSidebar() {
                     className="flex items-center justify-between rounded-md px-2.5 py-2.5 text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors group"
                   >
                     <div className="font-medium flex items-center gap-2.5 min-w-0 flex-1">
-                      <div className="relative shrink-0">
-                        <Avatar className="size-10">
-                          {avatarUrl && (
-                            <AvatarImage
-                              src={avatarUrl}
-                              alt={displayName}
-                            />
-                          )}
-
-                          <AvatarFallback
-                            className={
-                              conv.isFriend
-                                ? 'bg-primary/10 text-primary'
-                                : 'bg-muted text-muted-foreground'
-                            }
-                          >
-                            {avatarLetter}
-                          </AvatarFallback>
-                        </Avatar>
-
-                        {unreadCount > 0 && (
-                          <span
-                            className="absolute -right-0.5 -bottom-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-background"
-                            aria-label={t('chat.unreadMessages', { count: unreadCount })}
-                          >
-                            {unreadCount > 99 ? '99+' : unreadCount}
-                          </span>
-                        )}
-                      </div>
+                      <Avatar
+                        src={avatarUrl}
+                        name={displayName}
+                        size="lg"
+                        unreadCount={unreadCount}
+                      />
 
                         <div className="flex flex-col min-w-0 flex-1">
 

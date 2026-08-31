@@ -7,7 +7,10 @@
     "confirm": "确认",
     "delete": "删除",
     "loading": "加载中...",
-    "back": "返回"
+    "back": "返回",
+    "unknownUser": "未知用户",
+    "selectSection": "选择一个部分",
+    "or": "或"
   },
 
   "home": {
@@ -314,6 +317,8 @@
     "password": "密码",
     "login": "登录",
     "description": "输入您的凭据以访问您的账户。",
+    "verifyAndEnter": "验证并进入系统",
+    "signInWithGoogle": "使用 Google 登录",
     "status": {
       "loggingIn": "登录中...",
       "failed": "登录失败"

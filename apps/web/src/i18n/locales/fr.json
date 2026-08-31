@@ -7,7 +7,10 @@
     "confirm": "Confirmer",
     "delete": "Supprimer",
     "loading": "Chargement...",
-    "back": "Retourner en arrière"
+    "back": "Retourner en arrière",
+    "unknownUser": "Utilisateur inconnu",
+    "selectSection": "Sélectionnez une section",
+    "or": "OU"
   },
 
   "home": {
@@ -314,6 +317,8 @@
     "password": "Mot de passe",
     "login": "Connexion",
     "description": "Entrez vos identifiants pour accéder à votre compte.",
+    "verifyAndEnter": "Vérifier et entrer dans le système",
+    "signInWithGoogle": "Se connecter avec Google",
     "status": {
       "loggingIn": "Connexion en cours...",
       "failed": "Échec de la connexion"

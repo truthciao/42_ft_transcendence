@@ -183,7 +183,7 @@ export function LoginPage() {
           </label>
 
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Verifying...' : 'Verify & Enter System'}
+            {isSubmitting ? t('settings.verifying') : t('auth.verifyAndEnter')}
           </Button>
         </form>
       )}
@@ -193,7 +193,7 @@ export function LoginPage() {
         <>
           <div className="my-6 text-center leading-[0.1em] border-b border-border">
             <span className="bg-background px-2.5 text-sm text-muted-foreground">
-              OR
+              {t('common.or')}
             </span>
           </div>
 

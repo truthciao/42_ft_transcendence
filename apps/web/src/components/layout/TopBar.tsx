@@ -35,7 +35,7 @@ export function TopBar() {
   }
 
   function getNotificationMessage(notification: Notification) {
-    const username = notification.actor?.username ?? 'Unknown user';
+    const username = notification.actor?.username ?? t('common.unknownUser');
     const workspaceName = notification.workspace?.name ?? 'a workspace';
 
     switch (notification.type) {
@@ -149,7 +149,7 @@ export function TopBar() {
                 }}
               >
                 <span className="font-medium">
-                  {notification.actor?.username ?? 'Unknown user'}
+                  {notification.actor?.username ?? t('common.unknownUser')}
                 </span>
 
                 <span className="text-xs text-muted-foreground">
@@ -173,7 +173,6 @@ export function TopBar() {
             <div className="px-2 py-1.5 text-sm font-semibold">
               {user?.username ?? 'Account'}
             </div>
-            {/* <DropdownMenuLabel>{user?.username ?? "Account"}</DropdownMenuLabel> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/app/settings/profile')}>
               <User className="size-4" />

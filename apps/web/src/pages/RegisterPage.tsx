@@ -84,7 +84,7 @@ export function RegisterPage() {
         </label>
 
         <Button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Register'}
+          {loading ? t('auth.submitting') : t('auth.register')}
         </Button>
       </form>
 
@@ -95,9 +95,9 @@ export function RegisterPage() {
       ) : null}
 
       <div className="mt-6 text-center text-sm">
-        Already have an account?{' '}
+        {t('auth.alreadyHaveAccount')}{' '}
         <Link to="/login" className="text-primary hover:underline">
-          Login here
+          {t('auth.loginHere')}
         </Link>
       </div>
     </main>

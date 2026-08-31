@@ -91,12 +91,12 @@ export function TabRail() {
         type="button"
         variant="ghost"
         size="icon"
-        title="Create workspace"
+        title={t('workspaces.create.title')}
         onClick={() => setCreateOpen(true)}
         className="size-11 rounded-full border border-dashed border-sidebar-border text-sidebar-foreground/60 transition-colors hover:border-solid hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
         <Plus className="size-5" />
-        <span className="sr-only">Create workspace</span>
+        <span className="sr-only">{t('workspaces.workspaces.create.title')}</span>
       </Button>
 
       <CreateWorkspaceDialog

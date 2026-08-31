@@ -7,7 +7,10 @@
     "confirm": "Confirmer",
     "delete": "Supprimer",
     "loading": "Chargement...",
-    "back": "Retourner en arrière"
+    "back": "Retourner en arrière",
+    "unknownUser": "Utilisateur inconnu",
+    "selectSection": "Sélectionnez une section",
+    "or": "OU"
   },
 
   "home": {
@@ -68,7 +71,8 @@
       "sending": "Envoi...",
       "button": "Ajouter",
       "success": "Demande d'ami envoyée !",
-      "error": "Échec de l'envoi de la demande d'ami."
+      "error": "Échec de l'envoi de la demande d'ami.",
+      "pending": "En attente"
     },
     "removeFriend": {
       "title": "Supprimer cet ami ?",
@@ -313,12 +317,20 @@
     "password": "Mot de passe",
     "login": "Connexion",
     "description": "Entrez vos identifiants pour accéder à votre compte.",
+    "verifyAndEnter": "Vérifier et entrer dans le système",
+    "signInWithGoogle": "Se connecter avec Google",
     "status": {
       "loggingIn": "Connexion en cours...",
       "failed": "Échec de la connexion"
     },
     "noAccount": "Aucun compte",
-    "submitting": "Soumission en cours..."
+    "submitting": "Soumission en cours...",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "loginHere": "Connectez-vous ici",
+    "twoFactorDescription": "Veuillez saisir le code à 6 chiffres de Google Authenticator pour terminer la connexion",
+    "twoFactorCodeLabel": "Code à 6 chiffres de Google Authenticator",
+    "codePlaceholder": "ex. 482910",
+    "loginFailed": "Échec de la connexion ou de la vérification 2FA. Veuillez vérifier vos informations"
   },
 
   "errors": {
@@ -387,7 +399,10 @@
     "loading": "Chargement...",
     "loadOlderMessages": "Charger les anciens messages",
     "searchMessagesPlaceholder": "Rechercher des messages...",
-    "noMessagesFound": "Aucun message trouvé."
+    "noMessagesFound": "Aucun message trouvé.",
+    "noUsersFound" : "Aucun utilisateur trouvé.",
+    "unreadMessages" : "Messages non lus",
+    "searchDescription" : "Saisissez au moins 2 caractères pour effectuer une recherche."
   },
 
   "eval": {

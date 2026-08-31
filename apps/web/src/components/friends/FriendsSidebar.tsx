@@ -1,22 +1,24 @@
 import { useFriends } from '../../hooks/useFriends';
+import { useTranslation } from 'react-i18next';
 
 export function FriendsSidebar() {
   const { data: friends, isLoading, isError } = useFriends();
+  const { t } = useTranslation();
 
   if (isLoading) {
-    return <div className="p-4 text-muted-foreground">Loading friends...</div>;
+    return <div className="p-4 text-muted-foreground">{t('friends.loading')}</div>;
   }
 
   if (isError) {
-    return <div className="p-4 text-destructive">Failed to load friends.</div>;
+    return <div className="p-4 text-destructive">{t('friends.loadError')}</div>;
   }
 
   return (
     <aside className="p-4">
-      <h3 className="mb-4 font-semibold">Friends</h3>
+      <h3 className="mb-4 font-semibold">{t('friends.title')}</h3>
 
       {(!friends || friends.length === 0) && (
-        <p className="text-sm text-muted-foreground">No friends yet.</p>
+        <p className="text-sm text-muted-foreground">{t('friends.empty')}</p>
       )}
 
       <div className="space-y-2">

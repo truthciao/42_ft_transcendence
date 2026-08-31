@@ -1,10 +1,9 @@
-import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
+import { Bell, LogOut, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar } from '../common/Avatar';
-import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +35,7 @@ export function TopBar() {
   }
 
   function getNotificationMessage(notification: Notification) {
-    const username = notification.actor?.username ?? 'Unknown user';
+    const username = notification.actor?.username ?? t('common.unknownUser');
     const workspaceName = notification.workspace?.name ?? 'a workspace';
 
     switch (notification.type) {
@@ -74,14 +73,6 @@ export function TopBar() {
       <Link to="/" className="font-semibold tracking-normal">
         transcendence
       </Link>
-
-      <Button
-        variant="outline"
-        className="ml-3 w-full max-w-md justify-start text-muted-foreground"
-      >
-        <Search className="size-4" />
-        Search
-      </Button>
 
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
@@ -158,7 +149,7 @@ export function TopBar() {
                 }}
               >
                 <span className="font-medium">
-                  {notification.actor?.username ?? 'Unknown user'}
+                  {notification.actor?.username ?? t('common.unknownUser')}
                 </span>
 
                 <span className="text-xs text-muted-foreground">
@@ -182,22 +173,21 @@ export function TopBar() {
             <div className="px-2 py-1.5 text-sm font-semibold">
               {user?.username ?? 'Account'}
             </div>
-            {/* <DropdownMenuLabel>{user?.username ?? "Account"}</DropdownMenuLabel> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/app/settings/profile')}>
               <User className="size-4" />
-              Profile
+              {t('profile.title')}
             </DropdownMenuItem>
 
             <DropdownMenuItem onClick={() => navigate('/app/settings/account')}>
               <Settings className="size-4" />
-              Account
+              {t('settings.account')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 
             <DropdownMenuItem variant="destructive" onClick={logout}>
               <LogOut className="size-4" />
-              Logout
+              {t('common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

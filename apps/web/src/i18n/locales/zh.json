@@ -7,7 +7,10 @@
     "confirm": "确认",
     "delete": "删除",
     "loading": "加载中...",
-    "back": "返回"
+    "back": "返回",
+    "unknownUser": "未知用户",
+    "selectSection": "选择一个部分",
+    "or": "或"
   },
 
   "home": {
@@ -68,7 +71,8 @@
       "sending": "发送中...",
       "button": "添加好友",
       "success": "好友请求已发送！",
-      "error": "发送好友请求失败。"
+      "error": "发送好友请求失败。",
+      "pending": "待处理"
     },
     "removeFriend": {
       "title": "删除好友？",
@@ -313,12 +317,20 @@
     "password": "密码",
     "login": "登录",
     "description": "输入您的凭据以访问您的账户。",
+    "verifyAndEnter": "验证并进入系统",
+    "signInWithGoogle": "使用 Google 登录",
     "status": {
       "loggingIn": "登录中...",
       "failed": "登录失败"
     },
     "noAccount": "没有账户",
-    "submitting": "提交中..."
+    "submitting": "提交中...",
+    "alreadyHaveAccount": "已有账户？",
+    "loginHere": "在此登录",
+    "twoFactorDescription": "请输入您的 Google Authenticator 六位数验证码以完成登录",
+    "twoFactorCodeLabel": "Google Authenticator 六位数验证码",
+    "codePlaceholder": "例如：482910",
+    "loginFailed": "登录或双重身份验证失败，请检查您输入的信息"
   },
 
   "errors": {
@@ -387,7 +399,10 @@
     "loading": "加载中...",
     "loadOlderMessages": "加载更早的消息",
     "searchMessagesPlaceholder": "搜索消息...",
-    "noMessagesFound": "未找到消息。"
+    "noMessagesFound": "未找到消息。",
+    "noUsersFound" : "未找到用户",
+    "unreadMessages" : "未读消息",
+    "searchDescription" : "请输入至少 2 个字符进行搜索。"
   },
 
   "eval": {

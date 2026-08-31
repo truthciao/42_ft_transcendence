@@ -7,7 +7,10 @@
     "confirm": "Confirm",
     "delete": "Delete",
     "loading": "Loading...",
-    "back": "Go back"
+    "back": "Go back",
+    "unknownUser": "Unknown user",
+    "selectSection": "Select a section",
+    "or": "OR"
   },
 
   "home": {
@@ -68,7 +71,8 @@
       "sending": "Sending...",
       "button": "Add Friend",
       "success": "Friend request sent!",
-      "error": "Failed to send friend request."
+      "error": "Failed to send friend request.",
+      "pending": "Pending"
     },
     "removeFriend": {
       "title": "Remove friend?",
@@ -313,12 +317,20 @@
     "password": "Password",
     "login": "Login",
     "description": "Enter your credentials to access your account.",
+    "verifyAndEnter": "Verify & Enter System",
+    "signInWithGoogle": "Sign in with Google",
     "status": {
       "loggingIn": "Logging in...",
       "failed": "Failed to login"
     },
     "noAccount": "No account",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "twoFactorDescription": "Please enter your Google Authenticator 6-digit code to complete login",
+    "twoFactorCodeLabel": "Google Authenticator 6-digit Code",
+    "codePlaceholder": "e.g. 482910",
+    "loginFailed": "Login or 2FA verification failed, please check your input"
   },
 
   "errors": {
@@ -387,7 +399,10 @@
     "loading": "Loading...",
     "loadOlderMessages": "Load older messages",
     "searchMessagesPlaceholder": "Search messages...",
-    "noMessagesFound": "No messages found."
+    "noMessagesFound": "No messages found.",
+    "noUsersFound" : "No users found.",
+    "unreadMessages" : "unread messages",
+    "searchDescription" : "Enter at least 2 characters to search."
   },
 
   "eval": {

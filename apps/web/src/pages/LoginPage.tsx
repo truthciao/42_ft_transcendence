@@ -132,7 +132,7 @@ export function LoginPage() {
   return (
     <main className="mx-auto max-w-[400px] font-sans">
       <h1>{t("auth.login")}</h1>
-      <p>{requires2FA ? "Please enter your Google Authenticator 6-digit code to complete login" : t("auth.description")}</p>
+      <p>{requires2FA ? t('auth.twoFactorDescription') : t("auth.description")}</p>
 
       {!requires2FA ? (
         /* Stage 1: Standard email and password form */
@@ -168,14 +168,14 @@ export function LoginPage() {
         /* Stage 2: 2FA dynamic code interception form */
         <form onSubmit={handleVerify2FA} className="grid gap-4">
           <label>
-            <div>Google Authenticator 6-digit Code</div>
+            <div>{t('auth.twoFactorCodeLabel')}</div>
             <Input
               type="text"
               inputMode="numeric"
               pattern="[0-9]{6}"
               maxLength={6}
               required
-              placeholder="e.g. 482910"
+              placeholder={t('auth.codePlaceholder')}
               value={totpCode}
               onChange={(event) => setTotpCode(event.target.value)}
               className="w-full text-center text-lg tracking-widest" 
@@ -183,7 +183,7 @@ export function LoginPage() {
           </label>
 
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Verifying...' : 'Verify & Enter System'}
+            {isSubmitting ? t('settings.verifying') : t('auth.verifyAndEnter')}
           </Button>
         </form>
       )}
@@ -193,7 +193,7 @@ export function LoginPage() {
         <>
           <div className="my-6 text-center leading-[0.1em] border-b border-border">
             <span className="bg-background px-2.5 text-sm text-muted-foreground">
-              OR
+              {t('common.or')}
             </span>
           </div>
 
@@ -221,7 +221,7 @@ export function LoginPage() {
             status === 'failed' && 'text-destructive',
           )}
         >
-          {status === 'failed' ? 'Login or 2FA verification failed, please check your input' : t(`auth.status.${status}`)}
+          {status === 'failed' ? t('auth.loginFailed') : t(`auth.status.${status}`)}
         </p>
       ) : null}
 

@@ -6,12 +6,16 @@ import {
   Patch,
   Req,
   UseGuards,
+  Body,
+  Put,
 } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
 import { NotificationsService } from './notifications.service.js';
+import { UpdatePreferencesDto } from './dto/update-preferences.dto.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 
 interface AuthenticatedRequest extends Request {
   user: AuthenticatedUser;
@@ -49,13 +53,26 @@ export class NotificationsController {
       id,
       req.user.userId,
     );
-  }
-
   @Patch('read-all')
   @UseGuards(JwtAuthGuard)
   markAllAsRead(@Req() req: AuthenticatedRequest) {
     return this.notificationsService.markAllAsRead(
       req.user.userId,
     );
+  }
+  
+  @Get('preferences')
+  @UseGuards(JwtAuthGuard)
+  getPreferences(@CurrentUser('userId') userId: number) {
+    return this.notificationsService.getPreferences(userId);
+  }
+  
+  @Put('preferences')
+  @UseGuards(JwtAuthGuard)
+  updatePreferences(
+    @CurrentUser('userId') userId: number,
+    @Body() dto: UpdatePreferencesDto,
+  ) {
+    return this.notificationsService.updatePreferences(userId, dto.preferences);
   }
 }

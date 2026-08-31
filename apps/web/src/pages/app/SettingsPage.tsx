@@ -15,6 +15,7 @@ import {
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNotificationPreferences, useUpdateNotificationPreferences } from '../../hooks/useNotificationPreferences';
 import { QRCodeCanvas } from 'qrcode.react'; // Import QR code rendering library
 import { NavLink } from 'react-router';
 import { Input } from '../../components/ui/input';
@@ -317,6 +318,18 @@ export function AccountSettingsPage() {
 
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
+  const { data: prefs = [], isLoading } = useNotificationPreferences();
+  const updatePrefs = useUpdateNotificationPreferences();
+
+  const handleToggle = (type: string, field: 'viaInApp' | 'viaEmail' | 'viaPush') => {
+    const item = prefs.find((p: any) => p.type === type) || { type, viaInApp: true, viaEmail: false, viaPush: false };
+    const updated = { ...item, [field]: !item[field] };
+    updatePrefs.mutate([updated]);
+  };
+
+  if (isLoading) {
+    return <p className="text-muted-foreground">{t('common.loading')}</p>;
+  }
   return (
     <div className="flex-1 bg-background p-4">
       <h2 className="text-2xl font-semibold">
@@ -325,6 +338,34 @@ export function NotificationSettingsPage() {
       <p className="text-muted-foreground mt-2">
         {t('settings.notificationsDescription')} 
       </p>
+
+      <div className="mt-6 space-y-4 max-w-xl">
+        {prefs.map((p: any) => (
+          <div key={p.type} className="flex items-center justify-between p-4 border rounded bg-card">
+            <div>
+              <div className="font-medium">{t(`notifications.types.${p.type}`, { defaultValue: p.type })}</div>
+              <div className="text-sm text-muted-foreground">{t(`notifications.descriptions.${p.type}`, { defaultValue: '' })}</div>
+            </div>
+
+            <div className="flex gap-3 items-center">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={p.viaInApp} onChange={() => handleToggle(p.type, 'viaInApp')} />
+                <span className="text-sm">{t('notifications.channels.inApp')}</span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={p.viaEmail} onChange={() => handleToggle(p.type, 'viaEmail')} />
+                <span className="text-sm">{t('notifications.channels.email')}</span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={p.viaPush} onChange={() => handleToggle(p.type, 'viaPush')} />
+                <span className="text-sm">{t('notifications.channels.push')}</span>
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

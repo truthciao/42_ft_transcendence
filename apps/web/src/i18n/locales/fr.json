@@ -171,11 +171,32 @@
       "forbiddenDescription": "Vous n'êtes pas membre de cet espace. Demandez à un administrateur de vous inviter."
     },
     "pages": {
-      "channel": {
-        "notFoundTitle": "Canal introuvable",
-        "notFoundDesc": "Ce canal n'existe pas ou vous n'y avez plus accès."
+      "channels": {
+        "inApp": "Dans l'app",
+        "email": "Email",
+        "push": "Push"
+      }
+      ,
+      "types": {
+        "FRIEND_REQUEST_RECEIVED": "Demande d'ami reçue",
+        "FRIEND_REQUEST_ACCEPTED": "Demande d'ami acceptée",
+        "FRIEND_REQUEST_REJECTED": "Demande d'ami rejetée",
+        "FRIEND_REMOVED": "Ami supprimé",
+        "WORKSPACE_INVITE_RECEIVED": "Invitation à l'espace reçue",
+        "WORKSPACE_INVITE_ACCEPTED": "Invitation à l'espace acceptée",
+        "WORKSPACE_MEMBER_REMOVED": "Membre retiré de l'espace",
+        "WORKSPACE_ROLE_CHANGED": "Rôle dans l'espace modifié"
       },
-      "detail": {
+      "descriptions": {
+        "FRIEND_REQUEST_RECEIVED": "Vous avez reçu une demande d'ami.",
+        "FRIEND_REQUEST_ACCEPTED": "Votre demande d'ami a été acceptée.",
+        "FRIEND_REQUEST_REJECTED": "Votre demande d'ami a été rejetée.",
+        "FRIEND_REMOVED": "Vous avez été retiré d'une liste d'amis.",
+        "WORKSPACE_INVITE_RECEIVED": "Vous êtes invité à rejoindre un espace.",
+        "WORKSPACE_INVITE_ACCEPTED": "Votre invitation à un espace a été acceptée.",
+        "WORKSPACE_MEMBER_REMOVED": "Vous avez été retiré d'un espace.",
+        "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié."
+      }
         "inviteTeammates": "Invitez vos coéquipiers pour faire grandir cet espace.",
         "channels": "Canaux",
         "newChannelTooltip": "Seuls les administrateurs et le propriétaire peuvent créer des canaux",

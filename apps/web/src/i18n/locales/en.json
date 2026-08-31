@@ -545,7 +545,33 @@
     "workspaceInviteAccepted": "{{username}} accepted your invite to {{workspaceName}}",
     "workspaceMemberRemoved": "You were removed from {{workspaceName}}",
     "workspaceRoleChanged": "Your role in {{workspaceName}} was updated"
-  },
+    },
+    "channels": {
+      "inApp": "In-app",
+      "email": "Email",
+      "push": "Push"
+    }
+    ,
+    "types": {
+      "FRIEND_REQUEST_RECEIVED": "Friend request received",
+      "FRIEND_REQUEST_ACCEPTED": "Friend request accepted",
+      "FRIEND_REQUEST_REJECTED": "Friend request rejected",
+      "FRIEND_REMOVED": "Friend removed",
+      "WORKSPACE_INVITE_RECEIVED": "Workspace invite received",
+      "WORKSPACE_INVITE_ACCEPTED": "Workspace invite accepted",
+      "WORKSPACE_MEMBER_REMOVED": "Workspace member removed",
+      "WORKSPACE_ROLE_CHANGED": "Workspace role changed"
+    },
+    "descriptions": {
+      "FRIEND_REQUEST_RECEIVED": "You receive a friend request.",
+      "FRIEND_REQUEST_ACCEPTED": "Someone accepted your friend request.",
+      "FRIEND_REQUEST_REJECTED": "Someone rejected your friend request.",
+      "FRIEND_REMOVED": "Someone removed you as a friend.",
+      "WORKSPACE_INVITE_RECEIVED": "You're invited to join a workspace.",
+      "WORKSPACE_INVITE_ACCEPTED": "Your workspace invite was accepted.",
+      "WORKSPACE_MEMBER_REMOVED": "You were removed from a workspace.",
+      "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed."
+    }
 
   "footer": {
     "copyright": "© 2026 Transcendence",

@@ -3,6 +3,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { NotificationType } from '../../generated/prisma/enums.js';
 
 @Injectable()
 export class NotificationsService {
@@ -76,5 +77,50 @@ export class NotificationsService {
         read: true,
       },
     });
+  }
+
+  async getPreferences(userId: number) {
+    const prefs = await this.prisma.notificationPreference.findMany({
+      where: { userId },
+    });
+
+    // ensure every NotificationType has a preference (use defaults)
+    const types = Object.values(NotificationType) as string[];
+    const map: Record<string, any> = {};
+    for (const t of types) {
+      const found = prefs.find((p) => p.type === t);
+      map[t] = found ?? {
+        type: t,
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      };
+    }
+
+    return Object.values(map);
+  }
+
+  async updatePreferences(userId: number, items: Array<{ type: any; viaInApp?: boolean; viaEmail?: boolean; viaPush?: boolean; }>) {
+    const results = [] as any[];
+    for (const item of items) {
+      const upserted = await this.prisma.notificationPreference.upsert({
+        where: { userId_type: { userId, type: item.type } },
+        create: {
+          userId,
+          type: item.type,
+          viaInApp: item.viaInApp ?? true,
+          viaEmail: item.viaEmail ?? false,
+          viaPush: item.viaPush ?? false,
+        },
+        update: {
+          viaInApp: item.viaInApp ?? true,
+          viaEmail: item.viaEmail ?? false,
+          viaPush: item.viaPush ?? false,
+        },
+      });
+      results.push(upserted);
+    }
+
+    return results;
   }
 }

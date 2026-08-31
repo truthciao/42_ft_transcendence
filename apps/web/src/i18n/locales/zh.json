@@ -102,6 +102,33 @@
     }
   },
 
+  "channels": {
+    "inApp": "站内",
+    "email": "邮件",
+    "push": "推送"
+  },
+
+  "types": {
+    "FRIEND_REQUEST_RECEIVED": "收到好友请求",
+    "FRIEND_REQUEST_ACCEPTED": "好友请求被接受",
+    "FRIEND_REQUEST_REJECTED": "好友请求被拒绝",
+    "FRIEND_REMOVED": "被移除好友",
+    "WORKSPACE_INVITE_RECEIVED": "收到工作区邀请",
+    "WORKSPACE_INVITE_ACCEPTED": "工作区邀请被接受",
+    "WORKSPACE_MEMBER_REMOVED": "被从工作区移除",
+    "WORKSPACE_ROLE_CHANGED": "工作区角色已更改"
+  },
+  "descriptions": {
+    "FRIEND_REQUEST_RECEIVED": "您收到了一条好友请求。",
+    "FRIEND_REQUEST_ACCEPTED": "有人接受了您的好友请求。",
+    "FRIEND_REQUEST_REJECTED": "有人拒绝了您的好友请求。",
+    "FRIEND_REMOVED": "有人将您从好友中移除。",
+    "WORKSPACE_INVITE_RECEIVED": "您被邀请加入一个工作区。",
+    "WORKSPACE_INVITE_ACCEPTED": "有人接受了您的工作区邀请。",
+    "WORKSPACE_MEMBER_REMOVED": "您被从工作区移除。",
+    "WORKSPACE_ROLE_CHANGED": "您在工作区的角色已更改。"
+  },
+
   "evaluation": {
     "title": "ft_transcendence 评估",
     "subtitle": "评估项清单与快速导航",

@@ -571,7 +571,7 @@
       "WORKSPACE_INVITE_ACCEPTED": "Your workspace invite was accepted.",
       "WORKSPACE_MEMBER_REMOVED": "You were removed from a workspace.",
       "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed."
-    }
+    },
 
   "footer": {
     "copyright": "© 2026 Transcendence",

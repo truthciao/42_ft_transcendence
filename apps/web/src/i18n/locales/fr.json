@@ -95,7 +95,7 @@
     },
     "profile": {
       "backToFriends": "Retour aux amis",
-      "friend":"Ami",
+      "friend": "Ami",
       "username": "Nom d'utilisateur",
       "email": "Email",
       "message": "message"
@@ -175,8 +175,7 @@
         "inApp": "Dans l'app",
         "email": "Email",
         "push": "Push"
-      }
-      ,
+      },
       "types": {
         "FRIEND_REQUEST_RECEIVED": "Demande d'ami reçue",
         "FRIEND_REQUEST_ACCEPTED": "Demande d'ami acceptée",
@@ -196,133 +195,132 @@
         "WORKSPACE_INVITE_ACCEPTED": "Votre invitation à un espace a été acceptée.",
         "WORKSPACE_MEMBER_REMOVED": "Vous avez été retiré d'un espace.",
         "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié."
+      },
+      "inviteTeammates": "Invitez vos coéquipiers pour faire grandir cet espace.",
+      "channels": "Canaux",
+      "newChannelTooltip": "Seuls les administrateurs et le propriétaire peuvent créer des canaux",
+      "newChannel": "Nouveau canal",
+      "membersCount": "{{count}} membres",
+      "createChannel": {
+        "title": "Créer un canal",
+        "nameError": "Utilisez uniquement des lettres minuscules, des chiffres, - et _",
+        "success": "#{{name}} créé",
+        "error": "Échec de la création du canal",
+        "placeholder": "discussion-generale",
+        "submitting": "Création...",
+        "submit": "Créer"
+      },
+      "documents": "Documents",
+      "newDocument": "Nouveau document",
+      "untitledDocument": "Document sans titre",
+      "createDocument": {
+        "title": "Créer un document",
+        "placeholder": "Titre du document",
+        "cancel": "Annuler",
+        "creating": "Création...",
+        "create": "Créer",
+        "success": "Document créé",
+        "error": "Échec de la création du document"
       }
-        "inviteTeammates": "Invitez vos coéquipiers pour faire grandir cet espace.",
-        "channels": "Canaux",
-        "newChannelTooltip": "Seuls les administrateurs et le propriétaire peuvent créer des canaux",
-        "newChannel": "Nouveau canal",
-        "membersCount": "{{count}} membres",
-        "createChannel": {
-          "title": "Créer un canal",
-          "nameError": "Utilisez uniquement des lettres minuscules, des chiffres, - et _",
-          "success": "#{{name}} créé",
-          "error": "Échec de la création du canal",
-          "placeholder": "discussion-generale",
-          "submitting": "Création...",
-          "submit": "Créer"
-        },
-        "documents": "Documents",
-        "newDocument": "Nouveau document",
-        "untitledDocument": "Document sans titre",
-        "createDocument": {
-          "title": "Créer un document",
-          "placeholder": "Titre du document",
-          "cancel": "Annuler",
-          "creating": "Création...",
-          "create": "Créer",
-          "success": "Document créé",
-          "error": "Échec de la création du document"
-        }
+    },
+    "index": {
+      "title": "Espaces",
+      "subtitle": "Espaces dont vous faites partie.",
+      "newWorkspace": "Nouvel espace",
+      "emptyTitle": "Aucun espace",
+      "emptyDesc": "Créez un espace pour commencer à organiser des canaux et des coéquipiers.",
+      "createWorkspace": "Créer un espace"
+    },
+    "members": {
+      "title": "Membres",
+      "subtitle": "Gérez qui a accès à cet espace.",
+      "inviteTooltip": "Seuls les administrateurs et les propriétaires peuvent inviter des membres",
+      "invite": "Inviter",
+      "you": "(vous)",
+      "owner": "Propriétaire",
+      "removeTooltip": {
+        "owner": "Le propriétaire ne peut pas être supprimé",
+        "self": "Utilisez \"Quitter l'espace\" dans les paramètres à la place",
+        "default": "Seuls les administrateurs et les propriétaires peuvent supprimer des membres"
       },
-      "index": {
-        "title": "Espaces",
-        "subtitle": "Espaces dont vous faites partie.",
-        "newWorkspace": "Nouvel espace",
-        "emptyTitle": "Aucun espace",
-        "emptyDesc": "Créez un espace pour commencer à organiser des canaux et des coéquipiers.",
-        "createWorkspace": "Créer un espace"
-      },
-      "members": {
-        "title": "Membres",
-        "subtitle": "Gérez qui a accès à cet espace.",
-        "inviteTooltip": "Seuls les administrateurs et les propriétaires peuvent inviter des membres",
-        "invite": "Inviter",
-        "you": "(vous)",
-        "owner": "Propriétaire",
-        "removeTooltip": {
-          "owner": "Le propriétaire ne peut pas être supprimé",
-          "self": "Utilisez \"Quitter l'espace\" dans les paramètres à la place",
-          "default": "Seuls les administrateurs et les propriétaires peuvent supprimer des membres"
-        },
-        "remove": "Supprimer",
-        "removeConfirmTitle": "Supprimer {{name}} ?",
-        "removeConfirmDesc": "Il perdra l'accès à cet espace et à ses canaux.",
-        "removeSuccess": "{{name}} supprimé",
-        "removeError": "Échec de la suppression du membre",
-        "roleUpdateSuccess": "Rôle mis à jour",
-        "roleUpdateError": "Échec de la mise à jour du rôle",
-        "pendingInvites": {
-          "title": "Invitations en attente",
-          "unknown": "Inconnu",
-          "invitedBy": "Invité par {{name}} · expire le {{date}}",
-          "status": "En attente"
-        }
-      },
-      "settings": {
-        "title": "Paramètres de l'espace",
-        "subtitle": "Gérer les détails de {{name}}.",
-        "form": {
-          "name": "Nom",
-          "description": "Description",
-          "icon": "Icône",
-          "unauthorized": "Seuls les administrateurs et les propriétaires peuvent modifier les détails de l'espace.",
-          "saving": "Enregistrement...",
-          "save": "Enregistrer les modifications"
-        },
-        "updateSuccess": "Espace mis à jour",
-        "updateError": "Échec de la mise à jour de l'espace",
-        "dangerZone": {
-          "title": "Zone de danger",
-          "leave": {
-            "title": "Quitter l'espace",
-            "ownerDesc": "Transférer la propriété avant de quitter.",
-            "memberDesc": "Vous perdrez l'accès immédiatement.",
-            "tooltip": "Le propriétaire doit transférer la propriété avant de quitter",
-            "button": "Quitter",
-            "confirmTitle": "Quitter cet espace ?",
-            "confirmDesc": "Vous perdrez l'accès à ses canaux et messages.",
-            "success": "Vous avez quitté l'espace",
-            "error": "Échec pour quitter l'espace"
-          },
-          "transfer": {
-            "title": "Transférer la propriété",
-            "desc": "Transmettre cet espace à un autre membre.",
-            "tooltip": "Seul le propriétaire peut transférer la propriété",
-            "button": "Transférer"
-          },
-          "delete": {
-            "title": "Supprimer l'espace",
-            "desc": "Supprime définitivement cet espace et toutes ses données.",
-            "tooltip": "Seul le propriétaire peut supprimer cet espace",
-            "button": "Supprimer",
-            "confirmTitle": "Supprimer \"{{name}}\" ?",
-            "confirmDesc": "Cela supprime définitivement l'espace, ses canaux et messages. Cette action est irréversible.",
-            "success": "Espace supprimé",
-            "error": "Échec de la suppression de l'espace"
-          },
-          "document": {
-            "title": "Supprimer le document",
-            "desc": "Supprimez définitivement des documents de cet espace.",
-            "button": "Supprimer",
-            "tooltip": "Seuls les administrateurs de l’espace peuvent supprimer des documents",
-            "confirmTitle": "Supprimer « {{name}} » ?",
-            "confirmDesc": "Cette action supprimera définitivement le document. Elle est irréversible.",
-            "success": "Document supprimé avec succès",
-            "error": "Échec de la suppression du document",
-            "empty": "Aucun document à supprimer."
-          }
-        }
-      },
-      "document": {
-        "back": "Espace de travail",
+      "remove": "Supprimer",
+      "removeConfirmTitle": "Supprimer {{name}} ?",
+      "removeConfirmDesc": "Il perdra l'accès à cet espace et à ses canaux.",
+      "removeSuccess": "{{name}} supprimé",
+      "removeError": "Échec de la suppression du membre",
+      "roleUpdateSuccess": "Rôle mis à jour",
+      "roleUpdateError": "Échec de la mise à jour du rôle",
+      "pendingInvites": {
+        "title": "Invitations en attente",
+        "unknown": "Inconnu",
+        "invitedBy": "Invité par {{name}} · expire le {{date}}",
+        "status": "En attente"
+      }
+    },
+    "settings": {
+      "title": "Paramètres de l'espace",
+      "subtitle": "Gérer les détails de {{name}}.",
+      "form": {
+        "name": "Nom",
+        "description": "Description",
+        "icon": "Icône",
+        "unauthorized": "Seuls les administrateurs et les propriétaires peuvent modifier les détails de l'espace.",
         "saving": "Enregistrement...",
-        "saved": "Enregistré",
-        "saveError": "Échec de l'enregistrement",
-        "notFound": "Document introuvable",
-        "loadError": "Impossible de charger ce document.",
-        "untitled": "Document sans titre",
-        "startWriting": "Commencez à écrire..."
+        "save": "Enregistrer les modifications"
+      },
+      "updateSuccess": "Espace mis à jour",
+      "updateError": "Échec de la mise à jour de l'espace",
+      "dangerZone": {
+        "title": "Zone de danger",
+        "leave": {
+          "title": "Quitter l'espace",
+          "ownerDesc": "Transférer la propriété avant de quitter.",
+          "memberDesc": "Vous perdrez l'accès immédiatement.",
+          "tooltip": "Le propriétaire doit transférer la propriété avant de quitter",
+          "button": "Quitter",
+          "confirmTitle": "Quitter cet espace ?",
+          "confirmDesc": "Vous perdrez l'accès à ses canaux et messages.",
+          "success": "Vous avez quitté l'espace",
+          "error": "Échec pour quitter l'espace"
+        },
+        "transfer": {
+          "title": "Transférer la propriété",
+          "desc": "Transmettre cet espace à un autre membre.",
+          "tooltip": "Seul le propriétaire peut transférer la propriété",
+          "button": "Transférer"
+        },
+        "delete": {
+          "title": "Supprimer l'espace",
+          "desc": "Supprime définitivement cet espace et toutes ses données.",
+          "tooltip": "Seul le propriétaire peut supprimer cet espace",
+          "button": "Supprimer",
+          "confirmTitle": "Supprimer \"{{name}}\" ?",
+          "confirmDesc": "Cela supprime définitivement l'espace, ses canaux et messages. Cette action est irréversible.",
+          "success": "Espace supprimé",
+          "error": "Échec de la suppression de l'espace"
+        },
+        "document": {
+          "title": "Supprimer le document",
+          "desc": "Supprimez définitivement des documents de cet espace.",
+          "button": "Supprimer",
+          "tooltip": "Seuls les administrateurs de l’espace peuvent supprimer des documents",
+          "confirmTitle": "Supprimer « {{name}} » ?",
+          "confirmDesc": "Cette action supprimera définitivement le document. Elle est irréversible.",
+          "success": "Document supprimé avec succès",
+          "error": "Échec de la suppression du document",
+          "empty": "Aucun document à supprimer."
+        }
       }
+    },
+    "document": {
+      "back": "Espace de travail",
+      "saving": "Enregistrement...",
+      "saved": "Enregistré",
+      "saveError": "Échec de l'enregistrement",
+      "notFound": "Document introuvable",
+      "loadError": "Impossible de charger ce document.",
+      "untitled": "Document sans titre",
+      "startWriting": "Commencez à écrire..."
     }
   },
 
@@ -365,7 +363,7 @@
       "um-standard": { "rawText": "- Major : Gestion utilisateur standard et authentification.\n    ◦ Les utilisateurs peuvent mettre à jour leur profil.\n    ◦ Les utilisateurs peuvent télécharger un avatar (avec avatar par défaut si aucun fourni).\n    ◦ Les utilisateurs peuvent ajouter d'autres utilisateurs en amis et voir leur statut en ligne.\n    ◦ Une page de profil affichant les informations de l'utilisateur." },
       "um-permissions": { "rawText": "- Major : Système de permissions avancé :\n    ◦ Voir, modifier et supprimer des utilisateurs (CRUD).\n    ◦ Gestion des rôles (admin, user, guest, moderator, etc.).\n    ◦ Vues et actions différentes selon le rôle de l'utilisateur." },
       "um-organizations": { "rawText": "- Major : Système d'organisations :\n    ◦ Créer, éditer et supprimer des organisations.\n    ◦ Ajouter des utilisateurs aux organisations.\n    ◦ Retirer des utilisateurs des organisations.\n    ◦ Voir les organisations et permettre des actions spécifiques (minimum : create, read, update)." },
-      "um-oauth": { "rawText": "• Minor : Implémenter l'authentification distante via OAuth 2.0 (Google, GitHub, 42, etc.)." },
+      "um-oauth": { "rawText": "• Minor : Implémenter l'authentification distante via OAuth 2.0 (Google, GitHub, 42, etc)." },
       "um-2fa": { "rawText": "• Minor : Implémenter un système complet de 2FA (authentification à deux facteurs)." }
     }
   },
@@ -410,37 +408,37 @@
   },
 
   "settings": {
-  "title": "Paramètres",
-  "description": "Gérez les paramètres et les préférences de votre compte.",
-  "profile": "Profil",
-  "account": "Compte",
-  "notifications": "Notifications",
-  "accountTitle": "Paramètres du compte",
-  "accountDescription": "Gérez la sécurité et les préférences de votre compte.",
-  "notificationsTitle": "Paramètres des notifications",
-  "notificationsDescription": "Gérez vos préférences de notification.",
-  "twoFactor": {
-    "title": "Authentification à deux facteurs (2FA)",
-    "setupTitle": "Configurer l’authentification à deux facteurs",
-    "setupDescription": "1. Ouvrez votre application d’authentification (comme Google Authenticator).\n2. Scannez le code QR ci-dessous ou saisissez la clé manuellement.",
-    "status": "Statut",
-    "statusEnabled": "Activée",
-    "statusDisabled": "Désactivée",
-    "enable": "Activer la 2FA",
-    "disable": "Désactiver la 2FA",
-    "loading": "Chargement...",
-    "secretKey": "Clé secrète",
-    "codeLabel": "Saisissez le code à 6 chiffres affiché dans l’application :",
-    "codePlaceholder": "123456",
-    "verifying": "Vérification...",
-    "verifyAndTurnOn": "Vérifier et activer",
-    "enableSuccess": "La 2FA a été activée avec succès !",
-    "invalidCode": "Code de vérification invalide",
-    "disableConfirm": "Voulez-vous vraiment désactiver la 2FA ?",
-    "disableSuccess": "La 2FA a été désactivée.",
-    "generateError": "Échec de la génération du secret 2FA",
-    "disableError": "Échec de la désactivation de la 2FA",
-    "unknownError": "Erreur inconnue"
+    "title": "Paramètres",
+    "description": "Gérez les paramètres et les préférences de votre compte.",
+    "profile": "Profil",
+    "account": "Compte",
+    "notifications": "Notifications",
+    "accountTitle": "Paramètres du compte",
+    "accountDescription": "Gérez la sécurité et les préférences de votre compte.",
+    "notificationsTitle": "Paramètres des notifications",
+    "notificationsDescription": "Gérez vos préférences de notification.",
+    "twoFactor": {
+      "title": "Authentification à deux facteurs (2FA)",
+      "setupTitle": "Configurer l’authentification à deux facteurs",
+      "setupDescription": "1. Ouvrez votre application d’authentification (comme Google Authenticator).\n2. Scannez le code QR ci-dessous ou saisissez la clé manuellement.",
+      "status": "Statut",
+      "statusEnabled": "Activée",
+      "statusDisabled": "Désactivée",
+      "enable": "Activer la 2FA",
+      "disable": "Désactiver la 2FA",
+      "loading": "Chargement...",
+      "secretKey": "Clé secrète",
+      "codeLabel": "Saisissez le code à 6 chiffres affiché dans l’application :",
+      "codePlaceholder": "123456",
+      "verifying": "Vérification...",
+      "verifyAndTurnOn": "Vérifier et activer",
+      "enableSuccess": "La 2FA a été activée avec succès !",
+      "invalidCode": "Code de vérification invalide",
+      "disableConfirm": "Voulez-vous vraiment désactiver la 2FA ?",
+      "disableSuccess": "La 2FA a été désactivée.",
+      "generateError": "Échec de la génération du secret 2FA",
+      "disableError": "Échec de la désactivation de la 2FA",
+      "unknownError": "Erreur inconnue"
     }
   },
 
@@ -467,19 +465,18 @@
     "loadOlderMessages": "Charger les anciens messages",
     "searchMessagesPlaceholder": "Rechercher des messages...",
     "noMessagesFound": "Aucun message trouvé.",
-    "noUsersFound" : "Aucun utilisateur trouvé.",
-    "unreadMessages" : "Messages non lus",
-    "searchDescription" : "Saisissez au moins 2 caractères pour effectuer une recherche."
+    "noUsersFound": "Aucun utilisateur trouvé.",
+    "unreadMessages": "Messages non lus",
+    "searchDescription": "Saisissez au moins 2 caractères pour effectuer une recherche."
   },
 
   "eval": {
-      "title": "Évaluation"
-    },
+    "title": "Évaluation"
+  },
 
   "showcase": {
     "title": "Bibliothèque de composants",
     "description": "Une référence rapide des composants d'interface partagés.",
-
     "sections": {
       "colors": "Couleurs",
       "typography": "Typographie",
@@ -494,25 +491,21 @@
       "confirmDialog": "Boîte de confirmation",
       "pageError": "Erreur de page"
     },
-
     "typography": {
       "body": "Texte principal — Le vif renard brun saute par-dessus le chien paresseux.",
       "small": "Petit texte / texte secondaire",
       "caption": "Texte de légende"
     },
-
     "input": {
       "usernamePlaceholder": "Entrez votre nom d'utilisateur...",
       "disabledPlaceholder": "Champ désactivé"
     },
-
     "dialog": {
       "open": "Ouvrir la boîte de dialogue",
       "title": "Boîte de dialogue exemple",
       "description": "Ceci est un exemple de notre composant de boîte de dialogue réutilisable.",
       "content": "Le contenu de la boîte de dialogue peut être placé ici."
     },
-
     "dropdown": {
       "open": "Ouvrir le menu",
       "account": "Compte",
@@ -523,31 +516,25 @@
       "settingsClicked": "Paramètres sélectionnés",
       "signOutClicked": "Déconnexion sélectionnée"
     },
-
     "tooltip": {
       "trigger": "Survolez-moi",
       "content": "Ceci est un tooltip réutilisable."
     },
-
     "emptyFriendsTitle": "Pas encore d'amis",
     "emptyFriendsDescription": "Lorsque vous ajouterez des amis, ils apparaîtront ici.",
     "emptyFriendsAction": "Ajouter un ami",
     "actionClicked": "Action sélectionnée",
-
     "toastSuccess": "Enregistré avec succès",
     "toastError": "Une erreur s'est produite",
     "toastInfo": "Voici une information",
-
     "triggerSuccess": "Afficher un toast de succès",
     "triggerError": "Afficher un toast d'erreur",
     "triggerInfo": "Afficher un toast d'information",
     "triggerConfirm": "Supprimer quelque chose",
-
     "confirmTitle": "Êtes-vous sûr ?",
     "confirmDescription": "Cette action est irréversible.",
     "confirmed": "Confirmé",
     "cancelled": "Annulé",
-
     "showPreview": "Afficher l'aperçu",
     "hidePreview": "Masquer l'aperçu",
     "pageErrorTitle": "Une erreur s'est produite",
@@ -576,7 +563,6 @@
 
   "legal": {
     "lastUpdated": "Dernière mise à jour : 24 août 2026",
-
     "privacy": {
       "title": "Politique de confidentialité",
       "sections": {
@@ -630,7 +616,6 @@
         }
       }
     },
-
     "terms": {
       "title": "Conditions d'utilisation",
       "sections": {

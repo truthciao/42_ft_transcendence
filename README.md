@@ -276,65 +276,31 @@ docker compose up --build
 
 ---
 
-# Available Scripts
+### Makefile
 
-Run the entire project locally:
-
-```bash
-pnpm dev
-```
-
----
-
-Build:
+A `Makefile` is provided to simplify common development, testing, and Docker operations.
 
 ```bash
-pnpm build
+make start      # Build and start the full Docker stack
+make stop       # Stop all containers
+make restart    # Restart the Docker stack
+make dev        # Run the project locally in development mode
+
+make test       # Run unit tests
+make test-e2e   # Run API end-to-end tests
+make ci         # Run local CI checks
+
+make db-up      # Start PostgreSQL only
+make db-reset   # Reset the development database
+
+make clean      # Remove build artifacts
+make fclean     # Remove containers, volumes, and build artifacts
+make re         # Clean everything and rebuild the Docker stack
 ```
 
----
+Run `make help` to see all available commands.
 
-Lint:
-
-```bash
-pnpm lint
-```
-
----
-Check formatting:
-
-```bash
-pnpm --filter api format:check
-```
----
-
-Backend only:
-
-```bash
-pnpm --filter api dev
-```
-
----
-
-Frontend only:
-
-```bash
-pnpm --filter web dev
-```
-
----
-
-Backend tests:
-
-```bash
-pnpm --filter api test
-```
-
-Coverage:
-
-```bash
-pnpm --filter api test:cov
-```
+> **Note:** `make fclean` removes Docker volumes and will delete local database data.
 
 ---
 

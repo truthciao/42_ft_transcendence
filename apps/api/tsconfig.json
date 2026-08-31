@@ -25,6 +25,6 @@
    "references": [
     { "path": "../../packages/shared-types" }
   ],
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

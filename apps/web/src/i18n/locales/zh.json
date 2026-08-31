@@ -392,7 +392,10 @@
     "loading": "加载中...",
     "loadOlderMessages": "加载更早的消息",
     "searchMessagesPlaceholder": "搜索消息...",
-    "noMessagesFound": "未找到消息。"
+    "noMessagesFound": "未找到消息。",
+    "noUsersFound" : "未找到用户",
+    "unreadMessages" : "未读消息",
+    "searchDescription" : "请输入至少 2 个字符进行搜索。"
   },
 
   "eval": {

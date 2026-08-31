@@ -392,7 +392,10 @@
     "loading": "Chargement...",
     "loadOlderMessages": "Charger les anciens messages",
     "searchMessagesPlaceholder": "Rechercher des messages...",
-    "noMessagesFound": "Aucun message trouvé."
+    "noMessagesFound": "Aucun message trouvé.",
+    "noUsersFound" : "Aucun utilisateur trouvé.",
+    "unreadMessages" : "Messages non lus",
+    "searchDescription" : "Saisissez au moins 2 caractères pour effectuer une recherche."
   },
 
   "eval": {

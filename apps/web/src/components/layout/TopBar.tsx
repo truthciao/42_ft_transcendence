@@ -4,7 +4,6 @@ import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar } from '../common/Avatar';
-import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,

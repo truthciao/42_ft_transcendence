@@ -4,6 +4,7 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export type AvatarStatus = 'online' | 'offline' | 'away' | 'busy';
 
@@ -74,6 +75,8 @@ export function Avatar({
   unreadCount = 0,
   className,
 }: AvatarProps) {
+  const { t } = useTranslation();
+  
   return (
     <span className={cn('relative inline-block shrink-0', className)}>
       <BaseAvatar className={SIZE_CLASS[size]}>
@@ -100,7 +103,7 @@ export function Avatar({
 
       {unreadCount > 0 && (
         <span
-          aria-label={`${unreadCount} unread messages`}
+          aria-label={t('chat.unreadMessages', { count: unreadCount })}
           className="absolute -right-1 -bottom-1 min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold leading-none flex items-center justify-center ring-2 ring-background"
         >
           {unreadCount > 99 ? '99+' : unreadCount}

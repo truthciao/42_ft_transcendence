@@ -347,7 +347,7 @@ export function ConversationListSidebar() {
               size="icon"
               className="size-8 text-primary hover:bg-primary/10 hover:text-primary"
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Search users"
+              aria-label={t('chat.searchPeople')}
             >
               <Search className="size-4" />
             </Button>
@@ -438,7 +438,7 @@ export function ConversationListSidebar() {
                         {unreadCount > 0 && (
                           <span
                             className="absolute -right-0.5 -bottom-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-background"
-                            aria-label={`${unreadCount} unread messages`}
+                            aria-label={t('chat.unreadMessages', { count: unreadCount })}
                           >
                             {unreadCount > 99 ? '99+' : unreadCount}
                           </span>
@@ -503,7 +503,7 @@ export function ConversationListSidebar() {
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>
-                Search people
+                {t('chat.searchPeople')}
               </DialogTitle>
             </DialogHeader>
 
@@ -517,14 +517,14 @@ export function ConversationListSidebar() {
                   onChange={(e) =>
                     setSearchQuery(e.target.value)
                   }
-                  placeholder="Search username..."
+                  placeholder={t('chat.usernamePlaceholder')}
                   className="pl-9"
                 />
               </div>
 
               {searchQuery.trim().length < 2 && (
                 <p className="text-xs text-muted-foreground">
-                  Enter at least 2 characters to search.
+                  {t('chat.searchDescription')}
                 </p>
               )}
 
@@ -539,7 +539,7 @@ export function ConversationListSidebar() {
                 searchQuery.trim().length >= 2 &&
                 searchResults.length === 0 && (
                   <p className="py-6 text-center text-sm text-muted-foreground">
-                    No users found.
+                    {t('chat.noUsersFound')}
                   </p>
                 )}
 

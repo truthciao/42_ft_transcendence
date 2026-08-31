@@ -392,7 +392,10 @@
     "loading": "Loading...",
     "loadOlderMessages": "Load older messages",
     "searchMessagesPlaceholder": "Search messages...",
-    "noMessagesFound": "No messages found."
+    "noMessagesFound": "No messages found.",
+    "noUsersFound" : "No users found.",
+    "unreadMessages" : "unread messages",
+    "searchDescription" : "Enter at least 2 characters to search."
   },
 
   "eval": {

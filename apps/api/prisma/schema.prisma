@@ -37,6 +37,7 @@ model User {
 
   notificationsReceived Notification[] @relation("NotificationRecipient")
   notificationsCreated  Notification[] @relation("NotificationActor")
+  notificationPreferences NotificationPreference[]
 }
 
 enum PreferredLanguage {

@@ -53,6 +53,7 @@ export class NotificationsController {
       id,
       req.user.userId,
     );
+  }
   @Patch('read-all')
   @UseGuards(JwtAuthGuard)
   markAllAsRead(@Req() req: AuthenticatedRequest) {

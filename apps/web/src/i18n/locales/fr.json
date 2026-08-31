@@ -55,52 +55,6 @@
     }
   },
 
-  "friends": {
-    "title": "Amis",
-    "description": "Gérez vos amis et vos demandes.",
-    "close": "Fermer",
-    "yourFriends": "Vos amis",
-    "loading": "Chargement des amis...",
-    "loadError": "Échec du chargement des amis.",
-    "empty": "Vous n'avez pas encore d'amis.",
-    "addFriend": {
-      "title": "Ajouter un ami",
-      "searchPlaceholder": "Rechercher par nom d'utilisateur",
-      "minCharacters": "Saisissez au moins 2 caractères pour effectuer une recherche.",
-      "searching": "Recherche en cours...",
-      "searchError": "Échec de la recherche des utilisateurs.",
-      "noUsers": "Aucun utilisateur trouvé.",
-      "sending": "Envoi...",
-      "button": "Ajouter",
-      "success": "Demande d'ami envoyée !",
-      "error": "Échec de l'envoi de la demande d'ami.",
-      "pending": "En attente"
-    },
-    "removeFriend": {
-      "title": "Supprimer cet ami ?",
-      "description": "Êtes-vous sûr de vouloir supprimer cet ami ?",
-      "confirm": "Supprimer",
-      "removing": "Suppression...",
-      "success": "Ami supprimé",
-      "error": "Échec de la suppression de l'ami."
-    },
-    "friendRequests": {
-      "title": "Demandes d'ami",
-      "loading": "Chargement des demandes d'ami...",
-      "loadError": "Échec du chargement des demandes d'ami.",
-      "empty": "Aucune demande d'ami en attente.",
-      "accept": "Accepter",
-      "reject": "Refuser",
-      "viewAll": "Tout afficher"
-    },
-    "profile": {
-      "backToFriends": "Retour aux amis",
-      "friend": "Ami",
-      "username": "Nom d'utilisateur",
-      "email": "Email",
-      "message": "message"
-    }
-  },
 
   "workspaces": {
     "title": "Espaces",
@@ -553,6 +507,32 @@
     "workspaceInviteAccepted": "{{username}} a accepté votre invitation à {{workspaceName}}",
     "workspaceMemberRemoved": "Vous avez été retiré de {{workspaceName}}",
     "workspaceRoleChanged": "Votre rôle dans {{workspaceName}} a été mis à jour"
+    ,
+    "channels": {
+      "inApp": "Dans l'app",
+      "email": "Email",
+      "push": "Push"
+    },
+    "types": {
+      "FRIEND_REQUEST_RECEIVED": "Demande d'ami reçue",
+      "FRIEND_REQUEST_ACCEPTED": "Demande d'ami acceptée",
+      "FRIEND_REQUEST_REJECTED": "Demande d'ami rejetée",
+      "FRIEND_REMOVED": "Ami supprimé",
+      "WORKSPACE_INVITE_RECEIVED": "Invitation à l'espace reçue",
+      "WORKSPACE_INVITE_ACCEPTED": "Invitation à l'espace acceptée",
+      "WORKSPACE_MEMBER_REMOVED": "Membre retiré de l'espace",
+      "WORKSPACE_ROLE_CHANGED": "Rôle dans l'espace modifié"
+    },
+    "descriptions": {
+      "FRIEND_REQUEST_RECEIVED": "Vous avez reçu une demande d'ami.",
+      "FRIEND_REQUEST_ACCEPTED": "Votre demande d'ami a été acceptée.",
+      "FRIEND_REQUEST_REJECTED": "Votre demande d'ami a été rejetée.",
+      "FRIEND_REMOVED": "Vous avez été retiré d'une liste d'amis.",
+      "WORKSPACE_INVITE_RECEIVED": "Vous êtes invité à rejoindre un espace.",
+      "WORKSPACE_INVITE_ACCEPTED": "Votre invitation à un espace a été acceptée.",
+      "WORKSPACE_MEMBER_REMOVED": "Vous avez été retiré d'un espace.",
+      "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié."
+    }
   },
 
   "footer": {

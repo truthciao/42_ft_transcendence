@@ -54,11 +54,21 @@ function ColorSwatch({
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <section className="space-y-3 border-b border-border pb-8 last:border-b-0">
-      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{title}</h2>
-      <div className="rounded-lg border border-border bg-card p-6">{children}</div>
+      <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+        {title}
+      </h2>
+      <div className="rounded-lg border border-border bg-card p-6">
+        {children}
+      </div>
     </section>
   );
 }
@@ -74,17 +84,27 @@ export function ComponentShowcasePage() {
       description: t('showcase.confirmDescription'),
       variant: 'destructive',
     });
-    toast(confirmed ? t('showcase.confirmed') : t('showcase.cancelled'));
+
+    toast(
+      confirmed
+        ? t('showcase.confirmed')
+        : t('showcase.cancelled'),
+    );
   }
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
       <div>
-        <h1 className="text-2xl font-bold">{t('showcase.title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t('showcase.description')}</p>
+        <h1 className="text-2xl font-bold">
+          {t('showcase.title')}
+        </h1>
+
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t('showcase.description')}
+        </p>
       </div>
 
-      <Section title="Colors">
+      <Section title={t('showcase.sections.colors')}>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <ColorSwatch name="Primary" className="bg-primary" />
           <ColorSwatch name="Secondary" className="bg-secondary" />
@@ -99,24 +119,27 @@ export function ComponentShowcasePage() {
         </div>
       </Section>
 
-      <Section title="Typography">
+      <Section title={t('showcase.sections.typography')}>
         <div className="space-y-4">
           <h1 className="text-4xl font-bold">Heading 1</h1>
           <h2 className="text-3xl font-semibold">Heading 2</h2>
           <h3 className="text-2xl font-semibold">Heading 3</h3>
+
           <p className="text-base">
-            Body text — The quick brown fox jumps over the lazy dog.
+            {t('showcase.typography.body')}
           </p>
+
           <p className="text-sm text-muted-foreground">
-            Small / secondary text
+            {t('showcase.typography.small')}
           </p>
+
           <p className="text-xs text-muted-foreground">
-            Caption text
+            {t('showcase.typography.caption')}
           </p>
         </div>
       </Section>
 
-      <Section title="Avatar">
+      <Section title={t('showcase.sections.avatar')}>
         <div className="flex flex-wrap items-center gap-6">
           <Avatar name="Yali Chen" size="sm" status="online" />
           <Avatar name="Yali Chen" size="md" status="away" />
@@ -125,7 +148,7 @@ export function ComponentShowcasePage() {
         </div>
       </Section>
 
-      <Section title="EmptyState">
+      <Section title={t('showcase.sections.emptyState')}>
         <EmptyState
           icon={Users}
           title={t('showcase.emptyFriendsTitle')}
@@ -137,57 +160,85 @@ export function ComponentShowcasePage() {
         />
       </Section>
 
-      <Section title="Skeleton">
+      <Section title={t('showcase.sections.skeleton')}>
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <SkeletonAvatar />
             <SkeletonText lines={2} className="flex-1" />
           </div>
+
           <SkeletonCard />
+
           <div className="rounded-md border border-border">
             <SkeletonMessageList count={3} />
           </div>
         </div>
       </Section>
 
-      <Section title="Input">
+      <Section title={t('showcase.sections.input')}>
         <div className="max-w-sm space-y-3">
-          <Input placeholder="Enter your username..." />
+          <Input
+            placeholder={t('showcase.input.usernamePlaceholder')}
+          />
+
           <Input defaultValue="Victoria" />
-          <Input disabled placeholder="Disabled input" />
+
+          <Input
+            disabled
+            placeholder={t('showcase.input.disabledPlaceholder')}
+          />
         </div>
       </Section>
 
-      <Section title="Toast (sonner)">
+      <Section title={t('showcase.sections.toast')}>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={() => toast.success(t('showcase.toastSuccess'))}>
+          <Button
+            onClick={() =>
+              toast.success(t('showcase.toastSuccess'))
+            }
+          >
             {t('showcase.triggerSuccess')}
           </Button>
-          <Button variant="outline" onClick={() => toast.error(t('showcase.toastError'))}>
+
+          <Button
+            variant="outline"
+            onClick={() =>
+              toast.error(t('showcase.toastError'))
+            }
+          >
             {t('showcase.triggerError')}
           </Button>
-          <Button variant="secondary" onClick={() => toast(t('showcase.toastInfo'))}>
+
+          <Button
+            variant="secondary"
+            onClick={() =>
+              toast(t('showcase.toastInfo'))
+            }
+          >
             {t('showcase.triggerInfo')}
           </Button>
         </div>
       </Section>
 
-      <Section title="Dialog">
+      <Section title={t('showcase.sections.dialog')}>
         <Dialog>
           <DialogTrigger render={<Button variant="outline" />}>
-            Open Dialog
+            {t('showcase.dialog.open')}
           </DialogTrigger>
 
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Example Dialog</DialogTitle>
+              <DialogTitle>
+                {t('showcase.dialog.title')}
+              </DialogTitle>
+
               <DialogDescription>
-                This is an example of our reusable dialog component.
+                {t('showcase.dialog.description')}
               </DialogDescription>
             </DialogHeader>
 
             <p className="text-sm text-muted-foreground">
-              Dialog content can be placed here.
+              {t('showcase.dialog.content')}
             </p>
 
             <DialogFooter showCloseButton />
@@ -195,22 +246,32 @@ export function ComponentShowcasePage() {
         </Dialog>
       </Section>
 
-      <Section title="Dropdown Menu">
+      <Section title={t('showcase.sections.dropdownMenu')}>
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button variant="outline" />}>
-            Open Menu
+            {t('showcase.dropdown.open')}
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
             <DropdownMenuGroup>
-              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t('showcase.dropdown.account')}
+              </DropdownMenuLabel>
 
-              <DropdownMenuItem onClick={() => toast('Profile clicked')}>
-                Profile
+              <DropdownMenuItem
+                onClick={() =>
+                  toast(t('showcase.dropdown.profileClicked'))
+                }
+              >
+                {t('showcase.dropdown.profile')}
               </DropdownMenuItem>
 
-              <DropdownMenuItem onClick={() => toast('Settings clicked')}>
-                Settings
+              <DropdownMenuItem
+                onClick={() =>
+                  toast(t('showcase.dropdown.settingsClicked'))
+                }
+              >
+                {t('showcase.dropdown.settings')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
@@ -218,44 +279,57 @@ export function ComponentShowcasePage() {
 
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => toast('Sign out clicked')}
+              onClick={() =>
+                toast(t('showcase.dropdown.signOutClicked'))
+              }
             >
-              Sign out
+              {t('showcase.dropdown.signOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </Section>
 
-      <Section title="Tooltip">
+      <Section title={t('showcase.sections.tooltip')}>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger render={<Button variant="outline" />}>
-              Hover me
+              {t('showcase.tooltip.trigger')}
             </TooltipTrigger>
 
             <TooltipContent>
-              <p>This is a reusable tooltip.</p>
+              <p>{t('showcase.tooltip.content')}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </Section>
 
-      <Section title="ConfirmDialog">
-        <Button variant="destructive" onClick={handleConfirmDemo}>
+      <Section title={t('showcase.sections.confirmDialog')}>
+        <Button
+          variant="destructive"
+          onClick={handleConfirmDemo}
+        >
           {t('showcase.triggerConfirm')}
         </Button>
       </Section>
 
-      <Section title="PageError">
-        <Button variant="outline" onClick={() => setShowError((value) => !value)}>
-          {showError ? t('showcase.hidePreview') : t('showcase.showPreview')}
+      <Section title={t('showcase.sections.pageError')}>
+        <Button
+          variant="outline"
+          onClick={() => setShowError((value) => !value)}
+        >
+          {showError
+            ? t('showcase.hidePreview')
+            : t('showcase.showPreview')}
         </Button>
+
         {showError ? (
           <div className="mt-4 overflow-hidden rounded-md border border-border">
             <PageError
               title={t('showcase.pageErrorTitle')}
               message={t('showcase.pageErrorMessage')}
-              onRetry={() => toast(t('showcase.retryClicked'))}
+              onRetry={() =>
+                toast(t('showcase.retryClicked'))
+              }
             />
           </div>
         ) : null}

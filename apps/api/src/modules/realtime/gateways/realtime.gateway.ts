@@ -22,6 +22,10 @@ import { SocketRegistryService } from '../services/ws-registry.service.js';
 import { WsAuthService } from '../services/ws-auth.service.js';
 import { getUserRoom } from '../utils/room-naming.util.js';
 import { WsZodValidationPipe } from '../pipes/ws-zod-validation.pipe.js';
+import { DocumentsService } from '../../documents/documents.service.js';
+import { getDocumentRoom } from '../utils/document-room-naming.util.js';
+import { DocumentsYjsService } from '../../documents/documents-yjs.service.js';
+import * as Y from 'yjs';
 
 @WebSocketGateway({
   cors: {
@@ -38,10 +42,14 @@ export class RealtimeGateway
   server!: Server;
 
   private readonly logger = new Logger(RealtimeGateway.name);
+  private readonly socketDocuments = new Map<
+    string,
+    Set<number>
+  >();
 
   notifyConversationCreated(
-  userIds: number[],
-  conversationId: number,
+    userIds: number[],
+    conversationId: number,
   ): void {
     for (const userId of userIds) {
       this.server
@@ -56,6 +64,8 @@ export class RealtimeGateway
     private readonly wsAuthService: WsAuthService,
     private readonly socketRegistry: SocketRegistryService,
     private readonly roomService: RealtimeRoomService,
+    private readonly documentsService: DocumentsService,
+    private readonly documentsYjsService: DocumentsYjsService,
   ) {}
 
   afterInit(server: Server): void {
@@ -93,15 +103,37 @@ export class RealtimeGateway
     }
   }
 
-  handleDisconnect(client: Socket): void {
+  async handleDisconnect(client: Socket): Promise<void> {
     const userId = this.socketRegistry.getUserId(client.id);
+
+    const documents = this.socketDocuments.get(client.id);
+
+    if (documents) {
+      for (const documentId of documents) {
+        const room = getDocumentRoom(documentId);
+
+        const memberCount =
+          await this.roomService.getRoomMemberCount(room);
+
+        if (memberCount === 1) {
+          this.documentsYjsService.removeDoc(documentId);
+        }
+      }
+
+      this.socketDocuments.delete(client.id);
+    }
+
     this.socketRegistry.unregisterSocket(client.id);
 
-    if (userId !== undefined && !this.socketRegistry.isUserOnline(userId)) {
+    if (
+      userId !== undefined &&
+      !this.socketRegistry.isUserOnline(userId)
+    ) {
       this.server.emit(REALTIME_EVENTS.USER_OFFLINE, {
         userId,
       });
     }
+
     this.logger.log(
       `Client disconnected: socket=${client.id} user=${userId ?? 'unknown'}`,
     );
@@ -120,7 +152,6 @@ export class RealtimeGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: JoinRoomDto,
   ): Promise<WsResponse<{ room: string; memberCount: number }>> {
-
     await this.roomService.joinRoom(client, dto.room);
     const memberCount = await this.roomService.getRoomMemberCount(dto.room);
 
@@ -162,5 +193,154 @@ export class RealtimeGateway
       event: REALTIME_EVENTS.ROOM_LEFT,
       data: { room: dto.room, memberCount },
     };
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_JOIN)
+  async handleDocumentJoin(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: { documentId: number },
+  ): Promise<WsResponse<{ documentId: number }>> {
+this.logger.log(
+  `[DOCUMENT JOIN] socket=${client.id} document=${dto.documentId}`,
+);
+    await this.documentsService.findByIdForUser(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const room = getDocumentRoom(dto.documentId);
+
+    await this.roomService.joinRoom(client, room);
+
+    let documents = this.socketDocuments.get(client.id);
+
+    if (!documents) {
+      documents = new Set<number>();
+      this.socketDocuments.set(client.id, documents);
+    }
+
+    documents.add(dto.documentId);
+
+    const ydoc = await this.documentsYjsService.getDoc(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const state = Y.encodeStateAsUpdate(ydoc);
+
+    client.emit(REALTIME_EVENTS.DOCUMENT_SYNC, {
+      documentId: dto.documentId,
+      update: Buffer.from(state),
+    });
+
+    return {
+      event: REALTIME_EVENTS.DOCUMENT_JOINED,
+      data: {
+        documentId: dto.documentId,
+      },
+    };
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_LEAVE)
+  async handleDocumentLeave(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: { documentId: number },
+  ): Promise<WsResponse<{ documentId: number }>> {
+    const room = getDocumentRoom(dto.documentId);
+
+    await this.roomService.leaveRoom(client, room);
+
+    const documents = this.socketDocuments.get(client.id);
+
+    documents?.delete(dto.documentId);
+
+    if (documents?.size === 0) {
+      this.socketDocuments.delete(client.id);
+    }
+
+    const memberCount =
+      await this.roomService.getRoomMemberCount(room);
+
+    if (memberCount === 0) {
+      this.documentsYjsService.removeDoc(dto.documentId);
+    }
+
+    return {
+      event: REALTIME_EVENTS.DOCUMENT_LEFT,
+      data: {
+        documentId: dto.documentId,
+      },
+    };
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_TITLE_UPDATED)
+  async handleDocumentTitleUpdated(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody()
+    dto: {
+      documentId: number;
+      title: string;
+    },
+  ): Promise<void> {
+    await this.documentsService.findByIdForUser(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const room = getDocumentRoom(dto.documentId);
+
+    if (!this.roomService.isSocketInRoom(client, room)) {
+      return;
+    }
+
+    client.to(room).emit(
+      REALTIME_EVENTS.DOCUMENT_TITLE_UPDATED,
+      {
+        documentId: dto.documentId,
+        title: dto.title,
+      },
+    );
+  }
+
+  @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_YJS_UPDATE)
+  async handleDocumentYjsUpdate(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody()
+    dto: {
+      documentId: number;
+      update: number[];
+    },
+  ): Promise<void> {
+    await this.documentsService.findByIdForUser(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    const room = getDocumentRoom(dto.documentId);
+
+    if (!this.roomService.isSocketInRoom(client, room)) {
+      return;
+    }
+
+    const update = new Uint8Array(dto.update);
+
+    await this.documentsYjsService.applyUpdate(
+      dto.documentId,
+      client.data.user.userId,
+      update,
+    );
+
+    await this.documentsYjsService.save(
+      dto.documentId,
+      client.data.user.userId,
+    );
+
+    client.to(room).emit(
+      REALTIME_EVENTS.DOCUMENT_YJS_UPDATE,
+      {
+        documentId: dto.documentId,
+        update: dto.update,
+      },
+    );
   }
 }

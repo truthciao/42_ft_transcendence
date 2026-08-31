@@ -3,11 +3,16 @@ import type { UpdateProfilePayload } from '@repo/shared-types';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { unlink } from 'node:fs/promises';
 import { join } from 'node:path';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
+import { ConversationType } from '../../generated/prisma/enums.js';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly prisma: PrismaService) {}
-
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtimeRoomService: RealtimeRoomService,
+  ) {}
   async getProfile(userId: number) {
     const profile = await this.prisma.profile.findUnique({
       where: { userId },
@@ -88,6 +93,41 @@ export class ProfilesService {
       }
     }
 
+
+    const conversationMembers =
+      await this.prisma.conversationMember.findMany({
+        where: {
+          conversation: {
+            type: ConversationType.DIRECT,
+            members: {
+              some: {
+                userId,
+              },
+            },
+          },
+          userId: {
+            not: userId,
+          },
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+    const targetUserIds = new Set(
+      conversationMembers.map((member) => member.userId),
+    );
+
+    for (const targetUserId of targetUserIds) {
+      this.realtimeRoomService.emitToUser(
+        targetUserId,
+        REALTIME_EVENTS.USER_PROFILE_UPDATED,
+        {
+          userId,
+          avatarUrl,
+        },
+      );
+    }
     return updatedProfile;
   }
 }

@@ -77,3 +77,8 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Attachment = Prisma.AttachmentModel
+/**
+ * Model Document
+ * 
+ */
+export type Document = Prisma.DocumentModel

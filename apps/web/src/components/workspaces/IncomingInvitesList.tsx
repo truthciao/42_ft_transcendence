@@ -21,7 +21,7 @@ export function IncomingInvitesList() {
     try {
       const result = await acceptMutation.mutateAsync(inviteId);
       toast.success(t('workspaces.invites.acceptSuccess'));
-      navigate(`/app/spaces/${result.WorkspaceId}`);
+      navigate(`/app/spaces/${result.workspaceId}`);
     } catch {
       toast.error(t('workspaces.invites.acceptError'));
     }
@@ -49,7 +49,7 @@ export function IncomingInvitesList() {
               <p className="truncate text-xs text-muted-foreground">
                 {t('workspaces.invites.invitedBy', {
                   name: invite.inviter.profile?.displayName || invite.inviter.username,
-                  role: t(`workspaces.inviteMember.roles.${invite.role}`)
+                  role: t(`workspaces.roles.${invite.role}`)
                 })}
               </p>
             </div>

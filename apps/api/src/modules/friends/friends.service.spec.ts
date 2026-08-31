@@ -66,7 +66,7 @@ const createNotification = jest.fn<() => Promise<unknown>>();
 const updateManyNotifications = jest.fn<() => Promise<unknown>>();
 const mockChatService = {
   createDirectConversation: jest.fn(
-    (_userId: number, _targetUserId: number) => 
+    (_userId: number, _targetUserId: number) =>
       Promise.resolve({
         id: 1,
         type: 'DIRECT',
@@ -79,7 +79,7 @@ const mockChatService = {
 };
 
 const mockRealtimeRoomService = {
-  emitTouser: jest.fn(),
+  emitToUser: jest.fn(),
 };
 
 describe('FriendsService', () => {
@@ -193,7 +193,7 @@ describe('FriendsService', () => {
           status: FriendshipStatus.PENDING,
         },
       });
-      expect(mockRealtimeRoomService.emitTouser).toHaveBeenCalledWith(
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
         2,
         REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
         {

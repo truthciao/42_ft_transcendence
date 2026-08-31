@@ -244,6 +244,7 @@ export type UserWhereInput = {
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
   workspaceMembers?: Prisma.WorkspaceMemberListRelationFilter
+  createdDocuments?: Prisma.DocumentListRelationFilter
   sentSpaceRequests?: Prisma.WorkspaceInviteListRelationFilter
   receivedSpaceRequests?: Prisma.WorkspaceInviteListRelationFilter
   conversationMember?: Prisma.ConversationMemberListRelationFilter
@@ -268,6 +269,7 @@ export type UserOrderByWithRelationInput = {
   profile?: Prisma.ProfileOrderByWithRelationInput
   ownedWorkspaces?: Prisma.WorkspaceOrderByRelationAggregateInput
   workspaceMembers?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
+  createdDocuments?: Prisma.DocumentOrderByRelationAggregateInput
   sentSpaceRequests?: Prisma.WorkspaceInviteOrderByRelationAggregateInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteOrderByRelationAggregateInput
   conversationMember?: Prisma.ConversationMemberOrderByRelationAggregateInput
@@ -295,6 +297,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
   workspaceMembers?: Prisma.WorkspaceMemberListRelationFilter
+  createdDocuments?: Prisma.DocumentListRelationFilter
   sentSpaceRequests?: Prisma.WorkspaceInviteListRelationFilter
   receivedSpaceRequests?: Prisma.WorkspaceInviteListRelationFilter
   conversationMember?: Prisma.ConversationMemberListRelationFilter
@@ -348,6 +351,7 @@ export type UserCreateInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -372,6 +376,7 @@ export type UserUncheckedCreateInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -395,6 +400,7 @@ export type UserUpdateInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -419,6 +425,7 @@ export type UserUncheckedUpdateInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -723,6 +730,20 @@ export type UserUpdateOneRequiredWithoutAttachmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttachmentsInput, Prisma.UserUpdateWithoutAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutAttachmentsInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCreatedDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedDocumentsInput, Prisma.UserUpdateWithoutCreatedDocumentsInput>, Prisma.UserUncheckedUpdateWithoutCreatedDocumentsInput>
+}
+
 export type UserCreateWithoutProfileInput = {
   email: string
   username: string
@@ -734,6 +755,7 @@ export type UserCreateWithoutProfileInput = {
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -757,6 +779,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -795,6 +818,7 @@ export type UserUpdateWithoutProfileInput = {
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -818,6 +842,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -840,6 +865,7 @@ export type UserCreateWithoutOauthAccountsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -863,6 +889,7 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -901,6 +928,7 @@ export type UserUpdateWithoutOauthAccountsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -924,6 +952,7 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -946,6 +975,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -969,6 +999,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1007,6 +1038,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1030,6 +1062,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1052,6 +1085,7 @@ export type UserCreateWithoutWorkspaceMembersInput = {
   oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1075,6 +1109,7 @@ export type UserUncheckedCreateWithoutWorkspaceMembersInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1113,6 +1148,7 @@ export type UserUpdateWithoutWorkspaceMembersInput = {
   oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1136,6 +1172,7 @@ export type UserUncheckedUpdateWithoutWorkspaceMembersInput = {
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1159,6 +1196,7 @@ export type UserCreateWithoutSentSpaceRequestsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -1182,6 +1220,7 @@ export type UserUncheckedCreateWithoutSentSpaceRequestsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -1209,6 +1248,7 @@ export type UserCreateWithoutReceivedSpaceRequestsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -1232,6 +1272,7 @@ export type UserUncheckedCreateWithoutReceivedSpaceRequestsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -1270,6 +1311,7 @@ export type UserUpdateWithoutSentSpaceRequestsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -1293,6 +1335,7 @@ export type UserUncheckedUpdateWithoutSentSpaceRequestsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -1326,6 +1369,7 @@ export type UserUpdateWithoutReceivedSpaceRequestsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -1349,6 +1393,7 @@ export type UserUncheckedUpdateWithoutReceivedSpaceRequestsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -1371,6 +1416,7 @@ export type UserCreateWithoutConversationMemberInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
@@ -1394,6 +1440,7 @@ export type UserUncheckedCreateWithoutConversationMemberInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
@@ -1432,6 +1479,7 @@ export type UserUpdateWithoutConversationMemberInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
@@ -1455,6 +1503,7 @@ export type UserUncheckedUpdateWithoutConversationMemberInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -1477,6 +1526,7 @@ export type UserCreateWithoutMessagesInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1500,6 +1550,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1538,6 +1589,7 @@ export type UserUpdateWithoutMessagesInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1561,6 +1613,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1583,6 +1636,7 @@ export type UserCreateWithoutSentFriendRequestsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1606,6 +1660,7 @@ export type UserUncheckedCreateWithoutSentFriendRequestsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1633,6 +1688,7 @@ export type UserCreateWithoutReceivedFriendRequestsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1656,6 +1712,7 @@ export type UserUncheckedCreateWithoutReceivedFriendRequestsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1694,6 +1751,7 @@ export type UserUpdateWithoutSentFriendRequestsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1717,6 +1775,7 @@ export type UserUncheckedUpdateWithoutSentFriendRequestsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1750,6 +1809,7 @@ export type UserUpdateWithoutReceivedFriendRequestsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1773,6 +1833,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendRequestsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1795,6 +1856,7 @@ export type UserCreateWithoutNotificationsReceivedInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1818,6 +1880,7 @@ export type UserUncheckedCreateWithoutNotificationsReceivedInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1845,6 +1908,7 @@ export type UserCreateWithoutNotificationsCreatedInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -1868,6 +1932,7 @@ export type UserUncheckedCreateWithoutNotificationsCreatedInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1906,6 +1971,7 @@ export type UserUpdateWithoutNotificationsReceivedInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1929,6 +1995,7 @@ export type UserUncheckedUpdateWithoutNotificationsReceivedInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1962,6 +2029,7 @@ export type UserUpdateWithoutNotificationsCreatedInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -1985,6 +2053,7 @@ export type UserUncheckedUpdateWithoutNotificationsCreatedInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2007,6 +2076,7 @@ export type UserCreateWithoutAttachmentsInput = {
   profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
@@ -2030,6 +2100,7 @@ export type UserUncheckedCreateWithoutAttachmentsInput = {
   profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  createdDocuments?: Prisma.DocumentUncheckedCreateNestedManyWithoutCreatorInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
   conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2068,6 +2139,7 @@ export type UserUpdateWithoutAttachmentsInput = {
   profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
@@ -2091,6 +2163,7 @@ export type UserUncheckedUpdateWithoutAttachmentsInput = {
   profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdDocuments?: Prisma.DocumentUncheckedUpdateManyWithoutCreatorNestedInput
   sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
   receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
   conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2099,6 +2172,116 @@ export type UserUncheckedUpdateWithoutAttachmentsInput = {
   receivedFriendRequests?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
   notificationsReceived?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   notificationsCreated?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutCreatedDocumentsInput = {
+  email: string
+  username: string
+  passwordHash?: string | null
+  isTwoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.ProfileCreateNestedOneWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  workspaceMembers?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  sentSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviterInput
+  receivedSpaceRequests?: Prisma.WorkspaceInviteCreateNestedManyWithoutInviteeInput
+  conversationMember?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sentFriendRequests?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendRequests?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+  notificationsReceived?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  notificationsCreated?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  attachments?: Prisma.AttachmentCreateNestedManyWithoutUploaderInput
+}
+
+export type UserUncheckedCreateWithoutCreatedDocumentsInput = {
+  id?: number
+  email: string
+  username: string
+  passwordHash?: string | null
+  isTwoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  workspaceMembers?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviterInput
+  receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedCreateNestedManyWithoutInviteeInput
+  conversationMember?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sentFriendRequests?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendRequests?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+  notificationsReceived?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  notificationsCreated?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  attachments?: Prisma.AttachmentUncheckedCreateNestedManyWithoutUploaderInput
+}
+
+export type UserCreateOrConnectWithoutCreatedDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedDocumentsInput>
+}
+
+export type UserUpsertWithoutCreatedDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedDocumentsInput, Prisma.UserUncheckedUpdateWithoutCreatedDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedDocumentsInput, Prisma.UserUncheckedUpdateWithoutCreatedDocumentsInput>
+}
+
+export type UserUpdateWithoutCreatedDocumentsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.ProfileUpdateOneWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  workspaceMembers?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  sentSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviterNestedInput
+  receivedSpaceRequests?: Prisma.WorkspaceInviteUpdateManyWithoutInviteeNestedInput
+  conversationMember?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sentFriendRequests?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendRequests?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+  notificationsReceived?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  notificationsCreated?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  attachments?: Prisma.AttachmentUpdateManyWithoutUploaderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedDocumentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.ProfileUncheckedUpdateOneWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaceMembers?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  sentSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviterNestedInput
+  receivedSpaceRequests?: Prisma.WorkspaceInviteUncheckedUpdateManyWithoutInviteeNestedInput
+  conversationMember?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sentFriendRequests?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendRequests?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+  notificationsReceived?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  notificationsCreated?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  attachments?: Prisma.AttachmentUncheckedUpdateManyWithoutUploaderNestedInput
 }
 
 
@@ -2110,6 +2293,7 @@ export type UserCountOutputType = {
   oauthAccounts: number
   ownedWorkspaces: number
   workspaceMembers: number
+  createdDocuments: number
   sentSpaceRequests: number
   receivedSpaceRequests: number
   conversationMember: number
@@ -2125,6 +2309,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   oauthAccounts?: boolean | UserCountOutputTypeCountOauthAccountsArgs
   ownedWorkspaces?: boolean | UserCountOutputTypeCountOwnedWorkspacesArgs
   workspaceMembers?: boolean | UserCountOutputTypeCountWorkspaceMembersArgs
+  createdDocuments?: boolean | UserCountOutputTypeCountCreatedDocumentsArgs
   sentSpaceRequests?: boolean | UserCountOutputTypeCountSentSpaceRequestsArgs
   receivedSpaceRequests?: boolean | UserCountOutputTypeCountReceivedSpaceRequestsArgs
   conversationMember?: boolean | UserCountOutputTypeCountConversationMemberArgs
@@ -2165,6 +2350,13 @@ export type UserCountOutputTypeCountOwnedWorkspacesArgs<ExtArgs extends runtime.
  */
 export type UserCountOutputTypeCountWorkspaceMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WorkspaceMemberWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentWhereInput
 }
 
 /**
@@ -2244,6 +2436,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   workspaceMembers?: boolean | Prisma.User$workspaceMembersArgs<ExtArgs>
+  createdDocuments?: boolean | Prisma.User$createdDocumentsArgs<ExtArgs>
   sentSpaceRequests?: boolean | Prisma.User$sentSpaceRequestsArgs<ExtArgs>
   receivedSpaceRequests?: boolean | Prisma.User$receivedSpaceRequestsArgs<ExtArgs>
   conversationMember?: boolean | Prisma.User$conversationMemberArgs<ExtArgs>
@@ -2295,6 +2488,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   workspaceMembers?: boolean | Prisma.User$workspaceMembersArgs<ExtArgs>
+  createdDocuments?: boolean | Prisma.User$createdDocumentsArgs<ExtArgs>
   sentSpaceRequests?: boolean | Prisma.User$sentSpaceRequestsArgs<ExtArgs>
   receivedSpaceRequests?: boolean | Prisma.User$receivedSpaceRequestsArgs<ExtArgs>
   conversationMember?: boolean | Prisma.User$conversationMemberArgs<ExtArgs>
@@ -2316,6 +2510,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     profile: Prisma.$ProfilePayload<ExtArgs> | null
     ownedWorkspaces: Prisma.$WorkspacePayload<ExtArgs>[]
     workspaceMembers: Prisma.$WorkspaceMemberPayload<ExtArgs>[]
+    createdDocuments: Prisma.$DocumentPayload<ExtArgs>[]
     sentSpaceRequests: Prisma.$WorkspaceInvitePayload<ExtArgs>[]
     receivedSpaceRequests: Prisma.$WorkspaceInvitePayload<ExtArgs>[]
     conversationMember: Prisma.$ConversationMemberPayload<ExtArgs>[]
@@ -2733,6 +2928,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   profile<T extends Prisma.User$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   ownedWorkspaces<T extends Prisma.User$ownedWorkspacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedWorkspacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workspaceMembers<T extends Prisma.User$workspaceMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdDocuments<T extends Prisma.User$createdDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sentSpaceRequests<T extends Prisma.User$sentSpaceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentSpaceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   receivedSpaceRequests<T extends Prisma.User$receivedSpaceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedSpaceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversationMember<T extends Prisma.User$conversationMemberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationMemberArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3260,6 +3456,30 @@ export type User$workspaceMembersArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.WorkspaceMemberScalarFieldEnum | Prisma.WorkspaceMemberScalarFieldEnum[]
+}
+
+/**
+ * User.createdDocuments
+ */
+export type User$createdDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
+  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
 }
 
 /**

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { EmptyState } from "@/components/common/EmptyState";
 import { SkeletonCard } from "@/components/common/Skeleton";
-import { Button } from "@base-ui/react";
+import { Button } from "@/components/ui/button";
 import { CreateWorkspaceDialog } from "@/components/workspaces/CreateWorkspaceDialog";
 import { IncomingInvitesList } from "@/components/workspaces/IncomingInvitesList";
 import { useTranslation } from "react-i18next";
@@ -43,10 +43,12 @@ export function SpacesIndexPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {workspaces.map((workspace) => (
-            <button
-             key={workspace.id}
-             onClick={() => navigate(`/app/spaces/${workspace.id}`)}
-             className="flex flex-col gap-3 rounded-lg border border-border p-4 text-left transition-colors hover:bg-muted/50"
+            <Button
+              key={workspace.id}
+              type="button"
+              variant="outline"
+              className="h-auto w-full flex-col items-stretch gap-3 p-4 text-left"
+              onClick={() => navigate(`/app/spaces/${workspace.id}`)}
             >
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-full bg-muted text-lg">
@@ -55,14 +57,16 @@ export function SpacesIndexPage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{workspace.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {workspace.myMembership?.role ? t(`workspaces.inviteMember.roles.${workspace.myMembership.role}`) : t('workspaces.inviteMember.roles.MEMBER')}
+                    {workspace.myMembership?.role
+                      ? t(`workspaces.roles.${workspace.myMembership.role}`)
+                      : null}
                   </p>
                 </div>
               </div>
               {workspace.description ? (
                 <p className="line-clamp-2 text-sm text-muted-foreground">{workspace.description}</p>
               ) : null }
-            </button>
+            </Button>
           ))}
         </div>
       )}

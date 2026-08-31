@@ -81,8 +81,6 @@ const handleMessage = async () => {
   try {
     const data = await createDirectConversation(friend.id);
 
-    console.log('conversation:', data);
-
     if (data?.id) {
       navigate(`/app/chat/${data.id}`, {
         state: { friendName: friend.username },

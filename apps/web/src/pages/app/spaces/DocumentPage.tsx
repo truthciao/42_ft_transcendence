@@ -1,0 +1,358 @@
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { ArrowLeft, Check, Loader2 } from 'lucide-react';
+import { useBlocker, useNavigate, useParams } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
+import { documentKeys, useDocument } from '@/hooks/useDocuments';
+import {
+  updateDocument,
+  type Document,
+} from '@/api/documents';
+import { useTranslation } from 'react-i18next';
+import { DocumentEditor } from '@/components/documents/DocumentEditor';
+import { getSocket } from '@/lib/realtime';
+import { Button } from '@/components/ui/button';
+
+type SaveStatus = 'saved' | 'saving' | 'error';
+
+export function DocumentPage() {
+  const {
+    workspaceId: workspaceIdParam,
+    documentId: documentIdParam,
+  } = useParams<{
+    workspaceId: string;
+    documentId: string;
+  }>();
+
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const workspaceId = Number(workspaceIdParam);
+  const documentId = Number(documentIdParam);
+  const {
+    data: document,
+    isLoading,
+    isError,
+  } = useDocument(workspaceId, documentId);
+  const [title, setTitle] = useState('');
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const pendingPatchRef = useRef<{
+    title?: string;
+    content?: string;
+  } | null>(null);
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
+
+  const blocker = useBlocker(hasPendingChanges);
+
+  useEffect(() => {
+    if (!document) {
+      return;
+    }
+
+    setTitle(document.title);
+  }, [document]);
+
+  const scheduleSave = useCallback(
+    (patch: {
+      title?: string;
+      content?: string;
+    }) => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+
+      pendingPatchRef.current = {
+        ...pendingPatchRef.current,
+        ...patch,
+      };
+
+      setHasPendingChanges(true);
+
+      setSaveStatus('saving');
+
+      saveTimerRef.current = setTimeout(() => {
+        const pendingPatch = pendingPatchRef.current;
+
+        if (!pendingPatch) {
+          return;
+        }
+
+        updateDocument(
+          workspaceId,
+          documentId,
+          pendingPatch,
+        )
+          .then(() => {
+            queryClient.setQueryData<Document[]>(
+              documentKeys.workspace(workspaceId),
+              (documents) => {
+                if (!documents) {
+                  return documents;
+                }
+
+                return documents.map((document) =>
+                  document.id === documentId
+                    ? {
+                        ...document,
+                        ...pendingPatch,
+                      }
+                    : document,
+                );
+              },
+            );
+            queryClient.setQueryData<Document>(
+              documentKeys.detail(workspaceId, documentId),
+              (document) =>
+                document
+                  ? {
+                      ...document,
+                      ...pendingPatch,
+                    }
+                  : document,
+            );
+            pendingPatchRef.current = null;
+            setHasPendingChanges(false);
+            setSaveStatus('saved');
+          })
+          .catch((error) => {
+            console.error(
+              '[document] failed to save',
+              error,
+            );
+
+            setSaveStatus('error');
+          });
+      }, 500);
+    },
+    [workspaceId, documentId, queryClient],
+  );
+  
+  const { t } = useTranslation();
+
+  const titleRealtimeTimerRef = useRef<
+    ReturnType<typeof setTimeout> | null
+  >(null);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+
+      if (titleRealtimeTimerRef.current) {
+        clearTimeout(titleRealtimeTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (blocker.state !== 'blocked') {
+      return;
+    }
+
+    const pendingPatch = pendingPatchRef.current;
+
+    if (!pendingPatch) {
+      blocker.proceed();
+      return;
+    }
+
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+    }
+
+    updateDocument(
+      workspaceId,
+      documentId,
+      pendingPatch,
+    )
+      .then(() => {
+        queryClient.setQueryData<Document[]>(
+          documentKeys.workspace(workspaceId),
+          (documents) => {
+            if (!documents) {
+              return documents;
+            }
+
+            return documents.map((document) =>
+              document.id === documentId
+                ? {
+                    ...document,
+                    ...pendingPatch,
+                  }
+                : document,
+            );
+          },
+        );
+
+        queryClient.setQueryData<Document>(
+          documentKeys.detail(workspaceId, documentId),
+          (document) =>
+            document
+              ? {
+                  ...document,
+                  ...pendingPatch,
+                }
+              : document,
+        );
+
+        pendingPatchRef.current = null;
+        setHasPendingChanges(false);
+        setSaveStatus('saved');
+
+        blocker.proceed();
+      })
+      .catch((error) => {
+        console.error(
+          '[document] failed to save before navigation',
+          error,
+        );
+
+        setSaveStatus('error');
+        blocker.reset();
+      });
+  }, [
+    blocker,
+    workspaceId,
+    documentId,
+    queryClient,
+  ]);
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    const handleTitleUpdated = (data: {
+      documentId: number;
+      title: string;
+    }) => {
+      if (data.documentId !== documentId) {
+        return;
+      }
+
+      setTitle(data.title);
+    };
+
+    socket.on(
+      'document:title-updated',
+      handleTitleUpdated,
+    );
+
+    return () => {
+      socket.off(
+        'document:title-updated',
+        handleTitleUpdated,
+      );
+    };
+  }, [documentId]);
+
+  const handleBack = () => {
+    navigate(`/app/spaces/${workspaceId}`);
+  };
+
+  const handleTitleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value;
+
+    setTitle(value);
+
+    scheduleSave({
+      title: value,
+    });
+
+    if (titleRealtimeTimerRef.current) {
+      clearTimeout(titleRealtimeTimerRef.current);
+    }
+
+    titleRealtimeTimerRef.current = setTimeout(() => {
+      const socket = getSocket();
+
+      socket.emit('document:title-updated', {
+        documentId,
+        title: value,
+      });
+    }, 400);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto w-full max-w-4xl space-y-6 p-8">
+        <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+        <div className="h-12 w-3/4 animate-pulse rounded bg-muted" />
+        <div className="h-96 animate-pulse rounded bg-muted" />
+      </div>
+    );
+  }
+
+  if (isError || !document) {
+    return (
+      <div className="flex h-full items-center justify-center p-6">
+        <div className="text-center">
+          <h1 className="text-lg font-semibold">
+            {t('workspaces.pages.document.notFound')}
+          </h1>
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t('workspaces.pages.document.loadError')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <header className="flex h-14 shrink-0 items-center border-b px-6">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleBack}
+        >
+          <ArrowLeft className="size-4" />
+          <span>{t('workspaces.pages.document.back')}</span>
+        </Button>
+
+        <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+          {saveStatus === 'saving' && (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>{t('workspaces.pages.document.saving')}</span>
+            </>
+          )}
+
+          {saveStatus === 'saved' && (
+            <>
+              <Check className="size-4" />
+              <span>{t('workspaces.pages.document.saved')}</span>
+            </>
+          )}
+
+          {saveStatus === 'error' && (
+            <span className="text-destructive">
+              {t('workspaces.pages.document.saveError')}
+            </span>
+          )}
+        </div>
+      </header>
+
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-10 py-10">
+        <input
+          value={title}
+          onChange={handleTitleChange}
+          placeholder={t('workspaces.pages.document.untitled')}
+          className="mb-6 w-full border-none bg-transparent text-4xl font-bold tracking-tight outline-none placeholder:text-muted-foreground"
+        />
+
+        <DocumentEditor documentId={documentId} />
+      </main>
+    </div>
+  );
+}

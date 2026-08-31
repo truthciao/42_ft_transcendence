@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -48,4 +49,28 @@ export class ChatController {
   ) {
     return this.chatService.getMessages(id, userId, query);
   }
+
+  @Get('conversations/:id/messages/search')
+  searchMessages(
+    @CurrentUser('userId') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('q') query: string,
+  ) {
+    return this.chatService.searchMessages(
+      id,
+      userId,
+      query,
+    );
+  }
+
+  @Patch('conversations/:id/message')
+  async markAsRead(
+    @CurrentUser('userId') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.chatService.markAsRead(userId, id);
+
+    return { success: true };
+  }
+
 }

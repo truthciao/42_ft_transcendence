@@ -25,6 +25,7 @@ model User {
 
   ownedWorkspaces       Workspace[]
   workspaceMembers      WorkspaceMember[]
+  createdDocuments      Document[]
   sentSpaceRequests     WorkspaceInvite[] @relation("InviteSender")
   receivedSpaceRequests WorkspaceInvite[] @relation("InviteReceiver")
 
@@ -80,6 +81,8 @@ model Workspace {
   members     WorkspaceMember[]
   invites     WorkspaceInvite[]
   channels    Conversation[]
+  documents   Document[]
+  notifications Notification[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 }
@@ -161,7 +164,7 @@ model ConversationMember {
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
   joinedAt       DateTime     @default(now())
-
+  lastReadMessageId        Int?
   @@unique([conversationId, userId])
 }
 
@@ -205,6 +208,10 @@ enum NotificationType {
   FRIEND_REQUEST_ACCEPTED
   FRIEND_REQUEST_REJECTED
   FRIEND_REMOVED
+  WORKSPACE_INVITE_RECEIVED
+  WORKSPACE_INVITE_ACCEPTED
+  WORKSPACE_MEMBER_REMOVED
+  WORKSPACE_ROLE_CHANGED
 }
 
 model Notification {
@@ -220,6 +227,9 @@ model Notification {
 
   friendshipId Int?
   friendship   Friendship? @relation(fields: [friendshipId], references: [id], onDelete: SetNull)
+
+  workspaceId Int?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
 
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -241,4 +251,22 @@ model Attachment {
 
   uploader   User     @relation(fields: [uploaderId], references: [id])
   message    Message? @relation(fields: [messageId], references: [id])
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   @default("")
+  yjsState    Bytes?
+  workspaceId Int
+  creatorId   Int
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  creator     User      @relation(fields: [creatorId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([creatorId])
 }

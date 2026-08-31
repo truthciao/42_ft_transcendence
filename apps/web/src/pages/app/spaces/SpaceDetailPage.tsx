@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from "react";
 import { useParams, useNavigate } from "react-router";
-import { Hash, Plus } from 'lucide-react';
+import { FileText, Hash, Plus } from 'lucide-react';
 import { useWorkspace, useWorkspaceChannels } from "@/hooks/useWorkspaces";
 import { useCreateChannel } from "@/hooks/useWorkspaceMutations";
 import { usePermission } from "@/hooks/usePermission";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceDocuments, useCreateDocument } from '@/hooks/useDocuments';
 
 export function SpaceDetailPage() {
   const { workspaceId } = useParams();
@@ -21,8 +22,11 @@ export function SpaceDetailPage() {
 
   const { data: workspace, isLoading } = useWorkspace(id);
   const { data: channels, isLoading: channelsLoading } = useWorkspaceChannels(id);
+  const { data: documents, isLoading: documentsLoading } = useWorkspaceDocuments(id);
+  const createDocumentMutation = useCreateDocument(id);
   const { can } = usePermission(id);
   const [createChannelOpen, setCreateChannelOpen] = useState(false);
+  const [createDocumentOpen, setCreateDocumentOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -77,26 +81,78 @@ export function SpaceDetailPage() {
         ) : (
           <div className="divide-y divide-border rounded-lg border border-border">
             {channels?.map((channel) => (
-              <button
-                key = {channel.id}
+              <Button
+                key={channel.id}
+                variant="ghost"
+                className="h-auto w-full justify-start gap-2 rounded-none px-4 py-3 text-left text-sm font-normal"
                 onClick={() => navigate(`/app/spaces/${id}/c/${channel.id}`)}
-                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-muted/50"
               >
                 <Hash className="size-4 text-muted-foreground" />
                 <span className="flex-1 truncate">{channel.name}</span>
                 <span className="text-xs text-muted-foreground">
                   {t('workspaces.pages.detail.membersCount', { count: channel._count?.members ?? 0 })}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         )}
       </section>
+      <section className="mt-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            {t('workspaces.pages.detail.documents')}
+          </h2>
 
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={createDocumentMutation.isPending}
+            onClick={() => setCreateDocumentOpen(true)}
+          >
+            <Plus className="size-4" />
+            {t('workspaces.pages.detail.newDocument')}
+          </Button>
+        </div>
+
+        {documentsLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        ) : (
+          <div className="divide-y divide-border rounded-lg border border-border">
+            {documents?.map((document) => (
+              <Button
+                key={document.id}
+                variant="ghost"
+                className="h-auto w-full justify-start gap-2 rounded-none px-4 py-3 text-left text-sm font-normal"
+                onClick={() =>
+                  navigate(`/app/spaces/${id}/documents/${document.id}`)
+                }
+              >
+                <FileText className="size-4 text-muted-foreground" />
+
+                <span className="flex-1 truncate">
+                  {document.title ||
+                    t('workspaces.pages.detail.untitledDocument')}
+                </span>
+              </Button>
+            ))}
+          </div>
+        )}
+      </section>
       <CreateChannelDialog
         workspaceId={id}
         open={createChannelOpen}
         onOpenChange={setCreateChannelOpen}
+      />
+      <CreateDocumentDialog
+        workspaceId={id}
+        open={createDocumentOpen}
+        onOpenChange={setCreateDocumentOpen}
+        onCreated={(documentId) =>
+          navigate(`/app/spaces/${id}/documents/${documentId}`)
+        }
       />
     </div>
   )
@@ -160,4 +216,94 @@ function CreateChannelDialog({
       </DialogContent>
     </Dialog>
   )
+}
+
+function CreateDocumentDialog({
+  workspaceId,
+  open,
+  onOpenChange,
+  onCreated,
+}: {
+  workspaceId: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreated: (documentId: number) => void;
+}) {
+  const [title, setTitle] = useState('');
+  const mutation = useCreateDocument(workspaceId);
+  const { t } = useTranslation();
+
+  async function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle) {
+      return;
+    }
+
+    try {
+      const document = await mutation.mutateAsync({
+        title: trimmedTitle,
+      });
+
+      setTitle('');
+      onOpenChange(false);
+
+      toast.success(
+        t('workspaces.pages.detail.createDocument.success'),
+      );
+
+      onCreated(document.id);
+    } catch {
+      toast.error(
+        t('workspaces.pages.detail.createDocument.error'),
+      );
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {t('workspaces.pages.detail.createDocument.title')}
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input
+            placeholder={t(
+              'workspaces.pages.detail.createDocument.placeholder',
+            )}
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              {t('workspaces.pages.detail.createDocument.cancel')}
+            </Button>
+
+            <Button
+              type="submit"
+              disabled={mutation.isPending || !title.trim()}
+            >
+              {mutation.isPending
+                ? t(
+                    'workspaces.pages.detail.createDocument.creating',
+                  )
+                : t(
+                    'workspaces.pages.detail.createDocument.create',
+                  )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }

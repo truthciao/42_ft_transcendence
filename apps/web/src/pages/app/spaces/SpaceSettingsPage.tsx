@@ -6,6 +6,7 @@ import { updateWorkspaceSchema, type UpdateWorkspacePayload } from "@repo/shared
 import { useWorkspace } from "@/hooks/useWorkspaces";
 import { useUpdateWorkspace, useDeleteWorkspace, useLeaveWorkspace } from "@/hooks/useWorkspaceMutations";
 import { usePermission } from "@/hooks/usePermission";
+import { useWorkspaceDocuments, useDeleteDocument } from "@/hooks/useDocuments";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,6 +29,8 @@ export function SpaceSettingPage() {
   const deleteMutation = useDeleteWorkspace();
   const leaveMutation = useLeaveWorkspace();
   const [transferOpen, setTransferOpen] = useState(false);
+  const { data: documents } = useWorkspaceDocuments(id);
+  const deleteDocumentMutation = useDeleteDocument(id);
 
   const {
     register,
@@ -100,6 +103,47 @@ export function SpaceSettingPage() {
         <Skeleton className="h-32 w-full" />
       </div>
     );
+  }
+
+  async function handleDeleteDocument(documentId: number) {
+    const document = documents?.find(
+      (item) => item.id === documentId,
+    );
+
+    if (!document) {
+      return;
+    }
+
+    const confirmed = await confirm({
+      title: t(
+        'workspaces.pages.settings.dangerZone.document.confirmTitle',
+        { name: document.title },
+      ),
+      description: t(
+        'workspaces.pages.settings.dangerZone.document.confirmDesc',
+      ),
+      variant: 'destructive',
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteDocumentMutation.mutateAsync(documentId);
+
+      toast.success(
+        t(
+          'workspaces.pages.settings.dangerZone.document.success',
+        ),
+      );
+    } catch {
+      toast.error(
+        t(
+          'workspaces.pages.settings.dangerZone.document.error',
+        ),
+      );
+    }
   }
 
   const isOwner = workspace.myMembership?.role === 'OWNER';
@@ -179,6 +223,61 @@ export function SpaceSettingPage() {
           >
             {t('workspaces.pages.settings.dangerZone.transfer.button')}
           </PermissionButton>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm font-medium">
+              {t(
+                'workspaces.pages.settings.dangerZone.document.title',
+              )}
+            </p>
+
+            <p className="text-xs text-muted-foreground">
+              {t(
+                'workspaces.pages.settings.dangerZone.document.desc',
+              )}
+            </p>
+          </div>
+
+          {documents?.length ? (
+            <div className="space-y-2">
+              {documents.map((document) => (
+                <div
+                  key={document.id}
+                  className="flex items-center justify-between rounded-md border p-3"
+                >
+                  <p className="truncate text-sm font-medium">
+                    {document.title || 'Untitled'}
+                  </p>
+
+                  <PermissionButton
+                    allowed={can.deleteDocument}
+                    reason={t(
+                      'workspaces.pages.settings.dangerZone.document.tooltip',
+                    )}
+                    variant="destructive"
+                    disabled={
+                      deleteDocumentMutation.isPending
+                    }
+                    onClick={() =>
+                      void handleDeleteDocument(document.id)
+                    }
+                  >
+                    {t(
+                      'workspaces.pages.settings.dangerZone.document.button',
+                    )}
+                  </PermissionButton>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {t(
+                'workspaces.pages.settings.dangerZone.document.empty',
+              )}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-between">

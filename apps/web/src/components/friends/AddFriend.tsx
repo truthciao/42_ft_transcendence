@@ -11,7 +11,8 @@ import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { Input } from '../ui/input';
+import { Button } from '@/components/ui/button';
 import {
   addFriendSearchSchema,
   type AddFriendSearchValues,
@@ -138,17 +139,10 @@ export function AddFriend() {
         {t('friends.addFriend.title')}
       </h2>
 
-      <input
+      <Input
         type="text"
         placeholder={t('friends.addFriend.searchPlaceholder')}
         {...form.register('username')}
-        className="
-          w-full
-          rounded-lg
-          border
-          px-3
-          py-2
-        "
       />
 
       {form.formState.errors.username ? (
@@ -212,16 +206,8 @@ export function AddFriend() {
                     <p className="font-medium">
                       {user.username}
                     </p>
-
-                    <button
-                      className="
-                        rounded
-                        bg-primary
-                        px-3
-                        py-1
-                        text-primary-foreground
-                        disabled:opacity-50
-                      "
+                    <Button
+                      size="sm"
                       disabled={
                         isPending ||
                         (sendFriendRequestMutation.isPending && isSending)
@@ -233,7 +219,7 @@ export function AddFriend() {
                         : isPending
                           ? t('friends.addFriend.pending')
                           : t('friends.addFriend.button')}
-                    </button>
+                    </Button>
                   </div>
                 );
               })}

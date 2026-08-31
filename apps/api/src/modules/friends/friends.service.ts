@@ -67,7 +67,7 @@ export class FriendsService {
       },
     });
 
-    this.realtimeRoomService.emitTouser(
+    this.realtimeRoomService.emitToUser(
       addresseeId,
       REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
       {
@@ -142,7 +142,7 @@ async getPendingRequests(userId: number) {
     if (friendship.status !== FriendshipStatus.PENDING) {
       throw new BadRequestException('This request is no longer pending');
     }
- 
+
     const updatedFriendship = await this.prisma.friendship.update({
       where: { id: requestId },
       data: { status: FriendshipStatus.ACCEPTED },
@@ -169,7 +169,7 @@ async getPendingRequests(userId: number) {
       },
     });
 
-    this.realtimeRoomService.emitTouser(
+    this.realtimeRoomService.emitToUser(
       friendship.requesterId,
       REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
       {
@@ -178,7 +178,7 @@ async getPendingRequests(userId: number) {
       },
     );
 
-    this.realtimeRoomService.emitTouser(
+    this.realtimeRoomService.emitToUser(
       userId,
       REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
       {
@@ -203,7 +203,7 @@ async getPendingRequests(userId: number) {
         error,
       );
     }
- 
+
     return updatedFriendship;
   }
 
@@ -218,7 +218,7 @@ async getPendingRequests(userId: number) {
       throw new BadRequestException('This request is no longer pending');
     }
 
-    this.realtimeRoomService.emitTouser(
+    this.realtimeRoomService.emitToUser(
       friendship.requesterId,
       REALTIME_EVENTS.FRIEND_REQUEST_REJECTED,
       {
@@ -285,14 +285,14 @@ async getPendingRequests(userId: number) {
     if (!friendship || friendship.status !== FriendshipStatus.ACCEPTED)
       throw new NotFoundException('You are not friend with this user');
 
-    this.realtimeRoomService.emitTouser(
+    this.realtimeRoomService.emitToUser(
       otherUserId,
       REALTIME_EVENTS.FRIEND_REMOVED,
       {
         userId,
       },
     );
-    
+
     await this.prisma.friendship.delete({ where: { id: friendship.id } });
     return { message: 'Friend removed' };
   }

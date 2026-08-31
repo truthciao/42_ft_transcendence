@@ -62,7 +62,8 @@ export const ModelName = {
   Message: 'Message',
   Friendship: 'Friendship',
   Notification: 'Notification',
-  Attachment: 'Attachment'
+  Attachment: 'Attachment',
+  Document: 'Document'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -181,7 +182,8 @@ export const ConversationMemberScalarFieldEnum = {
   id: 'id',
   conversationId: 'conversationId',
   userId: 'userId',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  lastReadMessageId: 'lastReadMessageId'
 } as const
 
 export type ConversationMemberScalarFieldEnum = (typeof ConversationMemberScalarFieldEnum)[keyof typeof ConversationMemberScalarFieldEnum]
@@ -216,6 +218,7 @@ export const NotificationScalarFieldEnum = {
   type: 'type',
   actorId: 'actorId',
   friendshipId: 'friendshipId',
+  workspaceId: 'workspaceId',
   read: 'read',
   createdAt: 'createdAt'
 } as const
@@ -235,6 +238,20 @@ export const AttachmentScalarFieldEnum = {
 } as const
 
 export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
+
+
+export const DocumentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  yjsState: 'yjsState',
+  workspaceId: 'workspaceId',
+  creatorId: 'creatorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
 export const SortOrder = {

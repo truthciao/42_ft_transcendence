@@ -97,6 +97,7 @@
   },
 
   "workspaces": {
+    "title": "Espaces",
     "create": {
       "title": "Créer un espace",
       "name": "Nom",
@@ -119,14 +120,15 @@
       "rejectSuccess": "Invitation refusée",
       "rejectError": "Échec du refus de l'invitation"
     },
+    "roles": {
+      "OWNER": "Propriétaire",
+      "MEMBER": "Membre",
+      "ADMIN": "Admin"
+    },
     "inviteMember": {
       "title": "Inviter un membre",
       "searchPlaceholder": "Rechercher par nom d'utilisateur",
       "inviteAs": "Inviter en tant que",
-      "roles": {
-        "MEMBER": "Membre",
-        "ADMIN": "Admin"
-      },
       "minCharacters": "Entrez au moins 2 caractères pour rechercher.",
       "searching": "Recherche...",
       "searchError": "Échec de la recherche d'utilisateurs.",
@@ -181,6 +183,18 @@
           "placeholder": "discussion-generale",
           "submitting": "Création...",
           "submit": "Créer"
+        },
+        "documents": "Documents",
+        "newDocument": "Nouveau document",
+        "untitledDocument": "Document sans titre",
+        "createDocument": {
+          "title": "Créer un document",
+          "placeholder": "Titre du document",
+          "cancel": "Annuler",
+          "creating": "Création...",
+          "create": "Créer",
+          "success": "Document créé",
+          "error": "Échec de la création du document"
         }
       },
       "index": {
@@ -258,8 +272,29 @@
             "confirmDesc": "Cela supprime définitivement l'espace, ses canaux et messages. Cette action est irréversible.",
             "success": "Espace supprimé",
             "error": "Échec de la suppression de l'espace"
+          },
+          "document": {
+            "title": "Supprimer le document",
+            "desc": "Supprimez définitivement des documents de cet espace.",
+            "button": "Supprimer",
+            "tooltip": "Seuls les administrateurs de l’espace peuvent supprimer des documents",
+            "confirmTitle": "Supprimer « {{name}} » ?",
+            "confirmDesc": "Cette action supprimera définitivement le document. Elle est irréversible.",
+            "success": "Document supprimé avec succès",
+            "error": "Échec de la suppression du document",
+            "empty": "Aucun document à supprimer."
           }
         }
+      },
+      "document": {
+        "back": "Espace de travail",
+        "saving": "Enregistrement...",
+        "saved": "Enregistré",
+        "saveError": "Échec de l'enregistrement",
+        "notFound": "Document introuvable",
+        "loadError": "Impossible de charger ce document.",
+        "untitled": "Document sans titre",
+        "startWriting": "Commencez à écrire..."
       }
     }
   },
@@ -334,10 +369,12 @@
   },
 
   "chat": {
+    "title": "Messages",
     "strangerChat": "Discussion avec un inconnu (nom d'utilisateur)",
     "usernamePlaceholder": "Entrez un nom d'utilisateur...",
     "chat": "Discuter",
-    "conversations": "Conversations",
+    "searchPeople": "Rechercher un utilisateur",
+    "conversations": "Message direct",
     "friend": "Ami",
     "stranger": "Inconnu",
     "room": "Salon de discussion #{{id}}",
@@ -349,41 +386,105 @@
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
     "send": "Envoyer",
-    "me": "Moi"
+    "me": "Moi",
+    "yesterday": "Hier",
+    "searchMessages": "Rechercher des messages",
+    "loading": "Chargement...",
+    "loadOlderMessages": "Charger les anciens messages",
+    "searchMessagesPlaceholder": "Rechercher des messages...",
+    "noMessagesFound": "Aucun message trouvé."
   },
 
   "showcase": {
     "title": "Bibliothèque de composants",
-    "description": "Un aperçu rapide des composants d'interface partagés.",
-    "emptyFriendsTitle": "Aucun ami pour l'instant",
+    "description": "Une référence rapide des composants d'interface partagés.",
+
+    "sections": {
+      "colors": "Couleurs",
+      "typography": "Typographie",
+      "avatar": "Avatar",
+      "emptyState": "EmptyState",
+      "skeleton": "Skeleton",
+      "input": "Input",
+      "toast": "Toast (sonner)",
+      "dialog": "Dialog",
+      "dropdownMenu": "Menu déroulant",
+      "tooltip": "Tooltip",
+      "confirmDialog": "Boîte de confirmation",
+      "pageError": "Erreur de page"
+    },
+
+    "typography": {
+      "body": "Texte principal — Le vif renard brun saute par-dessus le chien paresseux.",
+      "small": "Petit texte / texte secondaire",
+      "caption": "Texte de légende"
+    },
+
+    "input": {
+      "usernamePlaceholder": "Entrez votre nom d'utilisateur...",
+      "disabledPlaceholder": "Champ désactivé"
+    },
+
+    "dialog": {
+      "open": "Ouvrir la boîte de dialogue",
+      "title": "Boîte de dialogue exemple",
+      "description": "Ceci est un exemple de notre composant de boîte de dialogue réutilisable.",
+      "content": "Le contenu de la boîte de dialogue peut être placé ici."
+    },
+
+    "dropdown": {
+      "open": "Ouvrir le menu",
+      "account": "Compte",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "signOut": "Se déconnecter",
+      "profileClicked": "Profil sélectionné",
+      "settingsClicked": "Paramètres sélectionnés",
+      "signOutClicked": "Déconnexion sélectionnée"
+    },
+
+    "tooltip": {
+      "trigger": "Survolez-moi",
+      "content": "Ceci est un tooltip réutilisable."
+    },
+
+    "emptyFriendsTitle": "Pas encore d'amis",
     "emptyFriendsDescription": "Lorsque vous ajouterez des amis, ils apparaîtront ici.",
     "emptyFriendsAction": "Ajouter un ami",
-    "actionClicked": "Action déclenchée",
+    "actionClicked": "Action sélectionnée",
+
     "toastSuccess": "Enregistré avec succès",
-    "toastError": "Une erreur est survenue",
+    "toastError": "Une erreur s'est produite",
     "toastInfo": "Voici une information",
+
     "triggerSuccess": "Afficher un toast de succès",
     "triggerError": "Afficher un toast d'erreur",
     "triggerInfo": "Afficher un toast d'information",
-    "triggerConfirm": "Supprimer un élément",
+    "triggerConfirm": "Supprimer quelque chose",
+
     "confirmTitle": "Êtes-vous sûr ?",
     "confirmDescription": "Cette action est irréversible.",
     "confirmed": "Confirmé",
     "cancelled": "Annulé",
-    "pageErrorTitle": "Titre d'aperçu d'erreur",
-    "pageErrorMessage": "Voici à quoi ressemble PageError.",
-    "retryClicked": "Réessai cliqué",
-    "showPreview": "Afficher l'aperçu de PageError",
-    "hidePreview": "Masquer l'aperçu de PageError"
+
+    "showPreview": "Afficher l'aperçu",
+    "hidePreview": "Masquer l'aperçu",
+    "pageErrorTitle": "Une erreur s'est produite",
+    "pageErrorMessage": "Une erreur s'est produite lors du chargement de cette page.",
+    "retryClicked": "Réessayer sélectionné"
   },
-  
+
   "notifications": {
     "title": "Notifications",
     "empty": "Aucune notification",
     "friendRequestReceived": "{{username}} vous a envoyé une demande d’ami",
     "friendRequestAccepted": "{{username}} a accepté votre demande d’ami",
     "friendRequestRejected": "{{username}} a refusé votre demande d’ami",
-    "friendRemoved": "{{username}} vous a retiré de ses amis"
+    "friendRemoved": "{{username}} vous a retiré de ses amis",
+    "workspaceInviteReceived": "{{username}} vous a invité à rejoindre {{workspaceName}}",
+    "workspaceInviteAccepted": "{{username}} a accepté votre invitation à {{workspaceName}}",
+    "workspaceMemberRemoved": "Vous avez été retiré de {{workspaceName}}",
+    "workspaceRoleChanged": "Votre rôle dans {{workspaceName}} a été mis à jour"
   },
 
   "fileUpload": {

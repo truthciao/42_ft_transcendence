@@ -11,6 +11,7 @@ import {
   WorkspaceRole,
 } from '../../generated/prisma/client.js';
 import { WorkspacesService } from './workspaces.service.js';
+import type { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 import { jest } from '@jest/globals';
 
 const objectContaining = <T extends object>(shape: T): T =>
@@ -61,6 +62,7 @@ type CreateInviteActor = Parameters<WorkspacesService['createInvite']>[1];
 type InviteMemberDto = Parameters<WorkspacesService['createInvite']>[2];
 type RemoveMemberActor = Parameters<WorkspacesService['removeMember']>[2];
 type LeaveMembership = Parameters<WorkspacesService['leave']>[1];
+type ChangeMemberRoleActor = Parameters<WorkspacesService['changeMemberRole']>[3];
 
 // ---- workspace ----
 const createWorkspace = jest.fn<() => Promise<MockWorkspace>>();
@@ -96,8 +98,14 @@ const createConversation = jest.fn<() => Promise<MockConversation>>();
 const createManyConversationMember = jest.fn<() => Promise<unknown>>();
 const deleteManyConversationMember = jest.fn<() => Promise<unknown>>();
 
+// ---- notification ----
+const createNotification = jest.fn<() => Promise<{ id:number }>>();
+
 // ---- $transaction ----
 const transaction = jest.fn();
+
+const emitToUser = jest.fn();
+const realtimeRoomServiceMock = { emitToUser };
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
@@ -135,6 +143,9 @@ describe('WorkspacesService', () => {
       createMany: createManyConversationMember,
       deleteMany: deleteManyConversationMember,
     },
+    notification: {
+      create: createNotification,
+    },
     $transaction: transaction,
   };
 
@@ -150,6 +161,10 @@ describe('WorkspacesService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    createNotification.mockResolvedValue({
+      id: 1,
+    });
+
     // default $transaction implementation: supports both array-of-promises and callback style
     transaction.mockImplementation((arg: unknown) => {
       if (typeof arg === 'function') {
@@ -158,8 +173,10 @@ describe('WorkspacesService', () => {
       return Promise.all(arg as Promise<unknown>[]);
     });
 
-    service = new WorkspacesService(prisma as unknown as PrismaService);
-  });
+    service = new WorkspacesService(
+      prisma as unknown as PrismaService,
+      realtimeRoomServiceMock as unknown as RealtimeRoomService,
+    );  });
 
   describe('create', () => {
     it('creates a workspace with the creator as OWNER member and a default #general channel', async () => {
@@ -425,6 +442,16 @@ describe('WorkspacesService', () => {
         }),
       );
       expect(result).toEqual({ workspaceId: baseInvite.workspaceId });
+      expect(createNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            recipientId: baseInvite.inviterId,
+            actorId: 2,
+            type: 'WORKSPACE_INVITE_ACCEPTED',
+            workspaceId: baseInvite.workspaceId,
+          }),
+        }),
+      );
     });
   });
 
@@ -478,9 +505,17 @@ describe('WorkspacesService', () => {
   });
 
   describe('changeMemberRole', () => {
+    const actor: ChangeMemberRoleActor = {
+      id: 1,
+      workspaceId: 1,
+      userId: 1,
+      role: WorkspaceRole.OWNER,
+      joinedAt: new Date(),
+    };
+    
     it('rejects setting role to OWNER', async () => {
       await expect(
-        service.changeMemberRole(1, 2, WorkspaceRole.OWNER),
+        service.changeMemberRole(1, 2, WorkspaceRole.OWNER, actor),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -488,7 +523,7 @@ describe('WorkspacesService', () => {
       prisma.workspaceMember.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN),
+        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN, actor),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -500,7 +535,7 @@ describe('WorkspacesService', () => {
       });
 
       await expect(
-        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN),
+        service.changeMemberRole(1, 2, WorkspaceRole.ADMIN, actor),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -516,6 +551,7 @@ describe('WorkspacesService', () => {
         1,
         2,
         WorkspaceRole.MEMBER,
+        actor,
       );
 
       expect(result).toEqual(target);
@@ -528,16 +564,41 @@ describe('WorkspacesService', () => {
         userId: 2,
         role: WorkspaceRole.MEMBER,
       });
+
       prisma.workspaceMember.update.mockResolvedValue(
         {} as unknown as MockWorkspaceMember,
       );
 
-      await service.changeMemberRole(1, 2, WorkspaceRole.ADMIN);
+      const actor: ChangeMemberRoleActor = {
+        id: 1,
+        workspaceId: 1,
+        userId: 1,
+        role: WorkspaceRole.OWNER,
+        joinedAt: new Date(),
+      };
+
+      await service.changeMemberRole(
+        1,
+        2,
+        WorkspaceRole.ADMIN,
+        actor,
+      );
 
       expect(prisma.workspaceMember.update).toHaveBeenCalledWith({
         where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
         data: { role: WorkspaceRole.ADMIN },
       });
+
+      expect(createNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            recipientId: 2,
+            actorId: 1,
+            type: 'WORKSPACE_ROLE_CHANGED',
+            workspaceId: 1,
+          }),
+        }),
+      );
     });
   });
 
@@ -627,6 +688,16 @@ describe('WorkspacesService', () => {
       expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
         where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
       });
+      expect(createNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            recipientId: 2,
+            actorId: 1,
+            type: 'WORKSPACE_MEMBER_REMOVED',
+            workspaceId: 1,
+          }),
+        }),
+      );
     });
   });
 

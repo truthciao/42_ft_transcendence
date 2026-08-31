@@ -80,10 +80,24 @@ async findAllForUser(userId: number) {
               profile: {
                 select: {
                   displayName: true,
+                  avatarUrl: true,
                 },
               },
             },
           },
+        },
+      },
+
+      messages: {
+        orderBy: {
+          id: 'desc',
+        },
+        take: 1,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          senderId: true,
         },
       },
     },
@@ -100,33 +114,67 @@ async findAllForUser(userId: number) {
       friendships.map((f) => (f.requesterId === userId ? f.addresseeId : f.requesterId)),
     );
 
-    return conversations.map((conv) => {
-    let conversationName = conv.name;
-    let isFriend = false;
+    return Promise.all(
+      conversations.map(async (conv) => {
+        let conversationName = conv.name;
+        let isFriend = false;
 
-      if (conv.type === ConversationType.DIRECT || !conv.name) {
-        const otherMember = conv.members.find((m) => m.userId !== userId);
-        const otherUser = otherMember?.user;
+        if (conv.type === ConversationType.DIRECT || !conv.name) {
+          const otherMember = conv.members.find(
+            (m) => m.userId !== userId,
+          );
 
-      if (otherUser) {
-        isFriend = friendIdSet.has(otherUser.id);
-        conversationName =
-          otherUser?.profile?.displayName ||
-          otherUser?.username ||
-          `Chat Room #${conv.id}`;
-      }
-    }
+          const otherUser = otherMember?.user;
 
-    return {
-      id: conv.id,
-      type: conv.type,
-      name: conversationName, 
-      isFriend,      
-      createdAt: conv.createdAt,
-      updatedAt: conv.updatedAt,
-      members: conv.members,
-    };
-  });
+          if (otherUser) {
+            isFriend = friendIdSet.has(otherUser.id);
+
+            conversationName =
+              otherUser.profile?.displayName ||
+              otherUser.username ||
+              `Chat Room #${conv.id}`;
+          }
+        }
+
+        const lastMessage = conv.messages[0] ?? null;
+
+        const currentMember = conv.members.find(
+          (member) => member.userId === userId,
+        );
+
+        const lastReadMessageId =
+          currentMember?.lastReadMessageId ?? null;
+
+        const unreadCount = await this.prisma.message.count({
+          where: {
+            conversationId: conv.id,
+            senderId: {
+              not: userId,
+            },
+            ...(lastReadMessageId !== null
+              ? {
+                  id: {
+                    gt: lastReadMessageId,
+                  },
+                }
+              : {}),
+          },
+        });
+
+        return {
+          id: conv.id,
+          type: conv.type,
+          name: conversationName,
+          isFriend,
+          createdAt: conv.createdAt,
+          updatedAt: conv.updatedAt,
+          lastMessage,
+          lastReadMessageId,
+          unreadCount,
+          members: conv.members,
+        };
+      }),
+  );
 }
 
 async getMessages(
@@ -141,6 +189,7 @@ async getMessages(
   const messages = await this.prisma.message.findMany({
     where: {
       conversationId,
+
       ...(cursor !== undefined
         ? {
             id: {
@@ -180,6 +229,42 @@ async getMessages(
   };
 }
 
+async searchMessages(
+  conversationId: number,
+  userId: number,
+  query: string,
+) {
+  await this.assertMember(conversationId, userId);
+
+  const keyword = query.trim();
+
+  if (!keyword) {
+    return [];
+  }
+
+  return this.prisma.message.findMany({
+    where: {
+      conversationId,
+      content: {
+        contains: keyword,
+        mode: 'insensitive',
+      },
+    },
+    orderBy: {
+      id: 'desc',
+    },
+    take: 50,
+    include: {
+      sender: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+}
+
   async createMessage(
     conversationId: number,
     senderId: number,
@@ -200,6 +285,51 @@ async getMessages(
     });
 
     return message;
+  }
+
+  async getConversationMemberIds(conversationId: number): Promise<number[]> {
+    const members = await this.prisma.conversationMember.findMany({
+      where: {
+        conversationId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    return members.map((member) => member.userId);
+  }
+
+  async markAsRead(userId: number, conversationId: number) {
+    await this.assertMember(conversationId, userId);
+
+    const lastMessage = await this.prisma.message.findFirst({
+      where: {
+        conversationId,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!lastMessage) {
+      return;
+    }
+
+    await this.prisma.conversationMember.update({
+      where: {
+        conversationId_userId: {
+          conversationId,
+          userId,
+        },
+      },
+      data: {
+        lastReadMessageId: lastMessage.id,
+      },
+    });
   }
 
   async verifyMembership(conversationId: number, userId: number) {

@@ -97,6 +97,7 @@
   },
 
   "workspaces": {
+    "title": "Spaces",
     "create": {
       "title": "Create workspace",
       "name": "Name",
@@ -119,14 +120,15 @@
       "rejectSuccess": "Invite declined",
       "rejectError": "Failed to decline invite"
     },
+    "roles": {
+      "OWNER": "Owner",
+      "MEMBER": "Member",
+      "ADMIN": "Admin"
+    },
     "inviteMember": {
       "title": "Invite member",
       "searchPlaceholder": "Search by username",
       "inviteAs": "Invite as",
-      "roles": {
-        "MEMBER": "Member",
-        "ADMIN": "Admin"
-      },
       "minCharacters": "Enter at least 2 characters to search.",
       "searching": "Searching...",
       "searchError": "Failed to search users.",
@@ -181,6 +183,18 @@
           "placeholder": "general-discussion",
           "submitting": "Creating",
           "submit": "Create"
+        },
+        "documents": "Documents",
+        "newDocument": "New Document",
+        "untitledDocument": "Untitled document",
+        "createDocument": {
+          "title": "Create document",
+          "placeholder": "Document title",
+          "cancel": "Cancel",
+          "creating": "Creating...",
+          "create": "Create",
+          "success": "Document created",
+          "error": "Failed to create document"
         }
       },
       "index": {
@@ -258,8 +272,29 @@
             "confirmDesc": "This permanently deletes the workspace, its channels and messages. This cannot be undone.",
             "success": "Workspace deleted",
             "error": "Failed to delete workspace"
+          },
+          "document": {
+            "title": "Delete document",
+            "desc": "Permanently delete documents from this workspace.",
+            "button": "Delete",
+            "tooltip": "Only workspace admins can delete documents",
+            "confirmTitle": "Delete \"{{name}}\"?",
+            "confirmDesc": "This permanently deletes the document. This cannot be undone.",
+            "success": "Document deleted successfully",
+            "error": "Failed to delete document",
+            "empty": "No documents to delete."
           }
         }
+      },
+      "document": {
+        "back": "Workspace",
+        "saving": "Saving...",
+        "saved": "Saved",
+        "saveError": "Failed to save",
+        "notFound": "Document not found",
+        "loadError": "This document could not be loaded.",
+        "untitled": "Untitled document",
+        "startWriting": "Start writing..."
       }
     }
   },
@@ -330,14 +365,16 @@
       "generateError": "Failed to generate 2FA secret",
       "disableError": "Failed to disable 2FA",
       "unknownError": "Unknown error"
-    }  
+    }
   },
 
   "chat": {
+    "title": "Messages",
     "strangerChat": "Stranger Chat (Username)",
     "usernamePlaceholder": "Enter a username...",
     "chat": "Chat",
-    "conversations": "Conversations",
+    "searchPeople": "Search People",
+    "conversations": "Direct Messages",
     "friend": "Friend",
     "stranger": "Stranger",
     "room" : "Chat Room #{{id}}",
@@ -349,32 +386,92 @@
     "user": "User",
     "placeholder": "Type a message...",
     "send": "Send",
-    "me": "Me"
+    "me": "Me",
+    "yesterday": "yesterday",
+    "searchMessages": "Search messages",
+    "loading": "Loading...",
+    "loadOlderMessages": "Load older messages",
+    "searchMessagesPlaceholder": "Search messages...",
+    "noMessagesFound": "No messages found."
   },
 
-   "showcase": {
+  "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",
+
+    "sections": {
+      "colors": "Colors",
+      "typography": "Typography",
+      "avatar": "Avatar",
+      "emptyState": "EmptyState",
+      "skeleton": "Skeleton",
+      "input": "Input",
+      "toast": "Toast (sonner)",
+      "dialog": "Dialog",
+      "dropdownMenu": "Dropdown Menu",
+      "tooltip": "Tooltip",
+      "confirmDialog": "ConfirmDialog",
+      "pageError": "PageError"
+    },
+
+    "typography": {
+      "body": "Body text — The quick brown fox jumps over the lazy dog.",
+      "small": "Small / secondary text",
+      "caption": "Caption text"
+    },
+
+    "input": {
+      "usernamePlaceholder": "Enter your username...",
+      "disabledPlaceholder": "Disabled input"
+    },
+
+    "dialog": {
+      "open": "Open Dialog",
+      "title": "Example Dialog",
+      "description": "This is an example of our reusable dialog component.",
+      "content": "Dialog content can be placed here."
+    },
+
+    "dropdown": {
+      "open": "Open Menu",
+      "account": "Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "signOut": "Sign out",
+      "profileClicked": "Profile clicked",
+      "settingsClicked": "Settings clicked",
+      "signOutClicked": "Sign out clicked"
+    },
+
+    "tooltip": {
+      "trigger": "Hover me",
+      "content": "This is a reusable tooltip."
+    },
+
     "emptyFriendsTitle": "No friends yet",
     "emptyFriendsDescription": "When you add friends, they'll show up here.",
     "emptyFriendsAction": "Add a friend",
     "actionClicked": "Action clicked",
+
     "toastSuccess": "Saved successfully",
     "toastError": "Something went wrong",
     "toastInfo": "Here's some information",
+
     "triggerSuccess": "Show success toast",
     "triggerError": "Show error toast",
     "triggerInfo": "Show info toast",
     "triggerConfirm": "Delete something",
+
     "confirmTitle": "Are you sure?",
     "confirmDescription": "This action cannot be undone.",
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
-    "pageErrorTitle": "Preview error title",
-    "pageErrorMessage": "This is what PageError looks like.",
-    "retryClicked": "Retry clicked",
-    "showPreview": "Show PageError preview",
-    "hidePreview": "Hide PageError preview"
+
+    "showPreview": "Show preview",
+    "hidePreview": "Hide preview",
+    "pageErrorTitle": "Something went wrong",
+    "pageErrorMessage": "An error occurred while loading this page.",
+    "retryClicked": "Retry clicked"
   },
 
   "notifications": {
@@ -383,7 +480,11 @@
     "friendRequestReceived": "{{username}} sent you a friend request",
     "friendRequestAccepted": "{{username}} accepted your friend request",
     "friendRequestRejected": "{{username}} rejected your friend request",
-    "friendRemoved": "{{username}} removed you as a friend"
+    "friendRemoved": "{{username}} removed you as a friend",
+    "workspaceInviteReceived": "{{username}} invited you to join {{workspaceName}}",
+    "workspaceInviteAccepted": "{{username}} accepted your invite to {{workspaceName}}",
+    "workspaceMemberRemoved": "You were removed from {{workspaceName}}",
+    "workspaceRoleChanged": "Your role in {{workspaceName}} was updated"
   },
 
   "fileUpload": {

@@ -5,7 +5,7 @@ import {
 } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { getSocket, disconnectSocket } from '@/lib/realtime';
+import { getSocket } from '@/lib/realtime';
 import { RealtimeContext } from './RealtimeContext';
 
 export function RealtimeProvider({
@@ -35,7 +35,7 @@ export function RealtimeProvider({
         return next;
       });
     };
-    
+
     const handleUsersOnline = ({
       userIds,
     }: {
@@ -105,6 +105,47 @@ export function RealtimeProvider({
       window.dispatchEvent(new Event('refresh_conversations'));
     };
 
+    const handleUserProfileUpdated = ({
+      userId,
+      avatarUrl,
+    }: {
+      userId: number;
+      avatarUrl: string;
+    }) => {
+      window.dispatchEvent(
+        new CustomEvent('user_profile_updated', {
+          detail: {
+            userId,
+            avatarUrl,
+          },
+        }),
+      );
+    };
+
+    const handleWorkspaceInviteReceived = () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace-invites', 'incoming']})
+    }
+
+    const handleWorkspaceInviteAccepted = () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+    }
+
+    const handleWorkspaceMemberRemoved = ( payload: {workspaceId: number}) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
+    }
+
+    const handleWorkspaceRoleChanged = ( payload: {workspaceId: number}) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications']});
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
+      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
+      queryClient.invalidateQueries({ queryKey: ['workspaces']})
+    }
+
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
@@ -134,14 +175,39 @@ export function RealtimeProvider({
       handleConversationCreated,
     );
 
+    socket.on(
+      'user:profile-updated',
+      handleUserProfileUpdated,
+    );
+
+    socket.on(
+      'workspace-invite:received',
+      handleWorkspaceInviteReceived,
+    );
+
+    socket.on(
+      'workspace-invite:accepted',
+      handleWorkspaceInviteAccepted,
+    );
+
+    socket.on(
+      'workspace-member:removed',
+      handleWorkspaceMemberRemoved,
+    );
+
+    socket.on(
+      'workspace-role:changed',
+      handleWorkspaceRoleChanged,
+    );
+
     return () => {
-      socket.off('users:online', handleUsersOnline,);
+      socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
       socket.off('user:offline', handleOffline);
 
       socket.off(
-        'friend-request:received', 
-        handleFriendRequest
+        'friend-request:received',
+        handleFriendRequest,
       );
 
       socket.off(
@@ -164,7 +230,31 @@ export function RealtimeProvider({
         handleConversationCreated,
       );
 
-      disconnectSocket();
+      socket.off(
+        'user:profile-updated',
+        handleUserProfileUpdated,
+      );
+
+      socket.off(
+        'workspace-invite:received',
+        handleWorkspaceInviteReceived,
+      );
+
+      socket.off(
+        'workspace-invite:accepted',
+        handleWorkspaceInviteAccepted,
+      );
+
+      socket.off(
+        'workspace-member:removed',
+        handleWorkspaceMemberRemoved,
+      );
+
+      socket.off(
+        'workspace-role:changed',
+        handleWorkspaceRoleChanged,
+      );
+
       setOnlineUserIds(new Set());
     };
   }, [loading, user, queryClient]);

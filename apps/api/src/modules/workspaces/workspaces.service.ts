@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
   ConversationType,
+  NotificationType,
   WorkspaceInviteStatus,
   WorkspaceMember,
   WorkspaceRole,
@@ -16,10 +17,15 @@ import { InviteMemberDto } from './dto/invite-member.dto.js';
 import { CreateChannelDto } from './dto/create-channel.dto.js';
 import { randomBytes } from 'crypto';
 import { atLeast } from './constants/role-rank.js';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 
 @Injectable()
 export class WorkspacesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtimeRoomService: RealtimeRoomService,
+  ) {}
 
   async create(
     ownerId: number,
@@ -247,7 +253,7 @@ export class WorkspacesService {
       if (pending) throw new ConflictException('An invite is already pending');
     }
 
-    return this.prisma.workspaceInvite.create({
+    const invite = await this.prisma.workspaceInvite.create({
       data: {
         workspaceId,
         inviterId: actor.userId,
@@ -282,6 +288,32 @@ export class WorkspacesService {
         },
       },
     });
+
+    if (invite.inviteeId) {
+      try {
+        const notification = await this.prisma.notification.create({
+          data: {
+            recipientId: invite.inviteeId,
+            actorId: actor.userId,
+            type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+            workspaceId,
+          }
+        });
+
+        this.realtimeRoomService.emitToUser(
+          invite.inviteeId,
+          REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
+          { notificationId: notification.id, workspaceId, inviteId: invite.id}
+        )
+      } catch (error) {
+        console.error(
+          '[WorkspacesService] failed to notify invitee about invite: ',
+          error,
+        );
+      }
+    }
+
+    return invite;
   }
 
   async listWorkspaceInvites(workspaceId: number) {
@@ -313,7 +345,7 @@ export class WorkspacesService {
   }
 
   async acceptInvite(inviteId: number, userId: number) {
-    return this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx) => {
       const invite = await tx.workspaceInvite.findUnique({
         where: { id: inviteId },
       });
@@ -355,9 +387,33 @@ export class WorkspacesService {
       });
 
       return {
-        workspaceId: invite.workspaceId,
+        workspaceId: invite.workspaceId, inviterId: invite.inviterId,
       };
     });
+
+    try {
+      const notification = await this.prisma.notification.create({
+        data: {
+          recipientId: result.inviterId,
+          actorId: userId,
+          type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+          workspaceId: result.workspaceId,
+        }
+      });
+
+      this.realtimeRoomService.emitToUser(
+        result.inviterId,
+        REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
+        { notificationId: notification.id, workspaceId: result.workspaceId, userId },
+      )
+    } catch (error) {
+        console.error(
+          '[WorkspaceService] Failed to notify inviter after accept:',
+          error
+        );
+    }
+
+    return { workspaceId: result.workspaceId }
   }
 
   async rejectInvite(inviteId: number, userId: number) {
@@ -390,6 +446,7 @@ export class WorkspacesService {
     workspaceId: number,
     targetUserId: number,
     role: WorkspaceRole,
+    actor: WorkspaceMember,
   ) {
     if (role === WorkspaceRole.OWNER)
       throw new BadRequestException(
@@ -401,10 +458,34 @@ export class WorkspacesService {
     }
     if (target.role === role) return target;
 
-    return this.prisma.workspaceMember.update({
+    const updated = await this.prisma.workspaceMember.update({
       where: { workspaceId_userId: { workspaceId, userId: targetUserId } },
       data: { role },
     });
+
+    try {
+      const notification = await this.prisma.notification.create({
+        data: {
+          recipientId: targetUserId,
+          actorId: actor?.userId,
+          type: NotificationType.WORKSPACE_ROLE_CHANGED,
+          workspaceId,
+        }
+      });
+
+      this.realtimeRoomService.emitToUser(
+        targetUserId,
+        REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
+        { notificationId: notification.id, workspaceId, role }
+      )
+    } catch(error) {
+      console.error(
+        '[WorkspacesService] Failed to notify member about role change: ',
+        error,
+      );
+    }
+
+    return updated;
   }
 
   async removeMember(
@@ -427,7 +508,7 @@ export class WorkspacesService {
       throw new ForbiddenException('Admin can only remove members');
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    const removed = await this.prisma.$transaction(async (tx) => {
       const channels = await tx.conversation.findMany({
         where: { workspaceId, type: 'CHANNEL' },
         select: { id: true },
@@ -442,6 +523,30 @@ export class WorkspacesService {
         where: { workspaceId_userId: { workspaceId, userId: targetUserId } },
       });
     });
+
+    try {
+      const notification = await this.prisma.notification.create({
+        data: {
+          recipientId: targetUserId,
+          actorId: actor.userId,
+          type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+          workspaceId,
+        }
+      });
+
+      this.realtimeRoomService.emitToUser(
+        targetUserId,
+        REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
+        { notification: notification.id, workspaceId },
+      );
+    } catch (error) {
+        console.error(
+          '[WorkspacesService] Failed to notify removed member:',
+          error,
+        );
+    }
+
+    return removed;
   }
 
   async leave(workspaceId: number, m: WorkspaceMember) {

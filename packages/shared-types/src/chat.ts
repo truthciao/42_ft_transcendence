@@ -28,7 +28,6 @@ export const joinConversationSchema = z.object({
 
 export const getMessagesSchema = z.object({
   cursor: z.coerce.number().int().positive().optional(),
-
   limit: z.coerce.number().int().positive().max(100).default(30),
 });
 

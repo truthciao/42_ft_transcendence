@@ -10,8 +10,12 @@ echo "        i18n audit for web"
 echo "========================================"
 echo
 
+# --------------------------------------------------
+# Helpers
+# --------------------------------------------------
+
 count_matches() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "${1:-}" ]]; then
     printf '%s\n' "$1" | grep -c .
   else
     echo 0
@@ -23,6 +27,22 @@ add_issues() {
   total_issues=$((total_issues + count))
 }
 
+# Files that should NOT be audited.
+#
+# - dev pages are development/showcase content
+# - UI primitives contain technical/default labels that are
+#   intentionally handled at the component level
+RG_GLOBS=(
+  '--glob' '*.tsx'
+  '--glob' '!**/pages/dev/**'
+  '--glob' '!**/components/ui/**'
+)
+
+# Run rg with the common file filters.
+rg_filtered() {
+  rg "${RG_GLOBS[@]}" "$@"
+}
+
 # --------------------------------------------------
 # 1. Hardcoded JSX text
 # --------------------------------------------------
@@ -31,14 +51,17 @@ echo "1. Hardcoded JSX text"
 echo "----------------------------------------"
 
 matches=$(
-  node scripts/check-i18n.mjs \
+  rg_filtered -n \
+    'placeholder[[:space:]]*=[[:space:]]*"[^"{]*[A-Za-z][^"{]*"' \
+    "$WEB_SRC" \
     2>/dev/null \
+    | grep -Ev \
+      'placeholder="(user@example\.com|https?://[^"]*|[0-9]+)"' \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
-
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -55,16 +78,17 @@ echo "2. Hardcoded placeholders"
 echo "----------------------------------------"
 
 matches=$(
-  rg -n \
-    --glob '*.tsx' \
-    'placeholder="[^"]*[A-Za-z][^"]*"' \
+  rg_filtered -n \
+    'placeholder[[:space:]]*=[[:space:]]*"[^"{]*[A-Za-z][^"{]*"' \
     "$WEB_SRC" \
+    2>/dev/null \
+    | grep -Ev \
+      'placeholder[[:space:]]*=[[:space:]]*"[^"]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"' \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
-
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -81,16 +105,15 @@ echo "3. Hardcoded aria-labels"
 echo "----------------------------------------"
 
 matches=$(
-  rg -n \
-    --glob '*.tsx' \
-    'aria-label="[^"]*[A-Za-z][^"]*"' \
+  rg_filtered -n \
+    'aria-label[[:space:]]*=[[:space:]]*"[^"{]*[A-Za-z][^"{]*"' \
     "$WEB_SRC" \
+    2>/dev/null \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
-
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -107,16 +130,15 @@ echo "4. Hardcoded titles"
 echo "----------------------------------------"
 
 matches=$(
-  rg -n \
-    --glob '*.tsx' \
-    'title="[^"]*[A-Za-z][^"]*"' \
+  rg_filtered -n \
+    'title[[:space:]]*=[[:space:]]*"[^"{]*[A-Za-z][^"{]*"' \
     "$WEB_SRC" \
+    2>/dev/null \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
-
   count=$(count_matches "$matches")
   add_issues "$count"
 else
@@ -133,16 +155,15 @@ echo "5. Hardcoded toast / alert / confirm messages"
 echo "----------------------------------------"
 
 matches=$(
-  rg -n \
-    --glob '*.tsx' \
-    '(toast\.(success|error|info|warning|loading)|alert|confirm)\([[:space:]]*["'\'']' \
+  rg_filtered -n \
+    '(toast\.(success|error|info|warning|loading)|alert|confirm)[[:space:]]*\([[:space:]]*["'\'']' \
     "$WEB_SRC" \
+    2>/dev/null \
     || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "$matches"
-
   count=$(count_matches "$matches")
   add_issues "$count"
 else

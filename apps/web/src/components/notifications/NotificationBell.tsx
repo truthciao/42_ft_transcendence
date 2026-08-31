@@ -39,7 +39,7 @@ export function NotificationBell() {
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Notifications"
+            aria-label={t('settings.notifications')}
             className="relative"
           />
         }

@@ -132,7 +132,7 @@ export function LoginPage() {
   return (
     <main className="mx-auto max-w-[400px] font-sans">
       <h1>{t("auth.login")}</h1>
-      <p>{requires2FA ? "Please enter your Google Authenticator 6-digit code to complete login" : t("auth.description")}</p>
+      <p>{requires2FA ? t('auth.twoFactorDescription') : t("auth.description")}</p>
 
       {!requires2FA ? (
         /* Stage 1: Standard email and password form */
@@ -221,7 +221,7 @@ export function LoginPage() {
             status === 'failed' && 'text-destructive',
           )}
         >
-          {status === 'failed' ? 'Login or 2FA verification failed, please check your input' : t(`auth.status.${status}`)}
+          {status === 'failed' ? t('auth.loginFailed') : t(`auth.status.${status}`)}
         </p>
       ) : null}
 

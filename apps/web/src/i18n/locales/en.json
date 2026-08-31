@@ -319,7 +319,11 @@
       "failed": "Failed to login"
     },
     "noAccount": "No account",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "twoFactorDescription": "Please enter your Google Authenticator 6-digit code to complete login",
+    "loginFailed": "Login or 2FA verification failed, please check your input"
   },
 
   "errors": {

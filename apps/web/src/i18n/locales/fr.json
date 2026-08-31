@@ -319,7 +319,11 @@
       "failed": "Échec de la connexion"
     },
     "noAccount": "Aucun compte",
-    "submitting": "Soumission en cours..."
+    "submitting": "Soumission en cours...",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "loginHere": "Connectez-vous ici",
+    "twoFactorDescription": "Veuillez saisir le code à 6 chiffres de Google Authenticator pour terminer la connexion",
+    "loginFailed": "Échec de la connexion ou de la vérification 2FA. Veuillez vérifier vos informations"
   },
 
   "errors": {

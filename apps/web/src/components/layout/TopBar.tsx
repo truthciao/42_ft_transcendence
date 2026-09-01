@@ -86,7 +86,7 @@ export function TopBar() {
       >
         <DropdownMenuTrigger
           className="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
-          aria-label="Notifications"
+          aria-label={t('settings.notifications')}
         >
             <Bell className="size-4" />
 

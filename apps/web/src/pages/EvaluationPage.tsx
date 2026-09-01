@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
+import { useConfirm } from '@/lib/confirm-context';
 
 // --- 评测数据结构（分类与原文） ---
 const EVAL_CATEGORIES = [
@@ -122,6 +124,9 @@ const EVAL_CATEGORIES = [
 export function EvaluationPage() {
   const navigate = useNavigate();
 
+  const confirm = useConfirm();
+  const { t } = useTranslation();
+
   // 从 localStorage 读取分数，防止页面跳转后丢失
   const [passed, setPassed] = useState<string[]>(() => {
     const saved = localStorage.getItem('transcendence_eval');
@@ -138,8 +143,12 @@ export function EvaluationPage() {
     );
   };
 
-  const clearScores = () => {
-    if (confirm('Are you sure you want to reset all scores?')) {
+  const clearScores = async () => {
+    const confirmed = await confirm({
+      title: t('evaluation.resetConfirm'),
+    });
+
+    if (confirmed) {
       setPassed([]);
     }
   };
@@ -159,13 +168,13 @@ export function EvaluationPage() {
       {/* 顶部固定计分板 */}
       <div className="sticky top-4 z-50 bg-card border border-border shadow-md rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">ft_transcendence Evaluation</h1>
-          <p className="text-muted-foreground mt-1">Checklist & Quick Navigation for Evaluators</p>
+          <h1 className="text-3xl font-bold">{t('evaluation.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('evaluation.subtitle')}</p>
         </div>
-        <div className="flex items-center gap-6">
-          <Button variant="outline" onClick={clearScores}>Reset</Button>
+          <div className="flex items-center gap-6">
+          <Button variant="outline" onClick={clearScores}>{t('evaluation.reset')}</Button>
           <div className="text-right">
-            <div className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">Total Score</div>
+            <div className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">{t('evaluation.totalScore')}</div>
             <div className={`text-4xl font-black ${currentScore === maxScore ? 'text-green-500' : 'text-primary'}`}>
               {currentScore} <span className="text-2xl text-muted-foreground font-normal">/ {maxScore} pts</span>
             </div>
@@ -178,7 +187,7 @@ export function EvaluationPage() {
         {EVAL_CATEGORIES.map((category, catIdx) => (
           <section key={catIdx}>
             <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-border text-foreground">
-              {category.title}
+              {t(`evaluation.categories.${catIdx}.title`, { defaultValue: category.title })}
             </h2>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -196,7 +205,7 @@ export function EvaluationPage() {
                         <span className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${
                           mod.type === 'Major' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                         }`}>
-                          {mod.type} ({mod.points} pts)
+                          {t(`evaluation.moduleType.${mod.type.toLowerCase()}`)} ({mod.points} {t('evaluation.pointsShort')})
                         </span>
                       </div>
 
@@ -208,7 +217,7 @@ export function EvaluationPage() {
                           onChange={() => toggleModule(mod.id)}
                         />
                         <span className="text-sm font-semibold select-none">
-                          {isPassed ? 'Passed' : 'Verify'}
+                          {isPassed ? t('evaluation.passed') : t('evaluation.verify')}
                         </span>
                       </label>
                     </div>
@@ -216,7 +225,7 @@ export function EvaluationPage() {
                     {/* 显示原文，保留缩进和换行 */}
                     <div className="mb-6 flex-grow">
                       <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg border border-border/50">
-                        {mod.rawText}
+                        {t(`evaluation.modules.${mod.id}.rawText`, { defaultValue: mod.rawText })}
                       </pre>
                     </div>
 
@@ -227,11 +236,11 @@ export function EvaluationPage() {
                           className="w-full"
                           onClick={() => navigate(mod.link!)}
                         >
-                          🚀 Launch Demo Route: {mod.link}
+                          {t('evaluation.launchDemo', { link: mod.link })}
                         </Button>
                       ) : (
                         <Button variant="ghost" disabled className="w-full opacity-50">
-                          ⚙️ Architecture / Structural Requirement
+                          {t('evaluation.architectureNote')}
                         </Button>
                       )}
                     </div>

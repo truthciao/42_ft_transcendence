@@ -47,6 +47,8 @@
     "status": {
       "updateSuccess": "个人资料更新成功！",
       "updateError": "更新个人资料失败。",
+      "avatarUpdateSuccess": "头像已更新",
+      "avatarUpdateError": "更新头像失败",
       "passwordMismatch": "密码不匹配。",
       "passwordUpdateSuccess": "密码更新成功！",
       "passwordUpdateError": "更新密码失败。"
@@ -99,7 +101,7 @@
       "message": "信息"
     }
   },
-
+  
   "workspaces": {
     "title": "空间",
     "create": {
@@ -302,13 +304,57 @@
       }
     }
   },
-
+  
+  "evaluation": {
+    "title": "评估",
+    "subtitle": "评估项清单与快速导航",
+    "reset": "重置",
+    "resetConfirm": "您确定要重置所有分数吗？",
+    "totalScore": "总分",
+    "pointsShort": "分",
+    "moduleType": {
+      "major": "主要要求",
+      "minor": "次要要求"
+    },
+    "passed": "已通过",
+    "verify": "核验",
+    "launchDemo": "🚀 启动示例路由：{{link}}",
+    "architectureNote": "⚙️ 架构 / 结构性要求",
+    "categories": {
+      "0": { "title": "IV.1 Web" },
+      "1": { "title": "IV.2 可访问性与国际化" },
+      "2": { "title": "IV.3 用户管理" }
+    },
+    "modules": {
+      "web-framework": {
+        "rawText": "- Major：在前端和后端均使用框架。\n    ◦ 使用前端框架（React、Vue、Angular、Svelte 等）。\n    ◦ 使用后端框架（Express、NestJS、Django、Flask、Ruby on Rails 等）。\n    ◦ 全栈框架（Next.js、Nuxt.js、SvelteKit）在同时使用其前后端能力时可视为两者。"
+      },
+      "web-realtime": {
+        "rawText": "- Major：使用 WebSocket 或类似技术实现实时特性。\n    ◦ 客户端之间的实时更新。\n    ◦ 优雅处理连接/断开。\n    ◦ 高效的消息广播。"
+      },
+      "web-interact": {
+        "rawText": "- Major：允许用户之间交互。最低要求：\n    ◦ 基本聊天系统（用户间发送/接收消息）。\n    ◦ 个人资料系统（查看用户信息）。\n    ◦ 好友系统（添加/删除好友，查看好友列表）。"
+      },
+      "web-orm": { "rawText": "• Minor：为数据库使用 ORM。" },
+      "web-notifications": { "rawText": "• Minor：完整的通知系统，覆盖创建、更新和删除操作。" },
+      "web-collab": { "rawText": "- Minor：实时协作功能（共享工作区、实时编辑、协作绘图等）。" },
+      "web-design": { "rawText": "- Minor：自定义设计系统与可重用组件，包括配色、排版和图标（至少 10 个可重用组件）。" },
+      "a11y-i18n": { "rawText": "- Minor：支持多语言（至少 3 种）。\n    ◦ 实现 i18n 国际化系统。\n    ◦ 至少 3 个完整语言翻译。\n    ◦ 在 UI 中提供语言切换。\n    ◦ 所有面向用户的文本必须可翻译。" },
+      "a11y-browsers": { "rawText": "- Minor：支持更多浏览器。\n    ◦ 与至少 2 个额外浏览器（Firefox、Safari、Edge 等）完全兼容。\n    ◦ 在每个浏览器中测试并修复所有功能。\n    ◦ 记录任何特定浏览器的限制。\n    ◦ 在所有受支持浏览器中保持一致的 UI/UX。" },
+      "um-standard": { "rawText": "- Major：标准用户管理与认证。\n    ◦ 用户可以更新其个人信息。\n    ◦ 用户可以上传头像（若无则使用默认头像）。\n    ◦ 用户可以添加其他用户为好友并查看其在线状态。\n    ◦ 提供展示用户信息的个人资料页。" },
+      "um-permissions": { "rawText": "- Major：高级权限系统：\n    ◦ 查看、编辑和删除用户（CRUD）。\n    ◦ 角色管理（admin、user、guest、moderator 等）。\n    ◦ 根据用户角色展示不同视图和操作。" },
+      "um-organizations": { "rawText": "- Major：组织系统：\n    ◦ 创建、编辑与删除组织。\n    ◦ 向组织添加用户。\n    ◦ 从组织中移除用户。\n    ◦ 查看组织并允许执行特定操作（至少：创建、读取、更新）。" },
+      "um-oauth": { "rawText": "• Minor：实现远程认证（OAuth 2.0），例如 Google、GitHub、42 等。" },
+      "um-2fa": { "rawText": "• Minor：为用户实现完整的双因素认证（2FA）系统。" }
+    }
+  },
+  
   "language": {
     "english": "英语",
     "french": "法语",
     "chinese": "中文"
   },
-
+  
   "auth": {
     "register": "注册",
     "registerDescription": "创建一个新账户以开始使用。",
@@ -404,10 +450,6 @@
     "unreadMessages" : "未读消息",
     "searchDescription" : "请输入至少 2 个字符进行搜索。"
   },
-
-  "eval": {
-      "title": "评审"
-    },
 
   "showcase": {
     "title": "组件库",

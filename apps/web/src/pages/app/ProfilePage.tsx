@@ -60,10 +60,10 @@ export function ProfilePage() {
 
     uploadAvatarMutation.mutate(file, {
       onSuccess: () => {
-        toast.success('Avatar updated');
+        toast.success(t('profile.status.avatarUpdateSuccess'));
       },
       onError: () => {
-        toast.error('Failed to update avatar');
+        toast.error(t('profile.status.avatarUpdateError'));
       },
     });
 

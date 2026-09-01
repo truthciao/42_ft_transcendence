@@ -34,7 +34,7 @@ export function Navbar() {
         </NavLink>
 
         <NavLink to="/eval" className={getNavLinkClass}>
-          {t('eval.title')}
+          {t('evaluation.title')}
         </NavLink>
 
         <div className="ml-auto">

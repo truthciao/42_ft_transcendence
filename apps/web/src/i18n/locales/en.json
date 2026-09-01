@@ -306,7 +306,7 @@
   },
 
   "evaluation": {
-    "title": "ft_transcendence Evaluation",
+    "title": "Evaluation",
     "subtitle": "Checklist & Quick Navigation for Evaluators",
     "reset": "Reset",
     "resetConfirm": "Are you sure you want to reset all scores?",
@@ -450,10 +450,6 @@
     "unreadMessages" : "unread messages",
     "searchDescription" : "Enter at least 2 characters to search."
   },
-
-  "eval": {
-      "title": "Evaluation"
-    },
 
   "showcase": {
     "title": "Component Library",

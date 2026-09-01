@@ -104,24 +104,24 @@ export function LoginPage() {
     setIsSubmitting(true);
     setStatus('loggingIn');
 
-  try {
-    const data = await loginWithTwoFactor(
-      userId!, 
-      totpCode.trim(),
-    );
+    try {
+      const data = await loginWithTwoFactor(
+        userId!, 
+        totpCode.trim(),
+      );
 
-    if ('access_token' in data) {
-      disconnectSocket();
-      localStorage.setItem('access_token', data.access_token);
-      
-      await refreshUser();
+      if ('access_token' in data) {
+        disconnectSocket();
+        localStorage.setItem('access_token', data.access_token);
+        
+        await refreshUser();
 
-      navigate('/app/chat', { replace: true});
+        navigate('/app/chat', { replace: true});
+      }
+    } catch (error) {
+      console.error('2FA verification failed:', error);
+      setStatus('failed');
     }
-  } catch (error) {
-    console.error('2FA verification failed:', error);
-    setStatus('failed');
-  }
 
   }
 

@@ -84,10 +84,20 @@ export class NotificationsService {
       where: { userId },
     });
 
-    // ensure every NotificationType has a preference (use defaults)
-    const types = Object.values(NotificationType) as string[];
+    // Define all notification types explicitly
+    const allTypes = [
+      NotificationType.FRIEND_REQUEST_RECEIVED,
+      NotificationType.FRIEND_REQUEST_ACCEPTED,
+      NotificationType.FRIEND_REQUEST_REJECTED,
+      NotificationType.FRIEND_REMOVED,
+      NotificationType.WORKSPACE_INVITE_RECEIVED,
+      NotificationType.WORKSPACE_INVITE_ACCEPTED,
+      NotificationType.WORKSPACE_MEMBER_REMOVED,
+      NotificationType.WORKSPACE_ROLE_CHANGED,
+    ];
+
     const map: Record<string, any> = {};
-    for (const t of types) {
+    for (const t of allTypes) {
       const found = prefs.find((p) => p.type === t);
       map[t] = found ?? {
         type: t,

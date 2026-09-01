@@ -3,9 +3,10 @@ import { WorkspaceRoleGuard } from './guards/workspace-role.guard.js';
 import { WorkspaceController } from './workspaces.controller.js';
 import { WorkspacesService } from './workspaces.service.js';
 import { RealtimeModule } from '../realtime/realtime.module.js';
+import { MailModule } from '../mail/mail.module.js';
 
 @Module({
-  imports: [RealtimeModule],
+  imports: [RealtimeModule, MailModule],
   controllers: [WorkspaceController],
   providers: [WorkspacesService, WorkspaceRoleGuard],
 })

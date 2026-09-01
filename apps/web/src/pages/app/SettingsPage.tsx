@@ -318,7 +318,7 @@ export function AccountSettingsPage() {
 
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
-  const { data: prefs = [], isLoading } = useNotificationPreferences();
+  const { data: prefs = [], isLoading, isError, error } = useNotificationPreferences();
   const updatePrefs = useUpdateNotificationPreferences();
 
   const handleToggle = (type: string, field: 'viaInApp' | 'viaEmail' | 'viaPush') => {
@@ -330,6 +330,15 @@ export function NotificationSettingsPage() {
   if (isLoading) {
     return <p className="text-muted-foreground">{t('common.loading')}</p>;
   }
+
+  if (isError) {
+    return <p className="text-red-500">Error loading preferences: {(error as any)?.message}</p>;
+  }
+
+  if (!prefs || prefs.length === 0) {
+    return <p className="text-muted-foreground">No notification preferences available</p>;
+  }
+
   return (
     <div className="flex-1 bg-background p-4">
       <h2 className="text-2xl font-semibold">

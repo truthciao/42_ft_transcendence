@@ -82,12 +82,19 @@ const mockRealtimeRoomService = {
   emitToUser: jest.fn(),
 };
 
+const mockMailService = {
+  sendNotificationEmail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+};
+
 describe('FriendsService', () => {
   let service: FriendsService;
 
   const prisma = {
     user: {
       findUnique: findUniqueUser,
+    },
+    notificationPreference: {
+      findUnique: jest.fn(),
     },
     friendship: {
       findFirst: findFirstFriendship,
@@ -113,6 +120,7 @@ describe('FriendsService', () => {
       prisma as unknown as PrismaService,
       mockChatService as unknown as ChatService,
       mockRealtimeRoomService as unknown as RealtimeRoomService,
+      mockMailService as any,
     );
   });
 
@@ -200,6 +208,32 @@ describe('FriendsService', () => {
           friendshipId: 1,
           requesterId: 1,
         },
+      );
+    });
+  });
+
+  describe('email notifications', () => {
+    it('falls back to username when profile display name is null', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({ viaEmail: true });
+      prisma.user.findUnique
+        .mockResolvedValueOnce({
+          email: 'addressee@example.com',
+          profile: null,
+        })
+        .mockResolvedValueOnce({
+          username: 'alice',
+          profile: { displayName: null },
+        });
+
+      await (service as any).sendFriendRequestEmail(10, 20);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'addressee@example.com',
+        'alice sent you a friend request',
+        'FRIEND_REQUEST_RECEIVED',
+        expect.objectContaining({
+          actorName: 'alice',
+        }),
       );
     });
   });

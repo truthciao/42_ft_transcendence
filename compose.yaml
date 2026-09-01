@@ -52,6 +52,14 @@ services:
       JWT_SECRET: development-secret
       WEB_ORIGIN: http://localhost:5173
       GENERATE_PRISMA: "true"
+      # Gmail SMTP configuration is provided via local environment variables.
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_SECURE: ${MAIL_SECURE}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+      MAIL_FROM: ${MAIL_FROM}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3001}
 
     command:
       - /app/docker/dev-entrypoint.sh

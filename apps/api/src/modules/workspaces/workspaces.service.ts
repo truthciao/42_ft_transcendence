@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
@@ -19,12 +20,16 @@ import { randomBytes } from 'crypto';
 import { atLeast } from './constants/role-rank.js';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
+import { MailService } from '../mail/mail.service.js';
 
 @Injectable()
 export class WorkspacesService {
+  private readonly logger = new Logger(WorkspacesService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly realtimeRoomService: RealtimeRoomService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(
@@ -297,14 +302,20 @@ export class WorkspacesService {
             actorId: actor.userId,
             type: NotificationType.WORKSPACE_INVITE_RECEIVED,
             workspaceId,
-          }
+          },
         });
+
+        this.sendWorkspaceInviteEmail(invite.inviteeId, actor.userId, workspaceId).catch(
+          (error) => {
+            this.logger.error('Failed to send workspace invite email:', error);
+          },
+        );
 
         this.realtimeRoomService.emitToUser(
           invite.inviteeId,
           REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
-          { notificationId: notification.id, workspaceId, inviteId: invite.id}
-        )
+          { notificationId: notification.id, workspaceId, inviteId: invite.id },
+        );
       } catch (error) {
         console.error(
           '[WorkspacesService] failed to notify invitee about invite: ',
@@ -387,7 +398,8 @@ export class WorkspacesService {
       });
 
       return {
-        workspaceId: invite.workspaceId, inviterId: invite.inviterId,
+        workspaceId: invite.workspaceId,
+        inviterId: invite.inviterId,
       };
     });
 
@@ -398,22 +410,30 @@ export class WorkspacesService {
           actorId: userId,
           type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
           workspaceId: result.workspaceId,
-        }
+        },
+      });
+
+      this.sendWorkspaceInviteAcceptedEmail(
+        result.inviterId,
+        userId,
+        result.workspaceId,
+      ).catch((error) => {
+        this.logger.error('Failed to send workspace invite accepted email:', error);
       });
 
       this.realtimeRoomService.emitToUser(
         result.inviterId,
         REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
         { notificationId: notification.id, workspaceId: result.workspaceId, userId },
-      )
+      );
     } catch (error) {
-        console.error(
-          '[WorkspaceService] Failed to notify inviter after accept:',
-          error
-        );
+      console.error(
+        '[WorkspaceService] Failed to notify inviter after accept:',
+        error,
+      );
     }
 
-    return { workspaceId: result.workspaceId }
+    return { workspaceId: result.workspaceId };
   }
 
   async rejectInvite(inviteId: number, userId: number) {
@@ -470,15 +490,21 @@ export class WorkspacesService {
           actorId: actor?.userId,
           type: NotificationType.WORKSPACE_ROLE_CHANGED,
           workspaceId,
-        }
+        },
       });
+
+      this.sendRoleChangedEmail(targetUserId, workspaceId, role).catch(
+        (error) => {
+          this.logger.error('Failed to send role changed email:', error);
+        },
+      );
 
       this.realtimeRoomService.emitToUser(
         targetUserId,
         REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
-        { notificationId: notification.id, workspaceId, role }
-      )
-    } catch(error) {
+        { notificationId: notification.id, workspaceId, role },
+      );
+    } catch (error) {
       console.error(
         '[WorkspacesService] Failed to notify member about role change: ',
         error,
@@ -531,8 +557,14 @@ export class WorkspacesService {
           actorId: actor.userId,
           type: NotificationType.WORKSPACE_MEMBER_REMOVED,
           workspaceId,
-        }
+        },
       });
+
+      this.sendMemberRemovedEmail(targetUserId, workspaceId).catch(
+        (error) => {
+          this.logger.error('Failed to send member removed email:', error);
+        },
+      );
 
       this.realtimeRoomService.emitToUser(
         targetUserId,
@@ -540,10 +572,10 @@ export class WorkspacesService {
         { notification: notification.id, workspaceId },
       );
     } catch (error) {
-        console.error(
-          '[WorkspacesService] Failed to notify removed member:',
-          error,
-        );
+      console.error(
+        '[WorkspacesService] Failed to notify removed member:',
+        error,
+      );
     }
 
     return removed;
@@ -647,5 +679,224 @@ export class WorkspacesService {
       throw new NotFoundException('This user is not a member of the workspace');
     }
     return membership;
+  }
+
+  private async sendWorkspaceInviteEmail(
+    inviteeId: number,
+    inviterId: number,
+    workspaceId: number,
+  ) {
+    // Get invitee's email preference for WORKSPACE_INVITE_RECEIVED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: inviteeId,
+          type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get invitee, inviter, and workspace info
+    const [invitee, inviter, workspace] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: inviteeId },
+        select: { email: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: inviterId },
+        select: { username: true, profile: true },
+      }),
+      this.prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: { name: true },
+      }),
+    ]);
+
+    if (!invitee || !inviter || !workspace) {
+      this.logger.warn(
+        `Cannot send workspace invite email: invitee=${!!invitee}, inviter=${!!inviter}, workspace=${!!workspace}`,
+      );
+      return;
+    }
+
+    const inviterName =
+      inviter.profile?.displayName || inviter.username || 'Someone';
+    const appBaseUrl = process.env.APP_BASE_URL || 'https://yourdomain.com';
+
+    await this.mailService.sendNotificationEmail(
+      invitee.email,
+      `${inviterName} invited you to ${workspace.name}`,
+      'WORKSPACE_INVITE_RECEIVED',
+      {
+        inviterName,
+        workspaceName: workspace.name,
+        inviteLink: `${appBaseUrl}/workspaces`,
+      },
+    );
+  }
+
+  private async sendWorkspaceInviteAcceptedEmail(
+    inviterId: number,
+    accepterId: number,
+    workspaceId: number,
+  ) {
+    // Get inviter's email preference for WORKSPACE_INVITE_ACCEPTED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: inviterId,
+          type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get inviter, accepter, and workspace info
+    const [inviter, accepter, workspace] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: inviterId },
+        select: { email: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: accepterId },
+        select: { username: true, profile: true },
+      }),
+      this.prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: { name: true },
+      }),
+    ]);
+
+    if (!inviter || !accepter || !workspace) {
+      this.logger.warn(
+        `Cannot send workspace accepted email: inviter=${!!inviter}, accepter=${!!accepter}, workspace=${!!workspace}`,
+      );
+      return;
+    }
+
+    const accepterName =
+      accepter.profile?.displayName || accepter.username || 'Someone';
+    const appBaseUrl = process.env.APP_BASE_URL || 'https://yourdomain.com';
+
+    await this.mailService.sendNotificationEmail(
+      inviter.email,
+      `${accepterName} accepted your invitation to ${workspace.name}`,
+      'WORKSPACE_INVITE_ACCEPTED',
+      {
+        actorName: accepterName,
+        workspaceName: workspace.name,
+        workspaceLink: `${appBaseUrl}/workspaces/${workspaceId}`,
+      },
+    );
+  }
+
+  private async sendRoleChangedEmail(
+    targetUserId: number,
+    workspaceId: number,
+    newRole: string,
+  ) {
+    // Get target user's email preference for WORKSPACE_ROLE_CHANGED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: targetUserId,
+          type: NotificationType.WORKSPACE_ROLE_CHANGED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get target user and workspace info
+    const [user, workspace] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { email: true },
+      }),
+      this.prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: { name: true },
+      }),
+    ]);
+
+    if (!user || !workspace) {
+      this.logger.warn(
+        `Cannot send role changed email: user=${!!user}, workspace=${!!workspace}`,
+      );
+      return;
+    }
+
+    const appBaseUrl = process.env.APP_BASE_URL || 'https://yourdomain.com';
+
+    await this.mailService.sendNotificationEmail(
+      user.email,
+      `Your role in ${workspace.name} has changed`,
+      'WORKSPACE_ROLE_CHANGED',
+      {
+        workspaceName: workspace.name,
+        newRole,
+        workspaceLink: `${appBaseUrl}/workspaces/${workspaceId}`,
+      },
+    );
+  }
+
+  private async sendMemberRemovedEmail(
+    targetUserId: number,
+    workspaceId: number,
+  ) {
+    // Get target user's email preference for WORKSPACE_MEMBER_REMOVED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: targetUserId,
+          type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get target user and workspace info
+    const [user, workspace] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { email: true },
+      }),
+      this.prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: { name: true },
+      }),
+    ]);
+
+    if (!user || !workspace) {
+      this.logger.warn(
+        `Cannot send member removed email: user=${!!user}, workspace=${!!workspace}`,
+      );
+      return;
+    }
+
+    await this.mailService.sendNotificationEmail(
+      user.email,
+      `You have been removed from ${workspace.name}`,
+      'WORKSPACE_MEMBER_REMOVED',
+      {
+        workspaceName: workspace.name,
+      },
+    );
   }
 }

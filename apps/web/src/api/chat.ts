@@ -9,7 +9,11 @@ export interface ChatMessage {
   sender?: {
     id: number;
     username: string;
-  }
+  };
+  // 加上与文件上传相关的可选字段
+  type?: string;
+  fileUrl?: string;
+  fileName?: string;
 }
 
 export interface AcceptedFriend {

@@ -37,6 +37,8 @@ model User {
 
   notificationsReceived Notification[] @relation("NotificationRecipient")
   notificationsCreated  Notification[] @relation("NotificationActor")
+
+  attachments Attachment[] // 用户上传的所有文件
 }
 
 enum PreferredLanguage {
@@ -174,6 +176,8 @@ model Message {
   sender         User         @relation(fields: [senderId], references: [id])
   content        String
   createdAt      DateTime     @default(now())
+
+  attachments Attachment[] // 这条消息包含的附件
 }
 
 enum FriendshipStatus {
@@ -232,6 +236,21 @@ model Notification {
 
   @@index([recipientId, read])
   @@index([recipientId, createdAt])
+}
+
+// 1. 新增 Attachment 表
+model Attachment {
+  id         String   @id @default(uuid())
+  uploaderId Int      // 关联上传者
+  messageId  Int?     // 关联消息（允许为空，因为头像上传不需要关联消息）
+  fileName   String   // 原始文件名，如 "report.pdf"
+  fileUrl    String   // 访问路径，如 "/uploads/chat/xyz-123.pdf"
+  fileType   String   // MIME类型，如 "application/pdf"
+  fileSize   Int      // 文件大小（字节）
+  createdAt  DateTime @default(now())
+
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+  message    Message? @relation(fields: [messageId], references: [id])
 }
 
 model Document {

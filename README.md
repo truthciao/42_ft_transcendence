@@ -394,6 +394,103 @@ docker compose down --remove-orphans
 ```
 
 ---
+## Local HTTPS Setup
+
+The project uses **Nginx + mkcert** to provide HTTPS locally at:
+
+```text
+https://localhost
+```
+
+Local TLS certificates are **not committed to Git**. Each developer must generate and trust their own certificates once on their machine.
+
+### 1. Install `mkcert`
+
+Install `mkcert` using the package manager for your platform.
+
+**Ubuntu / Debian / WSL**
+
+```bash
+sudo apt update
+sudo apt install -y mkcert libnss3-tools
+```
+
+**macOS**
+
+```bash
+brew install mkcert
+brew install nss # optional, required for Firefox
+```
+
+**Windows**
+
+Install `mkcert` using your preferred Windows package manager or from the official mkcert releases.
+
+### 2. Generate the local certificate
+
+From the project root:
+
+```bash
+make certs
+```
+
+This installs the local mkcert CA and generates certificates for:
+
+```text
+localhost
+127.0.0.1
+::1
+```
+
+The generated files are stored under:
+
+```text
+infra/nginx/certs/
+```
+
+Then start the application:
+
+```bash
+make start
+```
+
+Open:
+
+```text
+https://localhost
+```
+
+### WSL + Windows browsers
+
+If `mkcert` runs inside WSL but Chrome/Edge runs on Windows, `mkcert -install` only installs the CA inside the Linux/WSL environment. Windows may therefore still report the certificate as untrusted.
+
+Find the WSL CA:
+
+```bash
+mkcert -CAROOT
+```
+
+Copy `rootCA.pem` from that directory to Windows, then open an **Administrator PowerShell** and run:
+
+```powershell
+certutil -addstore -f Root C:\path\to\rootCA.pem
+```
+
+Completely restart the browser afterward.
+
+> Never share or commit `rootCA-key.pem`, `localhost.key`, or other private keys. Each developer should generate their own local certificates.
+
+### Troubleshooting
+
+If `https://localhost` still appears as insecure:
+
+* Make sure `make certs` completed successfully.
+* Make sure the browser's operating system trusts the mkcert root CA.
+* Completely restart the browser after installing the CA.
+* If using WSL, remember that WSL and Windows have separate certificate trust stores.
+* Verify that the certificate contains `localhost` in its Subject Alternative Names (SAN).
+
+---
 
 # License
 

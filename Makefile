@@ -34,8 +34,23 @@ install:
 dev:
 	pnpm dev
 
+certs:
+	@mkdir -p infra/nginx/certs
+	@if [ -f infra/nginx/certs/localhost.pem ] && \
+	    [ -f infra/nginx/certs/localhost-key.pem ]; then \
+		echo "Local TLS certificates already exist."; \
+	else \
+		echo "Generating self-signed TLS certificate..."; \
+		openssl req -x509 -nodes -newkey rsa:2048 \
+			-keyout infra/nginx/certs/localhost-key.pem \
+			-out infra/nginx/certs/localhost.pem \
+			-days 365 \
+			-subj "/CN=localhost" \
+			-addext "subjectAltName=DNS:localhost,IP:127.0.0.1"; \
+	fi
+	
 # Full Docker environment
-start:
+start: certs
 	docker compose up -d --build
 
 stop:
@@ -90,23 +105,6 @@ db-migrate:
 db-reset:
 	pnpm --dir apps/api exec prisma migrate reset
 
-certs:
-	@command -v mkcert >/dev/null 2>&1 || { \
-		echo "mkcert is not installed."; \
-		echo "Install mkcert first, then run 'make certs' again."; \
-		exit 1; \
-	}
-	@mkdir -p infra/nginx/certs
-	@mkcert -install
-	@if [ -f infra/nginx/certs/localhost.crt ] && \
-	    [ -f infra/nginx/certs/localhost.key ]; then \
-		echo "Local TLS certificates already exist."; \
-	else \
-		mkcert \
-			-cert-file infra/nginx/certs/localhost.crt \
-			-key-file infra/nginx/certs/localhost.key \
-			localhost 127.0.0.1 ::1; \
-	fi
 
 clean:
 	rm -rf apps/api/dist

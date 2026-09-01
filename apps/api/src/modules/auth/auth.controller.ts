@@ -62,7 +62,7 @@ export class AuthController {
     const user = req.user;
 
     const webOrigin =
-      this.configService.get<string>('WEB_ORIGIN') ?? 'https://localhost';
+      this.configService.get<string>('WEB_ORIGIN') ?? 'https://localhost:8443';
 
     if (user.isTwoFactorEnabled) {
       res.redirect(

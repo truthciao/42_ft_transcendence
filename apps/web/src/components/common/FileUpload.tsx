@@ -4,7 +4,7 @@ import { Paperclip } from 'lucide-react';
 import axios from 'axios'; // 因为需要进度条， 回退到直接使用axios,原生的 fetch API 目前还不支持监听上传进度（Upload Progress）
 
 // 保持和 http.ts 一致的 Base URL 逻辑
-const API_BASE_URI = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
 
 export interface AttachmentType {
   id: string;

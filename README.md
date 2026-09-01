@@ -394,101 +394,47 @@ docker compose down --remove-orphans
 ```
 
 ---
-## Local HTTPS Setup
 
-The project uses **Nginx + mkcert** to provide HTTPS locally at:
+## HTTPS
 
-```text
-https://localhost
-```
+The application is served through Nginx over HTTPS.
 
-Local TLS certificates are **not committed to Git**. Each developer must generate and trust their own certificates once on their machine.
+### Setup
 
-### 1. Install `mkcert`
-
-Install `mkcert` using the package manager for your platform.
-
-**Ubuntu / Debian / WSL**
-
-```bash
-sudo apt update
-sudo apt install -y mkcert libnss3-tools
-```
-
-**macOS**
-
-```bash
-brew install mkcert
-brew install nss # optional, required for Firefox
-```
-
-**Windows**
-
-Install `mkcert` using your preferred Windows package manager or from the official mkcert releases.
-
-### 2. Generate the local certificate
-
-From the project root:
-
-```bash
-make certs
-```
-
-This installs the local mkcert CA and generates certificates for:
-
-```text
-localhost
-127.0.0.1
-::1
-```
-
-The generated files are stored under:
-
-```text
-infra/nginx/certs/
-```
-
-Then start the application:
+Make sure OpenSSL is installed, then start the project:
 
 ```bash
 make start
 ```
 
-Open:
+`make start` automatically generates a local self-signed TLS certificate if one does not already exist.
+
+Open the application at:
 
 ```text
-https://localhost
+https://localhost:8443
 ```
 
-### WSL + Windows browsers
+HTTP is available on port `8080` and redirects to HTTPS.
 
-If `mkcert` runs inside WSL but Chrome/Edge runs on Windows, `mkcert -install` only installs the CA inside the Linux/WSL environment. Windows may therefore still report the certificate as untrusted.
+> The certificate is self-signed for local development. Your browser may display a certificate warning. No system CA installation or administrator privileges are required.
 
-Find the WSL CA:
+### Google OAuth
 
-```bash
-mkcert -CAROOT
+Create a local `.env` from `.env.example` and configure your Google OAuth credentials:
+
+```env
+GOOGLE_CLIENT_ID=<your-client-id>
+GOOGLE_CLIENT_SECRET=<your-client-secret>
 ```
 
-Copy `rootCA.pem` from that directory to Windows, then open an **Administrator PowerShell** and run:
+The Google OAuth client must allow the following redirect URI:
 
-```powershell
-certutil -addstore -f Root C:\path\to\rootCA.pem
+```text
+https://localhost:8443/api/auth/google/callback
 ```
 
-Completely restart the browser afterward.
-
-> Never share or commit `rootCA-key.pem`, `localhost.key`, or other private keys. Each developer should generate their own local certificates.
-
-### Troubleshooting
-
-If `https://localhost` still appears as insecure:
-
-* Make sure `make certs` completed successfully.
-* Make sure the browser's operating system trusts the mkcert root CA.
-* Completely restart the browser after installing the CA.
-* If using WSL, remember that WSL and Windows have separate certificate trust stores.
-* Verify that the certificate contains `localhost` in its Subject Alternative Names (SAN).
+Do not commit `.env`, generated certificates, or private keys.
 
 ---
 

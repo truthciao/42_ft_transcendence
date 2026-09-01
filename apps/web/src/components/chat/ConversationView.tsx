@@ -24,7 +24,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import { FileUpload, type AttachmentType } from '@/components/common/FileUpload';
 
 // 新增：定义后端服务器的地址
-const API_BASE_URI = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
 import { MessageSearchDialog } from './MessageSearchDialog';
 
 interface ConversationViewProps {

@@ -306,7 +306,7 @@
   },
 
   "evaluation": {
-    "title": "ft_transcendence Evaluation",
+    "title": "Evaluation",
     "subtitle": "Checklist & Quick Navigation for Evaluators",
     "reset": "Reset",
     "resetConfirm": "Are you sure you want to reset all scores?",
@@ -451,14 +451,9 @@
     "searchDescription" : "Enter at least 2 characters to search."
   },
 
-  "eval": {
-      "title": "Evaluation"
-    },
-
   "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",
-
     "sections": {
       "colors": "Colors",
       "typography": "Typography",
@@ -473,25 +468,21 @@
       "confirmDialog": "ConfirmDialog",
       "pageError": "PageError"
     },
-
     "typography": {
       "body": "Body text — The quick brown fox jumps over the lazy dog.",
       "small": "Small / secondary text",
       "caption": "Caption text"
     },
-
     "input": {
       "usernamePlaceholder": "Enter your username...",
       "disabledPlaceholder": "Disabled input"
     },
-
     "dialog": {
       "open": "Open Dialog",
       "title": "Example Dialog",
       "description": "This is an example of our reusable dialog component.",
       "content": "Dialog content can be placed here."
     },
-
     "dropdown": {
       "open": "Open Menu",
       "account": "Account",
@@ -502,31 +493,25 @@
       "settingsClicked": "Settings clicked",
       "signOutClicked": "Sign out clicked"
     },
-
     "tooltip": {
       "trigger": "Hover me",
       "content": "This is a reusable tooltip."
     },
-
     "emptyFriendsTitle": "No friends yet",
     "emptyFriendsDescription": "When you add friends, they'll show up here.",
     "emptyFriendsAction": "Add a friend",
     "actionClicked": "Action clicked",
-
     "toastSuccess": "Saved successfully",
     "toastError": "Something went wrong",
     "toastInfo": "Here's some information",
-
     "triggerSuccess": "Show success toast",
     "triggerError": "Show error toast",
     "triggerInfo": "Show info toast",
     "triggerConfirm": "Delete something",
-
     "confirmTitle": "Are you sure?",
     "confirmDescription": "This action cannot be undone.",
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
-
     "showPreview": "Show preview",
     "hidePreview": "Hide preview",
     "pageErrorTitle": "Something went wrong",
@@ -580,7 +565,6 @@
 
   "legal": {
     "lastUpdated": "Last updated: August 24, 2026",
-
     "privacy": {
       "title": "Privacy Policy",
       "sections": {
@@ -634,7 +618,6 @@
         }
       }
     },
-
     "terms": {
       "title": "Terms of Service",
       "sections": {

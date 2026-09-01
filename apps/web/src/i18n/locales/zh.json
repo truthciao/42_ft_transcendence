@@ -101,78 +101,7 @@
       "message": "信息"
     }
   },
-
-  "channels": {
-    "inApp": "站内",
-    "email": "邮件",
-    "push": "推送"
-  },
-
-  "types": {
-    "FRIEND_REQUEST_RECEIVED": "收到好友请求",
-    "FRIEND_REQUEST_ACCEPTED": "好友请求被接受",
-    "FRIEND_REQUEST_REJECTED": "好友请求被拒绝",
-    "FRIEND_REMOVED": "被移除好友",
-    "WORKSPACE_INVITE_RECEIVED": "收到工作区邀请",
-    "WORKSPACE_INVITE_ACCEPTED": "工作区邀请被接受",
-    "WORKSPACE_MEMBER_REMOVED": "被从工作区移除",
-    "WORKSPACE_ROLE_CHANGED": "工作区角色已更改"
-  },
-  "descriptions": {
-    "FRIEND_REQUEST_RECEIVED": "您收到了一条好友请求。",
-    "FRIEND_REQUEST_ACCEPTED": "有人接受了您的好友请求。",
-    "FRIEND_REQUEST_REJECTED": "有人拒绝了您的好友请求。",
-    "FRIEND_REMOVED": "有人将您从好友中移除。",
-    "WORKSPACE_INVITE_RECEIVED": "您被邀请加入一个工作区。",
-    "WORKSPACE_INVITE_ACCEPTED": "有人接受了您的工作区邀请。",
-    "WORKSPACE_MEMBER_REMOVED": "您被从工作区移除。",
-    "WORKSPACE_ROLE_CHANGED": "您在工作区的角色已更改。"
-  },
-
-  "evaluation": {
-    "title": "ft_transcendence 评估",
-    "subtitle": "评估项清单与快速导航",
-    "reset": "重置",
-    "resetConfirm": "您确定要重置所有分数吗？",
-    "totalScore": "总分",
-    "pointsShort": "分",
-    "moduleType": {
-      "major": "主要要求",
-      "minor": "次要要求"
-    },
-    "passed": "已通过",
-    "verify": "核验",
-    "launchDemo": "🚀 启动示例路由：{{link}}",
-    "architectureNote": "⚙️ 架构 / 结构性要求",
-    "categories": {
-      "0": { "title": "IV.1 Web" },
-      "1": { "title": "IV.2 可访问性与国际化" },
-      "2": { "title": "IV.3 用户管理" }
-    },
-    "modules": {
-      "web-framework": {
-        "rawText": "- Major：在前端和后端均使用框架。\n    ◦ 使用前端框架（React、Vue、Angular、Svelte 等）。\n    ◦ 使用后端框架（Express、NestJS、Django、Flask、Ruby on Rails 等）。\n    ◦ 全栈框架（Next.js、Nuxt.js、SvelteKit）在同时使用其前后端能力时可视为两者。"
-      },
-      "web-realtime": {
-        "rawText": "- Major：使用 WebSocket 或类似技术实现实时特性。\n    ◦ 客户端之间的实时更新。\n    ◦ 优雅处理连接/断开。\n    ◦ 高效的消息广播。"
-      },
-      "web-interact": {
-        "rawText": "- Major：允许用户之间交互。最低要求：\n    ◦ 基本聊天系统（用户间发送/接收消息）。\n    ◦ 个人资料系统（查看用户信息）。\n    ◦ 好友系统（添加/删除好友，查看好友列表）。"
-      },
-      "web-orm": { "rawText": "• Minor：为数据库使用 ORM。" },
-      "web-notifications": { "rawText": "• Minor：完整的通知系统，覆盖创建、更新和删除操作。" },
-      "web-collab": { "rawText": "- Minor：实时协作功能（共享工作区、实时编辑、协作绘图等）。" },
-      "web-design": { "rawText": "- Minor：自定义设计系统与可重用组件，包括配色、排版和图标（至少 10 个可重用组件）。" },
-      "a11y-i18n": { "rawText": "- Minor：支持多语言（至少 3 种）。\n    ◦ 实现 i18n 国际化系统。\n    ◦ 至少 3 个完整语言翻译。\n    ◦ 在 UI 中提供语言切换。\n    ◦ 所有面向用户的文本必须可翻译。" },
-      "a11y-browsers": { "rawText": "- Minor：支持更多浏览器。\n    ◦ 与至少 2 个额外浏览器（Firefox、Safari、Edge 等）完全兼容。\n    ◦ 在每个浏览器中测试并修复所有功能。\n    ◦ 记录任何特定浏览器的限制。\n    ◦ 在所有受支持浏览器中保持一致的 UI/UX。" },
-      "um-standard": { "rawText": "- Major：标准用户管理与认证。\n    ◦ 用户可以更新其个人信息。\n    ◦ 用户可以上传头像（若无则使用默认头像）。\n    ◦ 用户可以添加其他用户为好友并查看其在线状态。\n    ◦ 提供展示用户信息的个人资料页。" },
-      "um-permissions": { "rawText": "- Major：高级权限系统：\n    ◦ 查看、编辑和删除用户（CRUD）。\n    ◦ 角色管理（admin、user、guest、moderator 等）。\n    ◦ 根据用户角色展示不同视图和操作。" },
-      "um-organizations": { "rawText": "- Major：组织系统：\n    ◦ 创建、编辑与删除组织。\n    ◦ 向组织添加用户。\n    ◦ 从组织中移除用户。\n    ◦ 查看组织并允许执行特定操作（至少：创建、读取、更新）。" },
-      "um-oauth": { "rawText": "• Minor：实现远程认证（OAuth 2.0），例如 Google、GitHub、42 等。" },
-      "um-2fa": { "rawText": "• Minor：为用户实现完整的双因素认证（2FA）系统。" }
-    }
-  },
-
+  
   "workspaces": {
     "title": "空间",
     "create": {
@@ -375,13 +304,57 @@
       }
     }
   },
-
+  
+  "evaluation": {
+    "title": "评估",
+    "subtitle": "评估项清单与快速导航",
+    "reset": "重置",
+    "resetConfirm": "您确定要重置所有分数吗？",
+    "totalScore": "总分",
+    "pointsShort": "分",
+    "moduleType": {
+      "major": "主要要求",
+      "minor": "次要要求"
+    },
+    "passed": "已通过",
+    "verify": "核验",
+    "launchDemo": "🚀 启动示例路由：{{link}}",
+    "architectureNote": "⚙️ 架构 / 结构性要求",
+    "categories": {
+      "0": { "title": "IV.1 Web" },
+      "1": { "title": "IV.2 可访问性与国际化" },
+      "2": { "title": "IV.3 用户管理" }
+    },
+    "modules": {
+      "web-framework": {
+        "rawText": "- Major：在前端和后端均使用框架。\n    ◦ 使用前端框架（React、Vue、Angular、Svelte 等）。\n    ◦ 使用后端框架（Express、NestJS、Django、Flask、Ruby on Rails 等）。\n    ◦ 全栈框架（Next.js、Nuxt.js、SvelteKit）在同时使用其前后端能力时可视为两者。"
+      },
+      "web-realtime": {
+        "rawText": "- Major：使用 WebSocket 或类似技术实现实时特性。\n    ◦ 客户端之间的实时更新。\n    ◦ 优雅处理连接/断开。\n    ◦ 高效的消息广播。"
+      },
+      "web-interact": {
+        "rawText": "- Major：允许用户之间交互。最低要求：\n    ◦ 基本聊天系统（用户间发送/接收消息）。\n    ◦ 个人资料系统（查看用户信息）。\n    ◦ 好友系统（添加/删除好友，查看好友列表）。"
+      },
+      "web-orm": { "rawText": "• Minor：为数据库使用 ORM。" },
+      "web-notifications": { "rawText": "• Minor：完整的通知系统，覆盖创建、更新和删除操作。" },
+      "web-collab": { "rawText": "- Minor：实时协作功能（共享工作区、实时编辑、协作绘图等）。" },
+      "web-design": { "rawText": "- Minor：自定义设计系统与可重用组件，包括配色、排版和图标（至少 10 个可重用组件）。" },
+      "a11y-i18n": { "rawText": "- Minor：支持多语言（至少 3 种）。\n    ◦ 实现 i18n 国际化系统。\n    ◦ 至少 3 个完整语言翻译。\n    ◦ 在 UI 中提供语言切换。\n    ◦ 所有面向用户的文本必须可翻译。" },
+      "a11y-browsers": { "rawText": "- Minor：支持更多浏览器。\n    ◦ 与至少 2 个额外浏览器（Firefox、Safari、Edge 等）完全兼容。\n    ◦ 在每个浏览器中测试并修复所有功能。\n    ◦ 记录任何特定浏览器的限制。\n    ◦ 在所有受支持浏览器中保持一致的 UI/UX。" },
+      "um-standard": { "rawText": "- Major：标准用户管理与认证。\n    ◦ 用户可以更新其个人信息。\n    ◦ 用户可以上传头像（若无则使用默认头像）。\n    ◦ 用户可以添加其他用户为好友并查看其在线状态。\n    ◦ 提供展示用户信息的个人资料页。" },
+      "um-permissions": { "rawText": "- Major：高级权限系统：\n    ◦ 查看、编辑和删除用户（CRUD）。\n    ◦ 角色管理（admin、user、guest、moderator 等）。\n    ◦ 根据用户角色展示不同视图和操作。" },
+      "um-organizations": { "rawText": "- Major：组织系统：\n    ◦ 创建、编辑与删除组织。\n    ◦ 向组织添加用户。\n    ◦ 从组织中移除用户。\n    ◦ 查看组织并允许执行特定操作（至少：创建、读取、更新）。" },
+      "um-oauth": { "rawText": "• Minor：实现远程认证（OAuth 2.0），例如 Google、GitHub、42 等。" },
+      "um-2fa": { "rawText": "• Minor：为用户实现完整的双因素认证（2FA）系统。" }
+    }
+  },
+  
   "language": {
     "english": "英语",
     "french": "法语",
     "chinese": "中文"
   },
-
+  
   "auth": {
     "register": "注册",
     "registerDescription": "创建一个新账户以开始使用。",
@@ -478,14 +451,9 @@
     "searchDescription" : "请输入至少 2 个字符进行搜索。"
   },
 
-  "eval": {
-      "title": "评审"
-    },
-
   "showcase": {
     "title": "组件库",
     "description": "共享 UI 组件的快速参考。",
-
     "sections": {
       "colors": "颜色",
       "typography": "排版",
@@ -500,25 +468,21 @@
       "confirmDialog": "确认对话框",
       "pageError": "页面错误"
     },
-
     "typography": {
       "body": "正文 — The quick brown fox jumps over the lazy dog.",
       "small": "小号 / 次要文本",
       "caption": "说明文字"
     },
-
     "input": {
       "usernamePlaceholder": "输入你的用户名...",
       "disabledPlaceholder": "禁用的输入框"
     },
-
     "dialog": {
       "open": "打开对话框",
       "title": "示例对话框",
       "description": "这是一个可复用对话框组件的示例。",
       "content": "这里可以放置对话框内容。"
     },
-
     "dropdown": {
       "open": "打开菜单",
       "account": "账户",
@@ -529,31 +493,25 @@
       "settingsClicked": "已点击设置",
       "signOutClicked": "已点击退出登录"
     },
-
     "tooltip": {
       "trigger": "悬停查看",
       "content": "这是一个可复用的提示框。"
     },
-
     "emptyFriendsTitle": "还没有好友",
     "emptyFriendsDescription": "添加好友后，他们会显示在这里。",
     "emptyFriendsAction": "添加好友",
     "actionClicked": "已点击操作",
-
     "toastSuccess": "保存成功",
     "toastError": "发生了一些问题",
     "toastInfo": "这里有一条信息",
-
     "triggerSuccess": "显示成功 Toast",
     "triggerError": "显示错误 Toast",
     "triggerInfo": "显示信息 Toast",
     "triggerConfirm": "删除某项",
-
     "confirmTitle": "确定吗？",
     "confirmDescription": "此操作无法撤销。",
     "confirmed": "已确认",
     "cancelled": "已取消",
-
     "showPreview": "显示预览",
     "hidePreview": "隐藏预览",
     "pageErrorTitle": "发生了一些问题",
@@ -571,8 +529,7 @@
     "workspaceInviteReceived": "{{username}} 邀请你加入 {{workspaceName}}",
     "workspaceInviteAccepted": "{{username}} 接受了你加入 {{workspaceName}} 的邀请",
     "workspaceMemberRemoved": "你已被移出 {{workspaceName}}",
-    "workspaceRoleChanged": "你在 {{workspaceName}} 中的角色已更新"
-    ,
+    "workspaceRoleChanged": "你在 {{workspaceName}} 中的角色已更新",
     "channels": {
       "inApp": "站内",
       "email": "邮件",
@@ -598,7 +555,6 @@
       "WORKSPACE_MEMBER_REMOVED": "您被从工作区移除。",
       "WORKSPACE_ROLE_CHANGED": "您在工作区的角色已更改。"
     }
-
   },
 
   "footer": {
@@ -609,7 +565,6 @@
 
   "legal": {
     "lastUpdated": "最后更新：2026 年 8 月 24 日",
-
     "privacy": {
       "title": "隐私政策",
       "sections": {
@@ -663,7 +618,6 @@
         }
       }
     },
-
     "terms": {
       "title": "服务条款",
       "sections": {

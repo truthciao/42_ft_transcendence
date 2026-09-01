@@ -1,362 +1,244 @@
-#!/usr/bin/env node
+#!/usr/bin/env bash
 
-import fs from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
-import ts from 'typescript';
+set -u
 
-const WEB_SRC = path.resolve('apps/web/src');
+WEB_SRC="apps/web/src"
+total_issues=0
 
-let totalIssues = 0;
+echo "========================================"
+echo "        i18n audit for web"
+echo "========================================"
+echo
 
-function getFiles(dir) {
-  const result = [];
+# --------------------------------------------------
+# Helpers
+# --------------------------------------------------
 
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const fullPath = path.join(dir, entry.name);
-
-    if (entry.isDirectory()) {
-      if (entry.name === 'ui') continue;
-      result.push(...getFiles(fullPath));
-      continue;
-    }
-
-    if (path.extname(fullPath) === '.tsx') {
-      result.push(fullPath);
-    }
-  }
-
-  return result;
+count_matches() {
+  if [[ -n "$1" ]]; then
+    printf '%s\n' "$1" | grep -c .
+  else
+    echo 0
+  fi
 }
 
-function getLine(sourceFile, position) {
-  return sourceFile.getLineAndCharacterOfPosition(position).line + 1;
+add_issues() {
+  local count="$1"
+  total_issues=$((total_issues + count))
 }
 
-function looksLikeUiText(text) {
-  const value = text.trim();
+# Files that are not part of user-facing application UI.
+# They are intentionally excluded from the audit.
+RG_GLOBS=(
+  --glob '*.tsx'
+  --glob '!**/ui/**'
+  --glob '!**/pages/dev/**'
+)
 
-  if (!value) return false;
+# --------------------------------------------------
+# 1. Hardcoded JSX text
+# --------------------------------------------------
 
-  /*
-   * Ignore strings that contain no letters.
-   *
-   * Examples:
-   *   "123"
-   *   "—"
-   *   "🚀"
-   */
-  if (!/[A-Za-zÀ-ÿ\u4e00-\u9fff]/.test(value)) {
-    return false;
-  }
+echo "1. Hardcoded JSX text"
+echo "----------------------------------------"
 
-  /*
-   * Ignore known project / technical words.
-   */
-  const ignored = new Set([
-    'transcendence',
-    'ft_transcendence',
-  ]);
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    '<(h[1-6]|p|span|div|label|button|a|li|option|td|th)[^>]*>[[:space:]]*[A-Za-z][^<{]*[A-Za-z][^<{]*</' \
+    "$WEB_SRC" \
+    || true
+)
 
-  if (ignored.has(value)) {
-    return false;
-  }
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded JSX text found."
+fi
 
-  return true;
-}
+# --------------------------------------------------
+# 1b. Hardcoded JSX string expressions
+#
+# Detect:
+#   {'Loading...'}
+#   {"Loading..."}
+#   {condition ? 'Loading...' : 'Retry'}
+#
+# Ignore:
+#   variant="secondary"
+#   size="sm"
+#   type="submit"
+#   className="..."
+#   route strings
+#   identifiers / enum-like values
+# --------------------------------------------------
 
-function isTranslationCall(node) {
-  if (!ts.isCallExpression(node)) {
-    return false;
-  }
+echo
+echo "1b. Hardcoded JSX string expressions"
+echo "----------------------------------------"
 
-  const expression = node.expression;
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    '\{[[:space:]]*["'\''][A-Za-z][^"'\'']*["'\''][[:space:]]*\}' \
+    "$WEB_SRC" \
+    || true
+)
 
-  /*
-   * t('...')
-   */
-  if (ts.isIdentifier(expression)) {
-    return expression.text === 't';
-  }
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded JSX string expressions found."
+fi
 
-  /*
-   * i18n.t('...')
-   */
-  if (ts.isPropertyAccessExpression(expression)) {
-    return (
-      expression.name.text === 't' &&
-      ts.isIdentifier(expression.expression) &&
-      expression.expression.text === 'i18n'
-    );
-  }
+# --------------------------------------------------
+# 1c. Hardcoded strings inside ternary JSX expressions
+#
+# Detect:
+#   {loading ? 'Verifying...' : 'Verify'}
+#
+# This is intentionally separate from 1b because the
+# string is part of an expression rather than the
+# entire expression.
+# --------------------------------------------------
 
-  return false;
-}
+echo
+echo "1c. Hardcoded JSX ternary strings"
+echo "----------------------------------------"
 
-function isInsideJsxAttribute(node) {
-  let current = node.parent;
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    '\{[^{}?]*\?[[:space:]]*["'\''][A-Za-z][^"'\'']*["'\''][[:space:]]*:[[:space:]]*["'\''][A-Za-z][^"'\'']*["'\'']' \
+    "$WEB_SRC" \
+    || true
+)
 
-  while (current) {
-    if (ts.isJsxAttribute(current)) {
-      return true;
-    }
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded JSX ternary strings found."
+fi
 
-    /*
-     * Once we reach a JSX element, we can stop.
-     */
-    if (
-      ts.isJsxElement(current) ||
-      ts.isJsxSelfClosingElement(current) ||
-      ts.isJsxFragment(current)
-    ) {
-      return false;
-    }
+# --------------------------------------------------
+# 2. Hardcoded placeholders
+# --------------------------------------------------
 
-    current = current.parent;
-  }
+echo
+echo "2. Hardcoded placeholders"
+echo "----------------------------------------"
 
-  return false;
-}
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    'placeholder="[^"]*[A-Za-z][^"]*"' \
+    "$WEB_SRC" \
+    --glob '!**/pages/dev/**' \
+    | grep -Ev \
+      'placeholder="(user@example\.com|example@example\.com|name@example\.com|e\.g\.)' \
+    || true
+)
 
-function isLikelyUiString(node) {
-  if (
-    !ts.isStringLiteral(node) &&
-    !ts.isNoSubstitutionTemplateLiteral(node)
-  ) {
-    return false;
-  }
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded placeholders found."
+fi
 
-  /*
-   * Never inspect JSX attributes.
-   *
-   * Example:
-   *
-   * variant="secondary"
-   * className="..."
-   * type="submit"
-   */
-  if (isInsideJsxAttribute(node)) {
-    return false;
-  }
+# --------------------------------------------------
+# 3. Hardcoded aria-labels
+# --------------------------------------------------
 
-  const value = node.text.trim();
+echo
+echo "3. Hardcoded aria-labels"
+echo "----------------------------------------"
 
-  if (!looksLikeUiText(value)) {
-    return false;
-  }
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    'aria-label="[^"]*[A-Za-z][^"]*"' \
+    "$WEB_SRC" \
+    || true
+)
 
-  const parent = node.parent;
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded aria-labels found."
+fi
 
-  /*
-   * t('...')
-   */
-  if (isTranslationCall(parent)) {
-    return false;
-  }
+# --------------------------------------------------
+# 4. Hardcoded titles
+# --------------------------------------------------
 
-  /*
-   * Import paths.
-   *
-   * import foo from './foo'
-   */
-  if (
-    ts.isImportDeclaration(parent) ||
-    ts.isExportDeclaration(parent)
-  ) {
-    return false;
-  }
+echo
+echo "4. Hardcoded titles"
+echo "----------------------------------------"
 
-  /*
-   * Object property values are not necessarily UI text.
-   *
-   * {
-   *   variant: 'secondary'
-   * }
-   */
-  if (
-    ts.isPropertyAssignment(parent) &&
-    parent.initializer === node
-  ) {
-    return false;
-  }
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    'title="[^"]*[A-Za-z][^"]*"' \
+    "$WEB_SRC" \
+    || true
+)
 
-  /*
-   * Object keys.
-   */
-  if (
-    ts.isPropertyAssignment(parent) &&
-    parent.name === node
-  ) {
-    return false;
-  }
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded titles found."
+fi
 
-  /*
-   * Property access:
-   *
-   * foo['bar']
-   */
-  if (ts.isElementAccessExpression(parent)) {
-    return false;
-  }
+# --------------------------------------------------
+# 5. Hardcoded toast / alert / confirm messages
+# --------------------------------------------------
 
-  return true;
-}
+echo
+echo "5. Hardcoded toast / alert / confirm messages"
+echo "----------------------------------------"
 
-function report(filePath, sourceFile, node, message) {
-  const relativePath = path.relative(process.cwd(), filePath);
-  const line = getLine(sourceFile, node.getStart(sourceFile));
+matches=$(
+  rg -n \
+    "${RG_GLOBS[@]}" \
+    '(toast\.(success|error|info|warning|loading)|alert|confirm)\([[:space:]]*["'\'']' \
+    "$WEB_SRC" \
+    || true
+)
 
-  console.log(`${relativePath}:${line}: ${message}`);
+if [[ -n "$matches" ]]; then
+  echo "$matches"
+  count=$(count_matches "$matches")
+  add_issues "$count"
+else
+  echo "✓ No hardcoded toast / alert / confirm messages found."
+fi
 
-  totalIssues += 1;
-}
+# --------------------------------------------------
+# Summary
+# --------------------------------------------------
 
-function inspectFile(filePath) {
-  const source = fs.readFileSync(filePath, 'utf8');
+echo
+echo "========================================"
 
-  const sourceFile = ts.createSourceFile(
-    filePath,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX,
-  );
-
-  function inspectExpression(node) {
-    /*
-     * --------------------------------------------------
-     * Direct JSX expression string
-     *
-     * {'Hello'}
-     * --------------------------------------------------
-     */
-    if (isLikelyUiString(node)) {
-      report(
-        filePath,
-        sourceFile,
-        node,
-        `hardcoded JSX expression: "${node.text}"`,
-      );
-
-      return;
-    }
-
-    /*
-     * --------------------------------------------------
-     * Conditional expression
-     *
-     * {loading ? 'Loading...' : 'Submit'}
-     * --------------------------------------------------
-     */
-    if (ts.isConditionalExpression(node)) {
-      inspectExpression(node.whenTrue);
-      inspectExpression(node.whenFalse);
-      return;
-    }
-
-    /*
-     * --------------------------------------------------
-     * Logical AND
-     *
-     * {error && 'Something went wrong'}
-     * --------------------------------------------------
-     */
-    if (
-      ts.isBinaryExpression(node) &&
-      node.operatorToken.kind ===
-        ts.SyntaxKind.AmpersandAmpersandToken
-    ) {
-      inspectExpression(node.right);
-      return;
-    }
-
-    /*
-     * --------------------------------------------------
-     * Parenthesized expression
-     * --------------------------------------------------
-     */
-    if (ts.isParenthesizedExpression(node)) {
-      inspectExpression(node.expression);
-      return;
-    }
-
-    /*
-     * --------------------------------------------------
-     * Nullish coalescing
-     *
-     * {name ?? 'Unknown'}
-     * --------------------------------------------------
-     */
-    if (
-      ts.isBinaryExpression(node) &&
-      node.operatorToken.kind ===
-        ts.SyntaxKind.QuestionQuestionToken
-    ) {
-      inspectExpression(node.right);
-      return;
-    }
-
-    /*
-     * --------------------------------------------------
-     * Template literal without interpolation
-     *
-     * {`Hello`}
-     * --------------------------------------------------
-     */
-    if (ts.isNoSubstitutionTemplateLiteral(node)) {
-      if (looksLikeUiText(node.text)) {
-        report(
-          filePath,
-          sourceFile,
-          node,
-          `hardcoded JSX expression: "${node.text}"`,
-        );
-      }
-    }
-  }
-
-  function visit(node) {
-    /*
-     * --------------------------------------------------
-     * JSX text
-     *
-     * <p>Hello</p>
-     * --------------------------------------------------
-     */
-    if (ts.isJsxText(node)) {
-      const text = node.text.replace(/\s+/g, ' ').trim();
-
-      if (looksLikeUiText(text)) {
-        report(
-          filePath,
-          sourceFile,
-          node,
-          `hardcoded JSX text: "${text}"`,
-        );
-      }
-    }
-
-    /*
-     * --------------------------------------------------
-     * JSX expression
-     *
-     * {condition ? 'A' : 'B'}
-     * --------------------------------------------------
-     */
-    if (ts.isJsxExpression(node) && node.expression) {
-      inspectExpression(node.expression);
-    }
-
-    ts.forEachChild(node, visit);
-  }
-
-  ts.forEachChild(sourceFile, visit);
-}
-
-const files = getFiles(WEB_SRC);
-
-for (const file of files) {
-  inspectFile(file);
-}
-
-process.exitCode = totalIssues > 0 ? 1 : 0;
+if [[ "$total_issues" -eq 0 ]]; then
+  echo "✓ i18n audit passed."
+  echo "========================================"
+  exit 0
+else
+  echo "⚠ Found $total_issues potential hardcoded UI string(s)."
+  echo "Review the results above."
+  echo "========================================"
+  exit 1
+fi

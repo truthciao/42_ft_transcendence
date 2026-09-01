@@ -30,7 +30,7 @@ const DOT_SIZE_CLASS = {
 } as const;
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+  import.meta.env.VITE_API_URL ?? '/api';
 
 interface AvatarProps {
   src?: string | null;

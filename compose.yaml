@@ -46,13 +46,15 @@ services:
       dockerfile: Dockerfile.dev
 
     environment:
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+      WEB_ORIGIN: ${WEB_ORIGIN}
       NODE_ENV: development
       PORT: 3000
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
       JWT_SECRET: development-secret
-      WEB_ORIGIN: https://localhost
       GENERATE_PRISMA: "true"
-      GOOGLE_CALLBACK_URL: https://localhost/api/auth/google/callback
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -107,8 +109,8 @@ services:
     container_name: transcendence-nginx
 
     ports:
-      - '80:80'
-      - '443:443'
+      - '8080:80'
+      - '8443:443'
 
     depends_on:
       - web

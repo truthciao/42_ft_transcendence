@@ -398,6 +398,10 @@
     "accountDescription": "Manage your account security and preferences.",
     "notificationsTitle": "Notification Settings",
     "notificationsDescription": "Manage your notification preferences.",
+    "notificationPreferences": {
+      "errorLoading": "Failed to load notification preferences.",
+      "empty": "No notification preferences available."
+    },
     "twoFactor": {
       "title": "Two-Factor Authentication (2FA)",
       "setupTitle": "Set up Two-Factor Authentication",

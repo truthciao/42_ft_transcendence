@@ -22,6 +22,7 @@ import { Input } from '../../components/ui/input';
 import { Button }  from '../../components/ui/button';
 import { getCurrentUser } from '../../api/users';
 import { HttpError } from '@/lib/http';
+import type { NotificationType } from '@repo/shared-types';
 
 export function SettingsSidebar() {
   const { t } = useTranslation();
@@ -318,12 +319,22 @@ export function AccountSettingsPage() {
 
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
-  const { data: prefs = [], isLoading, isError, error } = useNotificationPreferences();
+  const { data: prefs = [], isLoading, isError } = useNotificationPreferences();
   const updatePrefs = useUpdateNotificationPreferences();
 
-  const handleToggle = (type: string, field: 'viaInApp' | 'viaEmail' | 'viaPush') => {
-    const item = prefs.find((p: any) => p.type === type) || { type, viaInApp: true, viaEmail: false, viaPush: false };
+  const handleToggle = (
+    type: NotificationType,
+    field: 'viaInApp' | 'viaEmail' | 'viaPush',
+  ) => {
+    const item = prefs.find((p) => p.type === type) || {
+      type,
+      viaInApp: true,
+      viaEmail: false,
+      viaPush: false,
+    };
+
     const updated = { ...item, [field]: !item[field] };
+
     updatePrefs.mutate([updated]);
   };
 
@@ -332,11 +343,11 @@ export function NotificationSettingsPage() {
   }
 
   if (isError) {
-    return <p className="text-red-500">Error loading preferences: {(error as any)?.message}</p>;
+    return <p className="text-red-500">{t('settings.notificationPreferences.errorLoading')}</p>;
   }
 
   if (!prefs || prefs.length === 0) {
-    return <p className="text-muted-foreground">No notification preferences available</p>;
+    return <p className="text-muted-foreground">{t('settings.notificationPreferences.empty')}</p>;
   }
 
   return (

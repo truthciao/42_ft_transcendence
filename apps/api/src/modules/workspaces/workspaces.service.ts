@@ -296,25 +296,36 @@ export class WorkspacesService {
 
     if (invite.inviteeId) {
       try {
-        const notification = await this.prisma.notification.create({
-          data: {
-            recipientId: invite.inviteeId,
-            actorId: actor.userId,
-            type: NotificationType.WORKSPACE_INVITE_RECEIVED,
-            workspaceId,
+        const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
+          where: {
+            userId_type: {
+              userId: invite.inviteeId,
+              type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+            },
           },
         });
+
+        if (shouldSendInApp?.viaInApp !== false) {
+          const notification = await this.prisma.notification.create({
+            data: {
+              recipientId: invite.inviteeId,
+              actorId: actor.userId,
+              type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+              workspaceId,
+            },
+          });
+
+          this.realtimeRoomService.emitToUser(
+            invite.inviteeId,
+            REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
+            { notificationId: notification.id, workspaceId, inviteId: invite.id },
+          );
+        }
 
         this.sendWorkspaceInviteEmail(invite.inviteeId, actor.userId, workspaceId).catch(
           (error) => {
             this.logger.error('Failed to send workspace invite email:', error);
           },
-        );
-
-        this.realtimeRoomService.emitToUser(
-          invite.inviteeId,
-          REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
-          { notificationId: notification.id, workspaceId, inviteId: invite.id },
         );
       } catch (error) {
         console.error(
@@ -404,14 +415,31 @@ export class WorkspacesService {
     });
 
     try {
-      const notification = await this.prisma.notification.create({
-        data: {
-          recipientId: result.inviterId,
-          actorId: userId,
-          type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
-          workspaceId: result.workspaceId,
+      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
+        where: {
+          userId_type: {
+            userId: result.inviterId,
+            type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+          },
         },
       });
+
+      if (shouldSendInApp?.viaInApp !== false) {
+        const notification = await this.prisma.notification.create({
+          data: {
+            recipientId: result.inviterId,
+            actorId: userId,
+            type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+            workspaceId: result.workspaceId,
+          },
+        });
+
+        this.realtimeRoomService.emitToUser(
+          result.inviterId,
+          REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
+          { notificationId: notification.id, workspaceId: result.workspaceId, userId },
+        );
+      }
 
       this.sendWorkspaceInviteAcceptedEmail(
         result.inviterId,
@@ -420,12 +448,6 @@ export class WorkspacesService {
       ).catch((error) => {
         this.logger.error('Failed to send workspace invite accepted email:', error);
       });
-
-      this.realtimeRoomService.emitToUser(
-        result.inviterId,
-        REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
-        { notificationId: notification.id, workspaceId: result.workspaceId, userId },
-      );
     } catch (error) {
       console.error(
         '[WorkspaceService] Failed to notify inviter after accept:',
@@ -484,25 +506,36 @@ export class WorkspacesService {
     });
 
     try {
-      const notification = await this.prisma.notification.create({
-        data: {
-          recipientId: targetUserId,
-          actorId: actor?.userId,
-          type: NotificationType.WORKSPACE_ROLE_CHANGED,
-          workspaceId,
+      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
+        where: {
+          userId_type: {
+            userId: targetUserId,
+            type: NotificationType.WORKSPACE_ROLE_CHANGED,
+          },
         },
       });
+
+      if (shouldSendInApp?.viaInApp !== false) {
+        const notification = await this.prisma.notification.create({
+          data: {
+            recipientId: targetUserId,
+            actorId: actor?.userId,
+            type: NotificationType.WORKSPACE_ROLE_CHANGED,
+            workspaceId,
+          },
+        });
+
+        this.realtimeRoomService.emitToUser(
+          targetUserId,
+          REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
+          { notificationId: notification.id, workspaceId, role },
+        );
+      }
 
       this.sendRoleChangedEmail(targetUserId, workspaceId, role).catch(
         (error) => {
           this.logger.error('Failed to send role changed email:', error);
         },
-      );
-
-      this.realtimeRoomService.emitToUser(
-        targetUserId,
-        REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
-        { notificationId: notification.id, workspaceId, role },
       );
     } catch (error) {
       console.error(
@@ -551,25 +584,36 @@ export class WorkspacesService {
     });
 
     try {
-      const notification = await this.prisma.notification.create({
-        data: {
-          recipientId: targetUserId,
-          actorId: actor.userId,
-          type: NotificationType.WORKSPACE_MEMBER_REMOVED,
-          workspaceId,
+      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
+        where: {
+          userId_type: {
+            userId: targetUserId,
+            type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+          },
         },
       });
+
+      if (shouldSendInApp?.viaInApp !== false) {
+        const notification = await this.prisma.notification.create({
+          data: {
+            recipientId: targetUserId,
+            actorId: actor.userId,
+            type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+            workspaceId,
+          },
+        });
+
+        this.realtimeRoomService.emitToUser(
+          targetUserId,
+          REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
+          { notification: notification.id, workspaceId },
+        );
+      }
 
       this.sendMemberRemovedEmail(targetUserId, workspaceId).catch(
         (error) => {
           this.logger.error('Failed to send member removed email:', error);
         },
-      );
-
-      this.realtimeRoomService.emitToUser(
-        targetUserId,
-        REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
-        { notification: notification.id, workspaceId },
       );
     } catch (error) {
       console.error(

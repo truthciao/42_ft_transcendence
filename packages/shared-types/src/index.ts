@@ -92,6 +92,8 @@ export type {
 
 export {
   notificationTypeSchema,
+  notificationPreferenceSchema,
+  updateNotificationPreferencesSchema,
   notificationActorSchema,
   notificationWorkspaceSchema,
   notificationSchema,
@@ -100,5 +102,7 @@ export {
 
 export type {
   NotificationType,
+  NotificationPreference,
+  UpdateNotificationPreferences,
   Notification,
 } from './notifications.js';

@@ -1,6 +1,9 @@
-import type { Notification } from '@repo/shared-types';
-import { httpGet, httpPatch } from '../lib/http';
-import { httpPut } from '../lib/http';
+import type {
+  Notification,
+  NotificationPreference,
+  UpdateNotificationPreferences,
+} from '@repo/shared-types';
+import { httpGet, httpPatch, httpPut } from '../lib/http';
 
 export function getNotifications() {
   return httpGet<Notification[]>('/notifications');
@@ -15,9 +18,13 @@ export function markAllNotificationsAsRead() {
 }
 
 export function getNotificationPreferences() {
-  return httpGet<any[]>('/notifications/preferences');
+  return httpGet<NotificationPreference[]>(
+    '/notifications/preferences',
+  );
 }
 
-export function updateNotificationPreferences(preferences: unknown) {
+export function updateNotificationPreferences(
+  preferences: UpdateNotificationPreferences['preferences'],
+) {
   return httpPut('/notifications/preferences', { preferences });
 }

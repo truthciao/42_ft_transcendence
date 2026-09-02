@@ -398,6 +398,10 @@
     "accountDescription": "Gérez la sécurité et les préférences de votre compte.",
     "notificationsTitle": "Paramètres des notifications",
     "notificationsDescription": "Gérez vos préférences de notification.",
+    "notificationPreferences": {
+      "errorLoading": "Impossible de charger les préférences de notification.",
+      "empty": "Aucune préférence de notification disponible."
+    },
     "twoFactor": {
       "title": "Authentification à deux facteurs (2FA)",
       "setupTitle": "Configurer l’authentification à deux facteurs",

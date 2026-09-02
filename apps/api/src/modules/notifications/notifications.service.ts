@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotificationType } from '../../generated/prisma/enums.js';
+import type { NotificationPreference } from '@repo/shared-types';
 
 @Injectable()
 export class NotificationsService {
@@ -84,7 +85,6 @@ export class NotificationsService {
       where: { userId },
     });
 
-    // Define all notification types explicitly
     const allTypes = [
       NotificationType.FRIEND_REQUEST_RECEIVED,
       NotificationType.FRIEND_REQUEST_ACCEPTED,
@@ -96,38 +96,48 @@ export class NotificationsService {
       NotificationType.WORKSPACE_ROLE_CHANGED,
     ];
 
-    const map: Record<string, any> = {};
-    for (const t of allTypes) {
-      const found = prefs.find((p) => p.type === t);
-      map[t] = found ?? {
-        type: t,
-        viaInApp: true,
-        viaEmail: false,
-        viaPush: false,
-      };
-    }
+    return allTypes.map((type) => {
+      const found = prefs.find((p) => p.type === type);
 
-    return Object.values(map);
+      return (
+        found ?? {
+          type,
+          viaInApp: true,
+          viaEmail: false,
+          viaPush: false,
+        }
+      );
+    });
   }
 
-  async updatePreferences(userId: number, items: Array<{ type: any; viaInApp?: boolean; viaEmail?: boolean; viaPush?: boolean; }>) {
-    const results = [] as any[];
+  async updatePreferences(
+    userId: number,
+    items: NotificationPreference[],
+  ) {
+    const results: NotificationPreference[] = [];
+
     for (const item of items) {
       const upserted = await this.prisma.notificationPreference.upsert({
-        where: { userId_type: { userId, type: item.type } },
+        where: {
+          userId_type: {
+            userId,
+            type: item.type,
+          },
+        },
         create: {
           userId,
           type: item.type,
-          viaInApp: item.viaInApp ?? true,
-          viaEmail: item.viaEmail ?? false,
-          viaPush: item.viaPush ?? false,
+          viaInApp: item.viaInApp,
+          viaEmail: item.viaEmail,
+          viaPush: item.viaPush,
         },
         update: {
-          viaInApp: item.viaInApp ?? true,
-          viaEmail: item.viaEmail ?? false,
-          viaPush: item.viaPush ?? false,
+          viaInApp: item.viaInApp,
+          viaEmail: item.viaEmail,
+          viaPush: item.viaPush,
         },
       });
+
       results.push(upserted);
     }
 

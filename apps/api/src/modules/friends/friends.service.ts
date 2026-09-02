@@ -26,6 +26,22 @@ export class FriendsService {
     private readonly mailService: MailService,
   ) {}
 
+  private async shouldSendInAppNotification(
+    recipientId: number,
+    type: NotificationType,
+  ): Promise<boolean> {
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: recipientId,
+          type,
+        },
+      },
+    });
+
+    return pref ? pref.viaInApp !== false : true;
+  }
+
   async sendRequest(requesterId: number, addresseeId: number) {
     if (requesterId === addresseeId)
       throw new BadRequestException(
@@ -63,19 +79,21 @@ export class FriendsService {
       },
     });
 
-    await this.prisma.notification.create({
-      data: {
-        recipientId: addresseeId,
-        actorId: requesterId,
-        type: NotificationType.FRIEND_REQUEST_RECEIVED,
-        friendshipId: friendship.id,
-      },
-    });
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      addresseeId,
+      NotificationType.FRIEND_REQUEST_RECEIVED,
+    );
 
-    // Check notification preference and send email if enabled
-    this.sendFriendRequestEmail(requesterId, addresseeId).catch((error) => {
-      this.logger.error('Failed to send friend request email:', error);
-    });
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: addresseeId,
+          actorId: requesterId,
+          type: NotificationType.FRIEND_REQUEST_RECEIVED,
+          friendshipId: friendship.id,
+        },
+      });
+    }
 
     this.realtimeRoomService.emitToUser(
       addresseeId,
@@ -85,6 +103,11 @@ export class FriendsService {
         requesterId,
       },
     );
+
+    // Check notification preference and send email if enabled
+    this.sendFriendRequestEmail(requesterId, addresseeId).catch((error) => {
+      this.logger.error('Failed to send friend request email:', error);
+    });
 
     return friendship;
   }
@@ -158,14 +181,30 @@ export class FriendsService {
       data: { status: FriendshipStatus.ACCEPTED },
     });
 
-    await this.prisma.notification.create({
-      data: {
-        recipientId: friendship.requesterId,
-        actorId: userId,
-        type: NotificationType.FRIEND_REQUEST_ACCEPTED,
-        friendshipId: friendship.id,
-      },
-    });
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      friendship.requesterId,
+      NotificationType.FRIEND_REQUEST_ACCEPTED,
+    );
+
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: friendship.requesterId,
+          actorId: userId,
+          type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+          friendshipId: friendship.id,
+        },
+      });
+
+      this.realtimeRoomService.emitToUser(
+        friendship.requesterId,
+        REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+        {
+          friendshipId: friendship.id,
+          userId,
+        },
+      );
+    }
 
     await this.prisma.notification.updateMany({
       where: {
@@ -182,15 +221,6 @@ export class FriendsService {
     this.sendFriendRequestAcceptedEmail(friendship.requesterId, userId).catch(
       (error) => {
         this.logger.error('Failed to send friend request accepted email:', error);
-      },
-    );
-
-    this.realtimeRoomService.emitToUser(
-      friendship.requesterId,
-      REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
-      {
-        friendshipId: friendship.id,
-        userId,
       },
     );
 

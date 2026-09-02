@@ -398,6 +398,10 @@
   "accountDescription": "管理您的账户安全和偏好设置。",
   "notificationsTitle": "通知设置",
   "notificationsDescription": "管理您的通知偏好。",
+  "notificationPreferences": {
+    "errorLoading": "加载通知偏好设置失败。",
+    "empty": "暂无可用的通知偏好设置。"
+  },
   "twoFactor": {
     "title": "双因素身份验证（2FA）",
     "setupTitle": "设置双因素身份验证",

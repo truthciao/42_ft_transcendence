@@ -1,5 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getNotificationPreferences, updateNotificationPreferences } from '@/api/notifications';
+import type { UpdateNotificationPreferences } from '@repo/shared-types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  getNotificationPreferences,
+  updateNotificationPreferences,
+} from '@/api/notifications';
 
 export function useNotificationPreferences() {
   return useQuery({
@@ -10,8 +14,14 @@ export function useNotificationPreferences() {
 
 export function useUpdateNotificationPreferences() {
   const qc = useQueryClient();
+
   return useMutation({
-    mutationFn: (prefs: unknown) => updateNotificationPreferences(prefs),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['notification-preferences'] }),
+    mutationFn: (
+      prefs: UpdateNotificationPreferences['preferences'],
+    ) => updateNotificationPreferences(prefs),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: ['notification-preferences'],
+      }),
   });
 }

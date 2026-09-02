@@ -13,6 +13,25 @@ export const notificationTypeSchema = z.enum([
 
 export type NotificationType = z.infer<typeof notificationTypeSchema>;
 
+export const notificationPreferenceSchema = z.object({
+  type: notificationTypeSchema,
+  viaInApp: z.boolean(),
+  viaEmail: z.boolean(),
+  viaPush: z.boolean(),
+});
+
+export type NotificationPreference = z.infer<
+  typeof notificationPreferenceSchema
+>;
+
+export const updateNotificationPreferencesSchema = z.object({
+  preferences: z.array(notificationPreferenceSchema),
+});
+
+export type UpdateNotificationPreferences = z.infer<
+  typeof updateNotificationPreferencesSchema
+>;
+
 export const notificationActorSchema = z.object({
   id: z.number(),
   username: z.string(),

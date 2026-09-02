@@ -421,18 +421,26 @@ HTTP is available on port `8080` and redirects to HTTPS.
 
 ### Google OAuth
 
-Create a local `.env` from `.env.example` and configure your Google OAuth credentials:
+Google OAuth is required to test the login functionality.
+
+Create a `.env` file at:
+
+./apps/api/.env
+
+Copy the following configuration into this file and replace the placeholders with your Google OAuth credentials:
 
 ```env
 GOOGLE_CLIENT_ID=<your-client-id>
 GOOGLE_CLIENT_SECRET=<your-client-secret>
 ```
 
-The Google OAuth client must allow the following redirect URI:
+The Google OAuth client must have the following Authorized redirect URI configured:
 
 ```text
-https://localhost:8443/api/auth/google/callback
+GOOGLE_CALLBACK_URL="https://localhost:8443/api/auth/google/callback"
 ```
+
+The project will automatically load these credentials when started with the provided Makefile.
 
 Do not commit `.env`, generated certificates, or private keys.
 
@@ -441,3 +449,4 @@ Do not commit `.env`, generated certificates, or private keys.
 # License
 
 42 School Project
+

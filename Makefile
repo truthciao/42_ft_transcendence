@@ -51,10 +51,10 @@ certs:
 	
 # Full Docker environment
 start: certs
-	docker compose up -d
+	docker compose --env-file ./apps/api/.env up -d
 
 rebuild: certs
-	docker compose up -d --build
+	docker compose --env-file ./apps/api/.env up -d --build
 
 stop:
 	docker compose down

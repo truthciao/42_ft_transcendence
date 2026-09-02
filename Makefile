@@ -51,14 +51,16 @@ certs:
 	
 # Full Docker environment
 start: certs
+	docker compose up -d
+
+rebuild: certs
 	docker compose up -d --build
 
 stop:
 	docker compose down
 
-restart:
-	docker compose down
-	docker compose up -d --build
+restart: certs
+	docker compose restart
 
 build:
 	pnpm build

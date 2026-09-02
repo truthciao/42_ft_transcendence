@@ -63,9 +63,6 @@ services:
       - api
       - dev
 
-    ports:
-      - '3000:3000'
-  
     depends_on:
       migrate:
         condition: service_completed_successfully

@@ -98,6 +98,9 @@ jobs:
       - name: Lint web
         run: pnpm --filter web lint
 
+      - name: Check web i18n
+        run: pnpm i18n:check
+
       - name: Typecheck API
         run: pnpm --filter api typecheck
 

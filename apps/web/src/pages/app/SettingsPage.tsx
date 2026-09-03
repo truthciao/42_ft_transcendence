@@ -360,7 +360,7 @@ export function NotificationSettingsPage() {
       </p>
 
       <div className="mt-6 space-y-4 max-w-xl">
-        {prefs.map((p: any) => (
+        {prefs.map((p) => (
           <div key={p.type} className="flex items-center justify-between p-4 border rounded bg-card">
             <div>
               <div className="font-medium">{t(`notifications.types.${p.type}`, { defaultValue: p.type })}</div>

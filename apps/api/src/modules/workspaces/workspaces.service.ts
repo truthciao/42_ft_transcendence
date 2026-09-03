@@ -306,10 +306,8 @@ export class WorkspacesService {
             },
           });
 
-        let notificationId: number | undefined;
-
         if (shouldSendInApp?.viaInApp !== false) {
-          const notification = await this.prisma.notification.create({
+          await this.prisma.notification.create({
             data: {
               recipientId: invite.inviteeId,
               actorId: actor.userId,
@@ -317,8 +315,6 @@ export class WorkspacesService {
               workspaceId,
             },
           });
-
-          notificationId = notification.id;
         }
 
         this.realtimeRoomService.emitToUser(

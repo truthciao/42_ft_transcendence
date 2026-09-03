@@ -621,6 +621,14 @@ describe('WorkspacesService', () => {
       });
 
       expect(createNotification).not.toHaveBeenCalled();
+      expect(emitToUser).toHaveBeenCalledWith(
+        3,
+        REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
+        {
+          workspaceId: 1,
+          inviteId: 1,
+        },
+      );
     });
   });
 
@@ -750,10 +758,13 @@ describe('WorkspacesService', () => {
   
       expect(createNotification).not.toHaveBeenCalled();
   
-      expect(emitToUser).not.toHaveBeenCalledWith(
+      expect(emitToUser).toHaveBeenCalledWith(
         1,
         REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
-        expect.anything(),
+        {
+          workspaceId: baseInvite.workspaceId,
+          userId: 2,
+        },
       );
     });
   });
@@ -941,6 +952,15 @@ describe('WorkspacesService', () => {
       });
 
       expect(createNotification).not.toHaveBeenCalled();
+
+      expect(emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
+        {
+          workspaceId: 1,
+          role: WorkspaceRole.ADMIN,
+        },
+      );
     });
   });
 
@@ -1090,6 +1110,14 @@ describe('WorkspacesService', () => {
       });
 
       expect(createNotification).not.toHaveBeenCalled();
+
+      expect(emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
+        {
+          workspaceId: 1,
+        },
+      );
     });
   });
 

@@ -386,7 +386,10 @@
     "routeTitle": "Error {{status}}",
     "routeMessage": "We couldn't load this page.",
     "retry": "Try again",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "noPermission": "You do not have permission to perform this action.",
+    "fileNotFound": "File not found or already deleted.",
+    "unsupportedFileType": "Unsupported file type."
   },
 
   "settings": {
@@ -441,6 +444,8 @@
     "chatWith": "Chat with {{friendName}}",
     "loadingHistory": "Loading history...",
     "empty": "No message history. Say hi below!",
+    "loadOlder": "Load older messages",
+    "downloadFile": "Download File",
     "user": "User",
     "placeholder": "Type a message...",
     "send": "Send",
@@ -560,6 +565,12 @@
       "WORKSPACE_MEMBER_REMOVED": "You were removed from a workspace.",
       "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed."
     }
+  },
+
+  "fileUpload": {
+    "sizeLimit": "File size cannot exceed 5MB!",
+    "uploadFailed": "Upload failed, please try again.",
+    "uploading": "Uploading"
   },
 
   "footer": {

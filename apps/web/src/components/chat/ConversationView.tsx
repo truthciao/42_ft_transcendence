@@ -11,17 +11,23 @@ import {
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { getSocket } from "@/lib/realtime";
-import { 
+import {
   getConversationMessages,
   markConversationAsRead,
   type ChatMessage,
-  type MessagePage } from "@/api/chat";
+  type MessagePage
+} from "@/api/chat";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from "@/hooks/useAuth";
 import { mergeMessages } from "@/lib/chat-messages"
 import type { InfiniteData } from "@tanstack/react-query";
+import { FileUpload, type AttachmentType } from '@/components/common/FileUpload';
+
+// 新增：定义后端服务器的地址
+const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
 import { MessageSearchDialog } from './MessageSearchDialog';
+import { MessageContent } from './MessageContent';
 
 interface ConversationViewProps {
   conversationId: string;
@@ -77,8 +83,8 @@ export function ConversationView({
 
     return (
       container.scrollHeight -
-        container.scrollTop -
-        container.clientHeight <
+      container.scrollTop -
+      container.clientHeight <
       threshold
     );
   };
@@ -137,7 +143,7 @@ export function ConversationView({
       }, 2000);
     });
   };
-      
+
 
   useEffect(() => {
     const container = messagesContainerRef.current;
@@ -168,7 +174,7 @@ export function ConversationView({
         ) ?? [],
     [data],
   );
- 
+
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
@@ -188,7 +194,7 @@ export function ConversationView({
     container.scrollTop += heightDifference;
 
     previousScrollHeightRef.current = null;
- 
+
   }, [messages]);
 
   useEffect(() => {
@@ -222,48 +228,48 @@ export function ConversationView({
       socket.once('connect', joinConversation);
     }
 
-  const handleMessageCreated = (message: ChatMessage) => {
-    if (message.conversationId.toString() !== conversationId) {
-      return;
-    }
+    const handleMessageCreated = (message: ChatMessage) => {
+      if (message.conversationId.toString() !== conversationId) {
+        return;
+      }
 
-    queryClient.setQueryData<InfiniteData<MessagePage>>(
-      ['chat-messages', conversationId],
-      (oldData) => {
-        if (!oldData) {
-          return oldData;
-        }
+      queryClient.setQueryData<InfiniteData<MessagePage>>(
+        ['chat-messages', conversationId],
+        (oldData) => {
+          if (!oldData) {
+            return oldData;
+          }
 
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page, index) => {
-            if (index !== 0) {
-              return page;
-            }
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page, index) => {
+              if (index !== 0) {
+                return page;
+              }
 
-            return {
-              ...page,
-              messages: mergeMessages(page.messages, message),
-            };
-          }),
-        };
-      },
-    );
+              return {
+                ...page,
+                messages: mergeMessages(page.messages, message),
+              };
+            }),
+          };
+        },
+      );
 
-    queryClient.invalidateQueries({
-      queryKey: ['chat-message-search', conversationId],
-    });
-
-    markConversationAsRead(conversationId)
-      .then(() => {
-        window.dispatchEvent(
-          new CustomEvent('refresh_conversations'),
-        );
-      })
-      .catch((error) => {
-        console.error('Failed to mark conversation as read:', error);
+      queryClient.invalidateQueries({
+        queryKey: ['chat-message-search', conversationId],
       });
-  };
+
+      markConversationAsRead(conversationId)
+        .then(() => {
+          window.dispatchEvent(
+            new CustomEvent('refresh_conversations'),
+          );
+        })
+        .catch((error) => {
+          console.error('Failed to mark conversation as read:', error);
+        });
+    };
 
     socket.on('chat:message:received', handleMessageCreated);
 
@@ -303,29 +309,43 @@ export function ConversationView({
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
+      type: 'text'
     });
 
     setInputText('');
   }
+
+  // 发送文件消息
+  const handleFileUploadSuccess = (attachment: AttachmentType) => {
+    const socket = getSocket();
+    const messageType = attachment.fileType.startsWith('image/') ? 'image' : 'file';
+
+    socket.emit('chat:message:send', {
+      conversationId: Number(conversationId),
+      content: attachment.fileUrl,
+      type: messageType,
+    });
+  };
+
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
-      <h1 className="font-semibold text-sm flex items-center gap-2">
-        {headerIcon ?? <span className="w-2 h-2 rounded-full bg-success" />}
-        {title}
-      </h1>
+        <h1 className="font-semibold text-sm flex items-center gap-2">
+          {headerIcon ?? <span className="w-2 h-2 rounded-full bg-success" />}
+          {title}
+        </h1>
 
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="size-8"
-        onClick={() => setIsSearchOpen(true)} 
-        aria-label={t('chat.searchMessages')}
-      >
-        <Search className="size-4" />
-      </Button>
-    </header>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => setIsSearchOpen(true)}
+          aria-label={t('chat.searchMessages')}
+        >
+          <Search className="size-4" />
+        </Button>
+      </header>
 
       <div
         ref={messagesContainerRef}
@@ -334,11 +354,11 @@ export function ConversationView({
 
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.loadingHistory')}
+            {t('chat.loadingHistory', 'Loading history...')}
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center text-muted-foreground text-sm">
-            {t('chat.empty')}
+            {t('chat.empty', 'No message history. Say hi below!')}
           </div>
         ) : (
           <>
@@ -360,32 +380,36 @@ export function ConversationView({
             {messages.map((msg) => {
               const isMine = msg.senderId === currentUser?.id;
               const senderLabel = isMine
-                ? t('chat.me')
-                : (msg.sender?.username ?? t('chat.user'));
+                ? t('chat.me', 'Me')
+                : (msg.sender?.username ?? t('chat.user', 'User'));
 
               return (
                 <div
                   key={msg.id}
                   id={`message-${msg.id}`}
-                  className={`flex flex-col mb-2 ${
-                    isMine ? 'items-end' : 'items-start'
-                  }`}
+                  className={`flex flex-col mb-2 ${isMine ? 'items-end' : 'items-start'
+                    }`}
                 >
                   <span className="text-[10px] text-muted-foreground mb-1">
                     {senderLabel}
                   </span>
-                    <div
-                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
-                      isMine
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-accent text-accent-foreground'
-                    } ${
-                      highlightedMessageId === msg.id
+                  <div
+                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${isMine
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-accent text-accent-foreground'
+                      } ${highlightedMessageId === msg.id
                         ? 'ring-2 ring-amber-400 shadow-md shadow-amber-400/30'
                         : ''
-                    }`}
+                      }`}
                   >
-                    {msg.content}
+                    {/* 🛠️ 修改：使用我们刚刚计算出的 renderType 来判断 ; 分支渲染：处理不同类型的消息内容 */}
+                    <MessageContent
+                      content={msg.content}
+                      type={msg.type}
+                      apiBaseUri={API_BASE_URI}
+                      downloadLabel={t('chat.downloadFile', 'Download File')}
+                    />
+
                   </div>
                 </div>
               );
@@ -395,26 +419,29 @@ export function ConversationView({
       </div>
 
       <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+
+          {/* 左侧：文件上传组件 */}
+          <FileUpload onUploadSuccess={handleFileUploadSuccess} context="chat" />
+          {/* 右侧：文本输入与发送按钮 */}
           <Input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={t('chat.placeholder')}
+            placeholder={t('chat.placeholder', 'Type a message...')}
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <Button type="submit">
-            {t('chat.send')}
+            {t('chat.send', 'Send')}
           </Button>
         </div>
       </form>
-        <MessageSearchDialog
-            open={isSearchOpen}
-            onOpenChange={setIsSearchOpen}
-            conversationId={conversationId}
-            onSelectMessage={handleSelectMessage}
-        />
+      <MessageSearchDialog
+        open={isSearchOpen}
+        onOpenChange={setIsSearchOpen}
+        conversationId={conversationId}
+        onSelectMessage={handleSelectMessage}
+      />
     </section>
   );
-
 }

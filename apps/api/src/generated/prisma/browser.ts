@@ -78,6 +78,11 @@ export type Notification = Prisma.NotificationModel
  */
 export type NotificationPreference = Prisma.NotificationPreferenceModel
 /**
+ * Model Attachment
+ * 
+ */
+export type Attachment = Prisma.AttachmentModel
+/**
  * Model Document
  * 
  */

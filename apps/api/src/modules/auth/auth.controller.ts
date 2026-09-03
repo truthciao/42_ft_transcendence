@@ -16,6 +16,7 @@ import { LoginDto } from './dto/login.dto.js';
 import { type Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { UsersService } from '../users/users.service.js';
+import { ConfigService } from '@nestjs/config';
 
 interface AuthenticateUser {
   id: number;
@@ -34,6 +35,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('register')
@@ -53,12 +55,18 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response): void {
+  googleLoginCallback(
+    @Req() req: RequestWithUser,
+    @Res() res: Response,
+  ): void {
     const user = req.user;
+
+    const webOrigin =
+      this.configService.get<string>('WEB_ORIGIN') ?? 'https://localhost:8443';
 
     if (user.isTwoFactorEnabled) {
       res.redirect(
-        `http://localhost:5173/login?requires2FA=true&userId=${user.id}`,
+        `${webOrigin}/login?requires2FA=true&userId=${user.id}`,
       );
       return;
     }
@@ -70,7 +78,7 @@ export class AuthController {
 
     const accessToken = tokenData.access_token || '';
 
-    res.redirect(`http://localhost:5173/login?token=${accessToken}`);
+    res.redirect(`${webOrigin}/login?token=${accessToken}`);
   }
 
   @Post('2fa/generate')
@@ -82,7 +90,10 @@ export class AuthController {
 
   @Post('2fa/turn-on')
   @UseGuards(JwtAuthGuard)
-  async turnOn2FA(@Req() req: RequestWithUser, @Body() dto: { code: string }) {
+  async turnOn2FA(
+    @Req() req: RequestWithUser,
+    @Body() dto: { code: string },
+  ) {
     const userId = Number(req.user.userId || req.user.id);
     return this.authService.turnOnTwoFactor(userId, dto.code);
   }

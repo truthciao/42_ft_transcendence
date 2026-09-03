@@ -76,3 +76,8 @@ apps/api/.windsurf/
 # Avatar
 # =========================
 apps/api/uploads/
+
+# https
+.env
+infra/nginx/certs/*
+!infra/nginx/certs/.gitkeep

@@ -63,6 +63,7 @@ export const ModelName = {
   Friendship: 'Friendship',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference',
+  Attachment: 'Attachment',
   Document: 'Document'
 } as const
 
@@ -238,6 +239,20 @@ export const NotificationPreferenceScalarFieldEnum = {
 } as const
 
 export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
+export const AttachmentScalarFieldEnum = {
+  id: 'id',
+  uploaderId: 'uploaderId',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  fileSize: 'fileSize',
+  createdAt: 'createdAt'
+} as const
+
+export type AttachmentScalarFieldEnum = (typeof AttachmentScalarFieldEnum)[keyof typeof AttachmentScalarFieldEnum]
 
 
 export const DocumentScalarFieldEnum = {

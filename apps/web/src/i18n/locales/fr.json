@@ -386,7 +386,10 @@
     "routeTitle": "Erreur {{status}}",
     "routeMessage": "Impossible de charger cette page.",
     "retry": "Réessayer",
-    "backHome": "Retour à l'accueil"
+    "backHome": "Retour à l'accueil",
+    "noPermission": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+    "fileNotFound": "Fichier introuvable ou déjà supprimé.",
+    "unsupportedFileType": "Type de fichier non pris en charge."
   },
 
   "settings": {
@@ -441,6 +444,8 @@
     "chatWith": "Discussion avec {{friendName}}",
     "loadingHistory": "Chargement de l'historique...",
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
+    "loadOlder": "Charger les messages précédents",
+    "downloadFile": "Télécharger le fichier",
     "user": "Utilisateur",
     "placeholder": "Écrivez un message...",
     "send": "Envoyer",
@@ -560,6 +565,12 @@
       "WORKSPACE_MEMBER_REMOVED": "Vous avez été retiré d'un espace.",
       "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié."
     }
+  },
+
+  "fileUpload": {
+    "sizeLimit": "La taille du fichier ne peut pas dépasser 5 Mo !",
+    "uploadFailed": "Échec du téléchargement, veuillez réessayer.",
+    "uploading": "Téléchargement"
   },
 
   "footer": {

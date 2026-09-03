@@ -46,11 +46,14 @@ services:
       dockerfile: Dockerfile.dev
 
     environment:
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+      WEB_ORIGIN: ${WEB_ORIGIN}
       NODE_ENV: development
       PORT: 3000
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
       JWT_SECRET: development-secret
-      WEB_ORIGIN: http://localhost:5173
       GENERATE_PRISMA: "true"
       # Gmail SMTP configuration is provided via local environment variables.
       MAIL_HOST: ${MAIL_HOST}
@@ -68,9 +71,6 @@ services:
       - api
       - dev
 
-    ports:
-      - '3000:3000'
-  
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -80,6 +80,7 @@ services:
       - /app/node_modules
       - /app/apps/api/node_modules
       - /app/apps/web/node_modules
+      - upload_data:/app/apps/api/uploads
 
   web:
     build:
@@ -108,5 +109,22 @@ services:
       - /app/apps/api/node_modules
       - /app/apps/web/node_modules
 
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: transcendence-nginx
+
+    ports:
+      - '8080:80'
+      - '8443:443'
+
+    depends_on:
+      - web
+      - api
+
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/certs:/etc/nginx/certs:ro
+
 volumes:
   postgres_data:
+  upload_data:

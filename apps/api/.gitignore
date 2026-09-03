@@ -56,3 +56,13 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+
+# Ignore user uploaded files
+uploads/*
+uploads/avatars/*
+uploads/attachments/*
+!uploads/.gitkeep
+!uploads/avatars/
+!uploads/avatars/.gitkeep
+!uploads/attachments/
+!uploads/attachments/.gitkeep

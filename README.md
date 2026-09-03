@@ -395,6 +395,58 @@ docker compose down --remove-orphans
 
 ---
 
+## HTTPS
+
+The application is served through Nginx over HTTPS.
+
+### Setup
+
+Make sure OpenSSL is installed, then start the project:
+
+```bash
+make start
+```
+
+`make start` automatically generates a local self-signed TLS certificate if one does not already exist.
+
+Open the application at:
+
+```text
+https://localhost:8443
+```
+
+HTTP is available on port `8080` and redirects to HTTPS.
+
+> The certificate is self-signed for local development. Your browser may display a certificate warning. No system CA installation or administrator privileges are required.
+
+### Google OAuth
+
+Google OAuth is required to test the login functionality.
+
+Create a `.env` file at:
+
+./apps/api/.env
+
+Copy the following configuration into this file and replace the placeholders with your Google OAuth credentials:
+
+```env
+GOOGLE_CLIENT_ID=<your-client-id>
+GOOGLE_CLIENT_SECRET=<your-client-secret>
+```
+
+The Google OAuth client must have the following Authorized redirect URI configured:
+
+```text
+GOOGLE_CALLBACK_URL="https://localhost:8443/api/auth/google/callback"
+```
+
+The project will automatically load these credentials when started with the provided Makefile.
+
+Do not commit `.env`, generated certificates, or private keys.
+
+---
+
 # License
 
 42 School Project
+

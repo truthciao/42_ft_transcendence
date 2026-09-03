@@ -1,7 +1,7 @@
 .PHONY: help install dev start stop restart build lint typecheck \
         test test-api test-web test-e2e ci \
         db-up db-down db-logs db-migrate db-generate db-reset \
-        clean fclean
+        certs clean fclean
 
 help:
 	@echo "Available commands:"
@@ -34,16 +34,33 @@ install:
 dev:
 	pnpm dev
 
+certs:
+	@mkdir -p infra/nginx/certs
+	@if [ -f infra/nginx/certs/localhost.pem ] && \
+	    [ -f infra/nginx/certs/localhost-key.pem ]; then \
+		echo "Local TLS certificates already exist."; \
+	else \
+		echo "Generating self-signed TLS certificate..."; \
+		openssl req -x509 -nodes -newkey rsa:2048 \
+			-keyout infra/nginx/certs/localhost-key.pem \
+			-out infra/nginx/certs/localhost.pem \
+			-days 365 \
+			-subj "/CN=localhost" \
+			-addext "subjectAltName=DNS:localhost,IP:127.0.0.1"; \
+	fi
+	
 # Full Docker environment
-start:
-	docker compose up -d --build
+start: certs
+	docker compose --env-file ./apps/api/.env up -d
+
+rebuild: certs
+	docker compose --env-file ./apps/api/.env up -d --build
 
 stop:
 	docker compose down
 
-restart:
-	docker compose down
-	docker compose up -d --build
+restart: certs
+	docker compose restart
 
 build:
 	pnpm build
@@ -89,6 +106,7 @@ db-migrate:
 
 db-reset:
 	pnpm --dir apps/api exec prisma migrate reset
+
 
 clean:
 	rm -rf apps/api/dist

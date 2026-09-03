@@ -17,6 +17,7 @@ import {
   useNotifications,
 } from '@/hooks/useNotifications';
 import type { Notification } from '@repo/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function TopBar() {
   const { user } = useAuth();
@@ -25,10 +26,12 @@ export function TopBar() {
   const { data: unreadCount = 0 } = useUnreadNotificationCount();
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   function logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
+    queryClient.clear();
     navigate('/login', { replace: true });
   }
 

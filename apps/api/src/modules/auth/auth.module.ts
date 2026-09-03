@@ -7,13 +7,17 @@ import { UsersModule } from '../users/users.module.js';
 import { JwtStrategy } from './strategies/jwt.strategy.js';
 import { GoogleStrategy } from './strategies/google.strategy.js';
 
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
+
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'super-secret-key-transcendence',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
   ],

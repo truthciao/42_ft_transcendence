@@ -42,12 +42,19 @@ export const multerOptions = {
     file: Express.Multer.File,
     cb: (error: Error | null, acceptFile: boolean) => void,
   ) => {
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/zip'];
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'application/pdf',
+      'application/zip',
+    ];
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(
-        new HttpException('UNSUPPORTED_FILE_TYPE', HttpStatus.BAD_REQUEST), false
+        new HttpException('UNSUPPORTED_FILE_TYPE', HttpStatus.BAD_REQUEST),
+        false,
       );
     }
   },

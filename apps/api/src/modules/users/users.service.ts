@@ -92,35 +92,35 @@ export class UsersService {
   }
 
   async findCurrentUser(id: number) {
-  const user = await this.prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      email: true,
-      username: true,
-      isTwoFactorEnabled: true,
-      profile: {
-        select: {
-          avatarUrl: true,
-          preferredLanguage: true,
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        isTwoFactorEnabled: true,
+        profile: {
+          select: {
+            avatarUrl: true,
+            preferredLanguage: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!user) {
-    return null;
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      isTwoFactorEnabled: user.isTwoFactorEnabled,
+      avatarUrl: user.profile?.avatarUrl ?? null,
+      preferredLanguage: user.profile?.preferredLanguage ?? null,
+    };
   }
-
-  return {
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    isTwoFactorEnabled: user.isTwoFactorEnabled,
-    avatarUrl: user.profile?.avatarUrl ?? null,
-    preferredLanguage: user.profile?.preferredLanguage ?? null,
-  };
-}
 
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({
@@ -226,5 +226,4 @@ export class UsersService {
       },
     });
   }
-
 }

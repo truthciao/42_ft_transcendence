@@ -36,10 +36,6 @@ export const userSearchResultSchema = userSchema.pick({
   username: true,
 });
 
-export const userSearchResultsSchema = z.array(
-  userSearchResultSchema,
-);
+export const userSearchResultsSchema = z.array(userSearchResultSchema);
 
-export type UserSearchResult = z.infer<
-  typeof userSearchResultSchema
->;
+export type UserSearchResult = z.infer<typeof userSearchResultSchema>;

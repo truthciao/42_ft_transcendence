@@ -15,13 +15,9 @@ import { DocumentsService } from './documents.service.js';
 import { CreateDocumentDto } from './dto/create-document.dto.js';
 import { UpdateDocumentDto } from './dto/update-document.dto.js';
 
-import {
-  WorkspaceRole,
-} from '../../generated/prisma/client.js';
+import { WorkspaceRole } from '../../generated/prisma/client.js';
 
-import type {
-  WorkspaceMember,
-} from '../../generated/prisma/client.js';
+import type { WorkspaceMember } from '../../generated/prisma/client.js';
 
 import type { Request } from 'express';
 
@@ -58,9 +54,7 @@ export class DocumentsController {
   @UseGuards(WorkspaceRoleGuard)
   @minWorkspaceRole(WorkspaceRole.MEMBER)
   @Get()
-  findAll(
-    @Param('workspaceId', ParseIntPipe) workspaceId: number,
-  ) {
+  findAll(@Param('workspaceId', ParseIntPipe) workspaceId: number) {
     return this.documents.findAll(workspaceId);
   }
 
@@ -82,11 +76,7 @@ export class DocumentsController {
     @Param('documentId', ParseIntPipe) documentId: number,
     @Body() dto: UpdateDocumentDto,
   ) {
-    return this.documents.update(
-        workspaceId,
-        documentId,
-        dto,
-    );
+    return this.documents.update(workspaceId, documentId, dto);
   }
 
   @UseGuards(WorkspaceRoleGuard)
@@ -126,20 +116,15 @@ export class DocumentsController {
   @Put(':documentId/state')
   async saveYDocState(
     @Param('documentId', ParseIntPipe) documentId: number,
-   @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Body() body: { state: string },
   ) {
     const state = Buffer.from(body.state, 'base64');
 
-    await this.documents.saveYDocState(
-      documentId,
-      req.user.userId,
-      state,
-    );
+    await this.documents.saveYDocState(documentId, req.user.userId, state);
 
     return {
       success: true,
     };
   }
-
 }

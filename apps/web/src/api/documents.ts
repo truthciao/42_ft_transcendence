@@ -13,15 +13,10 @@ export type {
 } from '@repo/shared-types';
 
 export function getDocuments(workspaceId: number) {
-  return httpGet<Document[]>(
-    `/workspaces/${workspaceId}/documents`,
-  );
+  return httpGet<Document[]>(`/workspaces/${workspaceId}/documents`);
 }
 
-export function getDocument(
-  workspaceId: number,
-  documentId: number,
-) {
+export function getDocument(workspaceId: number, documentId: number) {
   return httpGet<Document>(
     `/workspaces/${workspaceId}/documents/${documentId}`,
   );
@@ -31,10 +26,7 @@ export function createDocument(
   workspaceId: number,
   payload: CreateDocumentPayload,
 ) {
-  return httpPost<Document>(
-    `/workspaces/${workspaceId}/documents`,
-    payload,
-  );
+  return httpPost<Document>(`/workspaces/${workspaceId}/documents`, payload);
 }
 
 export function updateDocument(
@@ -48,10 +40,7 @@ export function updateDocument(
   );
 }
 
-export async function deleteDocument(
-  workspaceId: number,
-  documentId: number,
-) {
+export async function deleteDocument(workspaceId: number, documentId: number) {
   return httpDelete<Document>(
     `/workspaces/${workspaceId}/documents/${documentId}`,
   );

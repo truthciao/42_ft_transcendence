@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
-import type { WorkspaceRole } from "@repo/shared-types";
-import { usePermission } from "@/hooks/usePermission";
+import type { ReactNode } from 'react';
+import type { WorkspaceRole } from '@repo/shared-types';
+import { usePermission } from '@/hooks/usePermission';
 
 interface PermissionGateProps {
   workspaceId: number | undefined;
@@ -19,9 +19,7 @@ export function PermissionGate({
 }: PermissionGateProps) {
   const { hasRole, isLoading } = usePermission(workspaceId);
 
-  if (isLoading)
-    return null;
-  if (!hasRole(minRole, strict))
-    return <>{fallback}</>;
+  if (isLoading) return null;
+  if (!hasRole(minRole, strict)) return <>{fallback}</>;
   return <>{children}</>;
 }

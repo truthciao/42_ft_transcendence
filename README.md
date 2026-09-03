@@ -363,6 +363,7 @@ Regenerate the Prisma db seed:
 ```bash
 pnpm --filter api exec prisma db seed
 ```
+
 ---
 
 # Docker Tips
@@ -449,4 +450,3 @@ Do not commit `.env`, generated certificates, or private keys.
 # License
 
 42 School Project
-

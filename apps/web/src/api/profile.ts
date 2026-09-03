@@ -9,9 +9,7 @@ export async function updateProfile(payload: UpdateProfilePayload) {
   return httpPatch<ProfileResponse>('/profiles/me', payload);
 }
 
-export async function uploadAvatar(
-  file: File,
-): Promise<ProfileResponse> {
+export async function uploadAvatar(file: File): Promise<ProfileResponse> {
   const formData = new FormData();
 
   formData.append('avatar', file);

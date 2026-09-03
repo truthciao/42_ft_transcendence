@@ -1,17 +1,23 @@
-import { useState, type SubmitEvent } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useState, type SubmitEvent } from 'react';
+import { useParams, useNavigate } from 'react-router';
 import { FileText, Hash, Plus } from 'lucide-react';
-import { useWorkspace, useWorkspaceChannels } from "@/hooks/useWorkspaces";
-import { useCreateChannel } from "@/hooks/useWorkspaceMutations";
-import { usePermission } from "@/hooks/usePermission";
-import { PermissionButton } from "@/components/workspaces/PermissionButton";
-import { PermissionGate } from "@/components/workspaces/PermissionGate";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useWorkspace, useWorkspaceChannels } from '@/hooks/useWorkspaces';
+import { useCreateChannel } from '@/hooks/useWorkspaceMutations';
+import { usePermission } from '@/hooks/usePermission';
+import { PermissionButton } from '@/components/workspaces/PermissionButton';
+import { PermissionGate } from '@/components/workspaces/PermissionGate';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { useWorkspaceDocuments, useCreateDocument } from '@/hooks/useDocuments';
 
 export function SpaceDetailPage() {
@@ -21,8 +27,10 @@ export function SpaceDetailPage() {
   const { t } = useTranslation();
 
   const { data: workspace, isLoading } = useWorkspace(id);
-  const { data: channels, isLoading: channelsLoading } = useWorkspaceChannels(id);
-  const { data: documents, isLoading: documentsLoading } = useWorkspaceDocuments(id);
+  const { data: channels, isLoading: channelsLoading } =
+    useWorkspaceChannels(id);
+  const { data: documents, isLoading: documentsLoading } =
+    useWorkspaceDocuments(id);
   const createDocumentMutation = useCreateDocument(id);
   const { can } = usePermission(id);
   const [createChannelOpen, setCreateChannelOpen] = useState(false);
@@ -46,7 +54,9 @@ export function SpaceDetailPage() {
         <div>
           <h1 className="text-2xl font-semibold">{workspace?.name}</h1>
           {workspace?.description ? (
-            <p className="mt-1 max-w-xl text-muted-foreground">{workspace.description}</p>
+            <p className="mt-1 max-w-xl text-muted-foreground">
+              {workspace.description}
+            </p>
           ) : null}
         </div>
       </header>
@@ -69,11 +79,12 @@ export function SpaceDetailPage() {
             variant="outline"
             onClick={() => setCreateChannelOpen(true)}
           >
-            <Plus className="size-4" /> {t('workspaces.pages.detail.newChannel')}
+            <Plus className="size-4" />{' '}
+            {t('workspaces.pages.detail.newChannel')}
           </PermissionButton>
         </div>
 
-        {channelsLoading? (
+        {channelsLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -90,7 +101,9 @@ export function SpaceDetailPage() {
                 <Hash className="size-4 text-muted-foreground" />
                 <span className="flex-1 truncate">{channel.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {t('workspaces.pages.detail.membersCount', { count: channel._count?.members ?? 0 })}
+                  {t('workspaces.pages.detail.membersCount', {
+                    count: channel._count?.members ?? 0,
+                  })}
                 </span>
               </Button>
             ))}
@@ -155,7 +168,7 @@ export function SpaceDetailPage() {
         }
       />
     </div>
-  )
+  );
 }
 
 function CreateChannelDialog({
@@ -181,8 +194,10 @@ function CreateChannelDialog({
     }
 
     try {
-      await mutation.mutateAsync({name});
-      toast.success(t('workspaces.pages.detail.createChannel.success', { name }));
+      await mutation.mutateAsync({ name });
+      toast.success(
+        t('workspaces.pages.detail.createChannel.success', { name }),
+      );
       setName('');
       setError(null);
       onOpenChange(false);
@@ -195,7 +210,9 @@ function CreateChannelDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('workspaces.pages.detail.createChannel.title')}</DialogTitle>
+          <DialogTitle>
+            {t('workspaces.pages.detail.createChannel.title')}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input
@@ -205,17 +222,23 @@ function CreateChannelDialog({
           />
           {error ? <p className="text-xs text-destructive">{error}</p> : null}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? t('workspaces.pages.detail.createChannel.submitting') : t('workspaces.pages.detail.createChannel.submit')}
+              {mutation.isPending
+                ? t('workspaces.pages.detail.createChannel.submitting')
+                : t('workspaces.pages.detail.createChannel.submit')}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function CreateDocumentDialog({
@@ -250,15 +273,11 @@ function CreateDocumentDialog({
       setTitle('');
       onOpenChange(false);
 
-      toast.success(
-        t('workspaces.pages.detail.createDocument.success'),
-      );
+      toast.success(t('workspaces.pages.detail.createDocument.success'));
 
       onCreated(document.id);
     } catch {
-      toast.error(
-        t('workspaces.pages.detail.createDocument.error'),
-      );
+      toast.error(t('workspaces.pages.detail.createDocument.error'));
     }
   }
 
@@ -294,12 +313,8 @@ function CreateDocumentDialog({
               disabled={mutation.isPending || !title.trim()}
             >
               {mutation.isPending
-                ? t(
-                    'workspaces.pages.detail.createDocument.creating',
-                  )
-                : t(
-                    'workspaces.pages.detail.createDocument.create',
-                  )}
+                ? t('workspaces.pages.detail.createDocument.creating')
+                : t('workspaces.pages.detail.createDocument.create')}
             </Button>
           </DialogFooter>
         </form>

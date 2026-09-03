@@ -14,9 +14,7 @@ export function FriendsPage() {
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold">{t('friends.title')}</h1>
 
-        <p className="text-muted-foreground">
-          {t('friends.description')}
-        </p>
+        <p className="text-muted-foreground">{t('friends.description')}</p>
 
         <Button onClick={() => setShowAddFriend((prev) => !prev)}>
           {showAddFriend ? t('friends.close') : t('friends.addFriend.title')}

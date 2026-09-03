@@ -60,48 +60,49 @@ export class ChatService {
   }
 
   async createByUsername(userId: number, username: string) {
-    const targetUser = await this.prisma.user.findUnique({ where: { username } }); 
+    const targetUser = await this.prisma.user.findUnique({
+      where: { username },
+    });
     if (!targetUser) throw new NotFoundException('User not found');
     return this.createDirectConversation(userId, targetUser.id);
   }
 
-async findAllForUser(userId: number) { 
-  const conversations = await this.prisma.conversation.findMany({
-
-    where: { members: { some: { userId } } },
-    orderBy: { updatedAt: 'desc' },
-    include: {
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              profile: {
-                select: {
-                  displayName: true,
-                  avatarUrl: true,
+  async findAllForUser(userId: number) {
+    const conversations = await this.prisma.conversation.findMany({
+      where: { members: { some: { userId } } },
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                profile: {
+                  select: {
+                    displayName: true,
+                    avatarUrl: true,
+                  },
                 },
               },
             },
           },
         },
-      },
 
-      messages: {
-        orderBy: {
-          id: 'desc',
-        },
-        take: 1,
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-          senderId: true,
+        messages: {
+          orderBy: {
+            id: 'desc',
+          },
+          take: 1,
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            senderId: true,
+          },
         },
       },
-    },
-  });
+    });
 
     const friendships = await this.prisma.friendship.findMany({
       where: {
@@ -111,7 +112,9 @@ async findAllForUser(userId: number) {
     });
 
     const friendIdSet = new Set(
-      friendships.map((f) => (f.requesterId === userId ? f.addresseeId : f.requesterId)),
+      friendships.map((f) =>
+        f.requesterId === userId ? f.addresseeId : f.requesterId,
+      ),
     );
 
     return Promise.all(
@@ -120,9 +123,7 @@ async findAllForUser(userId: number) {
         let isFriend = false;
 
         if (conv.type === ConversationType.DIRECT || !conv.name) {
-          const otherMember = conv.members.find(
-            (m) => m.userId !== userId,
-          );
+          const otherMember = conv.members.find((m) => m.userId !== userId);
 
           const otherUser = otherMember?.user;
 
@@ -142,8 +143,7 @@ async findAllForUser(userId: number) {
           (member) => member.userId === userId,
         );
 
-        const lastReadMessageId =
-          currentMember?.lastReadMessageId ?? null;
+        const lastReadMessageId = currentMember?.lastReadMessageId ?? null;
 
         const unreadCount = await this.prisma.message.count({
           where: {
@@ -174,96 +174,90 @@ async findAllForUser(userId: number) {
           members: conv.members,
         };
       }),
-  );
-}
-
-async getMessages(
-  conversationId: number,
-  userId: number,
-  query: GetMessagesPayload,
-) {
-  await this.assertMember(conversationId, userId);
-
-  const { cursor, limit } = query;
-
-  const messages = await this.prisma.message.findMany({
-    where: {
-      conversationId,
-
-      ...(cursor !== undefined
-        ? {
-            id: {
-              lt: cursor,
-            },
-          }
-        : {}),
-    },
-
-    orderBy: {
-      id: 'desc',
-    },
-
-    take: limit + 1,
-
-    include: {
-      sender: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
-
-  const hasMore = messages.length > limit;
-
-  const page = messages.slice(0, limit);
-
-  const nextCursor = hasMore
-    ? page[page.length - 1].id
-    : null;
-
-  return {
-    messages: page,
-    nextCursor,
-  };
-}
-
-async searchMessages(
-  conversationId: number,
-  userId: number,
-  query: string,
-) {
-  await this.assertMember(conversationId, userId);
-
-  const keyword = query.trim();
-
-  if (!keyword) {
-    return [];
+    );
   }
 
-  return this.prisma.message.findMany({
-    where: {
-      conversationId,
-      content: {
-        contains: keyword,
-        mode: 'insensitive',
+  async getMessages(
+    conversationId: number,
+    userId: number,
+    query: GetMessagesPayload,
+  ) {
+    await this.assertMember(conversationId, userId);
+
+    const { cursor, limit } = query;
+
+    const messages = await this.prisma.message.findMany({
+      where: {
+        conversationId,
+
+        ...(cursor !== undefined
+          ? {
+              id: {
+                lt: cursor,
+              },
+            }
+          : {}),
       },
-    },
-    orderBy: {
-      id: 'desc',
-    },
-    take: 50,
-    include: {
-      sender: {
-        select: {
-          id: true,
-          username: true,
+
+      orderBy: {
+        id: 'desc',
+      },
+
+      take: limit + 1,
+
+      include: {
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
         },
       },
-    },
-  });
-}
+    });
+
+    const hasMore = messages.length > limit;
+
+    const page = messages.slice(0, limit);
+
+    const nextCursor = hasMore ? page[page.length - 1].id : null;
+
+    return {
+      messages: page,
+      nextCursor,
+    };
+  }
+
+  async searchMessages(conversationId: number, userId: number, query: string) {
+    await this.assertMember(conversationId, userId);
+
+    const keyword = query.trim();
+
+    if (!keyword) {
+      return [];
+    }
+
+    return this.prisma.message.findMany({
+      where: {
+        conversationId,
+        content: {
+          contains: keyword,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      take: 50,
+      include: {
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+  }
 
   async createMessage(
     conversationId: number,

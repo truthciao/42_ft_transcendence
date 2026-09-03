@@ -43,7 +43,7 @@ export function useAcceptFriendRequest() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
 
       if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('refresh_conversations'));
+        window.dispatchEvent(new Event('refresh_conversations'));
       }
     },
   });

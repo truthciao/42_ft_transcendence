@@ -1,7 +1,11 @@
-import type { ComponentProps, MouseEvent } from "react";
+import type { ComponentProps, MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface PermissionButtonProps extends ComponentProps<typeof Button> {
   allowed: boolean;
@@ -29,7 +33,7 @@ export function PermissionButton({
     <Button
       {...props}
       aria-disabled={!allowed}
-      tabIndex={!allowed? -1 : tabIndex}
+      tabIndex={!allowed ? -1 : tabIndex}
       className={cn(!allowed && 'pointer-events-none opacity-50', className)}
       onClick={handleClick}
     >

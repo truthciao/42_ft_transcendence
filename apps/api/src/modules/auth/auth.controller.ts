@@ -55,19 +55,14 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleLoginCallback(
-    @Req() req: RequestWithUser,
-    @Res() res: Response,
-  ): void {
+  googleLoginCallback(@Req() req: RequestWithUser, @Res() res: Response): void {
     const user = req.user;
 
     const webOrigin =
       this.configService.get<string>('WEB_ORIGIN') ?? 'https://localhost:8443';
 
     if (user.isTwoFactorEnabled) {
-      res.redirect(
-        `${webOrigin}/login?requires2FA=true&userId=${user.id}`,
-      );
+      res.redirect(`${webOrigin}/login?requires2FA=true&userId=${user.id}`);
       return;
     }
 
@@ -90,10 +85,7 @@ export class AuthController {
 
   @Post('2fa/turn-on')
   @UseGuards(JwtAuthGuard)
-  async turnOn2FA(
-    @Req() req: RequestWithUser,
-    @Body() dto: { code: string },
-  ) {
+  async turnOn2FA(@Req() req: RequestWithUser, @Body() dto: { code: string }) {
     const userId = Number(req.user.userId || req.user.id);
     return this.authService.turnOnTwoFactor(userId, dto.code);
   }

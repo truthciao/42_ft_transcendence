@@ -14,8 +14,7 @@ export function ConversationPage() {
   const friendName = locationState?.friendName;
   const title = friendName ? t('chat.chatWith', { friendName }) : '';
 
-  if (!conversationId)
-    return null;
+  if (!conversationId) return null;
 
   return <ConversationView conversationId={conversationId} title={title} />;
 }

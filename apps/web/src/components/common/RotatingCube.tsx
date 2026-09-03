@@ -1,16 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-type Quat = [
-  number,
-  number,
-  number,
-  number,
-];
+type Quat = [number, number, number, number];
 
 type Mat4 = number[];
 
@@ -31,18 +21,14 @@ type FaceDefinition = {
    * Mix-blend mode used by the original
    * styled-components logo.
    */
-  blendMode:
-    | 'hard-light'
-    | 'overlay';
+  blendMode: 'hard-light' | 'overlay';
 };
 
 const SCALE = 0.5;
 
-const INV_SQRT_3 =
-  1 / Math.sqrt(3);
+const INV_SQRT_3 = 1 / Math.sqrt(3);
 
-const FACE_EDGE =
-  2 * INV_SQRT_3;
+const FACE_EDGE = 2 * INV_SQRT_3;
 
 /**
  * Rotation settings copied from the
@@ -62,88 +48,44 @@ const SENSITIVITY = 0.015;
  * "already spinning" appearance when it
  * first appears.
  */
-const INIT_X =
-  (-107.8 * Math.PI) /
-  180 /
-  2;
+const INIT_X = (-107.8 * Math.PI) / 180 / 2;
 
-const INIT_Y =
-  (4.4 * Math.PI) /
-  180 /
-  2;
+const INIT_Y = (4.4 * Math.PI) / 180 / 2;
 
-const INIT_Z =
-  (-27.6 * Math.PI) /
-  180 /
-  2;
+const INIT_Z = (-27.6 * Math.PI) / 180 / 2;
 
 /* -------------------------------------------------------------------------- */
 /* Quaternion                                                                 */
 /* -------------------------------------------------------------------------- */
 
-function qMul(
-  a: Quat,
-  b: Quat,
-): Quat {
+function qMul(a: Quat, b: Quat): Quat {
   return [
-    a[0] * b[0] -
-      a[1] * b[1] -
-      a[2] * b[2] -
-      a[3] * b[3],
+    a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3],
 
-    a[0] * b[1] +
-      a[1] * b[0] +
-      a[2] * b[3] -
-      a[3] * b[2],
+    a[0] * b[1] + a[1] * b[0] + a[2] * b[3] - a[3] * b[2],
 
-    a[0] * b[2] -
-      a[1] * b[3] +
-      a[2] * b[0] +
-      a[3] * b[1],
+    a[0] * b[2] - a[1] * b[3] + a[2] * b[0] + a[3] * b[1],
 
-    a[0] * b[3] +
-      a[1] * b[2] -
-      a[2] * b[1] +
-      a[3] * b[0],
+    a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + a[3] * b[0],
   ];
 }
 
-function qNorm(
-  q: Quat,
-): Quat {
-  const length =
-    Math.hypot(
-      q[0],
-      q[1],
-      q[2],
-      q[3],
-    );
+function qNorm(q: Quat): Quat {
+  const length = Math.hypot(q[0], q[1], q[2], q[3]);
 
   if (length === 0) {
     return q;
   }
 
-  return [
-    q[0] / length,
-    q[1] / length,
-    q[2] / length,
-    q[3] / length,
-  ];
+  return [q[0] / length, q[1] / length, q[2] / length, q[3] / length];
 }
 
 /* -------------------------------------------------------------------------- */
 /* Matrix                                                                     */
 /* -------------------------------------------------------------------------- */
 
-function mat4FromQuat(
-  q: Quat,
-): Mat4 {
-  const [
-    w,
-    x,
-    y,
-    z,
-  ] = q;
+function mat4FromQuat(q: Quat): Mat4 {
+  const [w, x, y, z] = q;
 
   return [
     1 - 2 * y * y - 2 * z * z,
@@ -174,50 +116,36 @@ function mat4FromAxisAngle(
   az: number,
   angleDeg: number,
 ): Mat4 {
-  const angle =
-    (angleDeg * Math.PI) /
-    180;
+  const angle = (angleDeg * Math.PI) / 180;
 
-  const cos =
-    Math.cos(angle);
+  const cos = Math.cos(angle);
 
-  const sin =
-    Math.sin(angle);
+  const sin = Math.sin(angle);
 
-  const oneMinusCos =
-    1 - cos;
+  const oneMinusCos = 1 - cos;
 
   return [
-    cos +
-      ax * ax * oneMinusCos,
+    cos + ax * ax * oneMinusCos,
 
-    ax * ay * oneMinusCos -
-      az * sin,
+    ax * ay * oneMinusCos - az * sin,
 
-    ax * az * oneMinusCos +
-      ay * sin,
+    ax * az * oneMinusCos + ay * sin,
 
     0,
 
-    ay * ax * oneMinusCos +
-      az * sin,
+    ay * ax * oneMinusCos + az * sin,
 
-    cos +
-      ay * ay * oneMinusCos,
+    cos + ay * ay * oneMinusCos,
 
-    ay * az * oneMinusCos -
-      ax * sin,
+    ay * az * oneMinusCos - ax * sin,
 
     0,
 
-    az * ax * oneMinusCos -
-      ay * sin,
+    az * ax * oneMinusCos - ay * sin,
 
-    az * ay * oneMinusCos +
-      ax * sin,
+    az * ay * oneMinusCos + ax * sin,
 
-    cos +
-      az * az * oneMinusCos,
+    cos + az * az * oneMinusCos,
 
     0,
 
@@ -228,66 +156,22 @@ function mat4FromAxisAngle(
   ];
 }
 
-function mat4Translate(
-  tx: number,
-  ty: number,
-  tz: number,
-): Mat4 {
-  return [
-    1,
-    0,
-    0,
-    tx,
-
-    0,
-    1,
-    0,
-    ty,
-
-    0,
-    0,
-    1,
-    tz,
-
-    0,
-    0,
-    0,
-    1,
-  ];
+function mat4Translate(tx: number, ty: number, tz: number): Mat4 {
+  return [1, 0, 0, tx, 0, 1, 0, ty, 0, 0, 1, tz, 0, 0, 0, 1];
 }
 
-function mat4Mul(
-  a: Mat4,
-  b: Mat4,
-): Mat4 {
-  const output =
-    new Array<number>(16);
+function mat4Mul(a: Mat4, b: Mat4): Mat4 {
+  const output = new Array<number>(16);
 
-  for (
-    let row = 0;
-    row < 4;
-    row++
-  ) {
-    for (
-      let column = 0;
-      column < 4;
-      column++
-    ) {
+  for (let row = 0; row < 4; row++) {
+    for (let column = 0; column < 4; column++) {
       let sum = 0;
 
-      for (
-        let k = 0;
-        k < 4;
-        k++
-      ) {
-        sum +=
-          a[row * 4 + k] *
-          b[k * 4 + column];
+      for (let k = 0; k < 4; k++) {
+        sum += a[row * 4 + k] * b[k * 4 + column];
       }
 
-      output[
-        row * 4 + column
-      ] = sum;
+      output[row * 4 + column] = sum;
     }
   }
 
@@ -301,9 +185,7 @@ function mat4Mul(
  * values, therefore we transpose when
  * serializing.
  */
-function mat4ToCss(
-  matrix: Mat4,
-): string {
+function mat4ToCss(matrix: Mat4): string {
   return `matrix3d(
     ${matrix[0]},
     ${matrix[4]},
@@ -328,31 +210,15 @@ function mat4ToCss(
 /* Initial quaternion                                                         */
 /* -------------------------------------------------------------------------- */
 
-const INITIAL_QUATERNION: Quat =
+const INITIAL_QUATERNION: Quat = qMul(
   qMul(
-    qMul(
-      [
-        Math.cos(INIT_X),
-        Math.sin(INIT_X),
-        0,
-        0,
-      ],
+    [Math.cos(INIT_X), Math.sin(INIT_X), 0, 0],
 
-      [
-        Math.cos(INIT_Y),
-        0,
-        Math.sin(INIT_Y),
-        0,
-      ],
-    ),
+    [Math.cos(INIT_Y), 0, Math.sin(INIT_Y), 0],
+  ),
 
-    [
-      Math.cos(INIT_Z),
-      0,
-      0,
-      Math.sin(INIT_Z),
-    ],
-  );
+  [Math.cos(INIT_Z), 0, 0, Math.sin(INIT_Z)],
+);
 
 /* -------------------------------------------------------------------------- */
 /* Faces                                                                      */
@@ -381,8 +247,7 @@ const FACES: FaceDefinition[] = [
 
     angle: 0,
 
-    color:
-      'var(--cube-blue)',
+    color: 'var(--cube-blue)',
 
     blendMode: 'overlay',
   },
@@ -399,8 +264,7 @@ const FACES: FaceDefinition[] = [
 
     angle: 180,
 
-    color:
-      'var(--cube-blue-violet)',
+    color: 'var(--cube-blue-violet)',
 
     blendMode: 'hard-light',
   },
@@ -417,8 +281,7 @@ const FACES: FaceDefinition[] = [
 
     angle: 90,
 
-    color:
-      'var(--cube-violet)',
+    color: 'var(--cube-violet)',
 
     blendMode: 'hard-light',
   },
@@ -435,8 +298,7 @@ const FACES: FaceDefinition[] = [
 
     angle: -90,
 
-    color:
-      'var(--cube-indigo)',
+    color: 'var(--cube-indigo)',
 
     blendMode: 'hard-light',
   },
@@ -453,8 +315,7 @@ const FACES: FaceDefinition[] = [
 
     angle: -90,
 
-    color:
-      'var(--cube-purple)',
+    color: 'var(--cube-purple)',
 
     blendMode: 'hard-light',
   },
@@ -471,8 +332,7 @@ const FACES: FaceDefinition[] = [
 
     angle: 90,
 
-    color:
-      'var(--cube-pink)',
+    color: 'var(--cube-pink)',
 
     blendMode: 'hard-light',
   },
@@ -487,135 +347,86 @@ type RotatingCubeProps = {
   className?: string;
 };
 
-export function RotatingCube({
-  size = 120,
-  className,
-}: RotatingCubeProps) {
-  const sceneRef =
-    useRef<HTMLDivElement>(
-      null,
-    );
+export function RotatingCube({ size = 120, className }: RotatingCubeProps) {
+  const sceneRef = useRef<HTMLDivElement>(null);
 
-  const faceRefs =
-    useRef<
-      (HTMLDivElement | null)[]
-    >([]);
+  const faceRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const lastZRef =
-    useRef<number[]>([]);
+  const lastZRef = useRef<number[]>([]);
 
-  const lastPointerRef =
-    useRef({
-      x: 0,
-      y: 0,
-    });
+  const lastPointerRef = useRef({
+    x: 0,
+    y: 0,
+  });
 
-  const quaternion =
-    useRef<Quat>([
-      ...INITIAL_QUATERNION,
-    ]);
+  const quaternion = useRef<Quat>([...INITIAL_QUATERNION]);
 
-  const velocity =
-    useRef({
-      dx: IDLE_SPEED,
-      dy:
-        IDLE_SPEED * -0.4,
-    });
+  const velocity = useRef({
+    dx: IDLE_SPEED,
+    dy: IDLE_SPEED * -0.4,
+  });
 
-  const dragging =
-    useRef(false);
+  const dragging = useRef(false);
 
   /*
    * Size of the cube in pixels.
    */
-  const scale =
-    size * SCALE;
+  const scale = size * SCALE;
 
-  const faceEdgePx =
-    FACE_EDGE * scale;
+  const faceEdgePx = FACE_EDGE * scale;
 
-  const halfEdge =
-    faceEdgePx / 2;
+  const halfEdge = faceEdgePx / 2;
 
   /* ---------------------------------------------------------------------- */
   /* Local face matrices                                                   */
   /* ---------------------------------------------------------------------- */
 
-  const localMatrices =
-    useMemo(
-      () =>
-        FACES.map(
-          (face) => {
-            const translation =
-              mat4Translate(
-                face.tx * scale,
-                face.ty * scale,
-                face.tz * scale,
-              );
+  const localMatrices = useMemo(
+    () =>
+      FACES.map((face) => {
+        const translation = mat4Translate(
+          face.tx * scale,
+          face.ty * scale,
+          face.tz * scale,
+        );
 
-            const rotation =
-              mat4FromAxisAngle(
-                face.ax,
-                face.ay,
-                face.az,
-                face.angle,
-              );
+        const rotation = mat4FromAxisAngle(
+          face.ax,
+          face.ay,
+          face.az,
+          face.angle,
+        );
 
-            return mat4Mul(
-              translation,
-              rotation,
-            );
-          },
-        ),
+        return mat4Mul(translation, rotation);
+      }),
 
-      [scale],
-    );
+    [scale],
+  );
 
   /* ---------------------------------------------------------------------- */
   /* Render                                                                 */
   /* ---------------------------------------------------------------------- */
 
   const renderCube = useCallback(() => {
-    const globalMatrix =
-      mat4FromQuat(
-        quaternion.current,
-      );
+    const globalMatrix = mat4FromQuat(quaternion.current);
 
-    for (
-      let i = 0;
-      i < FACES.length;
-      i++
-    ) {
-      const element =
-        faceRefs.current[i];
+    for (let i = 0; i < FACES.length; i++) {
+      const element = faceRefs.current[i];
 
       if (!element) {
         continue;
       }
 
-      const combined =
-        mat4Mul(
-          globalMatrix,
-          localMatrices[i],
-        );
+      const combined = mat4Mul(globalMatrix, localMatrices[i]);
 
-      element.style.transform =
-        mat4ToCss(combined);
+      element.style.transform = mat4ToCss(combined);
 
-      const zIndex =
-        Math.round(
-          combined[11] * 100,
-        ) + 1000;
+      const zIndex = Math.round(combined[11] * 100) + 1000;
 
-      if (
-        lastZRef.current[i] !==
-        zIndex
-      ) {
-        element.style.zIndex =
-          String(zIndex);
+      if (lastZRef.current[i] !== zIndex) {
+        element.style.zIndex = String(zIndex);
 
-        lastZRef.current[i] =
-          zIndex;
+        lastZRef.current[i] = zIndex;
       }
     }
   }, [localMatrices]);
@@ -634,94 +445,49 @@ export function RotatingCube({
      * its work at roughly 65fps even when
      * requestAnimationFrame runs at 120/144Hz.
      */
-    const FRAME_MS =
-      1000 / 65;
+    const FRAME_MS = 1000 / 65;
 
-    const animate = (
-      time: number,
-    ) => {
-      animationFrame =
-        requestAnimationFrame(
-          animate,
-        );
+    const animate = (time: number) => {
+      animationFrame = requestAnimationFrame(animate);
 
-      if (
-        time - lastTime <
-        FRAME_MS
-      ) {
+      if (time - lastTime < FRAME_MS) {
         return;
       }
 
       lastTime = time;
 
-      if (
-        !dragging.current
-      ) {
-        const yHalf =
-          (velocity.current.dx *
-            SENSITIVITY) /
-          2;
+      if (!dragging.current) {
+        const yHalf = (velocity.current.dx * SENSITIVITY) / 2;
 
-        const xHalf =
-          (-velocity.current.dy *
-            SENSITIVITY) /
-          2;
+        const xHalf = (-velocity.current.dy * SENSITIVITY) / 2;
 
-        const spinQ =
-          qMul(
-            [
-              Math.cos(xHalf),
-              Math.sin(xHalf),
-              0,
-              0,
-            ],
+        const spinQ = qMul(
+          [Math.cos(xHalf), Math.sin(xHalf), 0, 0],
 
-            [
-              Math.cos(yHalf),
-              0,
-              Math.sin(yHalf),
-              0,
-            ],
-          );
+          [Math.cos(yHalf), 0, Math.sin(yHalf), 0],
+        );
 
-        quaternion.current =
-          qNorm(
-            qMul(
-              spinQ,
-              quaternion.current,
-            ),
-          );
+        quaternion.current = qNorm(qMul(spinQ, quaternion.current));
 
         /*
          * Gradually return to the
          * idle rotation velocity.
          */
         velocity.current.dx =
-          velocity.current.dx *
-            (1 - BLEND_RATE) +
-          IDLE_SPEED *
-            BLEND_RATE;
+          velocity.current.dx * (1 - BLEND_RATE) + IDLE_SPEED * BLEND_RATE;
 
         velocity.current.dy =
-          velocity.current.dy *
-            (1 - BLEND_RATE) +
-          IDLE_SPEED *
-            -0.4 *
-            BLEND_RATE;
+          velocity.current.dy * (1 - BLEND_RATE) +
+          IDLE_SPEED * -0.4 * BLEND_RATE;
       }
 
       renderCube();
     };
 
-    animationFrame =
-      requestAnimationFrame(
-        animate,
-      );
+    animationFrame = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(
-        animationFrame,
-      );
+      cancelAnimationFrame(animationFrame);
     };
   }, [renderCube]);
 
@@ -730,202 +496,117 @@ export function RotatingCube({
   /* ---------------------------------------------------------------------- */
 
   useEffect(() => {
-    const scene =
-      sceneRef.current;
+    const scene = sceneRef.current;
 
     if (!scene) {
       return;
     }
 
-    const handlePointerDown =
-      (event: PointerEvent) => {
-        dragging.current =
-          true;
+    const handlePointerDown = (event: PointerEvent) => {
+      dragging.current = true;
 
-        velocity.current.dx =
-          0;
+      velocity.current.dx = 0;
 
-        velocity.current.dy =
-          0;
+      velocity.current.dy = 0;
 
-        lastPointerRef.current.x =
-          event.clientX;
+      lastPointerRef.current.x = event.clientX;
 
-        lastPointerRef.current.y =
-          event.clientY;
+      lastPointerRef.current.y = event.clientY;
 
+      /*
+       * This is important.
+       *
+       * Once the pointer is captured,
+       * dragging continues even if the
+       * pointer leaves the cube.
+       */
+      scene.setPointerCapture(event.pointerId);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!dragging.current) {
+        return;
+      }
+
+      const dx = event.clientX - lastPointerRef.current.x;
+
+      const dy = event.clientY - lastPointerRef.current.y;
+
+      lastPointerRef.current.x = event.clientX;
+
+      lastPointerRef.current.y = event.clientY;
+
+      /*
+       * Smooth velocity.
+       */
+      velocity.current.dx = dx * 0.4 + velocity.current.dx * 0.6;
+
+      velocity.current.dy = dy * 0.4 + velocity.current.dy * 0.6;
+
+      /*
+       * Convert pointer movement
+       * into a quaternion.
+       */
+      const yHalf = (dx * SENSITIVITY) / 2;
+
+      const xHalf = (-dy * SENSITIVITY) / 2;
+
+      const dragQ = qMul(
+        [Math.cos(xHalf), Math.sin(xHalf), 0, 0],
+
+        [Math.cos(yHalf), 0, Math.sin(yHalf), 0],
+      );
+
+      quaternion.current = qNorm(qMul(dragQ, quaternion.current));
+
+      /*
+       * Render immediately.
+       */
+      renderCube();
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      dragging.current = false;
+
+      const speed = Math.hypot(velocity.current.dx, velocity.current.dy);
+
+      /*
+       * Fast drag → fling.
+       */
+      if (speed > 1.5) {
+        velocity.current.dx *= 1.2;
+
+        velocity.current.dy *= 1.2;
+      } else {
         /*
-         * This is important.
-         *
-         * Once the pointer is captured,
-         * dragging continues even if the
-         * pointer leaves the cube.
+         * Slow drag → stop.
          */
-        scene.setPointerCapture(
-          event.pointerId,
-        );
-      };
+        velocity.current.dx = 0;
 
-    const handlePointerMove =
-      (event: PointerEvent) => {
-        if (
-          !dragging.current
-        ) {
-          return;
-        }
+        velocity.current.dy = 0;
+      }
 
-        const dx =
-          event.clientX -
-          lastPointerRef.current.x;
+      if (scene.hasPointerCapture(event.pointerId)) {
+        scene.releasePointerCapture(event.pointerId);
+      }
+    };
 
-        const dy =
-          event.clientY -
-          lastPointerRef.current.y;
+    scene.addEventListener('pointerdown', handlePointerDown);
 
-        lastPointerRef.current.x =
-          event.clientX;
+    scene.addEventListener('pointermove', handlePointerMove);
 
-        lastPointerRef.current.y =
-          event.clientY;
+    scene.addEventListener('pointerup', handlePointerUp);
 
-        /*
-         * Smooth velocity.
-         */
-        velocity.current.dx =
-          dx * 0.4 +
-          velocity.current.dx *
-            0.6;
-
-        velocity.current.dy =
-          dy * 0.4 +
-          velocity.current.dy *
-            0.6;
-
-        /*
-         * Convert pointer movement
-         * into a quaternion.
-         */
-        const yHalf =
-          (dx * SENSITIVITY) /
-          2;
-
-        const xHalf =
-          (-dy * SENSITIVITY) /
-          2;
-
-        const dragQ =
-          qMul(
-            [
-              Math.cos(xHalf),
-              Math.sin(xHalf),
-              0,
-              0,
-            ],
-
-            [
-              Math.cos(yHalf),
-              0,
-              Math.sin(yHalf),
-              0,
-            ],
-          );
-
-        quaternion.current =
-          qNorm(
-            qMul(
-              dragQ,
-              quaternion.current,
-            ),
-          );
-
-        /*
-         * Render immediately.
-         */
-        renderCube();
-      };
-
-    const handlePointerUp =
-      (event: PointerEvent) => {
-        dragging.current =
-          false;
-
-        const speed =
-          Math.hypot(
-            velocity.current.dx,
-            velocity.current.dy,
-          );
-
-        /*
-         * Fast drag → fling.
-         */
-        if (speed > 1.5) {
-          velocity.current.dx *=
-            1.2;
-
-          velocity.current.dy *=
-            1.2;
-        } else {
-          /*
-           * Slow drag → stop.
-           */
-          velocity.current.dx =
-            0;
-
-          velocity.current.dy =
-            0;
-        }
-
-        if (
-          scene.hasPointerCapture(
-            event.pointerId,
-          )
-        ) {
-          scene.releasePointerCapture(
-            event.pointerId,
-          );
-        }
-      };
-
-    scene.addEventListener(
-      'pointerdown',
-      handlePointerDown,
-    );
-
-    scene.addEventListener(
-      'pointermove',
-      handlePointerMove,
-    );
-
-    scene.addEventListener(
-      'pointerup',
-      handlePointerUp,
-    );
-
-    scene.addEventListener(
-      'pointercancel',
-      handlePointerUp,
-    );
+    scene.addEventListener('pointercancel', handlePointerUp);
 
     return () => {
-      scene.removeEventListener(
-        'pointerdown',
-        handlePointerDown,
-      );
+      scene.removeEventListener('pointerdown', handlePointerDown);
 
-      scene.removeEventListener(
-        'pointermove',
-        handlePointerMove,
-      );
+      scene.removeEventListener('pointermove', handlePointerMove);
 
-      scene.removeEventListener(
-        'pointerup',
-        handlePointerUp,
-      );
+      scene.removeEventListener('pointerup', handlePointerUp);
 
-      scene.removeEventListener(
-        'pointercancel',
-        handlePointerUp,
-      );
+      scene.removeEventListener('pointercancel', handlePointerUp);
     };
   }, [renderCube]);
 
@@ -951,40 +632,32 @@ export function RotatingCube({
         height: size,
       }}
     >
-      {FACES.map(
-        (face, index) => (
-          <div
-            key={index}
-            ref={(element) => {
-              faceRefs.current[
-                index
-              ] = element;
-            }}
-            className="
+      {FACES.map((face, index) => (
+        <div
+          key={index}
+          ref={(element) => {
+            faceRefs.current[index] = element;
+          }}
+          className="
               pointer-events-none
               absolute
               left-1/2
               top-1/2
             "
-            style={{
-              width: faceEdgePx,
-              height: faceEdgePx,
+          style={{
+            width: faceEdgePx,
+            height: faceEdgePx,
 
-              marginLeft:
-                -halfEdge,
+            marginLeft: -halfEdge,
 
-              marginTop:
-                -halfEdge,
+            marginTop: -halfEdge,
 
-              background:
-                face.color,
+            background: face.color,
 
-              mixBlendMode:
-                face.blendMode,
-            }}
-          />
-        ),
-      )}
+            mixBlendMode: face.blendMode,
+          }}
+        />
+      ))}
     </div>
   );
 }

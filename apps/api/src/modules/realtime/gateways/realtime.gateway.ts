@@ -42,15 +42,9 @@ export class RealtimeGateway
   server!: Server;
 
   private readonly logger = new Logger(RealtimeGateway.name);
-  private readonly socketDocuments = new Map<
-    string,
-    Set<number>
-  >();
+  private readonly socketDocuments = new Map<string, Set<number>>();
 
-  notifyConversationCreated(
-    userIds: number[],
-    conversationId: number,
-  ): void {
+  notifyConversationCreated(userIds: number[], conversationId: number): void {
     for (const userId of userIds) {
       this.server
         .to(getUserRoom(userId))
@@ -112,8 +106,7 @@ export class RealtimeGateway
       for (const documentId of documents) {
         const room = getDocumentRoom(documentId);
 
-        const memberCount =
-          await this.roomService.getRoomMemberCount(room);
+        const memberCount = await this.roomService.getRoomMemberCount(room);
 
         if (memberCount === 1) {
           this.documentsYjsService.removeDoc(documentId);
@@ -125,10 +118,7 @@ export class RealtimeGateway
 
     this.socketRegistry.unregisterSocket(client.id);
 
-    if (
-      userId !== undefined &&
-      !this.socketRegistry.isUserOnline(userId)
-    ) {
+    if (userId !== undefined && !this.socketRegistry.isUserOnline(userId)) {
       this.server.emit(REALTIME_EVENTS.USER_OFFLINE, {
         userId,
       });
@@ -200,9 +190,9 @@ export class RealtimeGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: { documentId: number },
   ): Promise<WsResponse<{ documentId: number }>> {
-this.logger.log(
-  `[DOCUMENT JOIN] socket=${client.id} document=${dto.documentId}`,
-);
+    this.logger.log(
+      `[DOCUMENT JOIN] socket=${client.id} document=${dto.documentId}`,
+    );
     await this.documentsService.findByIdForUser(
       dto.documentId,
       client.data.user.userId,
@@ -258,8 +248,7 @@ this.logger.log(
       this.socketDocuments.delete(client.id);
     }
 
-    const memberCount =
-      await this.roomService.getRoomMemberCount(room);
+    const memberCount = await this.roomService.getRoomMemberCount(room);
 
     if (memberCount === 0) {
       this.documentsYjsService.removeDoc(dto.documentId);
@@ -293,13 +282,10 @@ this.logger.log(
       return;
     }
 
-    client.to(room).emit(
-      REALTIME_EVENTS.DOCUMENT_TITLE_UPDATED,
-      {
-        documentId: dto.documentId,
-        title: dto.title,
-      },
-    );
+    client.to(room).emit(REALTIME_EVENTS.DOCUMENT_TITLE_UPDATED, {
+      documentId: dto.documentId,
+      title: dto.title,
+    });
   }
 
   @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_YJS_UPDATE)
@@ -335,12 +321,9 @@ this.logger.log(
       client.data.user.userId,
     );
 
-    client.to(room).emit(
-      REALTIME_EVENTS.DOCUMENT_YJS_UPDATE,
-      {
-        documentId: dto.documentId,
-        update: dto.update,
-      },
-    );
+    client.to(room).emit(REALTIME_EVENTS.DOCUMENT_YJS_UPDATE, {
+      documentId: dto.documentId,
+      update: dto.update,
+    });
   }
 }

@@ -49,8 +49,7 @@ export class MailService {
     const port = this.configService.get<string>('MAIL_PORT');
     const user = this.configService.get<string>('MAIL_USER');
     const pass = this.configService.get<string>('MAIL_PASS');
-    const secure =
-      this.configService.get<string>('MAIL_SECURE') === 'true';
+    const secure = this.configService.get<string>('MAIL_SECURE') === 'true';
 
     // Allow local SMTP servers like Mailhog to work without credentials.
     if (host && port) {

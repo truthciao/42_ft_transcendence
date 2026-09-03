@@ -18,9 +18,7 @@ export function markAllNotificationsAsRead() {
 }
 
 export function getNotificationPreferences() {
-  return httpGet<NotificationPreference[]>(
-    '/notifications/preferences',
-  );
+  return httpGet<NotificationPreference[]>('/notifications/preferences');
 }
 
 export function updateNotificationPreferences(

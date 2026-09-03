@@ -56,11 +56,7 @@ export class ChatController {
     @Param('id', ParseIntPipe) id: number,
     @Query('q') query: string,
   ) {
-    return this.chatService.searchMessages(
-      id,
-      userId,
-      query,
-    );
+    return this.chatService.searchMessages(id, userId, query);
   }
 
   @Patch('conversations/:id/message')
@@ -72,5 +68,4 @@ export class ChatController {
 
     return { success: true };
   }
-
 }

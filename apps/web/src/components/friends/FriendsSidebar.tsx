@@ -6,7 +6,9 @@ export function FriendsSidebar() {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <div className="p-4 text-muted-foreground">{t('friends.loading')}</div>;
+    return (
+      <div className="p-4 text-muted-foreground">{t('friends.loading')}</div>
+    );
   }
 
   if (isError) {

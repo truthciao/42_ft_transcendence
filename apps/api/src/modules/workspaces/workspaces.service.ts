@@ -34,7 +34,7 @@ export class WorkspacesService {
 
   async create(
     ownerId: number,
-    dto: { name: string; description?: string; icon?: string }
+    dto: { name: string; description?: string; icon?: string },
   ) {
     const workspace = await this.prisma.workspace.create({
       data: {
@@ -66,8 +66,9 @@ export class WorkspacesService {
 
     return {
       ...workspace,
-      myMembership: workspace.members?.find((m) => m.userId === ownerId) ?? null,
-    }
+      myMembership:
+        workspace.members?.find((m) => m.userId === ownerId) ?? null,
+    };
   }
 
   async findAllForUser(userId: number) {
@@ -86,7 +87,7 @@ export class WorkspacesService {
     return workspaces.map((workspace) => ({
       ...workspace,
       myMembership: workspace.members.find((m) => m.userId === userId) ?? null,
-    }))
+    }));
   }
 
   async listIncomingInvites(userId: number) {
@@ -207,7 +208,7 @@ export class WorkspacesService {
 
   async update(
     workspaceId: number,
-    dto: { name?: string; description?: string; icon?: string }
+    dto: { name?: string; description?: string; icon?: string },
   ) {
     return this.prisma.workspace.update({
       where: { id: workspaceId },
@@ -231,7 +232,7 @@ export class WorkspacesService {
     actor: WorkspaceMember,
     dto: InviteMemberDto,
   ) {
-    if (dto.role as WorkspaceRole === WorkspaceRole.OWNER) {
+    if ((dto.role as WorkspaceRole) === WorkspaceRole.OWNER) {
       throw new BadRequestException('Use transfer-ownership instead');
     }
     if (dto.role === WorkspaceRole.ADMIN && actor.role !== WorkspaceRole.OWNER)
@@ -326,11 +327,13 @@ export class WorkspacesService {
           },
         );
 
-        this.sendWorkspaceInviteEmail(invite.inviteeId, actor.userId, workspaceId).catch(
-          (error) => {
-            this.logger.error('Failed to send workspace invite email:', error);
-          },
-        );
+        this.sendWorkspaceInviteEmail(
+          invite.inviteeId,
+          actor.userId,
+          workspaceId,
+        ).catch((error) => {
+          this.logger.error('Failed to send workspace invite email:', error);
+        });
       } catch (error) {
         console.error(
           '[WorkspacesService] failed to notify invitee about invite: ',
@@ -419,14 +422,15 @@ export class WorkspacesService {
     });
 
     try {
-      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
-        where: {
-          userId_type: {
-            userId: result.inviterId,
-            type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+      const shouldSendInApp =
+        await this.prisma.notificationPreference.findUnique({
+          where: {
+            userId_type: {
+              userId: result.inviterId,
+              type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+            },
           },
-        },
-      });
+        });
 
       if (shouldSendInApp?.viaInApp !== false) {
         await this.prisma.notification.create({
@@ -453,7 +457,10 @@ export class WorkspacesService {
         userId,
         result.workspaceId,
       ).catch((error) => {
-        this.logger.error('Failed to send workspace invite accepted email:', error);
+        this.logger.error(
+          'Failed to send workspace invite accepted email:',
+          error,
+        );
       });
     } catch (error) {
       console.error(
@@ -513,14 +520,15 @@ export class WorkspacesService {
     });
 
     try {
-      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
-        where: {
-          userId_type: {
-            userId: targetUserId,
-            type: NotificationType.WORKSPACE_ROLE_CHANGED,
+      const shouldSendInApp =
+        await this.prisma.notificationPreference.findUnique({
+          where: {
+            userId_type: {
+              userId: targetUserId,
+              type: NotificationType.WORKSPACE_ROLE_CHANGED,
+            },
           },
-        },
-      });
+        });
 
       if (shouldSendInApp?.viaInApp !== false) {
         await this.prisma.notification.create({
@@ -591,14 +599,15 @@ export class WorkspacesService {
     });
 
     try {
-      const shouldSendInApp = await this.prisma.notificationPreference.findUnique({
-        where: {
-          userId_type: {
-            userId: targetUserId,
-            type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+      const shouldSendInApp =
+        await this.prisma.notificationPreference.findUnique({
+          where: {
+            userId_type: {
+              userId: targetUserId,
+              type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+            },
           },
-        },
-      });
+        });
 
       if (shouldSendInApp?.viaInApp !== false) {
         await this.prisma.notification.create({
@@ -617,11 +626,9 @@ export class WorkspacesService {
         { workspaceId },
       );
 
-      this.sendMemberRemovedEmail(targetUserId, workspaceId).catch(
-        (error) => {
-          this.logger.error('Failed to send member removed email:', error);
-        },
-      );
+      this.sendMemberRemovedEmail(targetUserId, workspaceId).catch((error) => {
+        this.logger.error('Failed to send member removed email:', error);
+      });
     } catch (error) {
       console.error(
         '[WorkspacesService] Failed to notify removed member:',

@@ -44,9 +44,7 @@ export interface TwoFactorGenerateResponse {
 }
 
 export function generateTwoFactor() {
-  return httpPost<TwoFactorGenerateResponse>(
-    '/auth/2fa/generate',
-  );
+  return httpPost<TwoFactorGenerateResponse>('/auth/2fa/generate');
 }
 
 export function turnOnTwoFactor(code: string) {

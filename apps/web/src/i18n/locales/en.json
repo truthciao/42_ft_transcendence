@@ -96,7 +96,7 @@
     },
     "profile": {
       "backToFriends": "Back to friends",
-      "friend":"Friend",
+      "friend": "Friend",
       "username": "Username",
       "email": "Email",
       "message": "message"
@@ -337,16 +337,36 @@
         "rawText": "- Major: Allow users to interact with other users. The minimum requirements are:\n    ◦ A basic chat system (send/receive messages between users).\n    ◦ A profile system (view user information).\n    ◦ A friends system (add/remove friends, see friends list)."
       },
       "web-orm": { "rawText": "• Minor: Use an ORM for the database." },
-      "web-notifications": { "rawText": "• Minor: A complete notification system for all creation, update, and deletion actions." },
-      "web-collab": { "rawText": "- Minor: Real-time collaborative features (shared workspaces, live editing, collaborative drawing, etc.)." },
-      "web-design": { "rawText": "- Minor: Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components)." },
-      "a11y-i18n": { "rawText": "- Minor: Support for multiple languages (at least 3 languages).\n    ◦ Implement i18n (internationalization) system.\n    ◦ At least 3 complete language translations.\n    ◦ Language switcher in the UI.\n    ◦ All user-facing text must be translatable." },
-      "a11y-browsers": { "rawText": "- Minor: Support for additional browsers.\n    ◦ Full compatibility with at least 2 additional browsers (Firefox, Safari, Edge, etc.).\n    ◦ Test and fix all features in each browser.\n    ◦ Document any browser-specific limitations.\n    ◦ Consistent UI/UX across all supported browsers." },
-      "um-standard": { "rawText": "- Major: Standard user management and authentication.\n    ◦ Users can update their profile information.\n    ◦ Users can upload an avatar (with a default avatar if none provided).\n    ◦ Users can add other users as friends and see their online status.\n    ◦ Users have a profile page displaying their information." },
-      "um-permissions": { "rawText": "- Major: Advanced permissions system:\n    ◦ View, edit, and delete users (CRUD).\n    ◦ Roles management (admin, user, guest, moderator, etc.).\n    ◦ Different views and actions based on user role." },
-      "um-organizations": { "rawText": "- Major: An organization system:\n    ◦ Create, edit, and delete organizations.\n    ◦ Add users to organizations.\n    ◦ Remove users from organizations.\n    ◦ View organizations and allow users to perform specific actions within an organization (minimum: create, read, update)." },
-      "um-oauth": { "rawText": "• Minor: Implement remote authentication with OAuth 2.0 (Google, GitHub, 42, etc.)." },
-      "um-2fa": { "rawText": "• Minor: Implement a complete 2FA (Two-Factor Authentication) system for the users." }
+      "web-notifications": {
+        "rawText": "• Minor: A complete notification system for all creation, update, and deletion actions."
+      },
+      "web-collab": {
+        "rawText": "- Minor: Real-time collaborative features (shared workspaces, live editing, collaborative drawing, etc.)."
+      },
+      "web-design": {
+        "rawText": "- Minor: Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components)."
+      },
+      "a11y-i18n": {
+        "rawText": "- Minor: Support for multiple languages (at least 3 languages).\n    ◦ Implement i18n (internationalization) system.\n    ◦ At least 3 complete language translations.\n    ◦ Language switcher in the UI.\n    ◦ All user-facing text must be translatable."
+      },
+      "a11y-browsers": {
+        "rawText": "- Minor: Support for additional browsers.\n    ◦ Full compatibility with at least 2 additional browsers (Firefox, Safari, Edge, etc.).\n    ◦ Test and fix all features in each browser.\n    ◦ Document any browser-specific limitations.\n    ◦ Consistent UI/UX across all supported browsers."
+      },
+      "um-standard": {
+        "rawText": "- Major: Standard user management and authentication.\n    ◦ Users can update their profile information.\n    ◦ Users can upload an avatar (with a default avatar if none provided).\n    ◦ Users can add other users as friends and see their online status.\n    ◦ Users have a profile page displaying their information."
+      },
+      "um-permissions": {
+        "rawText": "- Major: Advanced permissions system:\n    ◦ View, edit, and delete users (CRUD).\n    ◦ Roles management (admin, user, guest, moderator, etc.).\n    ◦ Different views and actions based on user role."
+      },
+      "um-organizations": {
+        "rawText": "- Major: An organization system:\n    ◦ Create, edit, and delete organizations.\n    ◦ Add users to organizations.\n    ◦ Remove users from organizations.\n    ◦ View organizations and allow users to perform specific actions within an organization (minimum: create, read, update)."
+      },
+      "um-oauth": {
+        "rawText": "• Minor: Implement remote authentication with OAuth 2.0 (Google, GitHub, 42, etc.)."
+      },
+      "um-2fa": {
+        "rawText": "• Minor: Implement a complete 2FA (Two-Factor Authentication) system for the users."
+      }
     }
   },
 
@@ -440,7 +460,7 @@
     "conversations": "Direct Messages",
     "friend": "Friend",
     "stranger": "Stranger",
-    "room" : "Chat Room #{{id}}",
+    "room": "Chat Room #{{id}}",
     "chatWith": "Chat with {{friendName}}",
     "loadingHistory": "Loading history...",
     "empty": "No message history. Say hi below!",
@@ -456,9 +476,9 @@
     "loadOlderMessages": "Load older messages",
     "searchMessagesPlaceholder": "Search messages...",
     "noMessagesFound": "No messages found.",
-    "noUsersFound" : "No users found.",
-    "unreadMessages" : "unread messages",
-    "searchDescription" : "Enter at least 2 characters to search."
+    "noUsersFound": "No users found.",
+    "unreadMessages": "unread messages",
+    "searchDescription": "Enter at least 2 characters to search."
   },
 
   "showcase": {

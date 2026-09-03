@@ -21,10 +21,9 @@ describe('Application (e2e)', () => {
   let server: Server;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -41,10 +40,7 @@ describe('Application (e2e)', () => {
 
   describe('GET /', () => {
     it('should return 200', async () => {
-      await request(server)
-        .get('/')
-        .expect(200)
-        .expect('Hello World!');
+      await request(server).get('/').expect(200).expect('Hello World!');
     });
   });
 });

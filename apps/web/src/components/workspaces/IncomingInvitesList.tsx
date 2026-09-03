@@ -1,9 +1,12 @@
-import { useNavigate } from "react-router";
-import { useIncomingInvites } from "@/hooks/useWorkspaces";
-import { useAcceptInvite, useRejectInvite } from "@/hooks/useWorkspaceMutations";
-import { Button} from "@/components/ui/button";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router';
+import { useIncomingInvites } from '@/hooks/useWorkspaces';
+import {
+  useAcceptInvite,
+  useRejectInvite,
+} from '@/hooks/useWorkspaceMutations';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export function IncomingInvitesList() {
   const { data: invites, isLoading } = useIncomingInvites();
@@ -12,10 +15,10 @@ export function IncomingInvitesList() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const pending = invites?.filter((invite) => invite.status === 'PENDING') ?? [];
+  const pending =
+    invites?.filter((invite) => invite.status === 'PENDING') ?? [];
 
-  if (isLoading || pending.length === 0)
-    return null;
+  if (isLoading || pending.length === 0) return null;
 
   async function handleAccept(inviteId: number) {
     try {
@@ -43,21 +46,37 @@ export function IncomingInvitesList() {
       </h2>
       <div className="divide-y divide-border rounded-lg border border-border">
         {pending.map((invite) => (
-          <div key={invite.id} className=" flex items-center justify-between gap-3 px-4 py-3">
+          <div
+            key={invite.id}
+            className=" flex items-center justify-between gap-3 px-4 py-3"
+          >
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{invite.workspace.name}</p>
+              <p className="truncate text-sm font-medium">
+                {invite.workspace.name}
+              </p>
               <p className="truncate text-xs text-muted-foreground">
                 {t('workspaces.invites.invitedBy', {
-                  name: invite.inviter.profile?.displayName || invite.inviter.username,
-                  role: t(`workspaces.roles.${invite.role}`)
+                  name:
+                    invite.inviter.profile?.displayName ||
+                    invite.inviter.username,
+                  role: t(`workspaces.roles.${invite.role}`),
                 })}
               </p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <Button size="sm" variant="outline" disabled={rejectMutation.isPending} onClick={() => handleReject(invite.id)}>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={rejectMutation.isPending}
+                onClick={() => handleReject(invite.id)}
+              >
                 {t('workspaces.invites.decline')}
               </Button>
-              <Button size="sm" disabled={acceptMutation.isPending} onClick={() => handleAccept(invite.id)}>
+              <Button
+                size="sm"
+                disabled={acceptMutation.isPending}
+                onClick={() => handleAccept(invite.id)}
+              >
                 {t('workspaces.invites.accept')}
               </Button>
             </div>
@@ -65,5 +84,5 @@ export function IncomingInvitesList() {
         ))}
       </div>
     </section>
-  )
+  );
 }

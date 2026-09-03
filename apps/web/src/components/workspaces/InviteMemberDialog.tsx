@@ -17,7 +17,7 @@ import { useInviteMember } from '@/hooks/useWorkspaceMutations';
 import { usePermission } from '@/hooks/usePermission';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 interface InviteMemberDialogProps {
   workspaceId: number;
@@ -37,14 +37,9 @@ export function InviteMemberDialog({
   const [inviteRole, setInviteRole] = useState<'ADMIN' | 'MEMBER'>('MEMBER');
   const { t } = useTranslation();
 
-  const {
-    data: searchResult,
-    isLoading,
-    isError,
-  } = useUserSearch(username);
+  const { data: searchResult, isLoading, isError } = useUserSearch(username);
 
-  const users =
-    searchResult?.pages.flatMap((page) => page.users) ?? [];
+  const users = searchResult?.pages.flatMap((page) => page.users) ?? [];
 
   const { data: members } = useWorkspaceMembers(workspaceId);
   const { data: pendingInvites } = useWorkspaceInvites(workspaceId);
@@ -106,7 +101,9 @@ export function InviteMemberDialog({
 
           {role === 'OWNER' ? (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">{t('workspaces.inviteMember.inviteAs')}</span>
+              <span className="text-muted-foreground">
+                {t('workspaces.inviteMember.inviteAs')}
+              </span>
 
               <select
                 className="rounded-md border border-input bg-background px-2 py-1 text-sm"
@@ -160,10 +157,7 @@ export function InviteMemberDialog({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-          >
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
             {t('workspaces.inviteMember.done')}
           </Button>
         </DialogFooter>

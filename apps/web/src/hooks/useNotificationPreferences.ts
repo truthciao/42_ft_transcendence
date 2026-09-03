@@ -16,9 +16,8 @@ export function useUpdateNotificationPreferences() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (
-      prefs: UpdateNotificationPreferences['preferences'],
-    ) => updateNotificationPreferences(prefs),
+    mutationFn: (prefs: UpdateNotificationPreferences['preferences']) =>
+      updateNotificationPreferences(prefs),
     onSuccess: () =>
       qc.invalidateQueries({
         queryKey: ['notification-preferences'],

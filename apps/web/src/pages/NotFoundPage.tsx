@@ -8,12 +8,12 @@ export function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <main className='flex min-h-[70vh] items-center justify-center px-6'>
+    <main className="flex min-h-[70vh] items-center justify-center px-6">
       <EmptyState
-        icon = { FileQuestion }
+        icon={FileQuestion}
         title={t('notfound.title')}
         description={t('notfound.message')}
-        action={{ label: t('notfound.back'), onClick: () => navigate('/')}}
+        action={{ label: t('notfound.back'), onClick: () => navigate('/') }}
       />
     </main>
   );

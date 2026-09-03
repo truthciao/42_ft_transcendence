@@ -96,13 +96,13 @@
     },
     "profile": {
       "backToFriends": "返回好友",
-      "friend":"好友",
+      "friend": "好友",
       "username": "用户名",
       "email": "邮箱",
       "message": "信息"
     }
   },
-  
+
   "workspaces": {
     "title": "空间",
     "create": {
@@ -305,7 +305,7 @@
       }
     }
   },
-  
+
   "evaluation": {
     "title": "评估",
     "subtitle": "评估项清单与快速导航",
@@ -337,25 +337,45 @@
         "rawText": "- Major：允许用户之间交互。最低要求：\n    ◦ 基本聊天系统（用户间发送/接收消息）。\n    ◦ 个人资料系统（查看用户信息）。\n    ◦ 好友系统（添加/删除好友，查看好友列表）。"
       },
       "web-orm": { "rawText": "• Minor：为数据库使用 ORM。" },
-      "web-notifications": { "rawText": "• Minor：完整的通知系统，覆盖创建、更新和删除操作。" },
-      "web-collab": { "rawText": "- Minor：实时协作功能（共享工作区、实时编辑、协作绘图等）。" },
-      "web-design": { "rawText": "- Minor：自定义设计系统与可重用组件，包括配色、排版和图标（至少 10 个可重用组件）。" },
-      "a11y-i18n": { "rawText": "- Minor：支持多语言（至少 3 种）。\n    ◦ 实现 i18n 国际化系统。\n    ◦ 至少 3 个完整语言翻译。\n    ◦ 在 UI 中提供语言切换。\n    ◦ 所有面向用户的文本必须可翻译。" },
-      "a11y-browsers": { "rawText": "- Minor：支持更多浏览器。\n    ◦ 与至少 2 个额外浏览器（Firefox、Safari、Edge 等）完全兼容。\n    ◦ 在每个浏览器中测试并修复所有功能。\n    ◦ 记录任何特定浏览器的限制。\n    ◦ 在所有受支持浏览器中保持一致的 UI/UX。" },
-      "um-standard": { "rawText": "- Major：标准用户管理与认证。\n    ◦ 用户可以更新其个人信息。\n    ◦ 用户可以上传头像（若无则使用默认头像）。\n    ◦ 用户可以添加其他用户为好友并查看其在线状态。\n    ◦ 提供展示用户信息的个人资料页。" },
-      "um-permissions": { "rawText": "- Major：高级权限系统：\n    ◦ 查看、编辑和删除用户（CRUD）。\n    ◦ 角色管理（admin、user、guest、moderator 等）。\n    ◦ 根据用户角色展示不同视图和操作。" },
-      "um-organizations": { "rawText": "- Major：组织系统：\n    ◦ 创建、编辑与删除组织。\n    ◦ 向组织添加用户。\n    ◦ 从组织中移除用户。\n    ◦ 查看组织并允许执行特定操作（至少：创建、读取、更新）。" },
-      "um-oauth": { "rawText": "• Minor：实现远程认证（OAuth 2.0），例如 Google、GitHub、42 等。" },
-      "um-2fa": { "rawText": "• Minor：为用户实现完整的双因素认证（2FA）系统。" }
+      "web-notifications": {
+        "rawText": "• Minor：完整的通知系统，覆盖创建、更新和删除操作。"
+      },
+      "web-collab": {
+        "rawText": "- Minor：实时协作功能（共享工作区、实时编辑、协作绘图等）。"
+      },
+      "web-design": {
+        "rawText": "- Minor：自定义设计系统与可重用组件，包括配色、排版和图标（至少 10 个可重用组件）。"
+      },
+      "a11y-i18n": {
+        "rawText": "- Minor：支持多语言（至少 3 种）。\n    ◦ 实现 i18n 国际化系统。\n    ◦ 至少 3 个完整语言翻译。\n    ◦ 在 UI 中提供语言切换。\n    ◦ 所有面向用户的文本必须可翻译。"
+      },
+      "a11y-browsers": {
+        "rawText": "- Minor：支持更多浏览器。\n    ◦ 与至少 2 个额外浏览器（Firefox、Safari、Edge 等）完全兼容。\n    ◦ 在每个浏览器中测试并修复所有功能。\n    ◦ 记录任何特定浏览器的限制。\n    ◦ 在所有受支持浏览器中保持一致的 UI/UX。"
+      },
+      "um-standard": {
+        "rawText": "- Major：标准用户管理与认证。\n    ◦ 用户可以更新其个人信息。\n    ◦ 用户可以上传头像（若无则使用默认头像）。\n    ◦ 用户可以添加其他用户为好友并查看其在线状态。\n    ◦ 提供展示用户信息的个人资料页。"
+      },
+      "um-permissions": {
+        "rawText": "- Major：高级权限系统：\n    ◦ 查看、编辑和删除用户（CRUD）。\n    ◦ 角色管理（admin、user、guest、moderator 等）。\n    ◦ 根据用户角色展示不同视图和操作。"
+      },
+      "um-organizations": {
+        "rawText": "- Major：组织系统：\n    ◦ 创建、编辑与删除组织。\n    ◦ 向组织添加用户。\n    ◦ 从组织中移除用户。\n    ◦ 查看组织并允许执行特定操作（至少：创建、读取、更新）。"
+      },
+      "um-oauth": {
+        "rawText": "• Minor：实现远程认证（OAuth 2.0），例如 Google、GitHub、42 等。"
+      },
+      "um-2fa": {
+        "rawText": "• Minor：为用户实现完整的双因素认证（2FA）系统。"
+      }
     }
   },
-  
+
   "language": {
     "english": "英语",
     "french": "法语",
     "chinese": "中文"
   },
-  
+
   "auth": {
     "register": "注册",
     "registerDescription": "创建一个新账户以开始使用。",
@@ -393,41 +413,41 @@
   },
 
   "settings": {
-  "title": "设置",
-  "description": "管理您的账户设置和偏好。",
-  "profile": "个人资料",
-  "account": "账户",
-  "notifications": "通知",
-  "accountTitle": "账户设置",
-  "accountDescription": "管理您的账户安全和偏好设置。",
-  "notificationsTitle": "通知设置",
-  "notificationsDescription": "管理您的通知偏好。",
-  "notificationPreferences": {
-    "errorLoading": "加载通知偏好设置失败。",
-    "empty": "暂无可用的通知偏好设置。"
-  },
-  "twoFactor": {
-    "title": "双因素身份验证（2FA）",
-    "setupTitle": "设置双因素身份验证",
-    "setupDescription": "1. 打开您的身份验证应用（例如 Google Authenticator）。\n2. 扫描下方的二维码，或手动输入密钥。",
-    "status": "状态",
-    "statusEnabled": "已启用",
-    "statusDisabled": "已禁用",
-    "enable": "启用 2FA",
-    "disable": "禁用 2FA",
-    "loading": "加载中...",
-    "secretKey": "密钥",
-    "codeLabel": "请输入身份验证应用中的 6 位验证码：",
-    "codePlaceholder": "123456",
-    "verifying": "验证中...",
-    "verifyAndTurnOn": "验证并启用",
-    "enableSuccess": "2FA 已成功启用！",
-    "invalidCode": "验证码无效",
-    "disableConfirm": "确定要禁用 2FA 吗？",
-    "disableSuccess": "2FA 已禁用",
-    "generateError": "生成 2FA 密钥失败",
-    "disableError": "禁用 2FA 失败",
-    "unknownError": "未知错误"
+    "title": "设置",
+    "description": "管理您的账户设置和偏好。",
+    "profile": "个人资料",
+    "account": "账户",
+    "notifications": "通知",
+    "accountTitle": "账户设置",
+    "accountDescription": "管理您的账户安全和偏好设置。",
+    "notificationsTitle": "通知设置",
+    "notificationsDescription": "管理您的通知偏好。",
+    "notificationPreferences": {
+      "errorLoading": "加载通知偏好设置失败。",
+      "empty": "暂无可用的通知偏好设置。"
+    },
+    "twoFactor": {
+      "title": "双因素身份验证（2FA）",
+      "setupTitle": "设置双因素身份验证",
+      "setupDescription": "1. 打开您的身份验证应用（例如 Google Authenticator）。\n2. 扫描下方的二维码，或手动输入密钥。",
+      "status": "状态",
+      "statusEnabled": "已启用",
+      "statusDisabled": "已禁用",
+      "enable": "启用 2FA",
+      "disable": "禁用 2FA",
+      "loading": "加载中...",
+      "secretKey": "密钥",
+      "codeLabel": "请输入身份验证应用中的 6 位验证码：",
+      "codePlaceholder": "123456",
+      "verifying": "验证中...",
+      "verifyAndTurnOn": "验证并启用",
+      "enableSuccess": "2FA 已成功启用！",
+      "invalidCode": "验证码无效",
+      "disableConfirm": "确定要禁用 2FA 吗？",
+      "disableSuccess": "2FA 已禁用",
+      "generateError": "生成 2FA 密钥失败",
+      "disableError": "禁用 2FA 失败",
+      "unknownError": "未知错误"
     }
   },
 
@@ -456,9 +476,9 @@
     "loadOlderMessages": "加载更早的消息",
     "searchMessagesPlaceholder": "搜索消息...",
     "noMessagesFound": "未找到消息。",
-    "noUsersFound" : "未找到用户",
-    "unreadMessages" : "未读消息",
-    "searchDescription" : "请输入至少 2 个字符进行搜索。"
+    "noUsersFound": "未找到用户",
+    "unreadMessages": "未读消息",
+    "searchDescription": "请输入至少 2 个字符进行搜索。"
   },
 
   "showcase": {

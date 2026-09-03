@@ -3,10 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useAuth } from '../../hooks/useAuth';
-import {
-  useFriends,
-  useSentFriendRequests,
-} from '../../hooks/useFriends';
+import { useFriends, useSentFriendRequests } from '../../hooks/useFriends';
 import { useUserSearch } from '../../hooks/useUserSearch';
 import { useSendFriendRequest } from '../../hooks/useFriendMutations';
 import { useForm } from 'react-hook-form';
@@ -30,7 +27,7 @@ export function AddFriend() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const parentRef = useRef<HTMLDivElement | null>(null);
   const username = form.watch('username');
-  
+
   const {
     data: searchResult,
     isLoading: isUsersLoading,
@@ -39,21 +36,18 @@ export function AddFriend() {
     hasNextPage,
     isFetchingNextPage,
   } = useUserSearch(username);
-  
+
   const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
-  
+
   const { data: friends } = useFriends();
-  
+
   const sendFriendRequestMutation = useSendFriendRequest();
-  
+
   const { data: sentRequests } = useSentFriendRequests();
-  
-  const users =
-  searchResult?.pages.flatMap((page) => page.users) ?? [];
-  
-  const friendIds = new Set(
-    friends?.map((friend) => friend.id) ?? [],
-  );
+
+  const users = searchResult?.pages.flatMap((page) => page.users) ?? [];
+
+  const friendIds = new Set(friends?.map((friend) => friend.id) ?? []);
 
   const pendingUserIds = new Set(
     sentRequests?.map((request) => request.addresseeId) ?? [],
@@ -68,24 +62,24 @@ export function AddFriend() {
       if (friendIds.has(user.id)) {
         return false;
       }
-      
+
       return true;
     }) ?? [];
-    
-    const rowVirtualizer = useVirtualizer({
-      count: availableUsers.length,
-      getScrollElement: () => parentRef.current,
-      estimateSize: () => 72,
-      overscan: 5,
-    });
+
+  const rowVirtualizer = useVirtualizer({
+    count: availableUsers.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 72,
+    overscan: 5,
+  });
 
   useEffect(() => {
     const element = loadMoreRef.current;
-    
+
     if (!element || !hasNextPage) {
       return;
     }
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isFetchingNextPage) {
@@ -96,18 +90,14 @@ export function AddFriend() {
         threshold: 0.1,
       },
     );
-    
+
     observer.observe(element);
-    
+
     return () => {
       observer.disconnect();
     };
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  ]);
-  
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
   if (isCurrentUserLoading) {
     return <p>{t('friends.loading')}</p>;
   }
@@ -135,9 +125,7 @@ export function AddFriend() {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">
-        {t('friends.addFriend.title')}
-      </h2>
+      <h2 className="text-xl font-semibold">{t('friends.addFriend.title')}</h2>
 
       <Input
         type="text"
@@ -154,19 +142,14 @@ export function AddFriend() {
           {t('friends.addFriend.searching')}
         </p>
       ) : isUsersError ? (
-        <p className="text-destructive">
-          {t('friends.addFriend.searchError')}
-        </p>
+        <p className="text-destructive">{t('friends.addFriend.searchError')}</p>
       ) : availableUsers.length === 0 ? (
         <p className="text-muted-foreground">
           {t('friends.addFriend.noUsers')}
         </p>
       ) : (
         <>
-          <div
-            ref={parentRef}
-            className="h-64 overflow-y-auto"
-          >
+          <div ref={parentRef} className="h-64 overflow-y-auto">
             <div
               className="relative w-full"
               style={{
@@ -203,9 +186,7 @@ export function AddFriend() {
                       transform: `translateY(${virtualRow.start}px)`,
                     }}
                   >
-                    <p className="font-medium">
-                      {user.username}
-                    </p>
+                    <p className="font-medium">{user.username}</p>
                     <Button
                       size="sm"
                       disabled={
@@ -225,9 +206,7 @@ export function AddFriend() {
               })}
             </div>
 
-            {hasNextPage && (
-              <div ref={loadMoreRef} className="h-1" />
-            )}
+            {hasNextPage && <div ref={loadMoreRef} className="h-1" />}
 
             {isFetchingNextPage && (
               <p className="py-2 text-center text-sm text-muted-foreground">

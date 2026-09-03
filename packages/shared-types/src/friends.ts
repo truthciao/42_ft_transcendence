@@ -6,15 +6,11 @@ export const friendSchema = z.object({
     .int('id must be an integer')
     .min(1, 'id must be a positive integer'),
 
-  username: z
-    .string()
-    .min(1, 'username must not be empty'),
+  username: z.string().min(1, 'username must not be empty'),
 
   avatarUrl: z.string().nullable(),
-  
-  email: z
-    .string()
-    .email('email must be a valid email address'),
+
+  email: z.string().email('email must be a valid email address'),
 
   online: z.boolean(),
 });
@@ -48,9 +44,7 @@ export const friendRequestSchema = z.object({
 
   status: z.literal('PENDING'),
 
-  createdAt: z
-    .string()
-    .datetime('createdAt must be a valid ISO datetime'),
+  createdAt: z.string().datetime('createdAt must be a valid ISO datetime'),
 });
 
 export const addFriendSearchSchema = z.object({
@@ -68,22 +62,16 @@ export const sentPendingRequestSchema = friendRequestSchema.extend({
   addressee: friendSchema,
 });
 
-export type AddFriendSearchValues = z.infer<
-  typeof addFriendSearchSchema
->;
+export type AddFriendSearchValues = z.infer<typeof addFriendSearchSchema>;
 
 export type Friend = z.infer<typeof friendSchema>;
 
 export type FriendRequest = z.infer<typeof friendRequestSchema>;
 
-export type PendingRequest =
-  z.infer<typeof pendingRequestSchema>;
+export type PendingRequest = z.infer<typeof pendingRequestSchema>;
 
-export type SentPendingRequest =
-  z.infer<typeof sentPendingRequestSchema>;
+export type SentPendingRequest = z.infer<typeof sentPendingRequestSchema>;
 
-export type SendFriendRequestDto =
-  z.infer<typeof sendFriendRequestSchema>;
+export type SendFriendRequestDto = z.infer<typeof sendFriendRequestSchema>;
 
-export type MessageResponse =
-  z.infer<typeof messageResponseSchema>;
+export type MessageResponse = z.infer<typeof messageResponseSchema>;

@@ -14,7 +14,7 @@ import {
 import {
   useUnreadNotificationCount,
   useMarkAllNotificationsAsRead,
-  useNotifications
+  useNotifications,
 } from '@/hooks/useNotifications';
 import type { Notification } from '@repo/shared-types';
 
@@ -22,10 +22,8 @@ export function TopBar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: notifications = [] } = useNotifications();
-  const { data: unreadCount = 0 } =
-    useUnreadNotificationCount();
-  const markAllAsReadMutation =
-    useMarkAllNotificationsAsRead();
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
   const { t } = useTranslation();
 
   function logout() {
@@ -53,10 +51,16 @@ export function TopBar() {
         return t('notifications.friendRemoved', { username });
 
       case 'WORKSPACE_INVITE_RECEIVED':
-        return t('notifications.workspaceInviteReceived', { username, workspaceName });
+        return t('notifications.workspaceInviteReceived', {
+          username,
+          workspaceName,
+        });
 
       case 'WORKSPACE_INVITE_ACCEPTED':
-        return t('notifications.workspaceInviteAccepted', { username, workspaceName });
+        return t('notifications.workspaceInviteAccepted', {
+          username,
+          workspaceName,
+        });
 
       case 'WORKSPACE_MEMBER_REMOVED':
         return t('notifications.workspaceMemberRemoved', { workspaceName });
@@ -78,17 +82,17 @@ export function TopBar() {
       <div className="ml-auto flex items-center gap-2">
         <LanguageSwitcher />
 
-      <DropdownMenu
-        onOpenChange={(open) => {
-          if (open && unreadCount > 0) {
-            markAllAsReadMutation.mutate();
-          }
-        }}
-      >
-        <DropdownMenuTrigger
-          className="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
-          aria-label={t('settings.notifications')}
+        <DropdownMenu
+          onOpenChange={(open) => {
+            if (open && unreadCount > 0) {
+              markAllAsReadMutation.mutate();
+            }
+          }}
         >
+          <DropdownMenuTrigger
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent"
+            aria-label={t('settings.notifications')}
+          >
             <Bell className="size-4" />
 
             {unreadCount > 0 && (
@@ -111,63 +115,57 @@ export function TopBar() {
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
-        </DropdownMenuTrigger>
+          </DropdownMenuTrigger>
 
-        <DropdownMenuContent
-          align="end"
-          className="w-80"
-        >
-          <div className="px-2 py-1.5 text-sm font-semibold">
-            {t('notifications.title')}
-          </div>
-
-          <DropdownMenuSeparator />
-
-          {notifications.length === 0 ? (
-            <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-              {t('notifications.empty')}
+          <DropdownMenuContent align="end" className="w-80">
+            <div className="px-2 py-1.5 text-sm font-semibold">
+              {t('notifications.title')}
             </div>
-          ) : (
-            notifications.map((notification) => (
-              <DropdownMenuItem
-                key={notification.id}
-                className="flex flex-col items-start gap-1"
-                onClick={() => {
-                  if (notification.type === 'FRIEND_REQUEST_RECEIVED') {
-                    navigate('/app/friends');
-                    return;
-                  }
 
-                  const workspaceId = notification.workspace?.id;
+            <DropdownMenuSeparator />
 
-                  if (!workspaceId) return;
+            {notifications.length === 0 ? (
+              <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                {t('notifications.empty')}
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <DropdownMenuItem
+                  key={notification.id}
+                  className="flex flex-col items-start gap-1"
+                  onClick={() => {
+                    if (notification.type === 'FRIEND_REQUEST_RECEIVED') {
+                      navigate('/app/friends');
+                      return;
+                    }
 
-                  if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
-                    navigate('/app/spaces');
-                  } else if (notification.type.startsWith('WORKSPACE')) {
-                    navigate(`/app/spaces/${workspaceId}`);
-                  }
-                }}
-              >
-                <span className="font-medium">
-                  {notification.actor?.username ?? t('common.unknownUser')}
-                </span>
+                    const workspaceId = notification.workspace?.id;
 
-                <span className="text-xs text-muted-foreground">
-                  {getNotificationMessage(notification)}
-                </span>
-              </DropdownMenuItem>
-            ))
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+                    if (!workspaceId) return;
+
+                    if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
+                      navigate('/app/spaces');
+                    } else if (notification.type.startsWith('WORKSPACE')) {
+                      navigate(`/app/spaces/${workspaceId}`);
+                    }
+                  }}
+                >
+                  <span className="font-medium">
+                    {notification.actor?.username ?? t('common.unknownUser')}
+                  </span>
+
+                  <span className="text-xs text-muted-foreground">
+                    {getNotificationMessage(notification)}
+                  </span>
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer outline-none">
-            <Avatar
-              src={user?.avatarUrl}
-              name={user?.username ?? 'Account'}
-            />
+            <Avatar src={user?.avatarUrl} name={user?.username ?? 'Account'} />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-48">

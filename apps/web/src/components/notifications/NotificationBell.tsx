@@ -71,10 +71,7 @@ export function NotificationBell() {
                 acceptMutation.isPending || rejectMutation.isPending;
 
               return (
-                <div
-                  key={request.id}
-                  className="rounded-md p-2"
-                >
+                <div key={request.id} className="rounded-md p-2">
                   <Link
                     to={`/app/friends/${request.requester.id}`}
                     className="text-sm font-medium hover:underline"

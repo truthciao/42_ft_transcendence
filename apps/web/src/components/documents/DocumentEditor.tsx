@@ -9,9 +9,7 @@ interface DocumentEditorProps {
   documentId: number;
 }
 
-export function DocumentEditor({
-  documentId,
-}: DocumentEditorProps) {
+export function DocumentEditor({ documentId }: DocumentEditorProps) {
   const ydoc = useMemo(() => new Y.Doc(), []);
 
   const editor = useEditor({
@@ -31,34 +29,20 @@ export function DocumentEditor({
   useEffect(() => {
     const socket = getSocket();
 
-    const handleSync = (data: {
-      documentId: number;
-      update: number[];
-    }) => {
+    const handleSync = (data: { documentId: number; update: number[] }) => {
       if (data.documentId !== documentId) {
         return;
       }
 
-      Y.applyUpdate(
-        ydoc,
-        new Uint8Array(data.update),
-        'remote',
-      );
+      Y.applyUpdate(ydoc, new Uint8Array(data.update), 'remote');
     };
 
-    const handleUpdate = (data: {
-      documentId: number;
-      update: number[];
-    }) => {
+    const handleUpdate = (data: { documentId: number; update: number[] }) => {
       if (data.documentId !== documentId) {
         return;
       }
 
-      Y.applyUpdate(
-        ydoc,
-        new Uint8Array(data.update),
-        'remote',
-      );
+      Y.applyUpdate(ydoc, new Uint8Array(data.update), 'remote');
     };
 
     socket.on('document:sync', handleSync);
@@ -67,10 +51,10 @@ export function DocumentEditor({
     socket.emit('document:join', {
       documentId,
     });
-console.log('[DocumentEditor] joining document', {
-  documentId,
-  socketId: socket.id,
-});
+    console.log('[DocumentEditor] joining document', {
+      documentId,
+      socketId: socket.id,
+    });
     return () => {
       socket.emit('document:leave', {
         documentId,
@@ -83,10 +67,7 @@ console.log('[DocumentEditor] joining document', {
 
   // Send local Yjs updates to the server.
   useEffect(() => {
-    const handleYDocUpdate = (
-      update: Uint8Array,
-      origin: unknown,
-    ) => {
+    const handleYDocUpdate = (update: Uint8Array, origin: unknown) => {
       if (origin === 'remote') {
         return;
       }
@@ -106,10 +87,5 @@ console.log('[DocumentEditor] joining document', {
     };
   }, [documentId, ydoc]);
 
-  return (
-    <EditorContent
-      editor={editor}
-      className="min-h-100 w-full"
-    />
-  );
+  return <EditorContent editor={editor} className="min-h-100 w-full" />;
 }

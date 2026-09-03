@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotificationType } from '../../generated/prisma/enums.js';
 import type { NotificationPreference } from '@repo/shared-types';
@@ -30,8 +27,8 @@ export class NotificationsService {
             id: true,
             name: true,
             icon: true,
-          }
-        }
+          },
+        },
       },
     });
   }
@@ -46,17 +43,17 @@ export class NotificationsService {
   }
 
   async markAllAsRead(userId: number) {
-  await this.prisma.notification.updateMany({
+    await this.prisma.notification.updateMany({
       where: {
-      recipientId: userId,
-      read: false,
+        recipientId: userId,
+        read: false,
       },
       data: {
-      read: true,
+        read: true,
       },
-  });
+    });
 
-  return { success: true };
+    return { success: true };
   }
 
   async markAsRead(notificationId: number, userId: number) {
@@ -110,10 +107,7 @@ export class NotificationsService {
     });
   }
 
-  async updatePreferences(
-    userId: number,
-    items: NotificationPreference[],
-  ) {
+  async updatePreferences(userId: number, items: NotificationPreference[]) {
     const results: NotificationPreference[] = [];
 
     for (const item of items) {

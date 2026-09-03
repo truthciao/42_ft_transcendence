@@ -1,34 +1,19 @@
 import { z } from 'zod';
 
 export const documentSchema = z.object({
-  id: z
-    .number()
-    .int()
-    .positive(),
+  id: z.number().int().positive(),
 
-  title: z
-    .string()
-    .min(1)
-    .max(200),
+  title: z.string().min(1).max(200),
 
-  content: z
-    .string(),
+  content: z.string(),
 
-  workspaceId: z
-    .number()
-    .int()
-    .positive(),
+  workspaceId: z.number().int().positive(),
 
-  creatorId: z
-    .number()
-    .int()
-    .positive(),
+  creatorId: z.number().int().positive(),
 
-  createdAt: z
-    .string(),
+  createdAt: z.string(),
 
-  updatedAt: z
-    .string(),
+  updatedAt: z.string(),
 });
 
 export const createDocumentSchema = z.object({
@@ -49,9 +34,7 @@ export const updateDocumentSchema = z.object({
     .max(200, 'title must be at most 200 characters')
     .optional(),
 
-  content: z
-    .string()
-    .optional(),
+  content: z.string().optional(),
 });
 
 export type Document = z.infer<typeof documentSchema>;

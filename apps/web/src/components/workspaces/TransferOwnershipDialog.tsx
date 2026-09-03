@@ -1,11 +1,17 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button} from "@/components/ui/button";
-import { useWorkspaceMembers } from "@/hooks/useWorkspaces";
-import { useTransferOwnership } from "@/hooks/useWorkspaceMutations";
-import { useConfirm } from "@/lib/confirm-context";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { useWorkspaceMembers } from '@/hooks/useWorkspaces';
+import { useTransferOwnership } from '@/hooks/useWorkspaceMutations';
+import { useConfirm } from '@/lib/confirm-context';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface TransferOwnershipDialogProps {
   workspaceId: number;
@@ -13,13 +19,13 @@ interface TransferOwnershipDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function TransferOwnershipDialog ({
+export function TransferOwnershipDialog({
   workspaceId,
   open,
   onOpenChange,
-}: TransferOwnershipDialogProps ) {
+}: TransferOwnershipDialogProps) {
   const { data: members } = useWorkspaceMembers(workspaceId);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const mutation = useTransferOwnership(workspaceId);
   const confirm = useConfirm();
   const { t } = useTranslation();
@@ -27,26 +33,25 @@ export function TransferOwnershipDialog ({
   const candidates = members?.filter((m) => m.role !== 'OWNER') ?? [];
 
   function handleOpenChange(next: boolean) {
-    if (!next)
-      setSelectedUserId(null);
+    if (!next) setSelectedUserId(null);
     onOpenChange(next);
   }
 
   async function handleTransfer() {
-    if (selectedUserId === null)
-      return;
+    if (selectedUserId === null) return;
     const target = candidates.find((m) => m.userId === selectedUserId);
 
     const confirmed = await confirm({
-      title: t('workspaces.transferOwnership.confirmTitle', { name: target?.user.username }),
+      title: t('workspaces.transferOwnership.confirmTitle', {
+        name: target?.user.username,
+      }),
       description: t('workspaces.transferOwnership.confirmDescription'),
-      variant: 'destructive'
+      variant: 'destructive',
     });
-    if (!confirmed)
-      return;
+    if (!confirmed) return;
 
     try {
-      await mutation.mutateAsync({ targetUserId: selectedUserId});
+      await mutation.mutateAsync({ targetUserId: selectedUserId });
       toast.success(t('workspaces.transferOwnership.success'));
       handleOpenChange(false);
     } catch {
@@ -80,7 +85,9 @@ export function TransferOwnershipDialog ({
                 />
                 <span className="text-sm">
                   {member.user.profile?.displayName || member.user.username}
-                  <span className="ml-1.5 text-xs text-muted-foreground">({member.role})</span>
+                  <span className="ml-1.5 text-xs text-muted-foreground">
+                    ({member.role})
+                  </span>
                 </span>
               </label>
             ))}
@@ -96,10 +103,12 @@ export function TransferOwnershipDialog ({
             disabled={selectedUserId === null || mutation.isPending}
             onClick={handleTransfer}
           >
-            {mutation.isPending ? t('workspaces.transferOwnership.transferring') : t('workspaces.transferOwnership.transfer')}
+            {mutation.isPending
+              ? t('workspaces.transferOwnership.transferring')
+              : t('workspaces.transferOwnership.transfer')}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

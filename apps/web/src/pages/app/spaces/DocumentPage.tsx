@@ -1,17 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Check, Loader2 } from 'lucide-react';
 import { useBlocker, useNavigate, useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { documentKeys, useDocument } from '@/hooks/useDocuments';
-import {
-  updateDocument,
-  type Document,
-} from '@/api/documents';
+import { updateDocument, type Document } from '@/api/documents';
 import { useTranslation } from 'react-i18next';
 import { DocumentEditor } from '@/components/documents/DocumentEditor';
 import { getSocket } from '@/lib/realtime';
@@ -20,13 +12,11 @@ import { Button } from '@/components/ui/button';
 type SaveStatus = 'saved' | 'saving' | 'error';
 
 export function DocumentPage() {
-  const {
-    workspaceId: workspaceIdParam,
-    documentId: documentIdParam,
-  } = useParams<{
-    workspaceId: string;
-    documentId: string;
-  }>();
+  const { workspaceId: workspaceIdParam, documentId: documentIdParam } =
+    useParams<{
+      workspaceId: string;
+      documentId: string;
+    }>();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -40,9 +30,7 @@ export function DocumentPage() {
   const [title, setTitle] = useState('');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingPatchRef = useRef<{
     title?: string;
     content?: string;
@@ -60,10 +48,7 @@ export function DocumentPage() {
   }, [document]);
 
   const scheduleSave = useCallback(
-    (patch: {
-      title?: string;
-      content?: string;
-    }) => {
+    (patch: { title?: string; content?: string }) => {
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
       }
@@ -84,11 +69,7 @@ export function DocumentPage() {
           return;
         }
 
-        updateDocument(
-          workspaceId,
-          documentId,
-          pendingPatch,
-        )
+        updateDocument(workspaceId, documentId, pendingPatch)
           .then(() => {
             queryClient.setQueryData<Document[]>(
               documentKeys.workspace(workspaceId),
@@ -122,10 +103,7 @@ export function DocumentPage() {
             setSaveStatus('saved');
           })
           .catch((error) => {
-            console.error(
-              '[document] failed to save',
-              error,
-            );
+            console.error('[document] failed to save', error);
 
             setSaveStatus('error');
           });
@@ -133,12 +111,12 @@ export function DocumentPage() {
     },
     [workspaceId, documentId, queryClient],
   );
-  
+
   const { t } = useTranslation();
 
-  const titleRealtimeTimerRef = useRef<
-    ReturnType<typeof setTimeout> | null
-  >(null);
+  const titleRealtimeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   useEffect(() => {
     return () => {
@@ -168,11 +146,7 @@ export function DocumentPage() {
       clearTimeout(saveTimerRef.current);
     }
 
-    updateDocument(
-      workspaceId,
-      documentId,
-      pendingPatch,
-    )
+    updateDocument(workspaceId, documentId, pendingPatch)
       .then(() => {
         queryClient.setQueryData<Document[]>(
           documentKeys.workspace(workspaceId),
@@ -210,20 +184,12 @@ export function DocumentPage() {
         blocker.proceed();
       })
       .catch((error) => {
-        console.error(
-          '[document] failed to save before navigation',
-          error,
-        );
+        console.error('[document] failed to save before navigation', error);
 
         setSaveStatus('error');
         blocker.reset();
       });
-  }, [
-    blocker,
-    workspaceId,
-    documentId,
-    queryClient,
-  ]);
+  }, [blocker, workspaceId, documentId, queryClient]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -239,16 +205,10 @@ export function DocumentPage() {
       setTitle(data.title);
     };
 
-    socket.on(
-      'document:title-updated',
-      handleTitleUpdated,
-    );
+    socket.on('document:title-updated', handleTitleUpdated);
 
     return () => {
-      socket.off(
-        'document:title-updated',
-        handleTitleUpdated,
-      );
+      socket.off('document:title-updated', handleTitleUpdated);
     };
   }, [documentId]);
 
@@ -256,9 +216,7 @@ export function DocumentPage() {
     navigate(`/app/spaces/${workspaceId}`);
   };
 
-  const handleTitleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
 
     setTitle(value);
@@ -310,12 +268,7 @@ export function DocumentPage() {
   return (
     <div className="flex h-full flex-col">
       <header className="flex h-14 shrink-0 items-center border-b px-6">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={handleBack}
-        >
+        <Button type="button" variant="ghost" size="sm" onClick={handleBack}>
           <ArrowLeft className="size-4" />
           <span>{t('workspaces.pages.document.back')}</span>
         </Button>

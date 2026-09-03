@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { atLeastRole, type WorkspaceRole } from "@repo/shared-types";
-import { useWorkspace } from "./useWorkspaces";
+import { useMemo } from 'react';
+import { atLeastRole, type WorkspaceRole } from '@repo/shared-types';
+import { useWorkspace } from './useWorkspaces';
 
 export interface WorkspacePermissions {
   role: WorkspaceRole | null;
@@ -20,14 +20,15 @@ export interface WorkspacePermissions {
   };
 }
 
-export function usePermission(workspaceId: number | undefined): WorkspacePermissions {
+export function usePermission(
+  workspaceId: number | undefined,
+): WorkspacePermissions {
   const { data: workspace, isLoading } = useWorkspace(workspaceId);
   const role = workspace?.myMembership?.role ?? null;
 
   return useMemo(() => {
     function hasRole(min: WorkspaceRole, strict = false): boolean {
-      if (!role)
-        return false;
+      if (!role) return false;
       return atLeastRole(role, min, strict);
     }
 
@@ -46,7 +47,7 @@ export function usePermission(workspaceId: number | undefined): WorkspacePermiss
         createChannel: hasRole('ADMIN'),
         leaveWorkspace: role !== null && role !== 'OWNER',
         transferOwnership: hasRole('OWNER'),
-      }
-    }
+      },
+    };
   }, [role, isLoading]);
 }

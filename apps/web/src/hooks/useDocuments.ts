@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   createDocument,
@@ -16,22 +12,17 @@ import {
 export const documentKeys = {
   all: ['documents'] as const,
 
-  workspace: (workspaceId: number) =>
-    ['documents', workspaceId] as const,
+  workspace: (workspaceId: number) => ['documents', workspaceId] as const,
 
   detail: (workspaceId: number, documentId: number) =>
     ['documents', workspaceId, documentId] as const,
 };
 
-export function useWorkspaceDocuments(
-  workspaceId: number | undefined,
-) {
+export function useWorkspaceDocuments(workspaceId: number | undefined) {
   return useQuery<Document[]>({
     queryKey: documentKeys.workspace(workspaceId ?? -1),
     queryFn: () => getDocuments(workspaceId as number),
-    enabled:
-      workspaceId !== undefined &&
-      Number.isInteger(workspaceId),
+    enabled: workspaceId !== undefined && Number.isInteger(workspaceId),
   });
 }
 
@@ -40,15 +31,8 @@ export function useDocument(
   documentId: number | undefined,
 ) {
   return useQuery<Document>({
-    queryKey: documentKeys.detail(
-      workspaceId ?? -1,
-      documentId ?? -1,
-    ),
-    queryFn: () =>
-      getDocument(
-        workspaceId as number,
-        documentId as number,
-      ),
+    queryKey: documentKeys.detail(workspaceId ?? -1, documentId ?? -1),
+    queryFn: () => getDocument(workspaceId as number, documentId as number),
     enabled:
       workspaceId !== undefined &&
       documentId !== undefined &&
@@ -63,7 +47,7 @@ export function useCreateDocument(workspaceId: number) {
   return useMutation({
     mutationFn: (payload: CreateDocumentPayload) =>
       createDocument(workspaceId, payload),
-    
+
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: documentKeys.workspace(workspaceId),
@@ -76,15 +60,11 @@ export function useDeleteDocument(workspaceId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (documentId: number) =>
-      deleteDocument(workspaceId, documentId),
+    mutationFn: (documentId: number) => deleteDocument(workspaceId, documentId),
 
     onSuccess: (_, documentId) => {
       queryClient.removeQueries({
-        queryKey: documentKeys.detail(
-          workspaceId,
-          documentId,
-        ),
+        queryKey: documentKeys.detail(workspaceId, documentId),
       });
 
       queryClient.invalidateQueries({

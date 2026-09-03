@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@repo/shared-types';
 import { AuthContext } from './AuthContext';
 import { getCurrentUser } from '../api/users';
-import i18n from '../i18n'; 
+import i18n from '../i18n';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

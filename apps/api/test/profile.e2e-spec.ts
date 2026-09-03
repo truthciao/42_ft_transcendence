@@ -31,10 +31,9 @@ describe('Profiles (e2e)', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -57,9 +56,7 @@ describe('Profiles (e2e)', () => {
 
   describe('GET /profiles/me', () => {
     it('should reject unauthenticated requests', async () => {
-      await request(server)
-        .get('/profiles/me')
-        .expect(401);
+      await request(server).get('/profiles/me').expect(401);
     });
 
     it('should return the current user profile', async () => {

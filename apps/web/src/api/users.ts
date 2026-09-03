@@ -23,11 +23,7 @@ export function getUserProfile(userId: number) {
   return httpGet<User>(`/users/${userId}/profile`);
 }
 
-export function searchUsers(
-  username: string,
-  limit = 20,
-  offset = 0,
-) {
+export function searchUsers(username: string, limit = 20, offset = 0) {
   return httpGet<{
     users: User[];
     hasMore: boolean;

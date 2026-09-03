@@ -9,6 +9,7 @@
     "loading": "Loading...",
     "back": "Go back",
     "unknownUser": "Unknown user",
+    "genericWorkspace": "a workspace",
     "selectSection": "Select a section",
     "or": "OR"
   },
@@ -401,6 +402,10 @@
     "accountDescription": "Manage your account security and preferences.",
     "notificationsTitle": "Notification Settings",
     "notificationsDescription": "Manage your notification preferences.",
+    "notificationPreferences": {
+      "errorLoading": "Failed to load notification preferences.",
+      "empty": "No notification preferences available."
+    },
     "twoFactor": {
       "title": "Two-Factor Authentication (2FA)",
       "setupTitle": "Set up Two-Factor Authentication",
@@ -459,7 +464,6 @@
   "showcase": {
     "title": "Component Library",
     "description": "A quick reference of the shared UI building blocks.",
-
     "sections": {
       "colors": "Colors",
       "typography": "Typography",
@@ -474,25 +478,21 @@
       "confirmDialog": "ConfirmDialog",
       "pageError": "PageError"
     },
-
     "typography": {
       "body": "Body text — The quick brown fox jumps over the lazy dog.",
       "small": "Small / secondary text",
       "caption": "Caption text"
     },
-
     "input": {
       "usernamePlaceholder": "Enter your username...",
       "disabledPlaceholder": "Disabled input"
     },
-
     "dialog": {
       "open": "Open Dialog",
       "title": "Example Dialog",
       "description": "This is an example of our reusable dialog component.",
       "content": "Dialog content can be placed here."
     },
-
     "dropdown": {
       "open": "Open Menu",
       "account": "Account",
@@ -503,31 +503,25 @@
       "settingsClicked": "Settings clicked",
       "signOutClicked": "Sign out clicked"
     },
-
     "tooltip": {
       "trigger": "Hover me",
       "content": "This is a reusable tooltip."
     },
-
     "emptyFriendsTitle": "No friends yet",
     "emptyFriendsDescription": "When you add friends, they'll show up here.",
     "emptyFriendsAction": "Add a friend",
     "actionClicked": "Action clicked",
-
     "toastSuccess": "Saved successfully",
     "toastError": "Something went wrong",
     "toastInfo": "Here's some information",
-
     "triggerSuccess": "Show success toast",
     "triggerError": "Show error toast",
     "triggerInfo": "Show info toast",
     "triggerConfirm": "Delete something",
-
     "confirmTitle": "Are you sure?",
     "confirmDescription": "This action cannot be undone.",
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
-
     "showPreview": "Show preview",
     "hidePreview": "Hide preview",
     "pageErrorTitle": "Something went wrong",
@@ -545,7 +539,32 @@
     "workspaceInviteReceived": "{{username}} invited you to join {{workspaceName}}",
     "workspaceInviteAccepted": "{{username}} accepted your invite to {{workspaceName}}",
     "workspaceMemberRemoved": "You were removed from {{workspaceName}}",
-    "workspaceRoleChanged": "Your role in {{workspaceName}} was updated"
+    "workspaceRoleChanged": "Your role in {{workspaceName}} was updated",
+    "channels": {
+      "inApp": "In-app",
+      "email": "Email",
+      "push": "Push"
+    },
+    "types": {
+      "FRIEND_REQUEST_RECEIVED": "Friend request received",
+      "FRIEND_REQUEST_ACCEPTED": "Friend request accepted",
+      "FRIEND_REQUEST_REJECTED": "Friend request rejected",
+      "FRIEND_REMOVED": "Friend removed",
+      "WORKSPACE_INVITE_RECEIVED": "Workspace invite received",
+      "WORKSPACE_INVITE_ACCEPTED": "Workspace invite accepted",
+      "WORKSPACE_MEMBER_REMOVED": "Workspace member removed",
+      "WORKSPACE_ROLE_CHANGED": "Workspace role changed"
+    },
+    "descriptions": {
+      "FRIEND_REQUEST_RECEIVED": "You receive a friend request.",
+      "FRIEND_REQUEST_ACCEPTED": "Someone accepted your friend request.",
+      "FRIEND_REQUEST_REJECTED": "Someone rejected your friend request.",
+      "FRIEND_REMOVED": "Someone removed you as a friend.",
+      "WORKSPACE_INVITE_RECEIVED": "You're invited to join a workspace.",
+      "WORKSPACE_INVITE_ACCEPTED": "Your workspace invite was accepted.",
+      "WORKSPACE_MEMBER_REMOVED": "You were removed from a workspace.",
+      "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed."
+    }
   },
 
   "fileUpload": {
@@ -562,7 +581,6 @@
 
   "legal": {
     "lastUpdated": "Last updated: August 24, 2026",
-
     "privacy": {
       "title": "Privacy Policy",
       "sections": {
@@ -616,7 +634,6 @@
         }
       }
     },
-
     "terms": {
       "title": "Terms of Service",
       "sections": {

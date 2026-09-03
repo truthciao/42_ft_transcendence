@@ -99,3 +99,6 @@ export const httpPatch = <T>(
 
 export const httpDelete = <T>(path: string, options?: HttpOptions) =>
   http<T>(path, { ...options, method: 'DELETE' });
+
+export const httpPut = <T>(path: string, body?: unknown, options?: HttpOptions) =>
+  http<T>(path, { ...options, method: 'PUT', body });

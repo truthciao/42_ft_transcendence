@@ -37,6 +37,7 @@ model User {
 
   notificationsReceived Notification[] @relation("NotificationRecipient")
   notificationsCreated  Notification[] @relation("NotificationActor")
+  notificationPreferences NotificationPreference[]
 
   attachments Attachment[] // 用户上传的所有文件
 }
@@ -236,6 +237,21 @@ model Notification {
 
   @@index([recipientId, read])
   @@index([recipientId, createdAt])
+}
+
+model NotificationPreference {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  viaInApp  Boolean          @default(true)
+  viaEmail  Boolean          @default(false)
+  viaPush   Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([userId, type])
+  @@index([userId])
 }
 
 // 1. 新增 Attachment 表

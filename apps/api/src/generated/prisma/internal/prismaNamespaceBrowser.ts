@@ -62,6 +62,7 @@ export const ModelName = {
   Message: 'Message',
   Friendship: 'Friendship',
   Notification: 'Notification',
+  NotificationPreference: 'NotificationPreference',
   Attachment: 'Attachment',
   Document: 'Document'
 } as const
@@ -224,6 +225,20 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  viaInApp: 'viaInApp',
+  viaEmail: 'viaEmail',
+  viaPush: 'viaPush',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
 
 
 export const AttachmentScalarFieldEnum = {

@@ -73,6 +73,11 @@ export type Friendship = Prisma.FriendshipModel
  */
 export type Notification = Prisma.NotificationModel
 /**
+ * Model NotificationPreference
+ * 
+ */
+export type NotificationPreference = Prisma.NotificationPreferenceModel
+/**
  * Model Attachment
  * 
  */

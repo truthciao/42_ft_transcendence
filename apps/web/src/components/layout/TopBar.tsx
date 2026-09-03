@@ -36,7 +36,8 @@ export function TopBar() {
 
   function getNotificationMessage(notification: Notification) {
     const username = notification.actor?.username ?? t('common.unknownUser');
-    const workspaceName = notification.workspace?.name ?? 'a workspace';
+    const workspaceName =
+      notification.workspace?.name ?? t('common.genericWorkspace');
 
     switch (notification.type) {
       case 'FRIEND_REQUEST_RECEIVED':

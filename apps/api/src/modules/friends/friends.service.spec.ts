@@ -14,8 +14,13 @@ import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 
 type MockUser = {
   id: number;
+  username?: string;
+  email?: string;
+  profile?: {
+    displayName?: string | null;
+    avatarUrl?: string | null;
+  } | null;
 };
-
 type MockFriendship = {
   id: number;
   requesterId: number;
@@ -64,6 +69,17 @@ const updateFriendship = jest.fn<() => Promise<UpdatedFriendship>>();
 const deleteFriendship = jest.fn<() => Promise<unknown>>();
 const createNotification = jest.fn<() => Promise<unknown>>();
 const updateManyNotifications = jest.fn<() => Promise<unknown>>();
+
+
+type MockNotificationPreference = {
+  viaInApp: boolean;
+  viaEmail: boolean;
+  viaPush: boolean;
+};
+
+const findUniqueNotificationPreference =
+  jest.fn<() => Promise<MockNotificationPreference | null>>();
+  
 const mockChatService = {
   createDirectConversation: jest.fn(
     (_userId: number, _targetUserId: number) =>
@@ -82,12 +98,19 @@ const mockRealtimeRoomService = {
   emitToUser: jest.fn(),
 };
 
+const mockMailService = {
+  sendNotificationEmail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+};
+
 describe('FriendsService', () => {
   let service: FriendsService;
 
   const prisma = {
     user: {
       findUnique: findUniqueUser,
+    },
+    notificationPreference: {
+      findUnique: findUniqueNotificationPreference,
     },
     friendship: {
       findFirst: findFirstFriendship,
@@ -108,11 +131,13 @@ describe('FriendsService', () => {
 
     createNotification.mockResolvedValue({});
     updateManyNotifications.mockResolvedValue({ count: 1 });
+    findUniqueNotificationPreference.mockResolvedValue(null);
 
     service = new FriendsService(
       prisma as unknown as PrismaService,
       mockChatService as unknown as ChatService,
       mockRealtimeRoomService as unknown as RealtimeRoomService,
+      mockMailService as any,
     );
   });
 
@@ -202,6 +227,121 @@ describe('FriendsService', () => {
         },
       );
     });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+      prisma.user.findUnique.mockResolvedValue({ id: 2 });
+      prisma.friendship.findFirst.mockResolvedValue(null);
+      prisma.friendship.create.mockResolvedValue({
+        id: 1,
+        requesterId: 1,
+        addresseeId: 2,
+        status: FriendshipStatus.PENDING,
+      });
+
+      await service.sendRequest(1, 2);
+
+      expect(prisma.notification.create).not.toHaveBeenCalled();
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_RECEIVED,
+        {
+          friendshipId: 1,
+          requesterId: 1,
+        },
+      );
+    });
+  });
+  
+  describe('email notifications', () => {
+    it('falls back to username when profile display name is null', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: true,
+        viaPush: false,
+      });
+      prisma.user.findUnique
+        .mockResolvedValueOnce({
+          id: 20,
+          email: 'addressee@example.com',
+          profile: null,
+        })
+        .mockResolvedValueOnce({
+          id: 10,
+          username: 'alice',
+          profile: { displayName: null },
+        });
+
+      await (service as any).sendFriendRequestEmail(10, 20);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'addressee@example.com',
+        'alice sent you a friend request',
+        'FRIEND_REQUEST_RECEIVED',
+        expect.objectContaining({
+          actorName: 'alice',
+        }),
+      );
+    });
+
+    it('skips friend request email when viaEmail is disabled', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendFriendRequestEmail(10, 20);
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
+    });
+
+    it('skips friend request accepted email when viaEmail is disabled', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendFriendRequestAcceptedEmail(10, 20);
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
+    });
+
+    it('sends friend request accepted email when viaEmail is enabled', async () => {
+      prisma.notificationPreference.findUnique.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: true,
+        viaPush: false,
+      });
+
+      prisma.user.findUnique
+        .mockResolvedValueOnce({
+          id: 10,
+          email: 'requester@example.com',
+        })
+        .mockResolvedValueOnce({
+          id: 20,
+          username: 'bob',
+          profile: { displayName: 'Bob' },
+        });
+
+      await (service as any).sendFriendRequestAcceptedEmail(10, 20);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'requester@example.com',
+        'Bob accepted your friend request',
+        'FRIEND_REQUEST_ACCEPTED',
+        expect.objectContaining({
+          actorName: 'Bob',
+        }),
+      );
+    });
   });
 
   describe('acceptRequest', () => {
@@ -246,6 +386,7 @@ describe('FriendsService', () => {
         addresseeId: 3,
         status: FriendshipStatus.PENDING,
       });
+
       prisma.friendship.update.mockResolvedValue({
         id: 1,
         status: FriendshipStatus.ACCEPTED,
@@ -254,6 +395,58 @@ describe('FriendsService', () => {
       await expect(service.acceptRequest(1, 3)).resolves.toMatchObject({
         status: FriendshipStatus.ACCEPTED,
       });
+
+      expect(createNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            recipientId: 2,
+            actorId: 3,
+            type: 'FRIEND_REQUEST_ACCEPTED',
+          }),
+        }),
+      );
+    });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.friendship.findUnique.mockResolvedValue({
+        id: 1,
+        requesterId: 2,
+        addresseeId: 3,
+        status: FriendshipStatus.PENDING,
+      });
+
+      prisma.friendship.update.mockResolvedValue({
+        id: 1,
+        status: FriendshipStatus.ACCEPTED,
+      });
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.acceptRequest(1, 3);
+
+      expect(findUniqueNotificationPreference).toHaveBeenCalledWith({
+        where: {
+          userId_type: {
+            userId: 2,
+            type: 'FRIEND_REQUEST_ACCEPTED',
+          },
+        },
+      });
+
+      expect(createNotification).not.toHaveBeenCalled();
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+        {
+          friendshipId: 1,
+          userId: 3,
+        },
+      );
     });
   });
 

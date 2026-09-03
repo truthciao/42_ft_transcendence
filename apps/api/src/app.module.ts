@@ -15,6 +15,7 @@ import { HealthModule } from './modules/health/health.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { FilesModule } from './modules/files/files.module.js';
 import { DocumentsModule } from './modules/documents/documents.module.js';
+import { MailModule } from './modules/mail/mail.module.js';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { DocumentsModule } from './modules/documents/documents.module.js';
     NotificationsModule,
     FilesModule,
     DocumentsModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [],

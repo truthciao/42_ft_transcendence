@@ -7,12 +7,14 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
   ConversationType,
+  NotificationType,
   WorkspaceInviteStatus,
   WorkspaceRole,
 } from '../../generated/prisma/client.js';
 import { WorkspacesService } from './workspaces.service.js';
 import type { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 import { jest } from '@jest/globals';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 
 const objectContaining = <T extends object>(shape: T): T =>
   expect.objectContaining(shape) as T;
@@ -34,6 +36,11 @@ type MockWorkspaceMember = {
 
 type MockUser = {
   id: number;
+  email?: string;
+  username?: string;
+  profile?: {
+    displayName: string | null;
+  } | null;
 };
 
 type MockInvite = {
@@ -101,11 +108,24 @@ const deleteManyConversationMember = jest.fn<() => Promise<unknown>>();
 // ---- notification ----
 const createNotification = jest.fn<() => Promise<{ id:number }>>();
 
+type MockNotificationPreference = {
+  viaInApp: boolean;
+  viaEmail: boolean;
+  viaPush: boolean;
+};
+
+const findUniqueNotificationPreference =
+  jest.fn<() => Promise<MockNotificationPreference | null>>();
+
 // ---- $transaction ----
 const transaction = jest.fn();
 
 const emitToUser = jest.fn();
 const realtimeRoomServiceMock = { emitToUser };
+
+const mockMailService = {
+  sendNotificationEmail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+};
 
 describe('WorkspacesService', () => {
   let service: WorkspacesService;
@@ -146,6 +166,9 @@ describe('WorkspacesService', () => {
     notification: {
       create: createNotification,
     },
+    notificationPreference: {
+      findUnique: findUniqueNotificationPreference,
+    },
     $transaction: transaction,
   };
 
@@ -160,7 +183,7 @@ describe('WorkspacesService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
+    findUniqueNotificationPreference.mockResolvedValue(null);
     createNotification.mockResolvedValue({
       id: 1,
     });
@@ -176,7 +199,9 @@ describe('WorkspacesService', () => {
     service = new WorkspacesService(
       prisma as unknown as PrismaService,
       realtimeRoomServiceMock as unknown as RealtimeRoomService,
-    );  });
+      mockMailService as any,
+    );
+  });
 
   describe('create', () => {
     it('creates a workspace with the creator as OWNER member and a default #general channel', async () => {
@@ -234,6 +259,196 @@ describe('WorkspacesService', () => {
         data: { name: 'New Name' },
         include: { members: true },
       });
+    });
+  });
+
+
+  describe('email notifications', () => {
+    it('sends workspace invite email when viaEmail is enabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: true,
+        viaPush: false,
+      });
+
+      findUniqueUser
+        .mockResolvedValueOnce({
+          id: 3,
+          email: 'invitee@example.com',
+        })
+        .mockResolvedValueOnce({
+          id: 1,
+          username: 'alice',
+          profile: { displayName: 'Alice' },
+        });
+
+      findUniqueWorkspace.mockResolvedValue({
+        id: 1,
+        name: 'My Workspace',
+      });
+
+      await (service as any).sendWorkspaceInviteEmail(3, 1, 1);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'invitee@example.com',
+        'Alice invited you to My Workspace',
+        'WORKSPACE_INVITE_RECEIVED',
+        expect.objectContaining({
+          inviterName: 'Alice',
+          workspaceName: 'My Workspace',
+        }),
+      );
+    });
+
+    it('skips workspace invite email when viaEmail is disabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendWorkspaceInviteEmail(3, 1, 1);
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
+    });
+
+    it('sends workspace invite accepted email when viaEmail is enabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: true,
+        viaPush: false,
+      });
+
+      findUniqueUser
+        .mockResolvedValueOnce({
+          id: 1,
+          email: 'inviter@example.com',
+        })
+        .mockResolvedValueOnce({
+          id: 3,
+          username: 'bob',
+          profile: { displayName: 'Bob' },
+        });
+
+      findUniqueWorkspace.mockResolvedValue({
+        id: 1,
+        name: 'My Workspace',
+      });
+
+      await (service as any).sendWorkspaceInviteAcceptedEmail(1, 3, 1);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'inviter@example.com',
+        'Bob accepted your invitation to My Workspace',
+        'WORKSPACE_INVITE_ACCEPTED',
+        expect.objectContaining({
+          actorName: 'Bob',
+          workspaceName: 'My Workspace',
+        }),
+      );
+    });
+
+    it('skips workspace invite accepted email when viaEmail is disabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendWorkspaceInviteAcceptedEmail(1, 3, 1);
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
+    });
+
+    it('sends workspace member removed email when viaEmail is enabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: true,
+        viaPush: false,
+      });
+
+      findUniqueUser.mockResolvedValue({
+        id: 3,
+        email: 'removed@example.com',
+      });
+
+      findUniqueWorkspace.mockResolvedValue({
+        id: 1,
+        name: 'My Workspace',
+      });
+
+      await (service as any).sendMemberRemovedEmail(3, 1);
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'removed@example.com',
+        'You have been removed from My Workspace',
+        'WORKSPACE_MEMBER_REMOVED',
+        expect.objectContaining({
+          workspaceName: 'My Workspace',
+        }),
+      );
+    });
+
+    it('skips workspace member removed email when viaEmail is disabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendMemberRemovedEmail(3, 1);
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
+    });
+
+    it('sends workspace role changed email when viaEmail is enabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: true,
+        viaPush: false,
+      });
+
+      findUniqueUser.mockResolvedValue({
+        id: 3,
+        email: 'member@example.com',
+      });
+
+      findUniqueWorkspace.mockResolvedValue({
+        id: 1,
+        name: 'My Workspace',
+      });
+
+      await (service as any).sendRoleChangedEmail(
+        3,
+        1,
+        WorkspaceRole.ADMIN,
+      );
+
+      expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
+        'member@example.com',
+        'Your role in My Workspace has changed',
+        'WORKSPACE_ROLE_CHANGED',
+        expect.objectContaining({
+          workspaceName: 'My Workspace',
+          newRole: WorkspaceRole.ADMIN,
+        }),
+      );
+    });
+
+    it('skips workspace role changed email when viaEmail is disabled', async () => {
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: true,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await (service as any).sendRoleChangedEmail(
+        3,
+        1,
+        WorkspaceRole.ADMIN,
+      );
+
+      expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
     });
   });
 
@@ -352,6 +567,69 @@ describe('WorkspacesService', () => {
         }),
       );
     });
+
+    it('creates an in-app notification when inviting a user', async () => {
+      prisma.user.findUnique.mockResolvedValue({ id: 3 });
+      prisma.workspaceMember.findUnique.mockResolvedValue(null);
+      prisma.workspaceInvite.findFirst.mockResolvedValue(null);
+      prisma.workspaceInvite.create.mockResolvedValue({
+        id: 1,
+        workspaceId: 1,
+        inviterId: 1,
+        inviteeId: 3,
+      } as unknown as MockInvite);
+
+      findUniqueNotificationPreference.mockResolvedValue(null);
+
+      await service.createInvite(1, owner, {
+        role: WorkspaceRole.MEMBER,
+        userId: 3,
+      });
+
+      expect(createNotification).toHaveBeenCalledWith(
+        objectContaining({
+          data: objectContaining({
+            recipientId: 3,
+            actorId: 1,
+            type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+            workspaceId: 1,
+          }),
+        }),
+      );
+    });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.user.findUnique.mockResolvedValue({ id: 3 });
+      prisma.workspaceMember.findUnique.mockResolvedValue(null);
+      prisma.workspaceInvite.findFirst.mockResolvedValue(null);
+      prisma.workspaceInvite.create.mockResolvedValue({
+        id: 1,
+        workspaceId: 1,
+        inviterId: 1,
+        inviteeId: 3,
+      } as unknown as MockInvite);
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.createInvite(1, owner, {
+        role: WorkspaceRole.MEMBER,
+        userId: 3,
+      });
+
+      expect(createNotification).not.toHaveBeenCalled();
+      expect(emitToUser).toHaveBeenCalledWith(
+        3,
+        REALTIME_EVENTS.WORKSPACE_INVITE_RECEIVED,
+        {
+          workspaceId: 1,
+          inviteId: 1,
+        },
+      );
+    });
   });
 
   describe('acceptInvite', () => {
@@ -453,7 +731,44 @@ describe('WorkspacesService', () => {
         }),
       );
     });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.workspaceInvite.findUnique.mockResolvedValue(baseInvite);
+  
+      prisma.workspaceMember.create.mockResolvedValue(
+        {} as unknown as MockWorkspaceMember,
+      );
+  
+      prisma.conversation.findMany.mockResolvedValue([
+        { id: 10, isDefault: true },
+      ] as unknown as MockConversation[]);
+  
+      prisma.conversationMember.createMany.mockResolvedValue({});
+      prisma.workspaceInvite.update.mockResolvedValue(
+        {} as unknown as MockInvite,
+      );
+  
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+  
+      await service.acceptInvite(1, 2);
+  
+      expect(createNotification).not.toHaveBeenCalled();
+  
+      expect(emitToUser).toHaveBeenCalledWith(
+        1,
+        REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
+        {
+          workspaceId: baseInvite.workspaceId,
+          userId: 2,
+        },
+      );
+    });
   });
+
 
   describe('rejectInvite', () => {
     const baseInvite: MockInvite = {
@@ -600,6 +915,53 @@ describe('WorkspacesService', () => {
         }),
       );
     });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.workspaceMember.findUnique.mockResolvedValue({
+        workspaceId: 1,
+        userId: 2,
+        role: WorkspaceRole.MEMBER,
+      });
+
+      prisma.workspaceMember.update.mockResolvedValue(
+        {} as unknown as MockWorkspaceMember,
+      );
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.changeMemberRole(
+        1,
+        2,
+        WorkspaceRole.ADMIN,
+        actor,
+      );
+
+      expect(prisma.workspaceMember.update).toHaveBeenCalled();
+
+      expect(findUniqueNotificationPreference).toHaveBeenCalledWith({
+        where: {
+          userId_type: {
+            userId: 2,
+            type: NotificationType.WORKSPACE_ROLE_CHANGED,
+          },
+        },
+      });
+
+      expect(createNotification).not.toHaveBeenCalled();
+
+      expect(emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.WORKSPACE_ROLE_CHANGED,
+        {
+          workspaceId: 1,
+          role: WorkspaceRole.ADMIN,
+        },
+      );
+    });
   });
 
   describe('removeMember', () => {
@@ -699,6 +1061,64 @@ describe('WorkspacesService', () => {
         }),
       );
     });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      const actor = {
+        workspaceId: 1,
+        userId: 1,
+        role: WorkspaceRole.OWNER,
+      } as RemoveMemberActor;
+
+      prisma.workspaceMember.findUnique.mockResolvedValue({
+        workspaceId: 1,
+        userId: 2,
+        role: WorkspaceRole.MEMBER,
+      });
+
+      prisma.conversation.findMany.mockResolvedValue([
+        { id: 10 },
+        { id: 11 },
+      ] as unknown as MockConversation[]);
+
+      prisma.conversationMember.deleteMany.mockResolvedValue({});
+      prisma.workspaceMember.delete.mockResolvedValue({});
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.removeMember(1, 2, actor);
+
+      expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
+        where: {
+          workspaceId_userId: {
+            workspaceId: 1,
+            userId: 2,
+          },
+        },
+      });
+
+      expect(findUniqueNotificationPreference).toHaveBeenCalledWith({
+        where: {
+          userId_type: {
+            userId: 2,
+            type: NotificationType.WORKSPACE_MEMBER_REMOVED,
+          },
+        },
+      });
+
+      expect(createNotification).not.toHaveBeenCalled();
+
+      expect(emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
+        {
+          workspaceId: 1,
+        },
+      );
+    });
   });
 
   describe('leave', () => {
@@ -714,30 +1134,29 @@ describe('WorkspacesService', () => {
       );
     });
 
-  it('allows a non-owner member to leave and removes them from workspace channels', async () => {
-    const membership = {
-      workspaceId: 1,
-      userId: 2,
-      role: WorkspaceRole.MEMBER,
-    } as LeaveMembership;
+    it('allows a non-owner member to leave and removes them from workspace channels', async () => {
+      const membership = {
+        workspaceId: 1,
+        userId: 2,
+        role: WorkspaceRole.MEMBER,
+      } as LeaveMembership;
 
-    prisma.conversation.findMany.mockResolvedValue([
-      { id: 10 },
-      { id: 11 },
-    ] as unknown as MockConversation[]);
-    prisma.conversationMember.deleteMany.mockResolvedValue({});
-    prisma.workspaceMember.delete.mockResolvedValue({});
+      prisma.conversation.findMany.mockResolvedValue([
+        { id: 10 },
+        { id: 11 },
+      ] as unknown as MockConversation[]);
+      prisma.conversationMember.deleteMany.mockResolvedValue({});
+      prisma.workspaceMember.delete.mockResolvedValue({});
 
-    await service.leave(1, membership);
+      await service.leave(1, membership);
 
-    expect(prisma.conversationMember.deleteMany).toHaveBeenCalledWith({
-      where: { userId: 2, conversationId: { in: [10, 11] } },
+      expect(prisma.conversationMember.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 2, conversationId: { in: [10, 11] } },
+      });
+      expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
+        where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
+      });
     });
-    expect(prisma.workspaceMember.delete).toHaveBeenCalledWith({
-      where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
-    });
-
-});
   });
 
   describe('transferOwnership', () => {

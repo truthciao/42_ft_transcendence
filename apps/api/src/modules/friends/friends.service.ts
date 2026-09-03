@@ -5,21 +5,42 @@ import {
   Injectable,
   NotFoundException,
   Inject,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { FriendshipStatus, NotificationType } from '../../generated/prisma/enums.js';
 import { ChatService } from '../chat/chat.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
+import { MailService } from '../mail/mail.service.js';
 
 @Injectable()
 export class FriendsService {
+  private readonly logger = new Logger(FriendsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     @Inject(forwardRef(() => ChatService))
     private readonly chatService: ChatService,
     private readonly realtimeRoomService: RealtimeRoomService,
+    private readonly mailService: MailService,
   ) {}
+
+  private async shouldSendInAppNotification(
+    recipientId: number,
+    type: NotificationType,
+  ): Promise<boolean> {
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: recipientId,
+          type,
+        },
+      },
+    });
+
+    return pref ? pref.viaInApp !== false : true;
+  }
 
   async sendRequest(requesterId: number, addresseeId: number) {
     if (requesterId === addresseeId)
@@ -58,14 +79,21 @@ export class FriendsService {
       },
     });
 
-    await this.prisma.notification.create({
-      data: {
-        recipientId: addresseeId,
-        actorId: requesterId,
-        type: NotificationType.FRIEND_REQUEST_RECEIVED,
-        friendshipId: friendship.id,
-      },
-    });
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      addresseeId,
+      NotificationType.FRIEND_REQUEST_RECEIVED,
+    );
+
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: addresseeId,
+          actorId: requesterId,
+          type: NotificationType.FRIEND_REQUEST_RECEIVED,
+          friendshipId: friendship.id,
+        },
+      });
+    }
 
     this.realtimeRoomService.emitToUser(
       addresseeId,
@@ -76,10 +104,15 @@ export class FriendsService {
       },
     );
 
+    // Check notification preference and send email if enabled
+    this.sendFriendRequestEmail(requesterId, addresseeId).catch((error) => {
+      this.logger.error('Failed to send friend request email:', error);
+    });
+
     return friendship;
   }
 
-async getPendingRequests(userId: number) {
+  async getPendingRequests(userId: number) {
     const requests = await this.prisma.friendship.findMany({
       where: {
         addresseeId: userId,
@@ -133,7 +166,7 @@ async getPendingRequests(userId: number) {
   }
 
   async acceptRequest(requestId: number, userId: number) {
-  const friendship = await this.getRequestOrThrow(requestId);
+    const friendship = await this.getRequestOrThrow(requestId);
     if (friendship.addresseeId !== userId) {
       throw new ForbiddenException(
         'Only the recipient can accept this request',
@@ -148,14 +181,30 @@ async getPendingRequests(userId: number) {
       data: { status: FriendshipStatus.ACCEPTED },
     });
 
-    await this.prisma.notification.create({
-      data: {
-        recipientId: friendship.requesterId,
-        actorId: userId,
-        type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      friendship.requesterId,
+      NotificationType.FRIEND_REQUEST_ACCEPTED,
+    );
+
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: friendship.requesterId,
+          actorId: userId,
+          type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+          friendshipId: friendship.id,
+        },
+      });
+    }
+
+    this.realtimeRoomService.emitToUser(
+      friendship.requesterId,
+      REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+      {
         friendshipId: friendship.id,
+        userId,
       },
-    });
+    );
 
     await this.prisma.notification.updateMany({
       where: {
@@ -169,12 +218,9 @@ async getPendingRequests(userId: number) {
       },
     });
 
-    this.realtimeRoomService.emitToUser(
-      friendship.requesterId,
-      REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
-      {
-        friendshipId: friendship.id,
-        userId,
+    this.sendFriendRequestAcceptedEmail(friendship.requesterId, userId).catch(
+      (error) => {
+        this.logger.error('Failed to send friend request accepted email:', error);
       },
     );
 
@@ -193,10 +239,7 @@ async getPendingRequests(userId: number) {
         : friendship.requesterId;
 
     try {
-      await this.chatService.createDirectConversation(
-        userId,
-        otherUserId,
-      );
+      await this.chatService.createDirectConversation(userId, otherUserId);
     } catch (error) {
       console.error(
         '[FriendsService Error] Failed to create conversation after accepting friend:',
@@ -315,5 +358,108 @@ async getPendingRequests(userId: number) {
         ],
       },
     });
+  }
+
+  private async sendFriendRequestEmail(requesterId: number, addresseeId: number) {
+    // Get addressee's email preference for FRIEND_REQUEST_RECEIVED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: addresseeId,
+          type: NotificationType.FRIEND_REQUEST_RECEIVED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get addressee and requester info
+    const [addressee, requester] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: addresseeId },
+        select: { email: true, profile: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: requesterId },
+        select: { username: true, profile: true },
+      }),
+    ]);
+
+    if (!addressee || !requester) {
+      this.logger.warn(
+        `Cannot send friend request email: addressee=${!!addressee}, requester=${!!requester}`,
+      );
+      return;
+    }
+
+    const actorName =
+      requester.profile?.displayName || requester.username || 'Someone';
+    const appBaseUrl = process.env.APP_BASE_URL || 'https://yourdomain.com';
+
+    await this.mailService.sendNotificationEmail(
+      addressee.email,
+      `${actorName} sent you a friend request`,
+      'FRIEND_REQUEST_RECEIVED',
+      {
+        actorName,
+        acceptLink: `${appBaseUrl}/app/friends`,
+      },
+    );
+  }
+
+  private async sendFriendRequestAcceptedEmail(
+    requesterId: number,
+    addresseeId: number,
+  ) {
+    // Get requester's email preference for FRIEND_REQUEST_ACCEPTED
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: requesterId,
+          type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+        },
+      },
+    });
+
+    // If email is not explicitly enabled, skip
+    if (!pref?.viaEmail) {
+      return;
+    }
+
+    // Get requester and addressee info
+    const [requester, addressee] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: requesterId },
+        select: { email: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: addresseeId },
+        select: { username: true, profile: true },
+      }),
+    ]);
+
+    if (!requester || !addressee) {
+      this.logger.warn(
+        `Cannot send friend accepted email: requester=${!!requester}, addressee=${!!addressee}`,
+      );
+      return;
+    }
+
+    const actorName =
+      addressee.profile?.displayName || addressee.username || 'Someone';
+    const appBaseUrl = process.env.APP_BASE_URL || 'https://yourdomain.com';
+
+    await this.mailService.sendNotificationEmail(
+      requester.email,
+      `${actorName} accepted your friend request`,
+      'FRIEND_REQUEST_ACCEPTED',
+      {
+        actorName,
+        profileLink: `${appBaseUrl}/app/friends/${addresseeId}`,
+      },
+    );
   }
 }

@@ -26,6 +26,7 @@ import { SpaceDetailPage } from '@/pages/app/spaces/SpaceDetailPage';
 import { SpaceMembersPage } from '@/pages/app/spaces/SpaceMembersPage';
 import { SpaceSettingPage } from '@/pages/app/spaces/SpaceSettingsPage';
 import { SpaceChannelPage } from '@/pages/app/spaces/SpaceChannelPage';
+import { DocumentPage } from '@/pages/app/spaces/DocumentPage';
 import { SpacesSidebar } from '@/components/workspaces/SpacesSidebar';
 import { WorkspaceGuard } from '@/components/workspaces/WorkspaceGuard';
 import {
@@ -36,7 +37,6 @@ import {
 } from '@/pages/app/SettingsPage';
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
-import { DocumentPage } from '@/pages/app/spaces/DocumentPage';
 import { EvaluationPage } from '../pages/EvaluationPage';
 
 export const router = createBrowserRouter([

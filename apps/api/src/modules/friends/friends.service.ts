@@ -195,16 +195,16 @@ export class FriendsService {
           friendshipId: friendship.id,
         },
       });
-
-      this.realtimeRoomService.emitToUser(
-        friendship.requesterId,
-        REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
-        {
-          friendshipId: friendship.id,
-          userId,
-        },
-      );
     }
+
+    this.realtimeRoomService.emitToUser(
+      friendship.requesterId,
+      REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+      {
+        friendshipId: friendship.id,
+        userId,
+      },
+    );
 
     await this.prisma.notification.updateMany({
       where: {
@@ -405,7 +405,7 @@ export class FriendsService {
       'FRIEND_REQUEST_RECEIVED',
       {
         actorName,
-        acceptLink: `${appBaseUrl}/friends`,
+        acceptLink: `${appBaseUrl}/app/friends`,
       },
     );
   }
@@ -458,7 +458,7 @@ export class FriendsService {
       'FRIEND_REQUEST_ACCEPTED',
       {
         actorName,
-        profileLink: `${appBaseUrl}/profile/${addresseeId}`,
+        profileLink: `${appBaseUrl}/app/friends/${addresseeId}`,
       },
     );
   }

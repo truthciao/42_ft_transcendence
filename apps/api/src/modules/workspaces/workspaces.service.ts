@@ -786,7 +786,7 @@ export class WorkspacesService {
       {
         inviterName,
         workspaceName: workspace.name,
-        inviteLink: `${appBaseUrl}/workspaces`,
+        inviteLink: `${appBaseUrl}/app/spaces`,
       },
     );
   }
@@ -845,7 +845,7 @@ export class WorkspacesService {
       {
         actorName: accepterName,
         workspaceName: workspace.name,
-        workspaceLink: `${appBaseUrl}/workspaces/${workspaceId}`,
+        workspaceLink: `${appBaseUrl}/app/spaces/${workspaceId}`,
       },
     );
   }
@@ -898,7 +898,7 @@ export class WorkspacesService {
       {
         workspaceName: workspace.name,
         newRole,
-        workspaceLink: `${appBaseUrl}/workspaces/${workspaceId}`,
+        workspaceLink: `${appBaseUrl}/app/spaces/${workspaceId}`,
       },
     );
   }

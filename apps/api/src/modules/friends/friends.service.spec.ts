@@ -438,6 +438,15 @@ describe('FriendsService', () => {
       });
 
       expect(createNotification).not.toHaveBeenCalled();
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_ACCEPTED,
+        {
+          friendshipId: 1,
+          userId: 3,
+        },
+      );
     });
   });
 

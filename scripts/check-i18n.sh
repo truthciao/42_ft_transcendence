@@ -36,6 +36,8 @@ RG_GLOBS=(
   '--glob' '*.tsx'
   '--glob' '!**/pages/dev/**'
   '--glob' '!**/components/ui/**'
+  '--glob' '!**/*.test.tsx'
+  '--glob' '!**/*.spec.tsx'
 )
 
 # Run rg with the common file filters.

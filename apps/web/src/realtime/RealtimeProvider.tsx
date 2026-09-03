@@ -1,24 +1,14 @@
-import {
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { getSocket } from '@/lib/realtime';
 import { RealtimeContext } from './RealtimeContext';
 
-export function RealtimeProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function RealtimeProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
 
-  const [onlineUserIds, setOnlineUserIds] = useState<Set<number>>(
-    new Set(),
-  );
+  const [onlineUserIds, setOnlineUserIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (loading || !user) {
@@ -28,7 +18,6 @@ export function RealtimeProvider({
     const socket = getSocket();
 
     const handleOnline = ({ userId }: { userId: number }) => {
-
       setOnlineUserIds((current) => {
         const next = new Set(current);
         next.add(userId);
@@ -36,16 +25,11 @@ export function RealtimeProvider({
       });
     };
 
-    const handleUsersOnline = ({
-      userIds,
-    }: {
-      userIds: number[];
-    }) => {
+    const handleUsersOnline = ({ userIds }: { userIds: number[] }) => {
       setOnlineUserIds(new Set(userIds));
     };
 
     const handleOffline = ({ userId }: { userId: number }) => {
-
       setOnlineUserIds((current) => {
         const next = new Set(current);
         next.delete(userId);
@@ -123,137 +107,91 @@ export function RealtimeProvider({
     };
 
     const handleWorkspaceInviteReceived = () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications']});
-      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
-      queryClient.invalidateQueries({ queryKey: ['workspace-invites', 'incoming']})
-    }
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['workspace-invites', 'incoming'],
+      });
+    };
 
     const handleWorkspaceInviteAccepted = () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications']});
-      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+    };
 
-    const handleWorkspaceMemberRemoved = ( payload: {workspaceId: number}) => {
-      queryClient.invalidateQueries({ queryKey: ['notifications']});
-      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
-      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
-    }
+    const handleWorkspaceMemberRemoved = (payload: { workspaceId: number }) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['workspace', payload.workspaceId],
+      });
+    };
 
-    const handleWorkspaceRoleChanged = ( payload: {workspaceId: number}) => {
-      queryClient.invalidateQueries({ queryKey: ['notifications']});
-      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
-      queryClient.invalidateQueries({ queryKey: ['workspace', payload.workspaceId]})
-      queryClient.invalidateQueries({ queryKey: ['workspaces']})
-    }
+    const handleWorkspaceRoleChanged = (payload: { workspaceId: number }) => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['workspace', payload.workspaceId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+    };
 
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
 
-    socket.on(
-      'friend-request:received',
-      handleFriendRequest,
-    );
+    socket.on('friend-request:received', handleFriendRequest);
 
-    socket.on(
-      'friend-request:accepted',
-      handleFriendRequestAccepted,
-    );
+    socket.on('friend-request:accepted', handleFriendRequestAccepted);
 
-    socket.on(
-      'friend-request:rejected',
-      handleFriendRequestRejected,
-    );
+    socket.on('friend-request:rejected', handleFriendRequestRejected);
 
-    socket.on(
-      'friend:removed',
-      handleFriendRemoved,
-    );
+    socket.on('friend:removed', handleFriendRemoved);
 
-    socket.on(
-      'conversation.created',
-      handleConversationCreated,
-    );
+    socket.on('conversation.created', handleConversationCreated);
 
-    socket.on(
-      'user:profile-updated',
-      handleUserProfileUpdated,
-    );
+    socket.on('user:profile-updated', handleUserProfileUpdated);
 
-    socket.on(
-      'workspace-invite:received',
-      handleWorkspaceInviteReceived,
-    );
+    socket.on('workspace-invite:received', handleWorkspaceInviteReceived);
 
-    socket.on(
-      'workspace-invite:accepted',
-      handleWorkspaceInviteAccepted,
-    );
+    socket.on('workspace-invite:accepted', handleWorkspaceInviteAccepted);
 
-    socket.on(
-      'workspace-member:removed',
-      handleWorkspaceMemberRemoved,
-    );
+    socket.on('workspace-member:removed', handleWorkspaceMemberRemoved);
 
-    socket.on(
-      'workspace-role:changed',
-      handleWorkspaceRoleChanged,
-    );
+    socket.on('workspace-role:changed', handleWorkspaceRoleChanged);
 
     return () => {
       socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
       socket.off('user:offline', handleOffline);
 
-      socket.off(
-        'friend-request:received',
-        handleFriendRequest,
-      );
+      socket.off('friend-request:received', handleFriendRequest);
 
-      socket.off(
-        'friend-request:accepted',
-        handleFriendRequestAccepted,
-      );
+      socket.off('friend-request:accepted', handleFriendRequestAccepted);
 
-      socket.off(
-        'friend-request:rejected',
-        handleFriendRequestRejected,
-      );
+      socket.off('friend-request:rejected', handleFriendRequestRejected);
 
-      socket.off(
-        'friend:removed',
-        handleFriendRemoved,
-      );
+      socket.off('friend:removed', handleFriendRemoved);
 
-      socket.off(
-        'conversation.created',
-        handleConversationCreated,
-      );
+      socket.off('conversation.created', handleConversationCreated);
 
-      socket.off(
-        'user:profile-updated',
-        handleUserProfileUpdated,
-      );
+      socket.off('user:profile-updated', handleUserProfileUpdated);
 
-      socket.off(
-        'workspace-invite:received',
-        handleWorkspaceInviteReceived,
-      );
+      socket.off('workspace-invite:received', handleWorkspaceInviteReceived);
 
-      socket.off(
-        'workspace-invite:accepted',
-        handleWorkspaceInviteAccepted,
-      );
+      socket.off('workspace-invite:accepted', handleWorkspaceInviteAccepted);
 
-      socket.off(
-        'workspace-member:removed',
-        handleWorkspaceMemberRemoved,
-      );
+      socket.off('workspace-member:removed', handleWorkspaceMemberRemoved);
 
-      socket.off(
-        'workspace-role:changed',
-        handleWorkspaceRoleChanged,
-      );
+      socket.off('workspace-role:changed', handleWorkspaceRoleChanged);
 
       setOnlineUserIds(new Set());
     };

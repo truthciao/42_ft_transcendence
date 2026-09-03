@@ -4,9 +4,7 @@ export function mergeMessages(
   existing: ChatMessage[],
   incoming: ChatMessage | ChatMessage[],
 ): ChatMessage[] {
-  const incomingMessages = Array.isArray(incoming)
-    ? incoming
-    : [incoming];
+  const incomingMessages = Array.isArray(incoming) ? incoming : [incoming];
 
   const messages = [...existing, ...incomingMessages];
 
@@ -15,8 +13,6 @@ export function mergeMessages(
   );
 
   return uniqueMessages.sort(
-    (a, b) =>
-      new Date(a.createdAt).getTime() -
-      new Date(b.createdAt).getTime(),
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
 }

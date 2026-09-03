@@ -6,24 +6,16 @@ import { DocumentsService } from './documents.service.js';
 export class DocumentsYjsService implements OnModuleDestroy {
   private readonly docs = new Map<number, Y.Doc>();
 
-  constructor(
-    private readonly documentsService: DocumentsService,
-  ) {}
+  constructor(private readonly documentsService: DocumentsService) {}
 
-  async getDoc(
-    documentId: number,
-    userId: number,
-  ): Promise<Y.Doc> {
+  async getDoc(documentId: number, userId: number): Promise<Y.Doc> {
     const existing = this.docs.get(documentId);
 
     if (existing) {
       return existing;
     }
 
-    const state = await this.documentsService.getYDocState(
-      documentId,
-      userId,
-    );
+    const state = await this.documentsService.getYDocState(documentId, userId);
 
     const ydoc = new Y.Doc();
 
@@ -48,19 +40,12 @@ export class DocumentsYjsService implements OnModuleDestroy {
     return ydoc;
   }
 
-  async save(
-    documentId: number,
-    userId: number,
-  ): Promise<void> {
+  async save(documentId: number, userId: number): Promise<void> {
     const ydoc = await this.getDoc(documentId, userId);
 
     const state = Y.encodeStateAsUpdate(ydoc);
 
-    await this.documentsService.saveYDocState(
-      documentId,
-      userId,
-      state,
-    );
+    await this.documentsService.saveYDocState(documentId, userId, state);
   }
 
   removeDoc(documentId: number): void {

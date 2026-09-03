@@ -11,10 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import {
-  searchConversationMessages,
-  type ChatMessage,
-} from '@/api/chat';
+import { searchConversationMessages, type ChatMessage } from '@/api/chat';
 
 interface MessageSearchDialogProps {
   open: boolean;
@@ -32,23 +29,15 @@ export function MessageSearchDialog({
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const { t }  = useTranslation();
+  const { t } = useTranslation();
 
-  const {
-    data,
-    isLoading,
-  } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['chat-message-search', conversationId, debouncedSearch],
-    queryFn: () =>
-      searchConversationMessages(
-        conversationId,
-        debouncedSearch,
-      ),
-      enabled: open && debouncedSearch.length > 0,
+    queryFn: () => searchConversationMessages(conversationId, debouncedSearch),
+    enabled: open && debouncedSearch.length > 0,
   });
 
-  const searchResults: ChatMessage[] =
-    data ?? [];
+  const searchResults: ChatMessage[] = data ?? [];
 
   const handleClose = () => {
     setSearchQuery('');
@@ -80,9 +69,7 @@ export function MessageSearchDialog({
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {t('chat.searchMessages')}
-          </DialogTitle>
+          <DialogTitle>{t('chat.searchMessages')}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-3">
@@ -121,12 +108,10 @@ export function MessageSearchDialog({
             </div>
           )}
 
-          {!isLoading &&
-            debouncedSearch &&
-            searchResults.length === 0 && (
-              <p className="py-6 text-center text-sm text-muted-foreground">
-                {t('chat.noMessagesFound')}
-              </p>
+          {!isLoading && debouncedSearch && searchResults.length === 0 && (
+            <p className="py-6 text-center text-sm text-muted-foreground">
+              {t('chat.noMessagesFound')}
+            </p>
           )}
 
           <div className="max-h-80 overflow-y-auto space-y-1">
@@ -141,9 +126,7 @@ export function MessageSearchDialog({
                   {message.sender?.username ?? t('chat.user')}
                 </div>
 
-                <div className="text-sm break-words">
-                  {message.content}
-                </div>
+                <div className="text-sm break-words">{message.content}</div>
 
                 <div className="mt-1 text-xs text-muted-foreground">
                   {new Date(message.createdAt).toLocaleString()}
@@ -154,6 +137,5 @@ export function MessageSearchDialog({
         </div>
       </DialogContent>
     </Dialog>
-  ) 
+  );
 }
-

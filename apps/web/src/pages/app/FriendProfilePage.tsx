@@ -65,10 +65,7 @@ export function FriendProfilePage() {
             {t('friends.profile.notFound')}
           </h1>
 
-          <Button
-            variant="outline"
-            onClick={() => navigate('/app/friends')}
-          >
+          <Button variant="outline" onClick={() => navigate('/app/friends')}>
             {t('friends.profile.backToFriends')}
           </Button>
         </div>
@@ -76,20 +73,19 @@ export function FriendProfilePage() {
     );
   }
 
-const handleMessage = async () => {
+  const handleMessage = async () => {
+    try {
+      const data = await createDirectConversation(friend.id);
 
-  try {
-    const data = await createDirectConversation(friend.id);
-
-    if (data?.id) {
-      navigate(`/app/chat/${data.id}`, {
-        state: { friendName: friend.username },
-      });
+      if (data?.id) {
+        navigate(`/app/chat/${data.id}`, {
+          state: { friendName: friend.username },
+        });
+      }
+    } catch (error) {
+      console.error('Cannot build conversation:', error);
     }
-  } catch (error) {
-    console.error('Cannot build conversation:', error);
-  }
-};
+  };
   return (
     <main className="mx-auto max-w-md p-6">
       <Button
@@ -102,16 +98,10 @@ const handleMessage = async () => {
 
       <div className="space-y-6 rounded-lg border p-6">
         <div className="flex items-center gap-4">
-          <Avatar
-            src={null}
-            name={friend.username}
-            size="xl"
-          />
+          <Avatar src={null} name={friend.username} size="xl" />
 
           <div>
-            <h1 className="text-2xl font-semibold">
-              {friend.username}
-            </h1>
+            <h1 className="text-2xl font-semibold">{friend.username}</h1>
 
             <p className="text-muted-foreground">
               {t('friends.profile.friend')}
@@ -138,10 +128,7 @@ const handleMessage = async () => {
         </div>
 
         <div className="flex gap-3">
-          <Button
-            className="flex-1"
-            onClick={() => void handleMessage()}
-          >
+          <Button className="flex-1" onClick={() => void handleMessage()}>
             {t('friends.profile.message')}
           </Button>
         </div>

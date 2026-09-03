@@ -39,13 +39,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-function ColorSwatch({
-  name,
-  className,
-}: {
-  name: string;
-  className: string;
-}) {
+function ColorSwatch({ name, className }: { name: string; className: string }) {
   return (
     <div className="space-y-2">
       <div className={`h-16 rounded-md border border-border ${className}`} />
@@ -54,13 +48,7 @@ function ColorSwatch({
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="space-y-3 border-b border-border pb-8 last:border-b-0">
       <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
@@ -85,19 +73,13 @@ export function ComponentShowcasePage() {
       variant: 'destructive',
     });
 
-    toast(
-      confirmed
-        ? t('showcase.confirmed')
-        : t('showcase.cancelled'),
-    );
+    toast(confirmed ? t('showcase.confirmed') : t('showcase.cancelled'));
   }
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
       <div>
-        <h1 className="text-2xl font-bold">
-          {t('showcase.title')}
-        </h1>
+        <h1 className="text-2xl font-bold">{t('showcase.title')}</h1>
 
         <p className="mt-1 text-sm text-muted-foreground">
           {t('showcase.description')}
@@ -125,9 +107,7 @@ export function ComponentShowcasePage() {
           <h2 className="text-3xl font-semibold">Heading 2</h2>
           <h3 className="text-2xl font-semibold">Heading 3</h3>
 
-          <p className="text-base">
-            {t('showcase.typography.body')}
-          </p>
+          <p className="text-base">{t('showcase.typography.body')}</p>
 
           <p className="text-sm text-muted-foreground">
             {t('showcase.typography.small')}
@@ -177,9 +157,7 @@ export function ComponentShowcasePage() {
 
       <Section title={t('showcase.sections.input')}>
         <div className="max-w-sm space-y-3">
-          <Input
-            placeholder={t('showcase.input.usernamePlaceholder')}
-          />
+          <Input placeholder={t('showcase.input.usernamePlaceholder')} />
 
           <Input defaultValue="Victoria" />
 
@@ -192,28 +170,20 @@ export function ComponentShowcasePage() {
 
       <Section title={t('showcase.sections.toast')}>
         <div className="flex flex-wrap gap-2">
-          <Button
-            onClick={() =>
-              toast.success(t('showcase.toastSuccess'))
-            }
-          >
+          <Button onClick={() => toast.success(t('showcase.toastSuccess'))}>
             {t('showcase.triggerSuccess')}
           </Button>
 
           <Button
             variant="outline"
-            onClick={() =>
-              toast.error(t('showcase.toastError'))
-            }
+            onClick={() => toast.error(t('showcase.toastError'))}
           >
             {t('showcase.triggerError')}
           </Button>
 
           <Button
             variant="secondary"
-            onClick={() =>
-              toast(t('showcase.toastInfo'))
-            }
+            onClick={() => toast(t('showcase.toastInfo'))}
           >
             {t('showcase.triggerInfo')}
           </Button>
@@ -228,9 +198,7 @@ export function ComponentShowcasePage() {
 
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {t('showcase.dialog.title')}
-              </DialogTitle>
+              <DialogTitle>{t('showcase.dialog.title')}</DialogTitle>
 
               <DialogDescription>
                 {t('showcase.dialog.description')}
@@ -259,17 +227,13 @@ export function ComponentShowcasePage() {
               </DropdownMenuLabel>
 
               <DropdownMenuItem
-                onClick={() =>
-                  toast(t('showcase.dropdown.profileClicked'))
-                }
+                onClick={() => toast(t('showcase.dropdown.profileClicked'))}
               >
                 {t('showcase.dropdown.profile')}
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={() =>
-                  toast(t('showcase.dropdown.settingsClicked'))
-                }
+                onClick={() => toast(t('showcase.dropdown.settingsClicked'))}
               >
                 {t('showcase.dropdown.settings')}
               </DropdownMenuItem>
@@ -279,9 +243,7 @@ export function ComponentShowcasePage() {
 
             <DropdownMenuItem
               variant="destructive"
-              onClick={() =>
-                toast(t('showcase.dropdown.signOutClicked'))
-              }
+              onClick={() => toast(t('showcase.dropdown.signOutClicked'))}
             >
               {t('showcase.dropdown.signOut')}
             </DropdownMenuItem>
@@ -304,10 +266,7 @@ export function ComponentShowcasePage() {
       </Section>
 
       <Section title={t('showcase.sections.confirmDialog')}>
-        <Button
-          variant="destructive"
-          onClick={handleConfirmDemo}
-        >
+        <Button variant="destructive" onClick={handleConfirmDemo}>
           {t('showcase.triggerConfirm')}
         </Button>
       </Section>
@@ -317,9 +276,7 @@ export function ComponentShowcasePage() {
           variant="outline"
           onClick={() => setShowError((value) => !value)}
         >
-          {showError
-            ? t('showcase.hidePreview')
-            : t('showcase.showPreview')}
+          {showError ? t('showcase.hidePreview') : t('showcase.showPreview')}
         </Button>
 
         {showError ? (
@@ -327,9 +284,7 @@ export function ComponentShowcasePage() {
             <PageError
               title={t('showcase.pageErrorTitle')}
               message={t('showcase.pageErrorMessage')}
-              onRetry={() =>
-                toast(t('showcase.retryClicked'))
-              }
+              onRetry={() => toast(t('showcase.retryClicked'))}
             />
           </div>
         ) : null}

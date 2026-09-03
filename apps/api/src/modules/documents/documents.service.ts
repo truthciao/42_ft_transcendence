@@ -108,9 +108,7 @@ export class DocumentsService {
     });
 
     if (!membership) {
-      throw new ForbiddenException(
-        'You are not a member of this workspace',
-      );
+      throw new ForbiddenException('You are not a member of this workspace');
     }
 
     return document;
@@ -147,19 +145,14 @@ export class DocumentsService {
     });
 
     if (!membership) {
-      throw new ForbiddenException(
-        'You are not a member of this workspace',
-      );
+      throw new ForbiddenException('You are not a member of this workspace');
     }
 
     return document;
   }
 
   async getYDocState(documentId: number, userId: number) {
-    const document = await this.findByIdForUser(
-      documentId,
-      userId,
-    );
+    const document = await this.findByIdForUser(documentId, userId);
 
     if (!document.yjsState) {
       const ydoc = new Y.Doc();
@@ -172,11 +165,7 @@ export class DocumentsService {
     return Buffer.from(document.yjsState);
   }
 
-  async saveYDocState(
-    documentId: number,
-    userId: number,
-    state: Uint8Array,
-  ) {
+  async saveYDocState(documentId: number, userId: number, state: Uint8Array) {
     await this.findByIdForUser(documentId, userId);
 
     return this.prisma.document.update({

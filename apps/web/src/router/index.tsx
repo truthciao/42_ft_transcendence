@@ -1,7 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-} from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { HomePage } from '../pages/HomePage';
 import { ProfilePage } from '../pages/app/ProfilePage';
 import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage';

@@ -12,7 +12,11 @@ import { PageError } from '@/components/common/PageError';
 import { SkeletonText } from '@/components/common/Skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useProfile, useUpdateProfile, useUploadAvatar } from '../../hooks/useProfile';
+import {
+  useProfile,
+  useUpdateProfile,
+  useUploadAvatar,
+} from '../../hooks/useProfile';
 import { toast } from 'sonner';
 
 export function ProfilePage() {
@@ -73,15 +77,9 @@ export function ProfilePage() {
 
   function handleSubmit(values: ProfileFormValues) {
     const payload: UpdateProfilePayload = {
-      displayName:
-        values.displayName === ''
-          ? null
-          : values.displayName,
+      displayName: values.displayName === '' ? null : values.displayName,
 
-      bio:
-        values.bio === ''
-          ? null
-          : values.bio,
+      bio: values.bio === '' ? null : values.bio,
 
       preferredLanguage: values.preferredLanguage,
     };

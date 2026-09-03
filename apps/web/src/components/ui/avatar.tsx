@@ -22,7 +22,7 @@ function Avatar({
       )}
       {...props}
     >
-      {children} 
+      {children}
     </AvatarPrimitive.Root>
   );
 }

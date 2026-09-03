@@ -6,5 +6,4 @@ export const REALTIME_EVENTS = {
 
   DOCUMENT_LEAVE: 'document:leave',
   DOCUMENT_LEFT: 'document:left',
-
 } as const;

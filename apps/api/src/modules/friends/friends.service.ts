@@ -8,7 +8,10 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { FriendshipStatus, NotificationType } from '../../generated/prisma/enums.js';
+import {
+  FriendshipStatus,
+  NotificationType,
+} from '../../generated/prisma/enums.js';
 import { ChatService } from '../chat/chat.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
@@ -220,7 +223,10 @@ export class FriendsService {
 
     this.sendFriendRequestAcceptedEmail(friendship.requesterId, userId).catch(
       (error) => {
-        this.logger.error('Failed to send friend request accepted email:', error);
+        this.logger.error(
+          'Failed to send friend request accepted email:',
+          error,
+        );
       },
     );
 
@@ -360,7 +366,10 @@ export class FriendsService {
     });
   }
 
-  private async sendFriendRequestEmail(requesterId: number, addresseeId: number) {
+  private async sendFriendRequestEmail(
+    requesterId: number,
+    addresseeId: number,
+  ) {
     // Get addressee's email preference for FRIEND_REQUEST_RECEIVED
     const pref = await this.prisma.notificationPreference.findUnique({
       where: {

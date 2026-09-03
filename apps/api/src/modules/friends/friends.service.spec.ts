@@ -70,7 +70,6 @@ const deleteFriendship = jest.fn<() => Promise<unknown>>();
 const createNotification = jest.fn<() => Promise<unknown>>();
 const updateManyNotifications = jest.fn<() => Promise<unknown>>();
 
-
 type MockNotificationPreference = {
   viaInApp: boolean;
   viaEmail: boolean;
@@ -79,18 +78,17 @@ type MockNotificationPreference = {
 
 const findUniqueNotificationPreference =
   jest.fn<() => Promise<MockNotificationPreference | null>>();
-  
+
 const mockChatService = {
-  createDirectConversation: jest.fn(
-    (_userId: number, _targetUserId: number) =>
-      Promise.resolve({
-        id: 1,
-        type: 'DIRECT',
-        name: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        members: [],
-      }),
+  createDirectConversation: jest.fn((_userId: number, _targetUserId: number) =>
+    Promise.resolve({
+      id: 1,
+      type: 'DIRECT',
+      name: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      members: [],
+    }),
   ),
 };
 
@@ -99,7 +97,9 @@ const mockRealtimeRoomService = {
 };
 
 const mockMailService = {
-  sendNotificationEmail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+  sendNotificationEmail: jest
+    .fn<() => Promise<void>>()
+    .mockResolvedValue(undefined),
 };
 
 describe('FriendsService', () => {
@@ -257,7 +257,7 @@ describe('FriendsService', () => {
       );
     });
   });
-  
+
   describe('email notifications', () => {
     it('falls back to username when profile display name is null', async () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
@@ -529,5 +529,3 @@ describe('FriendsService', () => {
     });
   });
 });
-
-

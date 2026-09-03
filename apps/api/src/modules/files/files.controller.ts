@@ -1,4 +1,13 @@
-import { Controller, Post, Delete, Param, UseInterceptors, UploadedFile, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Delete,
+  Param,
+  UseInterceptors,
+  UploadedFile,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service.js';
 import { multerOptions } from './config/multer.config.js';
@@ -23,7 +32,7 @@ export class FilesController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Query('context') context: string,
-    @CurrentUser() user: JwtUserPayload // 使用明确的接口类型代替 any
+    @CurrentUser() user: JwtUserPayload, // 使用明确的接口类型代替 any
   ) {
     // 增加一行打印，以后在终端里一眼就能看出队友给的用户对象长什么样
     console.log('当前登录用户 (Token Payload):', user);
@@ -32,12 +41,19 @@ export class FilesController {
     const rawId = user.id ?? user.userId ?? user.sub;
     const uploaderId = Number(rawId);
 
-    const result = await this.filesService.saveFileRecord(uploaderId, file, context || 'chat');
+    const result = await this.filesService.saveFileRecord(
+      uploaderId,
+      file,
+      context || 'chat',
+    );
     return { data: result };
   }
 
   @Delete(':id')
-  async deleteFile(@Param('id') id: string, @CurrentUser() user: JwtUserPayload) {
+  async deleteFile(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtUserPayload,
+  ) {
     const userId = Number(user.id ?? user.userId ?? user.sub);
     return this.filesService.deleteFile(id, userId);
   }

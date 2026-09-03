@@ -20,14 +20,23 @@ export function atLeastRole(
 }
 
 export const createWorkspaceSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100).regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(100)
+    .regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only'),
   description: z.string().max(280, 'Keep it under 280 characters').optional(),
   icon: z.string().max(4, 'One emoji is plenty').optional(),
-})
+});
 export type createWorkspacePayload = z.infer<typeof createWorkspaceSchema>;
 
 export const updateWorkspaceSchema = z.object({
-  name: z.string().min(1).max(100).regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only').optional(),
+  name: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only')
+    .optional(),
   description: z.string().max(280).optional(),
   icon: z.string().max(4).optional(),
 });
@@ -38,13 +47,13 @@ export const createChannelSchema = z.object({
     .string()
     .min(1)
     .max(40)
-    .regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only')
+    .regex(/^[a-z0-9-_]+$/, 'Lowercase letters, numbers, - and _ only'),
 });
 export type CreateChannelPayload = z.infer<typeof createChannelSchema>;
 
 export const updateMemberRoleSchema = z.object({
   role: z.enum(['ADMIN', 'MEMBER']),
-})
+});
 export type updateMemberRolePayload = z.infer<typeof updateMemberRoleSchema>;
 
 export interface WorkspaceMember {
@@ -79,7 +88,7 @@ export interface WorkspaceMemberSummary {
       displayName: string | null;
       avatarUrl: string | null;
     } | null;
-  }
+  };
 }
 
 export interface WorkspaceChannel {
@@ -106,12 +115,13 @@ export const transferOwnershipSchema = z.object({
 });
 export type transferOwnershipPayload = z.infer<typeof transferOwnershipSchema>;
 
-export type WorkspaceInviteStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'REVOKED';
+export type WorkspaceInviteStatus =
+  'PENDING' | 'ACCEPTED' | 'REJECTED' | 'REVOKED';
 
 export interface WorkspaceInviteUserSummary {
   id: number;
   username: string;
-  profile: { displayName: string | null; avatarUrl: string | null} | null;
+  profile: { displayName: string | null; avatarUrl: string | null } | null;
 }
 
 export interface WorkspaceInviteSummary {

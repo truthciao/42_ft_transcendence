@@ -15,7 +15,8 @@ import { UpdateWorkspaceDto } from './dto/update-workspace.dto.js';
 import { UpdateMemberRoleDto } from './dto/update-member-role.dto.js';
 import { CreateChannelDto } from './dto/create-channel.dto.js';
 import {
-  InviteMemberDto, TransferOwnershipDto
+  InviteMemberDto,
+  TransferOwnershipDto,
 } from './dto/invite-member.dto.js';
 import {
   WorkspaceRole,
@@ -45,9 +46,9 @@ export class WorkspaceController {
   findMine(@CurrentUser('userId') userId: number) {
     return this.workspaces.findAllForUser(userId);
   }
-// ─────────────────────────────────────────────
-// invite
-// ─────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // invite
+  // ─────────────────────────────────────────────
 
   @Get('invites/incoming')
   myInvites(@CurrentUser('userId') userId: number) {
@@ -181,7 +182,11 @@ export class WorkspaceController {
     @CurrentMembership() membership: WorkspaceMember,
     @Body() dto: TransferOwnershipDto,
   ) {
-    return this.workspaces.transferOwnership(id, membership.userId, dto.targetUserId);
+    return this.workspaces.transferOwnership(
+      id,
+      membership.userId,
+      dto.targetUserId,
+    );
   }
 
   // ---- channel ----

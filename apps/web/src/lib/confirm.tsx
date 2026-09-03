@@ -1,7 +1,7 @@
-import { useCallback, useState, type ReactNode } from "react";
-import { useTranslation } from "react-i18next";
-import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { ConfirmContext, type ConfirmOptions } from "./confirm-context";
+import { useCallback, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { ConfirmContext, type ConfirmOptions } from './confirm-context';
 
 interface PendingConfirm extends ConfirmOptions {
   resolve: (confirmed: boolean) => void;
@@ -43,5 +43,5 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
         onCancel={() => close(false)}
       />
     </ConfirmContext.Provider>
-  )
+  );
 }

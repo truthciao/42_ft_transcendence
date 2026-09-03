@@ -33,10 +33,7 @@ export class ProfilesService {
     return profile;
   }
 
-  async updateProfile(
-    userId: number,
-    dto: UpdateProfilePayload,
-  ) {
+  async updateProfile(userId: number, dto: UpdateProfilePayload) {
     return this.prisma.profile.update({
       where: { userId },
       data: {
@@ -93,26 +90,24 @@ export class ProfilesService {
       }
     }
 
-
-    const conversationMembers =
-      await this.prisma.conversationMember.findMany({
-        where: {
-          conversation: {
-            type: ConversationType.DIRECT,
-            members: {
-              some: {
-                userId,
-              },
+    const conversationMembers = await this.prisma.conversationMember.findMany({
+      where: {
+        conversation: {
+          type: ConversationType.DIRECT,
+          members: {
+            some: {
+              userId,
             },
           },
-          userId: {
-            not: userId,
-          },
         },
-        select: {
-          userId: true,
+        userId: {
+          not: userId,
         },
-      });
+      },
+      select: {
+        userId: true,
+      },
+    });
 
     const targetUserIds = new Set(
       conversationMembers.map((member) => member.userId),

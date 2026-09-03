@@ -7,10 +7,15 @@ import { CreateWorkspaceDialog } from '../workspaces/CreateWorkspaceDialog';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
 
-
 const PALETTE = [
-  'bg-indigo-500', 'bg-orange-500', 'bg-emerald-500', 'bg-rose-500',
-  'bg-sky-500', 'bg-amber-500', 'bg-violet-500', 'bg-teal-500',
+  'bg-indigo-500',
+  'bg-orange-500',
+  'bg-emerald-500',
+  'bg-rose-500',
+  'bg-sky-500',
+  'bg-amber-500',
+  'bg-violet-500',
+  'bg-teal-500',
 ];
 
 function paletteFor(id: number): string {
@@ -19,17 +24,17 @@ function paletteFor(id: number): string {
 
 function initials(name: string): string {
   return name
-  .trim()
-  .split(/\s+/)
-  .map((word) => word[0])
-  .join('')
-  .slice(0, 2)
-  .toUpperCase();
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 }
 
 export function TabRail() {
   const { t } = useTranslation();
-  
+
   const tabs = [
     { to: '/app/chat', label: t('chat.title'), icon: MessageCircle },
     { to: '/app/friends', label: t('friends.title'), icon: Users },
@@ -75,13 +80,13 @@ export function TabRail() {
               isActive && 'ring-2 ring-ring ring-offset-2',
             )
           }
+        >
+          <span
+            className={cn(
+              'flex size-10 items-center justify-center rounded-full text-base font-semibold',
+              paletteFor(space.id),
+            )}
           >
-            <span
-              className={cn(
-                'flex size-10 items-center justify-center rounded-full text-base font-semibold',
-                paletteFor(space.id),
-              )}
-            >
             {space.icon || initials(space.name)}
           </span>
         </NavLink>
@@ -96,14 +101,16 @@ export function TabRail() {
         className="size-11 rounded-full border border-dashed border-sidebar-border text-sidebar-foreground/60 transition-colors hover:border-solid hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
         <Plus className="size-5" />
-        <span className="sr-only">{t('workspaces.workspaces.create.title')}</span>
+        <span className="sr-only">
+          {t('workspaces.workspaces.create.title')}
+        </span>
       </Button>
 
       <CreateWorkspaceDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onCreated={(id) => navigate(`/app/spaces/${id}`)}
-        />
+      />
     </nav>
   );
 }

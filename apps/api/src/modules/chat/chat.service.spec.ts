@@ -124,9 +124,7 @@ describe('ChatService', () => {
 
       expect(prisma.conversation.create).not.toHaveBeenCalled();
 
-      expect(
-        realtimeGateway.notifyConversationCreated,
-      ).not.toHaveBeenCalled();
+      expect(realtimeGateway.notifyConversationCreated).not.toHaveBeenCalled();
     });
 
     it('creates a new direct conversation with both members when none exists', async () => {
@@ -155,9 +153,10 @@ describe('ChatService', () => {
         },
       });
 
-      expect(
-        realtimeGateway.notifyConversationCreated,
-      ).toHaveBeenCalledWith([1, 2], 11);
+      expect(realtimeGateway.notifyConversationCreated).toHaveBeenCalledWith(
+        [1, 2],
+        11,
+      );
     });
   });
 

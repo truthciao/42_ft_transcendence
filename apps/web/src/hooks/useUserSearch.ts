@@ -7,8 +7,7 @@ export function useUserSearch(username: string) {
   return useInfiniteQuery({
     queryKey: ['users', 'search', username],
 
-    queryFn: ({ pageParam }) =>
-      searchUsers(username, PAGE_SIZE, pageParam),
+    queryFn: ({ pageParam }) => searchUsers(username, PAGE_SIZE, pageParam),
 
     initialPageParam: 0,
 

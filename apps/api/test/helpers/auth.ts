@@ -11,10 +11,7 @@ export async function registerAndLogin(
   server: Server,
   user: TestUser,
 ): Promise<string> {
-  await request(server)
-    .post('/auth/register')
-    .send(user)
-    .expect(201);
+  await request(server).post('/auth/register').send(user).expect(201);
 
   const response = await request(server)
     .post('/auth/login')

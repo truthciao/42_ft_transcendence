@@ -7,9 +7,7 @@ export function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
-        <p className="text-sm text-muted-foreground">
-          {t('footer.copyright')}
-        </p>
+        <p className="text-sm text-muted-foreground">{t('footer.copyright')}</p>
 
         <nav className="flex items-center gap-4 text-sm">
           <Link

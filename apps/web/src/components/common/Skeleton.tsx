@@ -1,11 +1,20 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }) {
+export function SkeletonText({
+  lines = 3,
+  className,
+}: {
+  lines?: number;
+  className?: string;
+}) {
   return (
     <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, index) => (
-        <Skeleton key={index} className={cn('h-3', index === lines - 1 ? 'w-2/3' : 'w-full')} />
+        <Skeleton
+          key={index}
+          className={cn('h-3', index === lines - 1 ? 'w-2/3' : 'w-full')}
+        />
       ))}
     </div>
   );
@@ -18,7 +27,9 @@ export function SkeletonAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('space-y-3 rounded-lg border border-border p-4', className)}>
+    <div
+      className={cn('space-y-3 rounded-lg border border-border p-4', className)}
+    >
       <div className="flex items-center gap-3">
         <SkeletonAvatar />
         <div className="flex-1 space-y-2">

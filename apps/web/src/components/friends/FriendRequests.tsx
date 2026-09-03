@@ -16,11 +16,7 @@ export function FriendRequests() {
     null,
   );
 
-  const {
-    data: requests,
-    isLoading,
-    isError,
-  } = useFriendRequests();
+  const { data: requests, isLoading, isError } = useFriendRequests();
 
   const acceptMutation = useAcceptFriendRequest();
   const rejectMutation = useRejectFriendRequest();
@@ -73,8 +69,7 @@ export function FriendRequests() {
 
       <div className="space-y-3">
         {requests.map((request) => {
-          const isProcessing =
-            processingRequestId === request.id;
+          const isProcessing = processingRequestId === request.id;
 
           return (
             <div

@@ -7,22 +7,25 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { getSocket } from "@/lib/realtime";
+} from 'react';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+import { getSocket } from '@/lib/realtime';
 import {
   getConversationMessages,
   markConversationAsRead,
   type ChatMessage,
-  type MessagePage
-} from "@/api/chat";
+  type MessagePage,
+} from '@/api/chat';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useAuth } from "@/hooks/useAuth";
-import { mergeMessages } from "@/lib/chat-messages"
-import type { InfiniteData } from "@tanstack/react-query";
-import { FileUpload, type AttachmentType } from '@/components/common/FileUpload';
+import { useAuth } from '@/hooks/useAuth';
+import { mergeMessages } from '@/lib/chat-messages';
+import type { InfiniteData } from '@tanstack/react-query';
+import {
+  FileUpload,
+  type AttachmentType,
+} from '@/components/common/FileUpload';
 
 // 新增：定义后端服务器的地址
 const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
@@ -46,7 +49,9 @@ export function ConversationView({
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [highlightedMessageId, setHighlightedMessageId] = useState<number | null>(null);
+  const [highlightedMessageId, setHighlightedMessageId] = useState<
+    number | null
+  >(null);
 
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,37 +59,25 @@ export function ConversationView({
 
   const shouldScrollToBottomRef = useRef(true);
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ['chat-messages', conversationId],
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['chat-messages', conversationId],
 
-    queryFn: ({ pageParam }) =>
-      getConversationMessages(
-        conversationId,
-        pageParam,
-        30,
-      ),
+      queryFn: ({ pageParam }) =>
+        getConversationMessages(conversationId, pageParam, 30),
 
-    initialPageParam: undefined as number | undefined,
+      initialPageParam: undefined as number | undefined,
 
-    getNextPageParam: (lastPage) => {
-      return lastPage.nextCursor ?? undefined;
-    },
-
-  });
+      getNextPageParam: (lastPage) => {
+        return lastPage.nextCursor ?? undefined;
+      },
+    });
 
   const isNearBottom = (container: HTMLDivElement) => {
     const threshold = 100;
 
     return (
-      container.scrollHeight -
-      container.scrollTop -
-      container.clientHeight <
+      container.scrollHeight - container.scrollTop - container.clientHeight <
       threshold
     );
   };
@@ -123,9 +116,7 @@ export function ConversationView({
     }
 
     requestAnimationFrame(() => {
-      const element = document.getElementById(
-        `message-${message.id}`,
-      );
+      const element = document.getElementById(`message-${message.id}`);
 
       if (!element) {
         return;
@@ -143,7 +134,6 @@ export function ConversationView({
       }, 2000);
     });
   };
-
 
   useEffect(() => {
     const container = messagesContainerRef.current;
@@ -169,8 +159,7 @@ export function ConversationView({
         .flatMap((page) => page.messages)
         .sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() -
-            new Date(b.createdAt).getTime(),
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         ) ?? [],
     [data],
   );
@@ -188,13 +177,11 @@ export function ConversationView({
       return;
     }
 
-    const heightDifference =
-      container.scrollHeight - previousScrollHeight;
+    const heightDifference = container.scrollHeight - previousScrollHeight;
 
     container.scrollTop += heightDifference;
 
     previousScrollHeightRef.current = null;
-
   }, [messages]);
 
   useEffect(() => {
@@ -262,9 +249,7 @@ export function ConversationView({
 
       markConversationAsRead(conversationId)
         .then(() => {
-          window.dispatchEvent(
-            new CustomEvent('refresh_conversations'),
-          );
+          window.dispatchEvent(new CustomEvent('refresh_conversations'));
         })
         .catch((error) => {
           console.error('Failed to mark conversation as read:', error);
@@ -309,7 +294,7 @@ export function ConversationView({
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
       content,
-      type: 'text'
+      type: 'text',
     });
 
     setInputText('');
@@ -318,7 +303,9 @@ export function ConversationView({
   // 发送文件消息
   const handleFileUploadSuccess = (attachment: AttachmentType) => {
     const socket = getSocket();
-    const messageType = attachment.fileType.startsWith('image/') ? 'image' : 'file';
+    const messageType = attachment.fileType.startsWith('image/')
+      ? 'image'
+      : 'file';
 
     socket.emit('chat:message:send', {
       conversationId: Number(conversationId),
@@ -351,7 +338,6 @@ export function ConversationView({
         ref={messagesContainerRef}
         className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4"
       >
-
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
             {t('chat.loadingHistory', 'Loading history...')}
@@ -369,7 +355,8 @@ export function ConversationView({
                   variant="ghost"
                   onClick={handleLoadOlderMessages}
                   disabled={isFetchingNextPage}
-                  className="border-primary/30 text-primary hover:bg-primary/10 hover:text-primary">
+                  className="border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+                >
                   {isFetchingNextPage
                     ? t('chat.loading')
                     : t('chat.loadOlderMessages')}
@@ -387,20 +374,23 @@ export function ConversationView({
                 <div
                   key={msg.id}
                   id={`message-${msg.id}`}
-                  className={`flex flex-col mb-2 ${isMine ? 'items-end' : 'items-start'
-                    }`}
+                  className={`flex flex-col mb-2 ${
+                    isMine ? 'items-end' : 'items-start'
+                  }`}
                 >
                   <span className="text-[10px] text-muted-foreground mb-1">
                     {senderLabel}
                   </span>
                   <div
-                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${isMine
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-accent text-accent-foreground'
-                      } ${highlightedMessageId === msg.id
+                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
+                      isMine
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-accent text-accent-foreground'
+                    } ${
+                      highlightedMessageId === msg.id
                         ? 'ring-2 ring-amber-400 shadow-md shadow-amber-400/30'
                         : ''
-                      }`}
+                    }`}
                   >
                     {/* 🛠️ 修改：使用我们刚刚计算出的 renderType 来判断 ; 分支渲染：处理不同类型的消息内容 */}
                     <MessageContent
@@ -409,7 +399,6 @@ export function ConversationView({
                       apiBaseUri={API_BASE_URI}
                       downloadLabel={t('chat.downloadFile', 'Download File')}
                     />
-
                   </div>
                 </div>
               );
@@ -418,11 +407,16 @@ export function ConversationView({
         )}
       </div>
 
-      <form onSubmit={handleSendMessage} className="border-t border-border p-4 bg-background">
+      <form
+        onSubmit={handleSendMessage}
+        className="border-t border-border p-4 bg-background"
+      >
         <div className="flex gap-2 items-center">
-
           {/* 左侧：文件上传组件 */}
-          <FileUpload onUploadSuccess={handleFileUploadSuccess} context="chat" />
+          <FileUpload
+            onUploadSuccess={handleFileUploadSuccess}
+            context="chat"
+          />
           {/* 右侧：文本输入与发送按钮 */}
           <Input
             type="text"
@@ -431,9 +425,7 @@ export function ConversationView({
             placeholder={t('chat.placeholder', 'Type a message...')}
             className="flex-1 border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
-          <Button type="submit">
-            {t('chat.send', 'Send')}
-          </Button>
+          <Button type="submit">{t('chat.send', 'Send')}</Button>
         </div>
       </form>
       <MessageSearchDialog

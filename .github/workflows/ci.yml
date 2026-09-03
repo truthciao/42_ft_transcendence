@@ -83,7 +83,7 @@ jobs:
 
       - name: Build shared types
         run: pnpm --filter @repo/shared-types build
-      
+
       - name: Generate Prisma Client
         run: pnpm --filter api exec prisma generate
 
@@ -91,7 +91,7 @@ jobs:
         run: pnpm --filter api lint
 
       - name: Check API formatting
-      # TODO: Remove continue-on-error after existing API formatting issues are fixed.
+        # TODO: Remove continue-on-error after existing API formatting issues are fixed.
         continue-on-error: true
         run: pnpm --filter api format:check
 

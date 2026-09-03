@@ -6,7 +6,7 @@ export async function cleanDatabase(prisma: PrismaService): Promise<void> {
   await prisma.conversation.deleteMany();
 
   await prisma.attachment.deleteMany();
-  
+
   await prisma.workspaceInvite.deleteMany();
   await prisma.workspaceMember.deleteMany();
   await prisma.workspace.deleteMany();

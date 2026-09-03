@@ -1,4 +1,4 @@
-import { httpGet, httpPatch, httpPost } from '../lib/http'; 
+import { httpGet, httpPatch, httpPost } from '../lib/http';
 
 export interface ChatMessage {
   id: number;
@@ -34,7 +34,7 @@ export interface Conversation {
   unreadCount?: number;
 
   lastMessage?: {
-    id: number,
+    id: number;
     content: string;
     createdAt: string;
     senderId: number;
@@ -68,11 +68,17 @@ export async function getFriendsList() {
   return httpGet('/friends');
 }
 
-export async function createConversationByUsername(username: string): Promise<Conversation> {
-  return httpPost<Conversation>('/chat/conversations/by-username', { username });
+export async function createConversationByUsername(
+  username: string,
+): Promise<Conversation> {
+  return httpPost<Conversation>('/chat/conversations/by-username', {
+    username,
+  });
 }
 
-export async function createDirectConversation(targetUserId: number): Promise<Conversation> {
+export async function createDirectConversation(
+  targetUserId: number,
+): Promise<Conversation> {
   return httpPost<Conversation>('/chat/conversations', { targetUserId });
 }
 
@@ -107,10 +113,6 @@ export async function searchConversationMessages(
   );
 }
 
-export async function markConversationAsRead(
-  conversationId: string | number,
-) {
-  return httpPatch(
-    `/chat/conversations/${conversationId}/message`,
-  );
+export async function markConversationAsRead(conversationId: string | number) {
+  return httpPatch(`/chat/conversations/${conversationId}/message`);
 }

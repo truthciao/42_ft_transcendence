@@ -55,11 +55,7 @@ export class ProfilesController {
       },
 
       fileFilter: (_req, file, callback) => {
-        const allowedTypes = [
-          'image/jpeg',
-          'image/png',
-          'image/webp',
-        ];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
         if (!allowedTypes.includes(file.mimetype)) {
           callback(

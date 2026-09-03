@@ -31,7 +31,7 @@ export function FriendList() {
     if (!confirmed) {
       return;
     }
-    
+
     setRemovingFriendId(friendId);
 
     removeFriendMutation.mutate(friendId, {
@@ -56,9 +56,7 @@ export function FriendList() {
   }
 
   if (!friends || friends.length === 0) {
-    return (
-      <p className="text-muted-foreground">{t('friends.empty')}</p>
-    );
+    return <p className="text-muted-foreground">{t('friends.empty')}</p>;
   }
 
   return (

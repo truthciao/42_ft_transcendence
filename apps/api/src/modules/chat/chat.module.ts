@@ -6,13 +6,9 @@ import { ChatGateway } from './gateways/chat.gateway.js';
 import { RealtimeModule } from '../realtime/realtime.module.js';
 
 @Module({
-  imports: [forwardRef(() => FriendsModule),
-    RealtimeModule,
-  ],
+  imports: [forwardRef(() => FriendsModule), RealtimeModule],
   controllers: [ChatController],
-  providers: [
-    ChatService,
-    ChatGateway],
+  providers: [ChatService, ChatGateway],
   exports: [ChatService],
 })
 export class ChatModule {}

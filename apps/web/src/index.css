@@ -103,11 +103,10 @@
 
   --cube-blue: oklch(0.605 0.234 253.747);
   --cube-blue-violet: oklch(0.674 0.185 266.603);
-  --cube-violet: oklch(0.644 0.239 303.530);
+  --cube-violet: oklch(0.644 0.239 303.53);
   --cube-purple: oklch(0.761 0.225 325.299);
   --cube-pink: oklch(0.657 0.253 352.363);
   --cube-indigo: oklch(0.749 0.144 281.562);
-
 }
 
 @theme inline {
@@ -196,7 +195,7 @@ body {
   --destructive: oklch(0.704 0.191 22.216);
   --success: oklch(0.696 0.17 162.48);
   --warning: oklch(0.769 0.188 70.08);
-  
+
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.673 0.182 276.935);
@@ -211,13 +210,12 @@ body {
   --sidebar-ring: oklch(0.673 0.182 276.935);
 
   /* 3D Cube */
-  --cube-blue: oklch(0.736 0.170 235.957);
+  --cube-blue: oklch(0.736 0.17 235.957);
   --cube-blue-violet: oklch(0.691 0.177 264.502);
-  --cube-violet: oklch(0.780 0.180 296.413);
+  --cube-violet: oklch(0.78 0.18 296.413);
   --cube-purple: oklch(0.774 0.197 317.541);
-  --cube-pink: oklch(0.754 0.229 349.150);
+  --cube-pink: oklch(0.754 0.229 349.15);
   --cube-indigo: oklch(0.767 0.134 276.051);
-
 }
 
 @layer base {

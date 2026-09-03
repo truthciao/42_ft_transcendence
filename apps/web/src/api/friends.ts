@@ -16,11 +16,8 @@ export function getPendingRequests() {
   return httpGet<PendingRequest[]>('/friends/requests');
 }
 
-
 export function getSentPendingRequests() {
-  return httpGet<SentPendingRequest[]>(
-    '/friends/requests/sent',
-  );
+  return httpGet<SentPendingRequest[]>('/friends/requests/sent');
 }
 
 export function searchUsers(username: string) {

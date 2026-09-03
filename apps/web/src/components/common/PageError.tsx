@@ -17,8 +17,12 @@ export function PageError({ title, message, onRetry }: PageErrorProps) {
         <AlertTriangle className="size-7 text-destructive" />
       </div>
       <div className="space-y-1">
-        <h1 className="text-lg font-semibold text-foreground">{title ?? t('errors.unexpectedTitle')}</h1>
-        <p className="max-w-md text-sm text-muted-foreground">{message ?? t('errors.unexpectedMessage')}</p>
+        <h1 className="text-lg font-semibold text-foreground">
+          {title ?? t('errors.unexpectedTitle')}
+        </h1>
+        <p className="max-w-md text-sm text-muted-foreground">
+          {message ?? t('errors.unexpectedMessage')}
+        </p>
       </div>
       <div className="flex gap-2">
         {onRetry ? (

@@ -69,7 +69,9 @@ type CreateInviteActor = Parameters<WorkspacesService['createInvite']>[1];
 type InviteMemberDto = Parameters<WorkspacesService['createInvite']>[2];
 type RemoveMemberActor = Parameters<WorkspacesService['removeMember']>[2];
 type LeaveMembership = Parameters<WorkspacesService['leave']>[1];
-type ChangeMemberRoleActor = Parameters<WorkspacesService['changeMemberRole']>[3];
+type ChangeMemberRoleActor = Parameters<
+  WorkspacesService['changeMemberRole']
+>[3];
 
 // ---- workspace ----
 const createWorkspace = jest.fn<() => Promise<MockWorkspace>>();
@@ -106,7 +108,7 @@ const createManyConversationMember = jest.fn<() => Promise<unknown>>();
 const deleteManyConversationMember = jest.fn<() => Promise<unknown>>();
 
 // ---- notification ----
-const createNotification = jest.fn<() => Promise<{ id:number }>>();
+const createNotification = jest.fn<() => Promise<{ id: number }>>();
 
 type MockNotificationPreference = {
   viaInApp: boolean;
@@ -124,7 +126,9 @@ const emitToUser = jest.fn();
 const realtimeRoomServiceMock = { emitToUser };
 
 const mockMailService = {
-  sendNotificationEmail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+  sendNotificationEmail: jest
+    .fn<() => Promise<void>>()
+    .mockResolvedValue(undefined),
 };
 
 describe('WorkspacesService', () => {
@@ -210,7 +214,7 @@ describe('WorkspacesService', () => {
         name: 'My Workspace',
       });
 
-      await service.create(1, {name: 'My Workspace'});
+      await service.create(1, { name: 'My Workspace' });
 
       expect(prisma.workspace.create).toHaveBeenCalledWith(
         objectContaining({
@@ -261,7 +265,6 @@ describe('WorkspacesService', () => {
       });
     });
   });
-
 
   describe('email notifications', () => {
     it('sends workspace invite email when viaEmail is enabled', async () => {
@@ -418,11 +421,7 @@ describe('WorkspacesService', () => {
         name: 'My Workspace',
       });
 
-      await (service as any).sendRoleChangedEmail(
-        3,
-        1,
-        WorkspaceRole.ADMIN,
-      );
+      await (service as any).sendRoleChangedEmail(3, 1, WorkspaceRole.ADMIN);
 
       expect(mockMailService.sendNotificationEmail).toHaveBeenCalledWith(
         'member@example.com',
@@ -442,11 +441,7 @@ describe('WorkspacesService', () => {
         viaPush: false,
       });
 
-      await (service as any).sendRoleChangedEmail(
-        3,
-        1,
-        WorkspaceRole.ADMIN,
-      );
+      await (service as any).sendRoleChangedEmail(3, 1, WorkspaceRole.ADMIN);
 
       expect(mockMailService.sendNotificationEmail).not.toHaveBeenCalled();
     });
@@ -734,30 +729,30 @@ describe('WorkspacesService', () => {
 
     it('skips in-app notification when viaInApp is disabled', async () => {
       prisma.workspaceInvite.findUnique.mockResolvedValue(baseInvite);
-  
+
       prisma.workspaceMember.create.mockResolvedValue(
         {} as unknown as MockWorkspaceMember,
       );
-  
+
       prisma.conversation.findMany.mockResolvedValue([
         { id: 10, isDefault: true },
       ] as unknown as MockConversation[]);
-  
+
       prisma.conversationMember.createMany.mockResolvedValue({});
       prisma.workspaceInvite.update.mockResolvedValue(
         {} as unknown as MockInvite,
       );
-  
+
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
         viaPush: false,
       });
-  
+
       await service.acceptInvite(1, 2);
-  
+
       expect(createNotification).not.toHaveBeenCalled();
-  
+
       expect(emitToUser).toHaveBeenCalledWith(
         1,
         REALTIME_EVENTS.WORKSPACE_INVITE_ACCEPTED,
@@ -768,7 +763,6 @@ describe('WorkspacesService', () => {
       );
     });
   });
-
 
   describe('rejectInvite', () => {
     const baseInvite: MockInvite = {
@@ -827,7 +821,7 @@ describe('WorkspacesService', () => {
       role: WorkspaceRole.OWNER,
       joinedAt: new Date(),
     };
-    
+
     it('rejects setting role to OWNER', async () => {
       await expect(
         service.changeMemberRole(1, 2, WorkspaceRole.OWNER, actor),
@@ -892,12 +886,7 @@ describe('WorkspacesService', () => {
         joinedAt: new Date(),
       };
 
-      await service.changeMemberRole(
-        1,
-        2,
-        WorkspaceRole.ADMIN,
-        actor,
-      );
+      await service.changeMemberRole(1, 2, WorkspaceRole.ADMIN, actor);
 
       expect(prisma.workspaceMember.update).toHaveBeenCalledWith({
         where: { workspaceId_userId: { workspaceId: 1, userId: 2 } },
@@ -933,12 +922,7 @@ describe('WorkspacesService', () => {
         viaPush: false,
       });
 
-      await service.changeMemberRole(
-        1,
-        2,
-        WorkspaceRole.ADMIN,
-        actor,
-      );
+      await service.changeMemberRole(1, 2, WorkspaceRole.ADMIN, actor);
 
       expect(prisma.workspaceMember.update).toHaveBeenCalled();
 

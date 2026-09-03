@@ -31,7 +31,9 @@ export const getMessagesSchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(30),
 });
 
-export type CreateConversationPayload = z.infer<typeof createConversationSchema>;
+export type CreateConversationPayload = z.infer<
+  typeof createConversationSchema
+>;
 
 export type SendMessagePayload = z.infer<typeof sendMessageSchema>;
 

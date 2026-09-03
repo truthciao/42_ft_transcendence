@@ -14,9 +14,7 @@ export const updateProfileSchema = z.object({
     .nullable()
     .optional(),
 
-  preferredLanguage: z
-    .enum(['en', 'fr', 'zh'])
-    .optional(),
+  preferredLanguage: z.enum(['en', 'fr', 'zh']).optional(),
 });
 
 export const profileResponseSchema = z.object({
@@ -42,21 +40,13 @@ export const profileFormSchema = z.object({
     )
     .max(100, 'displayName must not exceed 100 characters'),
 
-  bio: z
-    .string()
-    .max(500, 'bio must not exceed 500 characters'),
+  bio: z.string().max(500, 'bio must not exceed 500 characters'),
 
   preferredLanguage: z.enum(['en', 'fr', 'zh']),
 });
 
-export type UpdateProfilePayload = z.infer<
-  typeof updateProfileSchema
->;
+export type UpdateProfilePayload = z.infer<typeof updateProfileSchema>;
 
-export type ProfileResponse = z.infer<
-  typeof profileResponseSchema
->;
+export type ProfileResponse = z.infer<typeof profileResponseSchema>;
 
-export type ProfileFormValues = z.infer<
-  typeof profileFormSchema
->;
+export type ProfileFormValues = z.infer<typeof profileFormSchema>;

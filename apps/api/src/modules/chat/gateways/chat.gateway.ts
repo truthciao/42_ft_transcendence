@@ -32,8 +32,7 @@ import { getChatRoom } from '../utils/chat-room-naming.util.js';
 })
 @UseGuards(WsJwtGuard)
 @UsePipes(new WsZodValidationPipe())
-export class ChatGateway 
-  implements OnGatewayInit, OnGatewayConnection {
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server!: Server;
 
@@ -46,8 +45,7 @@ export class ChatGateway
     this.roomService.setServer(server);
   }
 
-  handleConnection(_client: AuthenticatedSocket): void {
-  }
+  handleConnection(_client: AuthenticatedSocket): void {}
 
   @SubscribeMessage(CHAT_EVENTS.CONVERSATION_JOIN)
   async handleConversationJoin(
@@ -58,17 +56,11 @@ export class ChatGateway
     const room = getChatRoom(dto.conversationId);
 
     try {
-      await this.chatService.verifyMembership(
-        dto.conversationId,
-        userId,
-      );
+      await this.chatService.verifyMembership(dto.conversationId, userId);
       await this.roomService.joinRoom(client, room);
-    
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Unable to join conversation';
+        error instanceof Error ? error.message : 'Unable to join conversation';
 
       throw new WsException(errorMessage);
     }
@@ -79,7 +71,6 @@ export class ChatGateway
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() dto: SendMessageDto,
   ): Promise<void> {
-
     const senderId = client.data.user.userId;
 
     const memberIds = await this.chatService.getConversationMemberIds(
@@ -93,11 +84,7 @@ export class ChatGateway
         dto.content,
       );
       const room = getChatRoom(dto.conversationId);
-      this.roomService.emitToRoom(
-        room,
-        CHAT_EVENTS.MESSAGE_CREATED,
-        message,
-      );
+      this.roomService.emitToRoom(room, CHAT_EVENTS.MESSAGE_CREATED, message);
 
       for (const memberId of memberIds) {
         this.roomService.emitToUser(
@@ -108,9 +95,7 @@ export class ChatGateway
       }
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Unable to send message';
+        error instanceof Error ? error.message : 'Unable to send message';
 
       throw new WsException(errorMessage);
     }

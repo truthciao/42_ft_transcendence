@@ -42,13 +42,9 @@ export function FriendCard({
         />
 
         <div>
-          <div className="font-medium hover:underline">
-            {friend.username}
-          </div>
+          <div className="font-medium hover:underline">{friend.username}</div>
 
-          <p className="text-sm text-muted-foreground">
-            {friend.email}
-          </p>
+          <p className="text-sm text-muted-foreground">{friend.email}</p>
         </div>
       </Link>
 

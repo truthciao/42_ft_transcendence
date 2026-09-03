@@ -1,10 +1,10 @@
-import { Outlet, useParams } from "react-router";
-import { ShieldAlert } from "lucide-react";
-import { EmptyState } from "../common/EmptyState";
-import { Skeleton } from "../ui/skeleton";
-import { HttpError } from "@/lib/http";
-import { useWorkspace } from "@/hooks/useWorkspaces";
-import { useTranslation } from "react-i18next";
+import { Outlet, useParams } from 'react-router';
+import { ShieldAlert } from 'lucide-react';
+import { EmptyState } from '../common/EmptyState';
+import { Skeleton } from '../ui/skeleton';
+import { HttpError } from '@/lib/http';
+import { useWorkspace } from '@/hooks/useWorkspaces';
+import { useTranslation } from 'react-i18next';
 
 export function WorkspaceGuard() {
   const { workspaceId } = useParams();
@@ -21,14 +21,16 @@ export function WorkspaceGuard() {
     );
   }
 
-  const notFound = isError && error instanceof HttpError && error.status === 404;
-  const forbidden = (isError && !notFound) || (!isLoading && !data?.myMembership);
+  const notFound =
+    isError && error instanceof HttpError && error.status === 404;
+  const forbidden =
+    (isError && !notFound) || (!isLoading && !data?.myMembership);
 
   if (notFound) {
     return (
       <EmptyState
-        icon = {ShieldAlert}
-        title = {t('workspaces.guard.notFoundTitle')}
+        icon={ShieldAlert}
+        title={t('workspaces.guard.notFoundTitle')}
         description={t('workspaces.guard.notFoundDescription')}
         className="mt-12"
       />
@@ -38,8 +40,8 @@ export function WorkspaceGuard() {
   if (forbidden) {
     return (
       <EmptyState
-        icon = {ShieldAlert}
-        title = {t('workspaces.guard.forbiddenTitle')}
+        icon={ShieldAlert}
+        title={t('workspaces.guard.forbiddenTitle')}
         description={t('workspaces.guard.forbiddenDescription')}
         className="mt-12"
       />

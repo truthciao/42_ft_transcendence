@@ -23,24 +23,18 @@ interface AuthenticatedRequest extends Request {
 
 @Controller('notifications')
 export class NotificationsController {
-  constructor(
-    private readonly notificationsService: NotificationsService,
-  ) {}
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
   getNotifications(@Req() req: AuthenticatedRequest) {
-    return this.notificationsService.getNotifications(
-      req.user.userId,
-    );
+    return this.notificationsService.getNotifications(req.user.userId);
   }
 
   @Get('unread-count')
   @UseGuards(JwtAuthGuard)
   getUnreadCount(@Req() req: AuthenticatedRequest) {
-    return this.notificationsService.getUnreadCount(
-      req.user.userId,
-    );
+    return this.notificationsService.getUnreadCount(req.user.userId);
   }
 
   @Patch(':id/read')
@@ -49,25 +43,20 @@ export class NotificationsController {
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.notificationsService.markAsRead(
-      id,
-      req.user.userId,
-    );
+    return this.notificationsService.markAsRead(id, req.user.userId);
   }
   @Patch('read-all')
   @UseGuards(JwtAuthGuard)
   markAllAsRead(@Req() req: AuthenticatedRequest) {
-    return this.notificationsService.markAllAsRead(
-      req.user.userId,
-    );
+    return this.notificationsService.markAllAsRead(req.user.userId);
   }
-  
+
   @Get('preferences')
   @UseGuards(JwtAuthGuard)
   getPreferences(@CurrentUser('userId') userId: number) {
     return this.notificationsService.getPreferences(userId);
   }
-  
+
   @Put('preferences')
   @UseGuards(JwtAuthGuard)
   updatePreferences(

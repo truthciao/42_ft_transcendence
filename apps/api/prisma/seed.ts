@@ -17,13 +17,10 @@ const prisma = new PrismaClient({ adapter });
 const TEST_USER_COUNT = 10_000;
 
 async function main() {
-  const users = Array.from(
-    { length: TEST_USER_COUNT },
-    (_, index) => ({
-      username: `virtual-user-${index + 1}`,
-      email: `virtual-user-${index + 1}@example.com`,
-    }),
-  );
+  const users = Array.from({ length: TEST_USER_COUNT }, (_, index) => ({
+    username: `virtual-user-${index + 1}`,
+    email: `virtual-user-${index + 1}@example.com`,
+  }));
 
   const result = await prisma.user.createMany({
     data: users,

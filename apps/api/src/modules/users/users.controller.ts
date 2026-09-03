@@ -83,5 +83,4 @@ export class UsersController {
   findPublicProfile(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findPublicProfile(id);
   }
-
 }

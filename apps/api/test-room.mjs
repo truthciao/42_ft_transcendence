@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client';
 
-const token = process.env.TOKEN; 
+const token = process.env.TOKEN;
 
 if (!token) {
-    throw new Error('ACCESS_TOKEN is required');
+  throw new Error('ACCESS_TOKEN is required');
 }
 
 const socket = io('http://localhost:3000', {

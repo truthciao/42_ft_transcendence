@@ -1,4 +1,4 @@
-import { httpDelete, httpGet, httpPatch, httpPost } from "@/lib/http";
+import { httpDelete, httpGet, httpPatch, httpPost } from '@/lib/http';
 import type {
   Workspace,
   WorkspaceMemberSummary,
@@ -10,7 +10,8 @@ import type {
   WorkspaceInviteSummary,
   WorkspaceInviteDetail,
   InviteMemberPayload,
-  transferOwnershipPayload } from "@repo/shared-types";
+  transferOwnershipPayload,
+} from '@repo/shared-types';
 
 export function getWorkspaces() {
   return httpGet<Workspace[]>('/workspaces');
@@ -40,7 +41,10 @@ export function getWorkspaceMembers(id: number) {
   return httpGet<WorkspaceMemberSummary[]>(`/workspaces/${id}/members`);
 }
 
-export function removeWorkspaceMember(workspaceId: number, memberUserId: number) {
+export function removeWorkspaceMember(
+  workspaceId: number,
+  memberUserId: number,
+) {
   return httpDelete<void>(`/workspaces/${workspaceId}/members/${memberUserId}`);
 }
 
@@ -49,15 +53,24 @@ export function updateMemberRole(
   memberUserId: number,
   payload: updateMemberRolePayload,
 ) {
-  return httpPatch<void>(`/workspaces/${workspaceId}/members/${memberUserId}/role`, payload);
+  return httpPatch<void>(
+    `/workspaces/${workspaceId}/members/${memberUserId}/role`,
+    payload,
+  );
 }
 
 export function getWorkspacesChannels(id: number) {
   return httpGet<WorkspaceChannel[]>(`/workspaces/${id}/channels`);
 }
 
-export function createChannel(workspaceId: number, payload: CreateChannelPayload) {
-  return httpPost<WorkspaceChannel>(`/workspaces/${workspaceId}/channels`, payload);
+export function createChannel(
+  workspaceId: number,
+  payload: CreateChannelPayload,
+) {
+  return httpPost<WorkspaceChannel>(
+    `/workspaces/${workspaceId}/channels`,
+    payload,
+  );
 }
 
 // ─────────────────────────────────────────────
@@ -68,12 +81,20 @@ export function getIncomingInvites() {
   return httpGet<IncomingWorkspaceInvite[]>('/workspaces/invites/incoming');
 }
 
-export function inviteMember(workspaceId: number, payload: InviteMemberPayload) {
-  return httpPost<WorkspaceInviteSummary>(`/workspaces/${workspaceId}/invites`, payload);
+export function inviteMember(
+  workspaceId: number,
+  payload: InviteMemberPayload,
+) {
+  return httpPost<WorkspaceInviteSummary>(
+    `/workspaces/${workspaceId}/invites`,
+    payload,
+  );
 }
 
 export function getWorkspaceInvites(workspaceId: number) {
-  return httpGet<WorkspaceInviteSummary[]>(`/workspaces/${workspaceId}/invites`);
+  return httpGet<WorkspaceInviteSummary[]>(
+    `/workspaces/${workspaceId}/invites`,
+  );
 }
 
 export function getInviteById(inviteId: string) {
@@ -85,14 +106,21 @@ export function getInviteByToken(token: string) {
 }
 
 export function acceptInvite(inviteId: number) {
-  return httpPost<{ workspaceId: number }>(`/workspaces/invites/${inviteId}/accept`);
+  return httpPost<{ workspaceId: number }>(
+    `/workspaces/invites/${inviteId}/accept`,
+  );
 }
 
 export function rejectInvite(inviteId: number) {
   return httpPost<void>(`/workspaces/invites/${inviteId}/reject`);
 }
 
-export function transferOwnership(workspaceId: number, payload: transferOwnershipPayload) {
-  return httpPost<void>(`/workspaces/${workspaceId}/transfer-ownership`, payload);
+export function transferOwnership(
+  workspaceId: number,
+  payload: transferOwnershipPayload,
+) {
+  return httpPost<void>(
+    `/workspaces/${workspaceId}/transfer-ownership`,
+    payload,
+  );
 }
-

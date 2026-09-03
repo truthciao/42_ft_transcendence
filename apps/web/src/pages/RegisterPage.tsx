@@ -53,7 +53,7 @@ export function RegisterPage() {
             onChange={(event) =>
               setForm({ ...form, email: event.target.value })
             }
-            className="w-full" 
+            className="w-full"
           />
         </label>
 
@@ -89,9 +89,7 @@ export function RegisterPage() {
       </form>
 
       {status !== 'idle' ? (
-        <p className="mt-4 text-sm">
-          {t(`auth.status.${status}`)}
-        </p>
+        <p className="mt-4 text-sm">{t(`auth.status.${status}`)}</p>
       ) : null}
 
       <div className="mt-6 text-center text-sm">

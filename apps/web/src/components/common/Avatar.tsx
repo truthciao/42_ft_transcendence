@@ -29,8 +29,7 @@ const DOT_SIZE_CLASS = {
   xl: 'size-3.5',
 } as const;
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ?? '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
 interface AvatarProps {
   src?: string | null;
@@ -76,18 +75,13 @@ export function Avatar({
   className,
 }: AvatarProps) {
   const { t } = useTranslation();
-  
+
   return (
     <span className={cn('relative inline-block shrink-0', className)}>
       <BaseAvatar className={SIZE_CLASS[size]}>
-        <AvatarImage
-          src={getAvatarUrl(src)}
-          alt={name}
-        />
+        <AvatarImage src={getAvatarUrl(src)} alt={name} />
 
-        <AvatarFallback>
-          {getInitials(name)}
-        </AvatarFallback>
+        <AvatarFallback>{getInitials(name)}</AvatarFallback>
       </BaseAvatar>
 
       {status && (
@@ -112,4 +106,3 @@ export function Avatar({
     </span>
   );
 }
-

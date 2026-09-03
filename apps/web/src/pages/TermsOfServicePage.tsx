@@ -25,9 +25,7 @@ export function TermsOfServicePage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-12">
       <header className="mb-10">
-        <h1 className="text-3xl font-bold">
-          {t('legal.terms.title')}
-        </h1>
+        <h1 className="text-3xl font-bold">{t('legal.terms.title')}</h1>
 
         <p className="mt-2 text-sm text-muted-foreground">
           {t('legal.lastUpdated')}
@@ -49,10 +47,7 @@ export function TermsOfServicePage() {
       </div>
 
       <div className="mt-10 border-t pt-6">
-        <Link
-          to="/privacy"
-          className="text-sm underline hover:text-foreground"
-        >
+        <Link to="/privacy" className="text-sm underline hover:text-foreground">
           {t('footer.privacy')}
         </Link>
       </div>

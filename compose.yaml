@@ -54,7 +54,7 @@ services:
       PORT: 3000
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
       JWT_SECRET: development-secret
-      GENERATE_PRISMA: "true"
+      GENERATE_PRISMA: 'true'
       # Gmail SMTP configuration is provided via local environment variables.
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
@@ -86,7 +86,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-  
+
     command:
       - /app/docker/dev-entrypoint.sh
       - pnpm
@@ -96,13 +96,13 @@ services:
       - vite
       - --host
       - 0.0.0.0
-  
+
     ports:
       - '5173:5173'
 
     depends_on:
       - api
- 
+
     volumes:
       - .:/app
       - /app/node_modules

@@ -30,10 +30,9 @@ describe('Auth (e2e)', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -68,30 +67,18 @@ describe('Auth (e2e)', () => {
     });
 
     it('should reject an invalid registration payload', async () => {
-      await request(server)
-        .post('/auth/register')
-        .send({})
-        .expect(400);
+      await request(server).post('/auth/register').send({}).expect(400);
     });
 
     it('should reject a duplicate user', async () => {
-      await request(server)
-        .post('/auth/register')
-        .send(testUser)
-        .expect(201);
+      await request(server).post('/auth/register').send(testUser).expect(201);
 
-      await request(server)
-        .post('/auth/register')
-        .send(testUser)
-        .expect(400);
+      await request(server).post('/auth/register').send(testUser).expect(400);
     });
   });
   describe('POST /auth/login', () => {
     it('should login with valid credentials', async () => {
-      await request(server)
-        .post('/auth/register')
-        .send(testUser)
-        .expect(201);
+      await request(server).post('/auth/register').send(testUser).expect(201);
 
       const response = await request(server)
         .post('/auth/login')
@@ -112,10 +99,7 @@ describe('Auth (e2e)', () => {
     });
 
     it('should reject an incorrect password', async () => {
-      await request(server)
-        .post('/auth/register')
-        .send(testUser)
-        .expect(201);
+      await request(server).post('/auth/register').send(testUser).expect(201);
 
       await request(server)
         .post('/auth/login')

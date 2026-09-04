@@ -54,7 +54,7 @@ start: certs
 	docker compose --env-file ./apps/api/.env up -d
 
 rebuild: certs
-	docker compose --env-file ./apps/api/.env up -d --build
+	docker compose --env-file ./apps/api/.env up -d --build --force-recreate -V
 
 stop:
 	docker compose down

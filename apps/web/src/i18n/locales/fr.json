@@ -412,6 +412,9 @@
       "loggingIn": "Connexion en cours..."
     },
 
+    "loginInvalidCredentials": "Adresse e-mail ou mot de passe incorrect",
+    "loginInvalidTwoFactorCode": "Code de vérification incorrect",
+
     "noAccount": "Pas de compte",
     "submitting": "Envoi en cours...",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
@@ -420,7 +423,14 @@
     "twoFactorDescription": "Veuillez saisir votre code à 6 chiffres Google Authenticator pour terminer la connexion",
     "twoFactorCodeLabel": "Code Google Authenticator à 6 chiffres",
     "codePlaceholder": "ex. : 482910",
-    "loginFailed": "Échec de la connexion ou de la vérification 2FA. Veuillez vérifier vos informations"
+    "loginFailed": "Échec de la connexion ou de la vérification 2FA. Veuillez vérifier vos informations",
+
+    "errors": {
+      "invalidCredentials": "Adresse e-mail ou mot de passe incorrect",
+      "oauthAccount": "Veuillez vous connecter avec votre fournisseur OAuth",
+      "invalidTwoFactorCode": "Code de vérification incorrect",
+      "unknown": "Échec de la connexion. Veuillez réessayer."
+    }
 },
 
   "errors": {

@@ -10,7 +10,7 @@ const countNotifications =
   jest.fn<() => Promise<number>>();
 
 const findUniqueNotification =
-  jest.fn<() => Promise<unknown | null>>();
+  jest.fn<() => Promise<unknown>>();
 
 const updateNotification =
   jest.fn<() => Promise<unknown>>();

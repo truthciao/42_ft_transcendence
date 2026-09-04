@@ -77,11 +77,27 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({
         queryKey: ['sentFriendRequests'],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
     };
 
     const handleFriendRemoved = () => {
       queryClient.invalidateQueries({
         queryKey: ['friends'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
       });
     };
 

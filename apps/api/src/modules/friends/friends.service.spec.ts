@@ -450,6 +450,77 @@ describe('FriendsService', () => {
     });
   });
 
+  describe('rejectRequest', () => {
+    it('creates an in-app notification when rejecting a request', async () => {
+      prisma.friendship.findUnique.mockResolvedValue({
+        id: 1,
+        requesterId: 2,
+        addresseeId: 3,
+        status: FriendshipStatus.PENDING,
+      });
+
+      prisma.friendship.delete.mockResolvedValue({});
+
+      await service.rejectRequest(1, 3);
+
+      expect(prisma.notification.create).toHaveBeenCalledWith({
+        data: {
+          recipientId: 2,
+          actorId: 3,
+          type: 'FRIEND_REQUEST_REJECTED',
+          friendshipId: 1,
+        },
+      });
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_REJECTED,
+        {
+          friendshipId: 1,
+          userId: 3,
+        },
+      );
+
+      expect(prisma.friendship.delete).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
+    });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.friendship.findUnique.mockResolvedValue({
+        id: 1,
+        requesterId: 2,
+        addresseeId: 3,
+        status: FriendshipStatus.PENDING,
+      });
+
+      prisma.friendship.delete.mockResolvedValue({});
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.rejectRequest(1, 3);
+
+      expect(prisma.notification.create).not.toHaveBeenCalled();
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REQUEST_REJECTED,
+        {
+          friendshipId: 1,
+          userId: 3,
+        },
+      );
+
+      expect(prisma.friendship.delete).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
+    });
+  });
+
   describe('getFriends', () => {
     it('maps each friendship to the other participant', async () => {
       prisma.friendship.findMany.mockResolvedValue([
@@ -523,6 +594,72 @@ describe('FriendsService', () => {
       prisma.friendship.delete.mockResolvedValue({});
 
       await expect(service.removeFriend(1, 2)).resolves.toBeDefined();
+      expect(prisma.friendship.delete).toHaveBeenCalledWith({
+        where: { id: 5 },
+      });
+    });
+
+    it('creates an in-app notification when removing a friend', async () => {
+      prisma.friendship.findFirst.mockResolvedValue({
+        id: 5,
+        requesterId: 1,
+        addresseeId: 2,
+        status: FriendshipStatus.ACCEPTED,
+      });
+
+      prisma.friendship.delete.mockResolvedValue({});
+
+      await service.removeFriend(1, 2);
+
+      expect(prisma.notification.create).toHaveBeenCalledWith({
+        data: {
+          recipientId: 2,
+          actorId: 1,
+          type: 'FRIEND_REMOVED',
+        },
+      });
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REMOVED,
+        {
+          userId: 1,
+        },
+      );
+
+      expect(prisma.friendship.delete).toHaveBeenCalledWith({
+        where: { id: 5 },
+      });
+    });
+
+    it('skips in-app notification when viaInApp is disabled', async () => {
+      prisma.friendship.findFirst.mockResolvedValue({
+        id: 5,
+        requesterId: 1,
+        addresseeId: 2,
+        status: FriendshipStatus.ACCEPTED,
+      });
+
+      prisma.friendship.delete.mockResolvedValue({});
+
+      findUniqueNotificationPreference.mockResolvedValue({
+        viaInApp: false,
+        viaEmail: false,
+        viaPush: false,
+      });
+
+      await service.removeFriend(1, 2);
+
+      expect(prisma.notification.create).not.toHaveBeenCalled();
+
+      expect(mockRealtimeRoomService.emitToUser).toHaveBeenCalledWith(
+        2,
+        REALTIME_EVENTS.FRIEND_REMOVED,
+        {
+          userId: 1,
+        },
+      );
+
       expect(prisma.friendship.delete).toHaveBeenCalledWith({
         where: { id: 5 },
       });

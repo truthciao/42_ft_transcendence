@@ -17,7 +17,6 @@ export const notificationPreferenceSchema = z.object({
   type: notificationTypeSchema,
   viaInApp: z.boolean(),
   viaEmail: z.boolean(),
-  viaPush: z.boolean(),
 });
 
 export type NotificationPreference = z.infer<

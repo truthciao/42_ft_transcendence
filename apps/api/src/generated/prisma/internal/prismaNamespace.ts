@@ -1655,7 +1655,6 @@ export const NotificationPreferenceScalarFieldEnum = {
   type: 'type',
   viaInApp: 'viaInApp',
   viaEmail: 'viaEmail',
-  viaPush: 'viaPush',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

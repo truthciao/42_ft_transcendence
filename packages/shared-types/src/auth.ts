@@ -30,9 +30,13 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().email('email must be a valid email address'),
+  email: emailSchema,
   password: z.string().min(1, 'password is required'),
 });
+
+export const twoFactorCodeSchema = z
+  .string()
+  .regex(/^\d{6}$/, 'code must be exactly 6 digits');
 
 export const authUserSchema = z.object({
   id: z.number(),

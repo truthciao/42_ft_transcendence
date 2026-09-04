@@ -7,6 +7,7 @@ export {
   authUserSchema,
   authResponseSchema,
   twoFactorLoginResponseSchema,
+  twoFactorCodeSchema,
 } from './auth.js';
 
 export type {

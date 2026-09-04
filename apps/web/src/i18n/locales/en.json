@@ -409,6 +409,9 @@
       "loggingIn": "Logging in..."
     },
 
+    "loginInvalidCredentials": "Invalid email or password",
+    "loginInvalidTwoFactorCode": "Invalid verification code",
+
     "noAccount": "No account",
     "submitting": "Submitting...",
     "alreadyHaveAccount": "Already have an account?",
@@ -417,7 +420,14 @@
     "twoFactorDescription": "Please enter your Google Authenticator 6-digit code to complete login",
     "twoFactorCodeLabel": "Google Authenticator 6-digit Code",
     "codePlaceholder": "e.g. 482910",
-    "loginFailed": "Login or 2FA verification failed, please check your input"
+    "loginFailed": "Login or 2FA verification failed, please check your input",
+    
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "oauthAccount": "Please log in using your OAuth provider",
+      "invalidTwoFactorCode": "Invalid verification code",
+      "unknown": "Login failed. Please try again."
+    }
   },
 
   "errors": {

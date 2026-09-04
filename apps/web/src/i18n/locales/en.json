@@ -379,21 +379,41 @@
   "auth": {
     "register": "Register",
     "registerDescription": "Create a new account to get started.",
+
     "username": "Username",
     "email": "Email",
     "password": "Password",
+
+    "usernameMinLength": "At least 3 characters",
+    "usernameMaxLength": "30 characters maximum",
+    "usernameCharacters": "Only letters, numbers and underscores",
+    "emailValid": "Valid email address",
+    "passwordMinLength": "At least 8 characters",
+    "passwordMaxLength": "No more than 64 characters",
+    "validationError": "Please check your information and try again.",
+
+    "registerStatus": {
+      "creating": "Creating account...",
+      "success": "Registration successful! Redirecting to login...",
+      "failed": "Registration failed."
+    },
+
+    "emailOrUsernameExists": "Email or username already exists",
+
     "login": "Login",
     "description": "Enter your credentials to access your account.",
     "verifyAndEnter": "Verify & Enter System",
     "signInWithGoogle": "Sign in with Google",
-    "status": {
-      "loggingIn": "Logging in...",
-      "failed": "Failed to login"
+ 
+    "loginStatus": {
+      "loggingIn": "Logging in..."
     },
+
     "noAccount": "No account",
     "submitting": "Submitting...",
     "alreadyHaveAccount": "Already have an account?",
     "loginHere": "Login here",
+
     "twoFactorDescription": "Please enter your Google Authenticator 6-digit code to complete login",
     "twoFactorCodeLabel": "Google Authenticator 6-digit Code",
     "codePlaceholder": "e.g. 482910",

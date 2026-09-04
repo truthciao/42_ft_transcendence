@@ -5,22 +5,28 @@ export const twoFactorLoginResponseSchema = z.object({
   userId: z.number(),
 });
 
+export const emailSchema = z
+  .string()
+  .email('email must be a valid email address');
+
+export const usernameSchema = z
+  .string()
+  .min(3, 'username must be at least 3 characters long')
+  .max(30, 'username must not exceed 30 characters')
+  .regex(
+    /^[a-zA-Z0-9_]+$/,
+    'username may only contain letters, numbers, and underscores',
+  );
+
+export const passwordSchema = z
+  .string()
+  .min(8, 'password must be at least 8 characters long')
+  .max(64, 'password must not exceed 64 characters');
+
 export const registerSchema = z.object({
-  email: z.string().email('email must be a valid email address'),
-
-  username: z
-    .string()
-    .min(3, 'username must be at least 3 characters long')
-    .max(30, 'username must not exceed 30 characters')
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      'username may only contain letters, numbers, and underscores',
-    ),
-
-  password: z
-    .string()
-    .min(8, 'password must be at least 8 characters long')
-    .max(64, 'password must not exceed 64 characters'),
+  email: emailSchema,
+  username: usernameSchema,
+  password: passwordSchema,
 });
 
 export const loginSchema = z.object({

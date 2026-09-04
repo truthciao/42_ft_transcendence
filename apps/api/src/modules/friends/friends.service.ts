@@ -267,6 +267,22 @@ export class FriendsService {
       throw new BadRequestException('This request is no longer pending');
     }
 
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      friendship.requesterId,
+      NotificationType.FRIEND_REQUEST_REJECTED,
+    );
+
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: friendship.requesterId,
+          actorId: userId,
+          type: NotificationType.FRIEND_REQUEST_REJECTED,
+          friendshipId: friendship.id,
+        },
+      });
+    }
+
     this.realtimeRoomService.emitToUser(
       friendship.requesterId,
       REALTIME_EVENTS.FRIEND_REQUEST_REJECTED,
@@ -333,6 +349,21 @@ export class FriendsService {
     const friendship = await this.findFriendshipBetween(userId, otherUserId);
     if (!friendship || friendship.status !== FriendshipStatus.ACCEPTED)
       throw new NotFoundException('You are not friend with this user');
+
+    const shouldSendInApp = await this.shouldSendInAppNotification(
+      otherUserId,
+      NotificationType.FRIEND_REMOVED,
+    );
+
+    if (shouldSendInApp) {
+      await this.prisma.notification.create({
+        data: {
+          recipientId: otherUserId,
+          actorId: userId,
+          type: NotificationType.FRIEND_REMOVED,
+        },
+      });
+    }
 
     this.realtimeRoomService.emitToUser(
       otherUserId,

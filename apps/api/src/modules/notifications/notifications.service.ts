@@ -101,7 +101,6 @@ export class NotificationsService {
           type,
           viaInApp: true,
           viaEmail: false,
-          viaPush: false,
         }
       );
     });
@@ -123,12 +122,10 @@ export class NotificationsService {
           type: item.type,
           viaInApp: item.viaInApp,
           viaEmail: item.viaEmail,
-          viaPush: item.viaPush,
         },
         update: {
           viaInApp: item.viaInApp,
           viaEmail: item.viaEmail,
-          viaPush: item.viaPush,
         },
       });
 

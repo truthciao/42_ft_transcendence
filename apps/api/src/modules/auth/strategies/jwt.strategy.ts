@@ -8,10 +8,17 @@ import { JwtPayload } from '../interfaces/jwt-payload.interface.js';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly prisma: PrismaService) {
+
+  const jwtSecret = process.env.JWT_SECRET;
+
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'super-secret-key-transcendence',
+      secretOrKey: jwtSecret,
     });
   }
 

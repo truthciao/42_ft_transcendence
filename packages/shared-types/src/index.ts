@@ -1,5 +1,8 @@
 export {
   registerSchema,
+  emailSchema,
+  usernameSchema,
+  passwordSchema,
   loginSchema,
   authUserSchema,
   authResponseSchema,

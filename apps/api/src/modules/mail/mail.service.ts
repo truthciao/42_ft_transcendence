@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
+import escapeHtml from 'escape-html';
 
 type NotificationEmailDataMap = {
   FRIEND_REQUEST_RECEIVED: {
@@ -117,10 +118,10 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">New Friend Request</h2>
             <p style="color: #666; font-size: 16px;">
-              <strong>${emailData.actorName}</strong> sent you a friend request.
+              <strong>${escapeHtml(emailData.actorName)}</strong> sent you a friend request.
             </p>
             <div style="margin: 20px 0;">
-              <a href="${emailData.acceptLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              <a href="${escapeHtml(emailData.acceptLink)}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
                 View Request
               </a>
             </div>
@@ -139,10 +140,10 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">Friend Request Accepted</h2>
             <p style="color: #666; font-size: 16px;">
-              <strong>${emailData.actorName}</strong> accepted your friend request!
+              <strong>${escapeHtml(emailData.actorName)}</strong> accepted your friend request!
             </p>
             <div style="margin: 20px 0;">
-              <a href="${emailData.profileLink}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              <a href="${escapeHtml(emailData.profileLink)}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
                 View Profile
               </a>
             </div>
@@ -161,10 +162,10 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">Workspace Invitation</h2>
             <p style="color: #666; font-size: 16px;">
-              <strong>${emailData.inviterName}</strong> invited you to join <strong>${emailData.workspaceName}</strong>.
+              <strong>${escapeHtml(emailData.inviterName)}</strong> invited you to join <strong>${escapeHtml(emailData.workspaceName)}</strong>.
             </p>
             <div style="margin: 20px 0;">
-              <a href="${emailData.inviteLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              <a href="${escapeHtml(emailData.inviteLink)}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
                 Accept Invitation
               </a>
             </div>
@@ -186,10 +187,10 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">Member Joined Workspace</h2>
             <p style="color: #666; font-size: 16px;">
-              <strong>${emailData.actorName}</strong> accepted your invitation to <strong>${emailData.workspaceName}</strong>.
+              <strong>${escapeHtml(emailData.actorName)}</strong> accepted your invitation to <strong>${escapeHtml(emailData.workspaceName)}</strong>.
             </p>
             <div style="margin: 20px 0;">
-              <a href="${emailData.workspaceLink}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              <a href="${escapeHtml(emailData.workspaceLink)}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
                 Open Workspace
               </a>
             </div>
@@ -208,10 +209,10 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">Role Changed</h2>
             <p style="color: #666; font-size: 16px;">
-              Your role in <strong>${emailData.workspaceName}</strong> has been changed to <strong>${emailData.newRole}</strong>.
+              Your role in <strong>${escapeHtml(emailData.workspaceName)}</strong> has been changed to <strong>${escapeHtml(emailData.newRole)}</strong>.
             </p>
             <div style="margin: 20px 0;">
-              <a href="${emailData.workspaceLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              <a href="${escapeHtml(emailData.workspaceLink)}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
                 View Workspace
               </a>
             </div>
@@ -230,7 +231,7 @@ export class MailService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">Removed from Workspace</h2>
             <p style="color: #666; font-size: 16px;">
-              You have been removed from <strong>${emailData.workspaceName}</strong>.
+              You have been removed from <strong>${escapeHtml(emailData.workspaceName)}</strong>.
             </p>
             <p style="color: #999; font-size: 12px; margin-top: 30px;">
               This is an automated email. Please do not reply.
@@ -240,7 +241,7 @@ export class MailService {
       }
 
       default:
-        return `<p style="color: #666;">You have a new notification: ${type}</p>`;
+        return `<p style="color: #666;">You have a new notification: ${escapeHtml(type)}</p>`;
     }
   }
 }

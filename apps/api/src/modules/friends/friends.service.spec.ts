@@ -73,7 +73,6 @@ const updateManyNotifications = jest.fn<() => Promise<unknown>>();
 type MockNotificationPreference = {
   viaInApp: boolean;
   viaEmail: boolean;
-  viaPush: boolean;
 };
 
 const findUniqueNotificationPreference =
@@ -232,7 +231,6 @@ describe('FriendsService', () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
       prisma.user.findUnique.mockResolvedValue({ id: 2 });
       prisma.friendship.findFirst.mockResolvedValue(null);
@@ -263,7 +261,6 @@ describe('FriendsService', () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
         viaInApp: false,
         viaEmail: true,
-        viaPush: false,
       });
       prisma.user.findUnique
         .mockResolvedValueOnce({
@@ -293,7 +290,6 @@ describe('FriendsService', () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendFriendRequestEmail(10, 20);
@@ -305,7 +301,6 @@ describe('FriendsService', () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendFriendRequestAcceptedEmail(10, 20);
@@ -317,7 +312,6 @@ describe('FriendsService', () => {
       prisma.notificationPreference.findUnique.mockResolvedValue({
         viaInApp: true,
         viaEmail: true,
-        viaPush: false,
       });
 
       prisma.user.findUnique
@@ -423,7 +417,6 @@ describe('FriendsService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.acceptRequest(1, 3);
@@ -499,7 +492,6 @@ describe('FriendsService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.rejectRequest(1, 3);
@@ -645,7 +637,6 @@ describe('FriendsService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.removeFriend(1, 2);

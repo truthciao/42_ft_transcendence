@@ -246,7 +246,6 @@ model NotificationPreference {
   type      NotificationType
   viaInApp  Boolean          @default(true)
   viaEmail  Boolean          @default(false)
-  viaPush   Boolean          @default(false)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 

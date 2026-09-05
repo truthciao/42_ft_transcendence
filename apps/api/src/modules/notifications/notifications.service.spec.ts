@@ -3,19 +3,26 @@ import { jest } from '@jest/globals';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotificationsService } from './notifications.service.js';
 
-const findManyNotifications = jest.fn<() => Promise<unknown[]>>();
+const findManyNotifications =
+  jest.fn<() => Promise<unknown[]>>();
 
-const countNotifications = jest.fn<() => Promise<number>>();
+const countNotifications =
+  jest.fn<() => Promise<number>>();
 
-const findUniqueNotification = jest.fn<() => Promise<unknown>>();
+const findUniqueNotification =
+  jest.fn<() => Promise<unknown>>();
 
-const updateNotification = jest.fn<() => Promise<unknown>>();
+const updateNotification =
+  jest.fn<() => Promise<unknown>>();
 
-const updateManyNotifications = jest.fn<() => Promise<unknown>>();
+const updateManyNotifications =
+  jest.fn<() => Promise<unknown>>();
 
-const findManyNotificationPreferences = jest.fn<() => Promise<unknown[]>>();
+const findManyNotificationPreferences =
+  jest.fn<() => Promise<unknown[]>>();
 
-const upsertNotificationPreference = jest.fn<() => Promise<unknown>>();
+const upsertNotificationPreference =
+  jest.fn<() => Promise<unknown>>();
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
@@ -37,7 +44,9 @@ describe('NotificationsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    service = new NotificationsService(prisma as unknown as PrismaService);
+    service = new NotificationsService(
+      prisma as unknown as PrismaService,
+    );
   });
 
   describe('getNotifications', () => {
@@ -314,43 +323,49 @@ describe('NotificationsService', () => {
 
       await service.updatePreferences(42, preferences as any);
 
-      expect(prisma.notificationPreference.upsert).toHaveBeenNthCalledWith(1, {
-        where: {
-          userId_type: {
+      expect(prisma.notificationPreference.upsert).toHaveBeenNthCalledWith(
+        1,
+        {
+          where: {
+            userId_type: {
+              userId: 42,
+              type: 'FRIEND_REQUEST_RECEIVED',
+            },
+          },
+          update: {
+            viaInApp: false,
+            viaEmail: true,
+          },
+          create: {
             userId: 42,
             type: 'FRIEND_REQUEST_RECEIVED',
+            viaInApp: false,
+            viaEmail: true,
           },
         },
-        update: {
-          viaInApp: false,
-          viaEmail: true,
-        },
-        create: {
-          userId: 42,
-          type: 'FRIEND_REQUEST_RECEIVED',
-          viaInApp: false,
-          viaEmail: true,
-        },
-      });
+      );
 
-      expect(prisma.notificationPreference.upsert).toHaveBeenNthCalledWith(2, {
-        where: {
-          userId_type: {
+      expect(prisma.notificationPreference.upsert).toHaveBeenNthCalledWith(
+        2,
+        {
+          where: {
+            userId_type: {
+              userId: 42,
+              type: 'FRIEND_REQUEST_ACCEPTED',
+            },
+          },
+          update: {
+            viaInApp: true,
+            viaEmail: false,
+          },
+          create: {
             userId: 42,
             type: 'FRIEND_REQUEST_ACCEPTED',
+            viaInApp: true,
+            viaEmail: false,
           },
         },
-        update: {
-          viaInApp: true,
-          viaEmail: false,
-        },
-        create: {
-          userId: 42,
-          type: 'FRIEND_REQUEST_ACCEPTED',
-          viaInApp: true,
-          viaEmail: false,
-        },
-      });
+      );
 
       expect(prisma.notificationPreference.upsert).toHaveBeenCalledTimes(2);
     });

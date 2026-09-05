@@ -7,9 +7,15 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { HttpError } from '@/lib/http';
 import { disconnectSocket } from '@/lib/realtime';
-import { cn } from '@/lib/utils';
+import { loginSchema, twoFactorCodeSchema } from '@repo/shared-types';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
+
+type LoginError =
+  | 'invalidCredentials'
+  | 'oauthAccount'
+  | 'invalidTwoFactorCode'
+  | 'unknown';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -18,11 +24,13 @@ export function LoginPage() {
 
   const [form, setForm] = useState<LoginPayload>({
     email: '',
-    password: '',
+    password: ''
   });
 
   const [status, setStatus] = useState<LoginStatus>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<LoginError | null>(null);
+
   const { t } = useTranslation();
 
   // State for two-factor authentication interruption flow
@@ -53,15 +61,25 @@ export function LoginPage() {
   // Stage 1: Submit email and password for login
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
+
+    const payload: LoginPayload = {
+      email: form.email.trim(),
+      password: form.password,
+    };
+
+    const validation = loginSchema.safeParse(payload);
+
+    if (!validation.success) {
+      setErrorMessage('invalidCredentials');
+      setStatus('failed');
+      return;
+    } 
+
+    setErrorMessage(null);
     setStatus('loggingIn');
     setIsSubmitting(true);
 
     try {
-      const payload: LoginPayload = {
-        email: form.email.trim(),
-        password: form.password,
-      };
-
       const data = await loginUser(payload);
 
       // Core interception check: if the backend requires 2FA verification
@@ -84,22 +102,49 @@ export function LoginPage() {
     } catch (error) {
       if (error instanceof HttpError) {
         console.error(error.status, error.message);
+
+        if (
+          error.status === 401 &&
+          (error.message === 'Email not registered!' ||
+            error.message === 'Invalid password')
+        ) {
+          setErrorMessage('invalidCredentials');
+        } else if (error.status === 400) {
+          setErrorMessage('oauthAccount')
+        } else {
+          setErrorMessage('unknown');
+        }
       } else {
         console.error(error);
+        setErrorMessage('unknown');
       }
+
       setStatus('failed');
     } finally {
       setIsSubmitting(false);
     }
+      
   }
 
   async function handleVerify2FA(event: FormEvent) {
     event.preventDefault();
+
+    const code = totpCode.trim();
+
+    const validation = twoFactorCodeSchema.safeParse(code);
+
+    if (!validation.success) {
+      setErrorMessage('invalidTwoFactorCode');
+      setStatus('failed');
+      return;
+    }
+
+    setErrorMessage(null);
     setIsSubmitting(true);
     setStatus('loggingIn');
 
     try {
-      const data = await loginWithTwoFactor(userId!, totpCode.trim());
+      const data = await loginWithTwoFactor(userId!, code);
 
       if ('access_token' in data) {
         disconnectSocket();
@@ -110,10 +155,30 @@ export function LoginPage() {
         navigate('/app/chat', { replace: true });
       }
     } catch (error) {
-      console.error('2FA verification failed:', error);
-      setStatus('failed');
+        console.log('🔥 2FA CATCH', error);
+
+        if (error instanceof HttpError) {
+          console.error(error.status, error.message);
+
+          if (
+            error.status === 401 &&
+            error.message === 'Invalid 2FA verification code'
+          ) {
+            setErrorMessage('invalidTwoFactorCode');
+          } else {
+            setErrorMessage('unknown');
+          }
+        } else {
+          console.error(error);
+          setErrorMessage('unknown');
+        }
+
+        setStatus('failed');
+    } finally {
+      setIsSubmitting(false);
     }
   }
+
 
   const handleGoogleLogin = () => {
     window.location.href = '/api/auth/google';
@@ -130,17 +195,17 @@ export function LoginPage() {
         /* Stage 1: Standard email and password form */
         <form onSubmit={handleLogin} className="grid gap-4">
           <label>
-            <div>{t('auth.email')}</div>
-            <Input
-              type="text"
-              required
-              placeholder="user@example.com"
-              value={form.email}
-              onChange={(event) =>
-                setForm({ ...form, email: event.target.value })
-              }
-              className="w-full"
-            />
+              <div>{t('auth.email')}</div>
+              <Input
+                type="text"
+                required
+                placeholder="user@example.com"
+                value={form.email}
+                onChange={(event) => {
+                  setForm({ ...form, email: event.target.value });
+                }}
+                className="w-full"
+              />
           </label>
 
           <label>
@@ -149,13 +214,12 @@ export function LoginPage() {
               type="password"
               required
               value={form.password ?? ''}
-              onChange={(event) =>
-                setForm({ ...form, password: event.target.value })
-              }
+              onChange={(event) => {
+                setForm({ ...form, password: event.target.value });
+              }}
               className="w-full"
             />
           </label>
-
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? t('auth.submitting') : t('auth.login')}
           </Button>
@@ -173,7 +237,9 @@ export function LoginPage() {
               required
               placeholder={t('auth.codePlaceholder')}
               value={totpCode}
-              onChange={(event) => setTotpCode(event.target.value)}
+              onChange={(event) => {
+                setTotpCode(event.target.value.replace(/\D/g, ''));
+              }}
               className="w-full text-center text-lg tracking-widest"
             />
           </label>
@@ -217,21 +283,20 @@ export function LoginPage() {
                 d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.16 2.63 1.14 6.6l4.14 3.15c.95-2.84 3.6-4.95 6.72-4.95z"
               />
             </svg>
-            Sign in with Google
+            {t('auth.signInWithGoogle')} 
           </Button>
         </>
       )}
 
-      {status !== 'idle' ? (
-        <p
-          className={cn(
-            'mt-4 text-center',
-            status === 'failed' && 'text-destructive',
-          )}
-        >
-          {status === 'failed'
-            ? t('auth.loginFailed')
-            : t(`auth.status.${status}`)}
+      {status === 'loggingIn' ? (
+        <p className="mt-4 text-center">
+          {t('auth.loginStatus.loggingIn')}
+        </p>
+      ) : null}
+
+      {status === 'failed' && errorMessage ? (
+        <p className="mt-4 text-center text-destructive">
+          {t(`auth.errors.${errorMessage}`)}
         </p>
       ) : null}
 

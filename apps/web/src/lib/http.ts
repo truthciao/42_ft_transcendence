@@ -62,7 +62,7 @@ export async function http<T>(
         : undefined,
   });
 
-  if (response.status === 401) {
+  if (response.status === 401 && auth) {
     localStorage.removeItem('access_token');
     window.dispatchEvent(new CustomEvent('auth:unauthorized'));
   }

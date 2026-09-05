@@ -379,26 +379,56 @@
   "auth": {
     "register": "注册",
     "registerDescription": "创建一个新账户以开始使用。",
+
     "username": "用户名",
     "email": "邮箱",
     "password": "密码",
+
+    "usernameMinLength": "至少 3 个字符",
+    "usernameMaxLength": "最多 30 个字符",
+    "usernameCharacters": "只能使用字母、数字和下划线",
+    "emailValid": "有效的邮箱地址",
+    "passwordMinLength": "至少 8 个字符",
+    "passwordMaxLength": "最多 64 个字符",
+    "validationError": "请检查您的信息后重试。",
+
+    "registerStatus": {
+      "creating": "正在创建账户...",
+      "success": "注册成功！正在跳转到登录页面...",
+      "failed": "注册失败。"
+    },
+
+    "emailOrUsernameExists": "邮箱或用户名已存在",
+
     "login": "登录",
     "description": "输入您的凭据以访问您的账户。",
     "verifyAndEnter": "验证并进入系统",
     "signInWithGoogle": "使用 Google 登录",
-    "status": {
-      "loggingIn": "登录中...",
-      "failed": "登录失败"
+
+    "loginStatus": {
+      "loggingIn": "登录中..."
     },
+
+    "loginInvalidCredentials": "邮箱或密码错误",
+    "loginInvalidTwoFactorCode": "验证码错误",
+
     "noAccount": "没有账户",
     "submitting": "提交中...",
     "alreadyHaveAccount": "已有账户？",
     "loginHere": "在此登录",
+
     "twoFactorDescription": "请输入您的 Google Authenticator 六位数验证码以完成登录",
     "twoFactorCodeLabel": "Google Authenticator 六位数验证码",
     "codePlaceholder": "例如：482910",
-    "loginFailed": "登录或双重身份验证失败，请检查您输入的信息"
-  },
+    "loginFailed": "登录或双重身份验证失败，请检查您输入的信息",
+
+    "errors": {
+      "invalidCredentials": "邮箱或密码错误",
+      "oauthAccount": "请使用您的 OAuth 登录方式登录",
+      "invalidTwoFactorCode": "验证码错误",
+      "unknown": "登录失败，请重试。"
+    }
+},
 
   "errors": {
     "unexpectedTitle": "出错了",

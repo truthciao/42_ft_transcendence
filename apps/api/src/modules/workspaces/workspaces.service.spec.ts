@@ -113,7 +113,6 @@ const createNotification = jest.fn<() => Promise<{ id: number }>>();
 type MockNotificationPreference = {
   viaInApp: boolean;
   viaEmail: boolean;
-  viaPush: boolean;
 };
 
 const findUniqueNotificationPreference =
@@ -271,7 +270,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: true,
-        viaPush: false,
       });
 
       findUniqueUser
@@ -307,7 +305,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendWorkspaceInviteEmail(3, 1, 1);
@@ -319,7 +316,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: true,
-        viaPush: false,
       });
 
       findUniqueUser
@@ -355,7 +351,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendWorkspaceInviteAcceptedEmail(1, 3, 1);
@@ -367,7 +362,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: true,
-        viaPush: false,
       });
 
       findUniqueUser.mockResolvedValue({
@@ -396,7 +390,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendMemberRemovedEmail(3, 1);
@@ -408,7 +401,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: true,
-        viaPush: false,
       });
 
       findUniqueUser.mockResolvedValue({
@@ -438,7 +430,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: true,
         viaEmail: false,
-        viaPush: false,
       });
 
       await (service as any).sendRoleChangedEmail(3, 1, WorkspaceRole.ADMIN);
@@ -607,7 +598,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.createInvite(1, owner, {
@@ -746,7 +736,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.acceptInvite(1, 2);
@@ -919,7 +908,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.changeMemberRole(1, 2, WorkspaceRole.ADMIN, actor);
@@ -1070,7 +1058,6 @@ describe('WorkspacesService', () => {
       findUniqueNotificationPreference.mockResolvedValue({
         viaInApp: false,
         viaEmail: false,
-        viaPush: false,
       });
 
       await service.removeMember(1, 2, actor);

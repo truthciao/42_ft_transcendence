@@ -1,9 +1,13 @@
 export {
   registerSchema,
+  emailSchema,
+  usernameSchema,
+  passwordSchema,
   loginSchema,
   authUserSchema,
   authResponseSchema,
   twoFactorLoginResponseSchema,
+  twoFactorCodeSchema,
 } from './auth.js';
 
 export type {

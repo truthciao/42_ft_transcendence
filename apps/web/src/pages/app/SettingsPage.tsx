@@ -281,13 +281,12 @@ export function NotificationSettingsPage() {
 
   const handleToggle = (
     type: NotificationType,
-    field: 'viaInApp' | 'viaEmail' | 'viaPush',
+    field: 'viaInApp' | 'viaEmail',
   ) => {
     const item = prefs.find((p) => p.type === type) || {
       type,
       viaInApp: true,
       viaEmail: false,
-      viaPush: false,
     };
 
     const updated = { ...item, [field]: !item[field] };
@@ -361,17 +360,6 @@ export function NotificationSettingsPage() {
                 />
                 <span className="text-sm">
                   {t('notifications.channels.email')}
-                </span>
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={p.viaPush}
-                  onChange={() => handleToggle(p.type, 'viaPush')}
-                />
-                <span className="text-sm">
-                  {t('notifications.channels.push')}
                 </span>
               </label>
             </div>

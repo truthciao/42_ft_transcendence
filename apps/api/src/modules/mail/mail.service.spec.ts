@@ -47,9 +47,7 @@ describe('MailService', () => {
       '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;',
     );
 
-    expect(html).not.toContain(
-      '<script>alert("xss")</script>',
-    );
+    expect(html).not.toContain('<script>alert("xss")</script>');
   });
 
   it('escapes dynamic links in notification email HTML', () => {
@@ -72,8 +70,6 @@ describe('MailService', () => {
       'https://example.com/?foo=&quot;bar&quot;&amp;baz=&lt;test&gt;',
     );
 
-    expect(html).not.toContain(
-      'https://example.com/?foo="bar"&baz=<test>',
-    );
+    expect(html).not.toContain('https://example.com/?foo="bar"&baz=<test>');
   });
 });

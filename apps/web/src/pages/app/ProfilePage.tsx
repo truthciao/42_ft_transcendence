@@ -18,6 +18,7 @@ import {
   useUploadAvatar,
 } from '../../hooks/useProfile';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -174,10 +175,9 @@ export function ProfilePage() {
             {t('profile.displayName')}
           </span>
 
-          <input
+          <Input
             {...form.register('displayName')}
             placeholder={t('profile.displayNamePlaceholder')}
-            className="rounded-md border border-input bg-background px-3 py-2"
           />
 
           {form.formState.errors.displayName && (

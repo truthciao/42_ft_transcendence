@@ -145,6 +145,7 @@ Example:
 ```env
 DATABASE_URL="postgresql://transcendence:transcendence@localhost:5432/transcendence?schema=public"
 ```
+
 Additional variables (JWT secrets, OAuth credentials, etc.) can be added as the project grows.
 
 Generate a JWT_SECRET environnement varialble by executing the command below:

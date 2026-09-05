@@ -53,7 +53,7 @@ services:
       NODE_ENV: development
       PORT: 3000
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
-      JWT_SECRET: ${JWT_SECRET} 
+      JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
       # Gmail SMTP configuration is provided via local environment variables.
       MAIL_HOST: ${MAIL_HOST}

@@ -40,10 +40,9 @@ export function AddFriend() {
   const { user: currentUser, loading: isCurrentUserLoading } = useAuth();
 
   const { data: friends } = useFriends();
+  const { data: sentRequests } = useSentFriendRequests();
 
   const sendFriendRequestMutation = useSendFriendRequest();
-
-  const { data: sentRequests } = useSentFriendRequests();
 
   const users = searchResult?.pages.flatMap((page) => page.users) ?? [];
 
@@ -53,18 +52,17 @@ export function AddFriend() {
     sentRequests?.map((request) => request.addresseeId) ?? [],
   );
 
-  const availableUsers =
-    users?.filter((user) => {
-      if (user.id === currentUser?.id) {
-        return false;
-      }
+  const availableUsers = users.filter((user) => {
+    if (user.id === currentUser?.id) {
+      return false;
+    }
 
-      if (friendIds.has(user.id)) {
-        return false;
-      }
+    if (friendIds.has(user.id)) {
+      return false;
+    }
 
-      return true;
-    }) ?? [];
+    return true;
+  });
 
   const rowVirtualizer = useVirtualizer({
     count: availableUsers.length,
@@ -148,73 +146,72 @@ export function AddFriend() {
           {t('friends.addFriend.noUsers')}
         </p>
       ) : (
-        <>
-          <div ref={parentRef} className="h-64 overflow-y-auto">
-            <div
-              className="relative w-full"
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-              }}
-            >
-              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const user = availableUsers[virtualRow.index];
+        <div ref={parentRef} className="h-64 overflow-y-auto">
+          <div
+            className="relative w-full"
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const user = availableUsers[virtualRow.index];
 
-                if (!user) {
-                  return null;
-                }
+              if (!user) {
+                return null;
+              }
 
-                const isSending = sendingUserId === user.id;
-                const isPending = pendingUserIds.has(user.id);
+              const isSending = sendingUserId === user.id;
+              const isPending = pendingUserIds.has(user.id);
 
-                return (
-                  <div
-                    key={user.id}
-                    className="
-                      absolute
-                      left-0
-                      top-0
-                      flex
-                      w-full
-                      items-center
-                      justify-between
-                      rounded-lg
-                      border
-                      p-4
-                    "
-                    style={{
-                      height: `${virtualRow.size}px`,
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
+              return (
+                <div
+                  key={user.id}
+                  className="
+                    absolute
+                    left-0
+                    top-0
+                    flex
+                    w-full
+                    items-center
+                    justify-between
+                    rounded-lg
+                    border
+                    p-4
+                  "
+                  style={{
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  <p className="font-medium">{user.username}</p>
+
+                  <Button
+                    size="sm"
+                    disabled={
+                      isPending ||
+                      (sendFriendRequestMutation.isPending && isSending)
+                    }
+                    onClick={() => handleSendFriendRequest(user.id)}
                   >
-                    <p className="font-medium">{user.username}</p>
-                    <Button
-                      size="sm"
-                      disabled={
-                        isPending ||
-                        (sendFriendRequestMutation.isPending && isSending)
-                      }
-                      onClick={() => handleSendFriendRequest(user.id)}
-                    >
-                      {isSending
-                        ? t('friends.addFriend.sending')
-                        : isPending
-                          ? t('friends.addFriend.pending')
-                          : t('friends.addFriend.button')}
-                    </Button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {hasNextPage && <div ref={loadMoreRef} className="h-1" />}
-
-            {isFetchingNextPage && (
-              <p className="py-2 text-center text-sm text-muted-foreground">
-                {t('friends.addFriend.searching')}
-              </p>
-            )}
+                    {isSending
+                      ? t('friends.addFriend.sending')
+                      : isPending
+                        ? t('friends.addFriend.pending')
+                        : t('friends.addFriend.button')}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
-        </>
+
+          {hasNextPage && <div ref={loadMoreRef} className="h-1" />}
+
+          {isFetchingNextPage && (
+            <p className="py-2 text-center text-sm text-muted-foreground">
+              {t('friends.addFriend.searching')}
+            </p>
+          )}
+        </div>
       )}
     </section>
   );

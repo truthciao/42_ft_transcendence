@@ -96,6 +96,9 @@ describe('NotificationsService', () => {
           conversation: {
             select: {
               id: true,
+              name: true,
+              type: true,
+              workspaceId: true,
             },
           }
         },

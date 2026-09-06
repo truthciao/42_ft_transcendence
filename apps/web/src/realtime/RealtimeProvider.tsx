@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { getSocket } from '@/lib/realtime';
 import { RealtimeContext } from './RealtimeContext';
+import { REALTIME_EVENTS } from './realtime.constants';
 
 export function RealtimeProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -160,6 +161,14 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     };
 
+    const handleNotificationCreated = () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+    };
+  
+
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
     socket.on('user:offline', handleOffline);
@@ -183,6 +192,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     socket.on('workspace-member:removed', handleWorkspaceMemberRemoved);
 
     socket.on('workspace-role:changed', handleWorkspaceRoleChanged);
+
+    socket.on(
+      REALTIME_EVENTS.NOTIFICATION_CREATED, 
+      handleNotificationCreated
+    );
 
     return () => {
       socket.off('users:online', handleUsersOnline);
@@ -208,6 +222,8 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       socket.off('workspace-member:removed', handleWorkspaceMemberRemoved);
 
       socket.off('workspace-role:changed', handleWorkspaceRoleChanged);
+
+      socket.off('notification:created', handleNotificationCreated);
 
       setOnlineUserIds(new Set());
     };

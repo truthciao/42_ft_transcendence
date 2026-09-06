@@ -2,10 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotificationType } from '../../generated/prisma/enums.js';
 import type { NotificationPreference } from '@repo/shared-types';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
+import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtimeRoomService: RealtimeRoomService,
+  ) {}
 
   async getNotifications(userId: number) {
     return this.prisma.notification.findMany({
@@ -27,6 +32,13 @@ export class NotificationsService {
             id: true,
             name: true,
             icon: true,
+          },
+        },
+        conversation:{
+          select: {
+            id: true,
+            type: true,
+            workspaceId: true,
           },
         },
       },
@@ -91,6 +103,7 @@ export class NotificationsService {
       NotificationType.WORKSPACE_INVITE_ACCEPTED,
       NotificationType.WORKSPACE_MEMBER_REMOVED,
       NotificationType.WORKSPACE_ROLE_CHANGED,
+      NotificationType.MESSAGE_RECEIVED,
     ];
 
     return allTypes.map((type) => {
@@ -133,5 +146,64 @@ export class NotificationsService {
     }
 
     return results;
+  }
+
+  async shouldSendInAppNotification(
+    recipientId: number,
+    type: NotificationType,
+  ): Promise<boolean> {
+    const pref = await this.prisma.notificationPreference.findUnique({
+      where: {
+        userId_type: {
+          userId: recipientId,
+          type,
+        },
+      },
+    });
+
+    return pref ? pref.viaInApp !== false : true;
+  }
+
+  async createMessageNotifications(
+    conversationId: number,
+    senderId: number,
+  ): Promise<void> {
+    const members = await this.prisma.conversationMember.findMany({
+      where: {
+        conversationId,
+        userId: {
+          not: senderId,
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    for (const member of members) {
+      const shouldSendInApp = await this.shouldSendInAppNotification(
+        member.userId,
+        NotificationType.MESSAGE_RECEIVED,
+      );
+
+      if (!shouldSendInApp) {
+        continue;
+      }
+
+      const notification = await this.prisma.notification.create({
+        data: {
+          recipientId: member.userId,
+          actorId: senderId,
+          type: NotificationType.MESSAGE_RECEIVED,
+          conversationId,
+        },
+      });
+
+      this.realtimeRoomService.emitToUser(
+        member.userId,
+        REALTIME_EVENTS.NOTIFICATION_CREATED,
+        notification,
+      )
+    }
   }
 }

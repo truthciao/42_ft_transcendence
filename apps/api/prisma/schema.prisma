@@ -35,8 +35,8 @@ model User {
   sentFriendRequests     Friendship[] @relation("FriendshipRequester")
   receivedFriendRequests Friendship[] @relation("FriendshipAddressee")
 
-  notificationsReceived Notification[] @relation("NotificationRecipient")
-  notificationsCreated  Notification[] @relation("NotificationActor")
+  notificationsReceived   Notification[]           @relation("NotificationRecipient")
+  notificationsCreated    Notification[]           @relation("NotificationActor")
   notificationPreferences NotificationPreference[]
 
   attachments Attachment[] // 用户上传的所有文件
@@ -72,20 +72,20 @@ model OAuthAccount {
 }
 
 model Workspace {
-  id          Int               @id @default(autoincrement())
-  name        String
-  slug        String?           @unique
-  description String?
-  icon        String?
-  ownerId     Int
-  owner       User              @relation(fields: [ownerId], references: [id])
-  members     WorkspaceMember[]
-  invites     WorkspaceInvite[]
-  channels    Conversation[]
-  documents   Document[]
+  id            Int               @id @default(autoincrement())
+  name          String
+  slug          String?           @unique
+  description   String?
+  icon          String?
+  ownerId       Int
+  owner         User              @relation(fields: [ownerId], references: [id])
+  members       WorkspaceMember[]
+  invites       WorkspaceInvite[]
+  channels      Conversation[]
+  documents     Document[]
   notifications Notification[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 }
 
 enum WorkspaceRole {
@@ -143,29 +143,31 @@ enum ConversationType {
 }
 
 model Conversation {
-  id          Int                  @id @default(autoincrement())
-  type        ConversationType     @default(DIRECT)
-  name        String?
-  workspaceId Int?
-  workspace   Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  isDefault   Boolean              @default(false)
-  createdById Int?
-  members     ConversationMember[]
-  messages    Message[]
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  id            Int                  @id @default(autoincrement())
+  type          ConversationType     @default(DIRECT)
+  name          String?
+  workspaceId   Int?
+  workspace     Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  isDefault     Boolean              @default(false)
+  createdById   Int?
+  members       ConversationMember[]
+  messages      Message[]
+  notifications Notification[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
 
   @@index([workspaceId, type])
 }
 
 model ConversationMember {
-  id             Int          @id @default(autoincrement())
-  conversationId Int
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  userId         Int
-  user           User         @relation(fields: [userId], references: [id])
-  joinedAt       DateTime     @default(now())
-  lastReadMessageId        Int?
+  id                Int          @id @default(autoincrement())
+  conversationId    Int
+  conversation      Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId            Int
+  user              User         @relation(fields: [userId], references: [id])
+  joinedAt          DateTime     @default(now())
+  lastReadMessageId Int?
+
   @@unique([conversationId, userId])
 }
 
@@ -213,6 +215,7 @@ enum NotificationType {
   WORKSPACE_INVITE_ACCEPTED
   WORKSPACE_MEMBER_REMOVED
   WORKSPACE_ROLE_CHANGED
+  MESSAGE_RECEIVED
 }
 
 model Notification {
@@ -231,6 +234,9 @@ model Notification {
 
   workspaceId Int?
   workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  conversationId Int?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
 
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -256,31 +262,31 @@ model NotificationPreference {
 // 1. 新增 Attachment 表
 model Attachment {
   id         String   @id @default(uuid())
-  uploaderId Int      // 关联上传者
-  messageId  Int?     // 关联消息（允许为空，因为头像上传不需要关联消息）
-  fileName   String   // 原始文件名，如 "report.pdf"
-  fileUrl    String   // 访问路径，如 "/uploads/chat/xyz-123.pdf"
-  fileType   String   // MIME类型，如 "application/pdf"
-  fileSize   Int      // 文件大小（字节）
+  uploaderId Int // 关联上传者
+  messageId  Int? // 关联消息（允许为空，因为头像上传不需要关联消息）
+  fileName   String // 原始文件名，如 "report.pdf"
+  fileUrl    String // 访问路径，如 "/uploads/chat/xyz-123.pdf"
+  fileType   String // MIME类型，如 "application/pdf"
+  fileSize   Int // 文件大小（字节）
   createdAt  DateTime @default(now())
 
-  uploader   User     @relation(fields: [uploaderId], references: [id])
-  message    Message? @relation(fields: [messageId], references: [id])
+  uploader User     @relation(fields: [uploaderId], references: [id])
+  message  Message? @relation(fields: [messageId], references: [id])
 }
 
 model Document {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   title       String
-  content     String   @default("")
+  content     String @default("")
   yjsState    Bytes?
   workspaceId Int
   creatorId   Int
 
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  creator     User      @relation(fields: [creatorId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  creator   User      @relation(fields: [creatorId], references: [id])
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
   @@index([creatorId])

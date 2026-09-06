@@ -586,6 +586,7 @@
     "friendRequestAccepted": "{{username}} accepted your friend request",
     "friendRequestRejected": "{{username}} rejected your friend request",
     "friendRemoved": "{{username}} removed you as a friend",
+    "messageReceived": "{{username}} sent you a message",
     "workspaceInviteReceived": "{{username}} invited you to join {{workspaceName}}",
     "workspaceInviteAccepted": "{{username}} accepted your invite to {{workspaceName}}",
     "workspaceMemberRemoved": "You were removed from {{workspaceName}}",

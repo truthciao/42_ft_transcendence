@@ -8,12 +8,14 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConversationType } from '../../generated/prisma/enums.js';
 import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 import type { GetMessagesPayload } from '@repo/shared-types';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 @Injectable()
 export class ChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly realtimeGateway: RealtimeGateway,
+    private readonly notificationsService: NotificationsService,
   ) {}
   async createDirectConversation(userId: number, targetUserId: number) {
     if (userId === targetUserId)
@@ -277,6 +279,11 @@ export class ChatService {
       where: { id: conversationId },
       data: { updatedAt: new Date() },
     });
+
+    await this.notificationsService.createMessageNotifications(
+      conversationId,
+      senderId,
+    )
 
     return message;
   }

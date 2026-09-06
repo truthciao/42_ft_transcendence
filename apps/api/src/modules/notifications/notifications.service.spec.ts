@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { jest } from '@jest/globals';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotificationsService } from './notifications.service.js';
+import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 
 const findManyNotifications =
   jest.fn<() => Promise<unknown[]>>();
@@ -23,6 +24,8 @@ const findManyNotificationPreferences =
 
 const upsertNotificationPreference =
   jest.fn<() => Promise<unknown>>();
+
+const emitToUser = jest.fn();
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
@@ -46,6 +49,9 @@ describe('NotificationsService', () => {
 
     service = new NotificationsService(
       prisma as unknown as PrismaService,
+      {
+        emitToUser,
+      } as unknown as RealtimeRoomService,
     );
   });
 
@@ -87,6 +93,11 @@ describe('NotificationsService', () => {
               icon: true,
             },
           },
+          conversation: {
+            select: {
+              id: true,
+            },
+          }
         },
       });
     });
@@ -186,7 +197,7 @@ describe('NotificationsService', () => {
 
       const result = await service.getPreferences(42);
 
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(9);
 
       expect(result).toEqual([
         {
@@ -226,6 +237,11 @@ describe('NotificationsService', () => {
         },
         {
           type: 'WORKSPACE_ROLE_CHANGED',
+          viaInApp: true,
+          viaEmail: false,
+        },
+        {
+          type: 'MESSAGE_RECEIVED',
           viaInApp: true,
           viaEmail: false,
         },
@@ -287,6 +303,11 @@ describe('NotificationsService', () => {
         },
         {
           type: 'WORKSPACE_ROLE_CHANGED',
+          viaInApp: true,
+          viaEmail: false,
+        },
+        {
+          type: 'MESSAGE_RECEIVED',
           viaInApp: true,
           viaEmail: false,
         },

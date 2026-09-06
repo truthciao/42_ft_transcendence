@@ -586,6 +586,7 @@
     "friendRequestAccepted": "{{username}} 接受了你的好友请求",
     "friendRequestRejected": "{{username}} 拒绝了你的好友请求",
     "friendRemoved": "{{username}} 将你移除了好友",
+    "messageReceived": "{{username}} 给您发了一条消息",
     "workspaceInviteReceived": "{{username}} 邀请你加入 {{workspaceName}}",
     "workspaceInviteAccepted": "{{username}} 接受了你加入 {{workspaceName}} 的邀请",
     "workspaceMemberRemoved": "你已被移出 {{workspaceName}}",

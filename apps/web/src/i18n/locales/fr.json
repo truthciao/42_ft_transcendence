@@ -590,6 +590,7 @@
     "friendRequestRejected": "{{username}} a refusé votre demande d’ami",
     "friendRemoved": "{{username}} vous a retiré de ses amis",
     "messageReceived": "{{username}} vous a envoyé un message",
+    "messageReceivedInConversation": "{{username}} a envoyé un message dans {{conversationName}}",
     "workspaceInviteReceived": "{{username}} vous a invité à rejoindre {{workspaceName}}",
     "workspaceInviteAccepted": "{{username}} a accepté votre invitation à {{workspaceName}}",
     "workspaceMemberRemoved": "Vous avez été retiré de {{workspaceName}}",

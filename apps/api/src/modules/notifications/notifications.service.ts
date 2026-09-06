@@ -38,6 +38,7 @@ export class NotificationsService {
           select: {
             id: true,
             type: true,
+            name: true,
             workspaceId: true,
           },
         },
@@ -196,6 +197,22 @@ export class NotificationsService {
           actorId: senderId,
           type: NotificationType.MESSAGE_RECEIVED,
           conversationId,
+        },
+        include: {
+          actor: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          conversation: {
+            select: {
+              id: true,
+              type: true,
+              name: true,
+              workspaceId: true,
+            },
+          },
         },
       });
 

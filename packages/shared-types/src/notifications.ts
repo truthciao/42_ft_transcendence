@@ -46,6 +46,7 @@ export const notificationWorkspaceSchema = z.object({
 export const notificationConversationSchema = z.object({
   id: z.number(),
   type: z.enum(['DIRECT', 'GROUP', 'CHANNEL']),
+  name: z.string().nullable(),
   workspaceId: z.number().nullable(),
 });
 

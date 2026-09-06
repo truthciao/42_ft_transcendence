@@ -53,8 +53,26 @@ export function TopBar() {
       case 'FRIEND_REMOVED':
         return t('notifications.friendRemoved', { username });
 
-      case 'MESSAGE_RECEIVED':
+      case 'MESSAGE_RECEIVED': {
+        console.log('🔔 MESSAGE NOTIFICATION: ', notification);
+
+        const conversation = notification.conversation;
+
+        if (
+          conversation?.type === 'GROUP' ||
+          conversation?.type === 'CHANNEL'
+        ) {
+          return t('notifications.messageReceivedInConversation', {
+            username,
+            conversationName:
+              conversation.type === 'CHANNEL'
+                ? `#${conversation.name}`
+                : conversation.name,
+          });
+        }
+
         return t('notifications.messageReceived', { username });
+      }
 
       case 'WORKSPACE_INVITE_RECEIVED':
         return t('notifications.workspaceInviteReceived', {
@@ -160,8 +178,12 @@ export function TopBar() {
                         return;
                       }
 
-                      navigate(`/app/chat/${conversation.id}`);
-                      return;
+                      navigate(`/app/chat/${conversation.id}`, {
+                        state: {
+                          friendName: notification.actor?.username,
+                        },
+                      });  
+                      return ;     
                     }
 
                     const workspaceId = notification.workspace?.id;

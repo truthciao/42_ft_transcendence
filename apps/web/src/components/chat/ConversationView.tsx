@@ -27,7 +27,6 @@ import {
   type AttachmentType,
 } from '@/components/common/FileUpload';
 
-// 新增：定义后端服务器的地址
 const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
 import { MessageSearchDialog } from './MessageSearchDialog';
 import { MessageContent } from './MessageContent';

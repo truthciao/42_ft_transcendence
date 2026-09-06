@@ -212,19 +212,19 @@ The following table summarizes the main implemented features and their contribut
 | User Authentication        | Provides login and logout functionality.                                                          | yanzhao        |
 | Google OAuth               | Allows authentication through Google OAuth 2.0.                                                   | yanzhao        |
 | Two-Factor Authentication  | Provides an additional authentication step for user accounts.                                     | yanzhao        |
-| User Profiles              | Allows users to manage profile information and avatars.                                           | yshi           |
-| Friend System              | Allows users to search for and interact with other users through friend requests and friendships. | yanzhao        |
+| User Profiles              | Allows users to manage profile information and avatars.                                           | zhwu           |
+| Friend System              | Allows users to search for and interact with other users through friend requests and friendships. | yshi,zhwu        |
 | Real-time Presence         | Displays users' online/offline status.                                                            | yshi           |
 | Real-time Communication    | Enables real-time communication between users.                                                    | yshi, yanzhao  |
 | Notifications              | Provides notifications for relevant application events.                                           | zhwu           |
 | Notification Preferences   | Allows users to configure notification behavior.                                                  | zhwu           |
-| Workspaces / Organizations | Provides shared organizational and collaborative spaces.                                          | All            |
+| Workspaces / Organizations | Provides shared organizational and collaborative spaces.                                          | yshi            |
 | Permissions                | Controls access to resources according to user permissions.                                       | yshi           |
 | File Uploads               | Allows users to upload and manage files.                                                          | hanwang        |
 | Internationalization       | Provides English, French, and Chinese translations.                                               | zhwu           |
 | Design System              | Provides reusable UI components and consistent styling.                                           | yshi           |
 | Browser Compatibility      | Supports additional browsers and ensures cross-browser compatibility.                             | All            |
-| HTTPS                      | Serves the application through HTTPS using Nginx.                                                 | All            |
+| HTTPS                      | Serves the application through HTTPS using Nginx.                                                 | helin            |
 | Accessibility              | Provides accessible interactions, keyboard navigation, and assistive-technology support.          | All            |
 
 ---
@@ -460,7 +460,7 @@ MAIL_PASS="your-app-password"
 MAIL_FROM="noreply@yourdomain.com"
 ```
 
-### Configuration
+#### Configuration
 
 | Variable      | Description                                    |
 | ------------- | ---------------------------------------------- |

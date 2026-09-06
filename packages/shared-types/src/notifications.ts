@@ -9,6 +9,7 @@ export const notificationTypeSchema = z.enum([
   'WORKSPACE_INVITE_ACCEPTED',
   'WORKSPACE_MEMBER_REMOVED',
   'WORKSPACE_ROLE_CHANGED',
+  'MESSAGE_RECEIVED',
 ]);
 
 export type NotificationType = z.infer<typeof notificationTypeSchema>;
@@ -42,6 +43,13 @@ export const notificationWorkspaceSchema = z.object({
   icon: z.string().nullable(),
 });
 
+export const notificationConversationSchema = z.object({
+  id: z.number(),
+  type: z.enum(['DIRECT', 'GROUP', 'CHANNEL']),
+  name: z.string().nullable(),
+  workspaceId: z.number().nullable(),
+});
+
 export const notificationSchema = z.object({
   id: z.number(),
   recipientId: z.number(),
@@ -54,6 +62,9 @@ export const notificationSchema = z.object({
 
   workspaceId: z.number().nullable(),
   workspace: notificationWorkspaceSchema.nullable(),
+
+  conversationId: z.number().nullable(),
+  conversation: notificationConversationSchema.nullable(),
 
   read: z.boolean(),
   createdAt: z.string(),

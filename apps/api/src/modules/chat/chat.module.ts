@@ -4,9 +4,14 @@ import { ChatService } from './chat.service.js';
 import { FriendsModule } from '../friends/friends.module.js';
 import { ChatGateway } from './gateways/chat.gateway.js';
 import { RealtimeModule } from '../realtime/realtime.module.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
-  imports: [forwardRef(() => FriendsModule), RealtimeModule],
+  imports: [
+    forwardRef(() => FriendsModule), 
+    RealtimeModule,
+    NotificationsModule,
+  ],
   controllers: [ChatController],
   providers: [ChatService, ChatGateway],
   exports: [ChatService],

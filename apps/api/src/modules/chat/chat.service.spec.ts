@@ -9,6 +9,7 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { ConversationType } from '../../generated/prisma/enums.js';
 import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 import { ChatService } from './chat.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 type MockUser = {
   id: number;
@@ -60,6 +61,7 @@ describe('ChatService', () => {
   let service: ChatService;
   let prisma: ChatPrismaMock;
   let realtimeGateway: RealtimeGatewayMock;
+  let notificationsService: NotificationsService;
 
   beforeEach(() => {
     prisma = {
@@ -85,9 +87,14 @@ describe('ChatService', () => {
       notifyConversationCreated: jest.fn(),
     };
 
+    notificationsService = {
+      createMessageNotifications: jest.fn(),
+    } as unknown as NotificationsService;
+
     service = new ChatService(
       prisma as unknown as PrismaService,
       realtimeGateway as unknown as RealtimeGateway,
+      notificationsService,
     );
   });
 

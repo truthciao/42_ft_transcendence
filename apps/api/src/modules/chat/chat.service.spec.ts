@@ -10,9 +10,6 @@ import { ConversationType } from '../../generated/prisma/enums.js';
 import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 import { ChatService } from './chat.service.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
-import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
-
-const emitToUser = jest.fn();
 
 type MockUser = {
   id: number;

@@ -54,7 +54,6 @@ export function TopBar() {
         return t('notifications.friendRemoved', { username });
 
       case 'MESSAGE_RECEIVED': {
-        console.log('🔔 MESSAGE NOTIFICATION: ', notification);
 
         const conversation = notification.conversation;
 

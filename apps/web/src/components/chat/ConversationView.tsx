@@ -62,14 +62,23 @@ export function ConversationView({
     useInfiniteQuery({
       queryKey: ['chat-messages', conversationId],
 
-      queryFn: ({ pageParam }) =>
-        getConversationMessages(conversationId, pageParam, 30),
+      queryFn: async ({ pageParam }) => {
+        const result = await getConversationMessages(
+          conversationId,
+          pageParam,
+          30,
+        );
+
+        return result;
+      },
 
       initialPageParam: undefined as number | undefined,
 
       getNextPageParam: (lastPage) => {
         return lastPage.nextCursor ?? undefined;
       },
+
+      refetchOnMount: 'always',
     });
 
   const isNearBottom = (container: HTMLDivElement) => {
@@ -142,6 +151,16 @@ export function ConversationView({
     }
 
     const handleScroll = () => {
+  
+      const nearBottom = isNearBottom(container);
+
+      console.log('🔥 SCROLL:', {
+        scrollTop: container.scrollTop,
+        scrollHeight: container.scrollHeight,
+        clientHeight: container.clientHeight,
+        nearBottom,
+      });
+
       shouldScrollToBottomRef.current = isNearBottom(container);
     };
 
@@ -162,9 +181,17 @@ export function ConversationView({
         ) ?? [],
     [data],
   );
-
+  
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
+
+    console.log('🔥 LAYOUT SCROLL:', {
+      previousScrollHeight: previousScrollHeightRef.current,
+      currentScrollHeight: container?.scrollHeight,
+      currentScrollTop: container?.scrollTop,
+      messagesLength: messages.length,
+    });
+
 
     if (!container) {
       return;
@@ -183,8 +210,15 @@ export function ConversationView({
     previousScrollHeightRef.current = null;
   }, [messages]);
 
+
   useEffect(() => {
     const container = messagesContainerRef.current;
+
+    console.log('🔥 AUTO SCROLL CHECK:', {
+      shouldScrollToBottom: shouldScrollToBottomRef.current,
+      previousScrollHeight: previousScrollHeightRef.current,
+      messagesLength: messages.length,
+    });
 
     if (!container || isLoading) {
       return;
@@ -195,7 +229,20 @@ export function ConversationView({
     }
 
     if (shouldScrollToBottomRef.current) {
-      container.scrollTop = container.scrollHeight;
+      requestAnimationFrame(() => {
+        console.log('🔥 AUTO SCROLL EXECUTE:', {
+          scrollTop: container.scrollTop,
+          scrollHeight: container.scrollHeight,
+          clientHeight: container.clientHeight,
+        });
+
+        container.scrollTop = container.scrollHeight;
+
+        console.log('🔥 AUTO SCROLL AFTER:', {
+          scrollTop: container.scrollTop,
+          scrollHeight: container.scrollHeight,
+        });
+      });
     }
   }, [conversationId, isLoading, messages.length]);
 
@@ -335,7 +382,7 @@ export function ConversationView({
 
       <div
         ref={messagesContainerRef}
-        className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4"
+        className="min-h-0 flex-1 overflow-y-auto p-5 space-y-4 [overflow-anchor:none]"
       >
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm">
@@ -364,6 +411,7 @@ export function ConversationView({
             )}
 
             {messages.map((msg) => {
+
               const isMine = msg.senderId === currentUser?.id;
               const senderLabel = isMine
                 ? t('chat.me', 'Me')
@@ -419,6 +467,7 @@ export function ConversationView({
           {/* 右侧：文本输入与发送按钮 */}
           <Input
             type="text"
+            autoComplete="off"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={t('chat.placeholder', 'Type a message...')}

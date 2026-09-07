@@ -45,6 +45,8 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+
     environment:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
@@ -86,6 +88,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
 
     command:
       - /app/docker/dev-entrypoint.sh

@@ -1,4 +1,4 @@
-import { loginUser, loginWithTwoFactor, type LoginPayload } from '../api/auth';
+import { loginUser, loginWithTwoFactor } from '../api/auth';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { HttpError } from '@/lib/http';
 import { disconnectSocket } from '@/lib/realtime';
-import { loginSchema, twoFactorCodeSchema } from '@repo/shared-types';
+import { loginSchema, twoFactorCodeSchema, type LoginPayload } from '@repo/shared-types';
 
 type LoginStatus = 'idle' | 'loggingIn' | 'failed';
 
@@ -144,7 +144,7 @@ export function LoginPage() {
     setStatus('loggingIn');
 
     try {
-      const data = await loginWithTwoFactor(userId!, code);
+      const data = await loginWithTwoFactor({userId: userId!, code});
 
       if ('access_token' in data) {
         disconnectSocket();

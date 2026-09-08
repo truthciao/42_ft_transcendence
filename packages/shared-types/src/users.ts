@@ -34,8 +34,16 @@ export type CurrentUser = z.infer<typeof currentUserSchema>;
 export const userSearchResultSchema = userSchema.pick({
   id: true,
   username: true,
+  email: true,
 });
 
-export const userSearchResultsSchema = z.array(userSearchResultSchema);
-
 export type UserSearchResult = z.infer<typeof userSearchResultSchema>;
+
+export const userSearchResponseSchema = z.object({
+  users: z.array(userSearchResultSchema),
+  hasMore: z.boolean(),
+});
+
+export type UserSearchResponse = z.infer<
+  typeof userSearchResponseSchema
+>;

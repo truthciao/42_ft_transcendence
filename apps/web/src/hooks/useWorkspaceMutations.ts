@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type {
-  createWorkspacePayload,
+  CreateWorkspacePayload,
   UpdateWorkspacePayload,
   CreateChannelPayload,
   updateMemberRolePayload,
@@ -25,7 +25,7 @@ import { workspaceKeys } from './useWorkspaces';
 export function useCreateWorkspace() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: createWorkspacePayload) => createWorkspace(payload),
+    mutationFn: (payload: CreateWorkspacePayload) => createWorkspace(payload),
     onSuccess: (workspace) => {
       queryClient.invalidateQueries({ queryKey: workspaceKeys.all });
       queryClient.setQueryData(workspaceKeys.detail(workspace.id), workspace);

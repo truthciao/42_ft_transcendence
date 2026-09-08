@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   createWorkspaceSchema,
-  type createWorkspacePayload,
+  type CreateWorkspacePayload,
 } from '@repo/shared-types';
 import {
   Dialog,
@@ -40,7 +40,7 @@ export function CreateWorkspaceDialog({
     setValue,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<createWorkspacePayload>({
+  } = useForm<CreateWorkspacePayload>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: { name: '', description: '', icon: '' },
   });
@@ -52,7 +52,7 @@ export function CreateWorkspaceDialog({
     onOpenChange(next);
   }
 
-  async function onSubmit(values: createWorkspacePayload) {
+  async function onSubmit(values: CreateWorkspacePayload) {
     try {
       const workspace = await mutation.mutateAsync(values);
       toast.success(t('workspaces.create.success', { name: workspace.name }));

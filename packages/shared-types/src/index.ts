@@ -1,20 +1,31 @@
 export {
-  registerSchema,
   emailSchema,
   usernameSchema,
   passwordSchema,
-  loginSchema,
-  authUserSchema,
-  authResponseSchema,
-  twoFactorLoginResponseSchema,
   twoFactorCodeSchema,
+  registerSchema,
+  loginSchema,
+  twoFactorLoginSchema,
+  twoFactorCodePayloadSchema,
+  authUserSchema,
+  authSuccessResponseSchema,
+  twoFactorRequiredResponseSchema,
+  authResponseSchema,
+  registerResponseSchema,
+  twoFactorGenerateResponseSchema,
 } from './auth.js';
 
 export type {
   RegisterPayload,
   LoginPayload,
+  TwoFactorLoginPayload,
+  TwoFactorCodePayload,
   AuthUser,
+  AuthSuccessResponse,
+  TwoFactorRequiredResponse,
   AuthResponse,
+  RegisterResponse,
+  TwoFactorGenerateResponse,
 } from './auth.js';
 
 export {
@@ -66,7 +77,6 @@ export {
   createUserSchema,
   currentUserSchema,
   userSearchResultSchema,
-  userSearchResultsSchema,
 } from './users.js';
 
 export type {

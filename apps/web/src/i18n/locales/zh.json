@@ -492,6 +492,8 @@
     "stranger": "陌生人",
     "room": "聊天室 #{{id}}",
     "chatWith": "与 {{friendName}} 聊天",
+    "online": "{{friendName}} 在线",
+    "offline": "{{friendName}} 离线",
     "loadingHistory": "正在加载聊天记录...",
     "empty": "暂无聊天记录。在下方打个招呼吧！",
     "loadOlder": "加载更早的消息",

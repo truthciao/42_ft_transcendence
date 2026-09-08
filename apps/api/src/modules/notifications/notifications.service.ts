@@ -197,7 +197,7 @@ export class NotificationsService {
           member.userId,
           getChatRoom(conversationId),
         );
-
+            
       if (isViewingConversation) {
         continue;
       }
@@ -207,12 +207,13 @@ export class NotificationsService {
           where: {
             recipientId: member.userId,
             type: NotificationType.MESSAGE_RECEIVED,
+            conversationId,
             read: false,
           },
         });
 
       if (existingNotification) {
-        continue;
+          continue;
       }
 
       const notification = await this.prisma.notification.create({

@@ -1,3 +1,4 @@
+import { disconnectSocket } from '@/lib/realtime';
 import { Bell, LogOut, Settings, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
@@ -29,6 +30,7 @@ export function TopBar() {
   const queryClient = useQueryClient();
 
   function logout() {
+    disconnectSocket();
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     queryClient.clear();

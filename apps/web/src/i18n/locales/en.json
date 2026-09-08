@@ -492,6 +492,8 @@
     "stranger": "Stranger",
     "room": "Chat Room #{{id}}",
     "chatWith": "Chat with {{friendName}}",
+    "online": "{{friendName}} is online",
+    "offline": "{{friendName}} is offline",
     "loadingHistory": "Loading history...",
     "empty": "No message history. Say hi below!",
     "loadOlder": "Load older messages",

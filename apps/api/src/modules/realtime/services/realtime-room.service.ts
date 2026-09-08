@@ -35,8 +35,8 @@ export class RealtimeRoomService {
     const sockets = await this.requireServer().in(room).fetchSockets();
 
     const isInRoom = sockets.some(
-      (socket) => socket.data.user?.userId === userId,
-    );
+      (socket) => (socket.data as { user?: { userId: number } }).user?.userId === userId,
+    ); 
 
     console.log(
       `[IS USER IN ROOM] userId=${userId} room=${room} sockets=${sockets.length} result=${isInRoom}`,

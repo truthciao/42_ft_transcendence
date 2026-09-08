@@ -155,8 +155,6 @@ export function LoginPage() {
         navigate('/app/chat', { replace: true });
       }
     } catch (error) {
-        console.log('🔥 2FA CATCH', error);
-
         if (error instanceof HttpError) {
           console.error(error.status, error.message);
 

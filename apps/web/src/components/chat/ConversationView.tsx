@@ -151,16 +151,6 @@ export function ConversationView({
     }
 
     const handleScroll = () => {
-  
-      const nearBottom = isNearBottom(container);
-
-      console.log('🔥 SCROLL:', {
-        scrollTop: container.scrollTop,
-        scrollHeight: container.scrollHeight,
-        clientHeight: container.clientHeight,
-        nearBottom,
-      });
-
       shouldScrollToBottomRef.current = isNearBottom(container);
     };
 
@@ -185,14 +175,6 @@ export function ConversationView({
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
-    console.log('🔥 LAYOUT SCROLL:', {
-      previousScrollHeight: previousScrollHeightRef.current,
-      currentScrollHeight: container?.scrollHeight,
-      currentScrollTop: container?.scrollTop,
-      messagesLength: messages.length,
-    });
-
-
     if (!container) {
       return;
     }
@@ -214,12 +196,6 @@ export function ConversationView({
   useEffect(() => {
     const container = messagesContainerRef.current;
 
-    console.log('🔥 AUTO SCROLL CHECK:', {
-      shouldScrollToBottom: shouldScrollToBottomRef.current,
-      previousScrollHeight: previousScrollHeightRef.current,
-      messagesLength: messages.length,
-    });
-
     if (!container || isLoading) {
       return;
     }
@@ -230,18 +206,7 @@ export function ConversationView({
 
     if (shouldScrollToBottomRef.current) {
       requestAnimationFrame(() => {
-        console.log('🔥 AUTO SCROLL EXECUTE:', {
-          scrollTop: container.scrollTop,
-          scrollHeight: container.scrollHeight,
-          clientHeight: container.clientHeight,
-        });
-
         container.scrollTop = container.scrollHeight;
-
-        console.log('🔥 AUTO SCROLL AFTER:', {
-          scrollTop: container.scrollTop,
-          scrollHeight: container.scrollHeight,
-        });
       });
     }
   }, [conversationId, isLoading, messages.length]);
@@ -305,9 +270,15 @@ export function ConversationView({
     socket.on('chat:message:received', handleMessageCreated);
 
     return () => {
+      socket.emit('chat:conversation:leave', {
+        conversationId: Number(conversationId),
+      });
+
       socket.off('chat:message:received', handleMessageCreated);
       socket.off('connect', joinConversation);
     };
+
+    
   }, [conversationId, queryClient]);
 
   useEffect(() => {

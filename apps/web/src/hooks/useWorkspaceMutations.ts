@@ -3,9 +3,9 @@ import type {
   CreateWorkspacePayload,
   UpdateWorkspacePayload,
   CreateChannelPayload,
-  updateMemberRolePayload,
+  UpdateMemberRolePayload,
   InviteMemberPayload,
-  transferOwnershipPayload,
+  TransferOwnershipPayload,
 } from '@repo/shared-types';
 import {
   createWorkspace,
@@ -86,7 +86,7 @@ export function useUpdateMemberRole(workspaceId: number) {
     mutationFn: ({
       memberUserId,
       role,
-    }: { memberUserId: number } & updateMemberRolePayload) =>
+    }: { memberUserId: number } & UpdateMemberRolePayload) =>
       updateMemberRole(workspaceId, memberUserId, { role }),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -156,7 +156,7 @@ export function useRejectInvite() {
 export function useTransferOwnership(workspaceId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: transferOwnershipPayload) =>
+    mutationFn: (payload: TransferOwnershipPayload) =>
       transferOwnership(workspaceId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({

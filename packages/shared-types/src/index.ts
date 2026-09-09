@@ -51,13 +51,14 @@ export {
 } from './friends.js';
 
 export type {
+  FriendUser,
   Friend,
-  FriendRequest,
+  Friendship,
   PendingRequest,
   SentPendingRequest,
   SendFriendRequestDto,
-  MessageResponse,
   AddFriendSearchValues,
+  MessageResponse,
 } from './friends.js';
 
 export {
@@ -84,6 +85,7 @@ export type {
   CreateUserPayload,
   CurrentUser,
   UserSearchResult,
+  UserSearchResponse,
 } from './users.js';
 
 export { roomSchema } from './realtime.js';

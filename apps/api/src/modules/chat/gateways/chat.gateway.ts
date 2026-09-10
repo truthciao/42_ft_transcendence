@@ -66,6 +66,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
     }
   }
 
+  @SubscribeMessage(CHAT_EVENTS.CONVERSATION_LEAVE)
+  async handleConversationLeave(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() dto: JoinConversationDto,
+  ): Promise<void> {
+    const room = getChatRoom(dto.conversationId);
+
+    await this.roomService.leaveRoom(client, room);
+  }
+
   @SubscribeMessage(CHAT_EVENTS.MESSAGE_SEND)
   async handleSendMessage(
     @ConnectedSocket() client: AuthenticatedSocket,

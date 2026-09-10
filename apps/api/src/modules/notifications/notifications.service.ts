@@ -4,6 +4,7 @@ import { NotificationType } from '../../generated/prisma/enums.js';
 import type { NotificationPreference } from '@repo/shared-types';
 import { RealtimeRoomService } from '../realtime/services/realtime-room.service.js';
 import { REALTIME_EVENTS } from '../realtime/realtime.constants.js';
+import { getChatRoom } from '../chat/utils/chat-room-naming.util.js';
 
 @Injectable()
 export class NotificationsService {
@@ -189,6 +190,30 @@ export class NotificationsService {
 
       if (!shouldSendInApp) {
         continue;
+      }
+
+      const isViewingConversation =
+        await this.realtimeRoomService.isUserInRoom(
+          member.userId,
+          getChatRoom(conversationId),
+        );
+            
+      if (isViewingConversation) {
+        continue;
+      }
+
+      const existingNotification =
+        await this.prisma.notification.findFirst({
+          where: {
+            recipientId: member.userId,
+            type: NotificationType.MESSAGE_RECEIVED,
+            conversationId,
+            read: false,
+          },
+        });
+
+      if (existingNotification) {
+          continue;
       }
 
       const notification = await this.prisma.notification.create({

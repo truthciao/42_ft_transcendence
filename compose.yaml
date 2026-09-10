@@ -20,6 +20,7 @@ services:
       timeout: 5s
       retries: 10
 
+
   migrate:
     build:
       context: .
@@ -28,11 +29,15 @@ services:
     environment:
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
 
-    command: >
-      sh -c "
+    # 先由 dev-entrypoint 同步 workspace dependencies，
+    # 再执行 Prisma generate + migrate。
+    command:
+      - /app/docker/dev-entrypoint.sh
+      - sh
+      - -c
+      - |
         pnpm --dir apps/api exec prisma generate &&
         pnpm --dir apps/api exec prisma migrate deploy
-      "
 
     depends_on:
       postgres:
@@ -40,30 +45,42 @@ services:
 
     restart: 'no'
 
+    volumes:
+      - .:/app
+      - root_node_modules:/app/node_modules
+      - api_node_modules:/app/apps/api/node_modules
+      - web_node_modules:/app/apps/web/node_modules
+
+
   api:
     build:
       context: .
       dockerfile: Dockerfile.dev
 
-    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    # 不要指定 user。
+    # Docker / rootless Podman 使用各自默认的容器用户映射。
 
     environment:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
       WEB_ORIGIN: ${WEB_ORIGIN}
+
       NODE_ENV: development
       PORT: 3000
+
       DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+
       JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
-      # Gmail SMTP configuration is provided via local environment variables.
+
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
       MAIL_SECURE: ${MAIL_SECURE}
       MAIL_USER: ${MAIL_USER}
       MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
+
       APP_BASE_URL: ${APP_BASE_URL:-http://localhost:5173}
 
     command:
@@ -79,17 +96,18 @@ services:
 
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/apps/api/node_modules
-      - /app/apps/web/node_modules
+      - root_node_modules:/app/node_modules
+      - api_node_modules:/app/apps/api/node_modules
+      - web_node_modules:/app/apps/web/node_modules
       - upload_data:/app/apps/api/uploads
+
 
   web:
     build:
       context: .
       dockerfile: Dockerfile.dev
-      
-    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+
+    # 同样不要指定 user。
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -105,13 +123,15 @@ services:
       - '5173:5173'
 
     depends_on:
-      - api
+      api:
+        condition: service_started
 
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/apps/api/node_modules
-      - /app/apps/web/node_modules
+      - root_node_modules:/app/node_modules
+      - api_node_modules:/app/apps/api/node_modules
+      - web_node_modules:/app/apps/web/node_modules
+
 
   nginx:
     image: nginx:1.27-alpine
@@ -129,6 +149,12 @@ services:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./infra/nginx/certs:/etc/nginx/certs:ro
 
+
 volumes:
   postgres_data:
   upload_data:
+
+  # pnpm workspace dependencies
+  root_node_modules:
+  api_node_modules:
+  web_node_modules:

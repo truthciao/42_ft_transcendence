@@ -495,6 +495,8 @@
     "stranger": "Inconnu",
     "room": "Salon de discussion #{{id}}",
     "chatWith": "Discussion avec {{friendName}}",
+    "online": "{{friendName}} est en ligne",
+    "offline": "{{friendName}} est hors ligne", 
     "loadingHistory": "Chargement de l'historique...",
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
     "loadOlder": "Charger les messages précédents",

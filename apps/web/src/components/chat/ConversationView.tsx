@@ -8,11 +8,15 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { 
+  useInfiniteQuery, 
+  useQuery,
+  useQueryClient, } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getSocket } from '@/lib/realtime';
 import {
   getConversationMessages,
+  getMyConversations,
   markConversationAsRead,
   type ChatMessage,
   type MessagePage,
@@ -20,6 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useRealtime } from '@/hooks/useRealtime';
 import { mergeMessages } from '@/lib/chat-messages';
 import type { InfiniteData } from '@tanstack/react-query';
 import {
@@ -45,6 +50,28 @@ export function ConversationView({
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
+  const { onlineUserIds } = useRealtime();
+
+  const { data: conversations } = useQuery({
+    queryKey: ['chat-conversations'],
+    queryFn: getMyConversations,
+  });
+
+  const currentConversation = conversations?.find(
+    (conversation) => Number(conversation.id) === Number(conversationId),
+  );
+
+    const otherMember = currentConversation?.members?.find(
+    (member) => member.userId !== currentUser?.id,
+  );
+
+  const otherUserId = otherMember?.userId;
+  const otherUserName = otherMember?.user.username;
+
+  const isOtherUserOnline =
+    otherUserId !== undefined && onlineUserIds.has(otherUserId);
+
+  
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -151,16 +178,6 @@ export function ConversationView({
     }
 
     const handleScroll = () => {
-  
-      const nearBottom = isNearBottom(container);
-
-      console.log('🔥 SCROLL:', {
-        scrollTop: container.scrollTop,
-        scrollHeight: container.scrollHeight,
-        clientHeight: container.clientHeight,
-        nearBottom,
-      });
-
       shouldScrollToBottomRef.current = isNearBottom(container);
     };
 
@@ -185,14 +202,6 @@ export function ConversationView({
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 
-    console.log('🔥 LAYOUT SCROLL:', {
-      previousScrollHeight: previousScrollHeightRef.current,
-      currentScrollHeight: container?.scrollHeight,
-      currentScrollTop: container?.scrollTop,
-      messagesLength: messages.length,
-    });
-
-
     if (!container) {
       return;
     }
@@ -214,12 +223,6 @@ export function ConversationView({
   useEffect(() => {
     const container = messagesContainerRef.current;
 
-    console.log('🔥 AUTO SCROLL CHECK:', {
-      shouldScrollToBottom: shouldScrollToBottomRef.current,
-      previousScrollHeight: previousScrollHeightRef.current,
-      messagesLength: messages.length,
-    });
-
     if (!container || isLoading) {
       return;
     }
@@ -230,18 +233,7 @@ export function ConversationView({
 
     if (shouldScrollToBottomRef.current) {
       requestAnimationFrame(() => {
-        console.log('🔥 AUTO SCROLL EXECUTE:', {
-          scrollTop: container.scrollTop,
-          scrollHeight: container.scrollHeight,
-          clientHeight: container.clientHeight,
-        });
-
         container.scrollTop = container.scrollHeight;
-
-        console.log('🔥 AUTO SCROLL AFTER:', {
-          scrollTop: container.scrollTop,
-          scrollHeight: container.scrollHeight,
-        });
       });
     }
   }, [conversationId, isLoading, messages.length]);
@@ -302,12 +294,18 @@ export function ConversationView({
         });
     };
 
-    socket.on('chat:message:received', handleMessageCreated);
+    socket.on('chat:message:created', handleMessageCreated);
 
     return () => {
+      socket.emit('chat:conversation:leave', {
+        conversationId: Number(conversationId),
+      });
+
       socket.off('chat:message:received', handleMessageCreated);
       socket.off('connect', joinConversation);
     };
+
+    
   }, [conversationId, queryClient]);
 
   useEffect(() => {
@@ -364,8 +362,23 @@ export function ConversationView({
     <section className="flex h-full min-h-0 flex-col bg-background">
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
         <h1 className="font-semibold text-sm flex items-center gap-2">
-          {headerIcon ?? <span className="w-2 h-2 rounded-full bg-success" />}
-          {title}
+          {headerIcon ?? (
+          <>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isOtherUserOnline ? 'bg-success' : 'bg-muted-foreground'
+              }`}
+            />
+            <span>
+              {otherUserName
+                ? t(
+                    isOtherUserOnline ? 'chat.online' : 'chat.offline',
+                    { friendName: otherUserName },
+                  )
+                : title}
+            </span>
+          </>
+        )}
         </h1>
 
         <Button

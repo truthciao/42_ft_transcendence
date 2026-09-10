@@ -31,6 +31,20 @@ export class RealtimeRoomService {
     return client.rooms.has(room);
   }
 
+  async isUserInRoom(userId: number, room: string): Promise<boolean> {
+    const sockets = await this.requireServer().in(room).fetchSockets();
+
+    const isInRoom = sockets.some(
+      (socket) => (socket.data as { user?: { userId: number } }).user?.userId === userId,
+    ); 
+
+    console.log(
+      `[IS USER IN ROOM] userId=${userId} room=${room} sockets=${sockets.length} result=${isInRoom}`,
+    );
+
+    return isInRoom;
+  }
+
   async getRoomMemberSocketIds(room: string): Promise<string[]> {
     const sockets = await this.requireServer().in(room).fetchSockets();
     return sockets.map((socket) => socket.id);

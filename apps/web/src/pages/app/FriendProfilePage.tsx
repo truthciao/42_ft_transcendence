@@ -79,7 +79,10 @@ export function FriendProfilePage() {
 
       if (data?.id) {
         navigate(`/app/chat/${data.id}`, {
-          state: { friendName: friend.username },
+          state: { 
+            friendName: friend.username,
+            friendId: friend.id,
+          },
         });
       }
     } catch (error) {

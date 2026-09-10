@@ -209,8 +209,9 @@ export class WorkspacesService {
   async update(
     workspaceId: number,
     dto: { name?: string; description?: string; icon?: string },
+    membership: WorkspaceMember,
   ) {
-    return this.prisma.workspace.update({
+    const workspace = await this.prisma.workspace.update({
       where: { id: workspaceId },
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
@@ -219,6 +220,11 @@ export class WorkspacesService {
       },
       include: { members: true },
     });
+
+    return {
+      ...workspace,
+      myMembership: membership,
+    };
   }
 
   async remove(workspaceId: number) {

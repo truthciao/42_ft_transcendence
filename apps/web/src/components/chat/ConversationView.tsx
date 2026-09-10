@@ -85,7 +85,7 @@ export function ConversationView({
 
   const shouldScrollToBottomRef = useRef(true);
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch} =
     useInfiniteQuery({
       queryKey: ['chat-messages', conversationId],
 
@@ -107,6 +107,10 @@ export function ConversationView({
 
       refetchOnMount: 'always',
     });
+
+    useEffect(() => {
+      refetch();
+    }, [conversationId, refetch]);
 
   const isNearBottom = (container: HTMLDivElement) => {
     const threshold = 100;

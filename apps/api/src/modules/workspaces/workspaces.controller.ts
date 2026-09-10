@@ -128,8 +128,9 @@ export class WorkspaceController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateWorkspaceDto,
+    @CurrentMembership() membership: WorkspaceMember,
   ) {
-    return this.workspaces.update(id, dto);
+    return this.workspaces.update(id, dto, membership);
   }
 
   @UseGuards(WorkspaceRoleGuard)

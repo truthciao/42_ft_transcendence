@@ -253,9 +253,26 @@ describe('WorkspacesService', () => {
 
   describe('update', () => {
     it('updates only provided fields', async () => {
-      prisma.workspace.update.mockResolvedValue({ id: 1, name: 'New Name' });
+      const membership = {
+        id: 1,
+        workspaceId: 1,
+        userId: 1,
+        role: WorkspaceRole.MEMBER,
+        joinedAt: new Date(),
+      } as Parameters<WorkspacesService['update']>[2];
 
-      await service.update(1, { name: 'New Name' });
+      prisma.workspace.update.mockResolvedValue({
+        id: 1,
+        name: 'New Name',
+      });
+
+      await expect(
+        service.update(1, { name: 'New Name' }, membership),
+      ).resolves.toMatchObject({
+        id: 1,
+        name: 'New Name',
+        myMembership: membership,
+      });
 
       expect(prisma.workspace.update).toHaveBeenCalledWith({
         where: { id: 1 },

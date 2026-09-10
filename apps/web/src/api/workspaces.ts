@@ -69,7 +69,7 @@ export function createChannel(
   workspaceId: number,
   payload: CreateChannelPayload,
 ) {
-  return httpPost<WorkspaceChannel>(
+  return httpPost<void>(
     `/workspaces/${workspaceId}/channels`,
     payload,
   );

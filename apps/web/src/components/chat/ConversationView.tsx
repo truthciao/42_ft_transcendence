@@ -4,23 +4,19 @@ import {
   type ReactNode,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
-import { 
-  useInfiniteQuery, 
-  useQuery,
-  useQueryClient, } from '@tanstack/react-query';
+import { useQuery, useQueryClient, } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getSocket } from '@/lib/realtime';
 import {
-  getConversationMessages,
   getMyConversations,
   markConversationAsRead,
   type ChatMessage,
   type MessagePage,
 } from '@/api/chat';
+import { useChatMessages } from '@/hooks/useChatMessages';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -71,7 +67,13 @@ export function ConversationView({
   const isOtherUserOnline =
     otherUserId !== undefined && onlineUserIds.has(otherUserId);
 
-  
+  const {
+    messages,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useChatMessages(conversationId); 
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -84,33 +86,6 @@ export function ConversationView({
   const previousScrollHeightRef = useRef<number | null>(null);
 
   const shouldScrollToBottomRef = useRef(true);
-
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch} =
-    useInfiniteQuery({
-      queryKey: ['chat-messages', conversationId],
-
-      queryFn: async ({ pageParam }) => {
-        const result = await getConversationMessages(
-          conversationId,
-          pageParam,
-          30,
-        );
-
-        return result;
-      },
-
-      initialPageParam: undefined as number | undefined,
-
-      getNextPageParam: (lastPage) => {
-        return lastPage.nextCursor ?? undefined;
-      },
-
-      refetchOnMount: 'always',
-    });
-
-    useEffect(() => {
-      refetch();
-    }, [conversationId, refetch]);
 
   const isNearBottom = (container: HTMLDivElement) => {
     const threshold = 100;
@@ -191,18 +166,7 @@ export function ConversationView({
       container.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  const messages = useMemo(
-    () =>
-      data?.pages
-        .flatMap((page) => page.messages)
-        .sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ) ?? [],
-    [data],
-  );
-  
+ 
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
 

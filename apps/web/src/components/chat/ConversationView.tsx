@@ -3,30 +3,23 @@ import {
   type SubmitEvent,
   type ReactNode,
   useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
   useState,
 } from 'react';
-import { 
-  useInfiniteQuery, 
-  useQuery,
-  useQueryClient, } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getSocket } from '@/lib/realtime';
 import {
-  getConversationMessages,
   getMyConversations,
   markConversationAsRead,
   type ChatMessage,
-  type MessagePage,
 } from '@/api/chat';
+import { useChatMessages } from '@/hooks/useChatMessages';
+import { useChatScroll } from '@/hooks/useChatScroll';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useRealtime } from '@/hooks/useRealtime';
-import { mergeMessages } from '@/lib/chat-messages';
-import type { InfiniteData } from '@tanstack/react-query';
+import { useChatRealtime } from '@/hooks/useChatRealtime';
 import {
   FileUpload,
   type AttachmentType,
@@ -49,7 +42,6 @@ export function ConversationView({
 }: ConversationViewProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
-  const queryClient = useQueryClient();
   const { onlineUserIds } = useRealtime();
 
   const { data: conversations } = useQuery({
@@ -71,7 +63,13 @@ export function ConversationView({
   const isOtherUserOnline =
     otherUserId !== undefined && onlineUserIds.has(otherUserId);
 
-  
+  const {
+    messages,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useChatMessages(conversationId); 
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -79,47 +77,19 @@ export function ConversationView({
     number | null
   >(null);
 
-  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  useChatRealtime({
+    conversationId,
+  });
 
-  const previousScrollHeightRef = useRef<number | null>(null);
+  const {
+    messagesContainerRef,
+    previousScrollHeightRef,
+  } = useChatScroll({
+    conversationId,
+    messages,
+    isLoading,
+  });
 
-  const shouldScrollToBottomRef = useRef(true);
-
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch} =
-    useInfiniteQuery({
-      queryKey: ['chat-messages', conversationId],
-
-      queryFn: async ({ pageParam }) => {
-        const result = await getConversationMessages(
-          conversationId,
-          pageParam,
-          30,
-        );
-
-        return result;
-      },
-
-      initialPageParam: undefined as number | undefined,
-
-      getNextPageParam: (lastPage) => {
-        return lastPage.nextCursor ?? undefined;
-      },
-
-      refetchOnMount: 'always',
-    });
-
-    useEffect(() => {
-      refetch();
-    }, [conversationId, refetch]);
-
-  const isNearBottom = (container: HTMLDivElement) => {
-    const threshold = 100;
-
-    return (
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      threshold
-    );
-  };
 
   const handleLoadOlderMessages = () => {
     const container = messagesContainerRef.current;
@@ -173,145 +143,7 @@ export function ConversationView({
       }, 2000);
     });
   };
-
-  useEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const handleScroll = () => {
-      shouldScrollToBottomRef.current = isNearBottom(container);
-    };
-
-    container.addEventListener('scroll', handleScroll);
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const messages = useMemo(
-    () =>
-      data?.pages
-        .flatMap((page) => page.messages)
-        .sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ) ?? [],
-    [data],
-  );
-  
-  useLayoutEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const previousScrollHeight = previousScrollHeightRef.current;
-
-    if (previousScrollHeight === null) {
-      return;
-    }
-
-    const heightDifference = container.scrollHeight - previousScrollHeight;
-
-    container.scrollTop += heightDifference;
-
-    previousScrollHeightRef.current = null;
-  }, [messages]);
-
-
-  useEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container || isLoading) {
-      return;
-    }
-
-    if (previousScrollHeightRef.current !== null) {
-      return;
-    }
-
-    if (shouldScrollToBottomRef.current) {
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
-    }
-  }, [conversationId, isLoading, messages.length]);
-
-  useEffect(() => {
-    const socket = getSocket();
-
-    const joinConversation = () => {
-      socket.emit('chat:conversation:join', {
-        conversationId: Number(conversationId),
-      });
-    };
-
-    if (socket.connected) {
-      joinConversation();
-    } else {
-      socket.once('connect', joinConversation);
-    }
-
-    const handleMessageCreated = (message: ChatMessage) => {
-      if (message.conversationId.toString() !== conversationId) {
-        return;
-      }
-
-      queryClient.setQueryData<InfiniteData<MessagePage>>(
-        ['chat-messages', conversationId],
-        (oldData) => {
-          if (!oldData) {
-            return oldData;
-          }
-
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page, index) => {
-              if (index !== 0) {
-                return page;
-              }
-
-              return {
-                ...page,
-                messages: mergeMessages(page.messages, message),
-              };
-            }),
-          };
-        },
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: ['chat-message-search', conversationId],
-      });
-
-      markConversationAsRead(conversationId)
-        .then(() => {
-          window.dispatchEvent(new CustomEvent('refresh_conversations'));
-        })
-        .catch((error) => {
-          console.error('Failed to mark conversation as read:', error);
-        });
-    };
-
-    socket.on('chat:message:created', handleMessageCreated);
-
-    return () => {
-      socket.emit('chat:conversation:leave', {
-        conversationId: Number(conversationId),
-      });
-
-      socket.off('chat:message:received', handleMessageCreated);
-      socket.off('connect', joinConversation);
-    };
-
-    
-  }, [conversationId, queryClient]);
-
+ 
   useEffect(() => {
     markConversationAsRead(conversationId)
       .then(() => {

@@ -2,15 +2,12 @@ import { Search } from 'lucide-react';
 import {
   type SubmitEvent,
   type ReactNode,
-  useEffect,
   useState,
 } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { getSocket } from '@/lib/realtime';
 import {
   getMyConversations,
-  markConversationAsRead,
   type ChatMessage,
 } from '@/api/chat';
 import { useChatMessages } from '@/hooks/useChatMessages';
@@ -20,14 +17,16 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useRealtime } from '@/hooks/useRealtime';
 import { useChatRealtime } from '@/hooks/useChatRealtime';
+import { useChatSendMessage } from '@/hooks/useChatSendMessage';
+import { useChatRead } from '@/hooks/useChatRead';
 import {
   FileUpload,
   type AttachmentType,
 } from '@/components/common/FileUpload';
+import { MessageSearchDialog } from './MessageSearchDialog';
+import { MessageItem } from './MessageItem';
 
 const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
-import { MessageSearchDialog } from './MessageSearchDialog';
-import { MessageContent } from './MessageContent';
 
 interface ConversationViewProps {
   conversationId: string;
@@ -53,7 +52,7 @@ export function ConversationView({
     (conversation) => Number(conversation.id) === Number(conversationId),
   );
 
-    const otherMember = currentConversation?.members?.find(
+  const otherMember = currentConversation?.members?.find(
     (member) => member.userId !== currentUser?.id,
   );
 
@@ -69,7 +68,7 @@ export function ConversationView({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useChatMessages(conversationId); 
+  } = useChatMessages(conversationId);
 
   const [inputText, setInputText] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -78,6 +77,17 @@ export function ConversationView({
   >(null);
 
   useChatRealtime({
+    conversationId,
+  });
+
+  useChatRead({
+    conversationId,
+  });
+
+  const { 
+    sendTextMessage, 
+    sendFileMessage,
+  } = useChatSendMessage({
     conversationId,
   });
 
@@ -144,22 +154,6 @@ export function ConversationView({
     });
   };
  
-  useEffect(() => {
-    markConversationAsRead(conversationId)
-      .then(() => {
-        window.dispatchEvent(
-          new CustomEvent('conversation_read', {
-            detail: {
-              conversationId: Number(conversationId),
-            },
-          }),
-        );
-      })
-      .catch((error) => {
-        console.error('Failed to mark conversation as read:', error);
-      });
-  }, [conversationId]);
-
   function handleSendMessage(e: SubmitEvent) {
     e.preventDefault();
 
@@ -169,29 +163,16 @@ export function ConversationView({
       return;
     }
 
-    const socket = getSocket();
-
-    socket.emit('chat:message:send', {
-      conversationId: Number(conversationId),
-      content,
-      type: 'text',
-    });
+    sendTextMessage(content);
 
     setInputText('');
   }
 
-  // 发送文件消息
   const handleFileUploadSuccess = (attachment: AttachmentType) => {
-    const socket = getSocket();
-    const messageType = attachment.fileType.startsWith('image/')
-      ? 'image'
-      : 'file';
-
-    socket.emit('chat:message:send', {
-      conversationId: Number(conversationId),
-      content: attachment.fileUrl,
-      type: messageType,
-    });
+    sendFileMessage(
+      attachment.fileUrl,
+      attachment.fileType,
+    );
   };
 
   return (
@@ -199,7 +180,7 @@ export function ConversationView({
       <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
         <h1 className="font-semibold text-sm flex items-center gap-2">
           {headerIcon ?? (
-          <>
+            <>
             <span
               className={`w-2 h-2 rounded-full ${
                 isOtherUserOnline ? 'bg-success' : 'bg-muted-foreground'
@@ -260,43 +241,25 @@ export function ConversationView({
             )}
 
             {messages.map((msg) => {
-
               const isMine = msg.senderId === currentUser?.id;
+
               const senderLabel = isMine
                 ? t('chat.me', 'Me')
                 : (msg.sender?.username ?? t('chat.user', 'User'));
 
               return (
-                <div
+                <MessageItem
                   key={msg.id}
-                  id={`message-${msg.id}`}
-                  className={`flex flex-col mb-2 ${
-                    isMine ? 'items-end' : 'items-start'
-                  }`}
-                >
-                  <span className="text-[10px] text-muted-foreground mb-1">
-                    {senderLabel}
-                  </span>
-                  <div
-                    className={`p-2.5 rounded-lg max-w-[70%] w-fit text-sm break-words ${
-                      isMine
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-accent text-accent-foreground'
-                    } ${
-                      highlightedMessageId === msg.id
-                        ? 'ring-2 ring-amber-400 shadow-md shadow-amber-400/30'
-                        : ''
-                    }`}
-                  >
-                    {/* 🛠️ 修改：使用我们刚刚计算出的 renderType 来判断 ; 分支渲染：处理不同类型的消息内容 */}
-                    <MessageContent
-                      content={msg.content}
-                      type={msg.type}
-                      apiBaseUri={API_BASE_URI}
-                      downloadLabel={t('chat.downloadFile', 'Download File')}
-                    />
-                  </div>
-                </div>
+                  message={msg}
+                  isMine={isMine}
+                  senderLabel={senderLabel}
+                  highlighted={highlightedMessageId === msg.id}
+                  apiBaseUri={API_BASE_URI}
+                  downloadLabel={t(
+                    'chat.downloadFile',
+                    'Download File',
+                  )}
+                />
               );
             })}
           </>

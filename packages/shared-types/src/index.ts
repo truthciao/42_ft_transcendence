@@ -1,20 +1,31 @@
 export {
-  registerSchema,
   emailSchema,
   usernameSchema,
   passwordSchema,
-  loginSchema,
-  authUserSchema,
-  authResponseSchema,
-  twoFactorLoginResponseSchema,
   twoFactorCodeSchema,
+  registerSchema,
+  loginSchema,
+  twoFactorLoginSchema,
+  twoFactorCodePayloadSchema,
+  authUserSchema,
+  authSuccessResponseSchema,
+  twoFactorRequiredResponseSchema,
+  authResponseSchema,
+  registerResponseSchema,
+  twoFactorGenerateResponseSchema,
 } from './auth.js';
 
 export type {
   RegisterPayload,
   LoginPayload,
+  TwoFactorLoginPayload,
+  TwoFactorCodePayload,
   AuthUser,
+  AuthSuccessResponse,
+  TwoFactorRequiredResponse,
   AuthResponse,
+  RegisterResponse,
+  TwoFactorGenerateResponse,
 } from './auth.js';
 
 export {
@@ -40,13 +51,14 @@ export {
 } from './friends.js';
 
 export type {
+  FriendUser,
   Friend,
-  FriendRequest,
+  Friendship,
   PendingRequest,
   SentPendingRequest,
   SendFriendRequestDto,
-  MessageResponse,
   AddFriendSearchValues,
+  MessageResponse,
 } from './friends.js';
 
 export {
@@ -66,7 +78,6 @@ export {
   createUserSchema,
   currentUserSchema,
   userSearchResultSchema,
-  userSearchResultsSchema,
 } from './users.js';
 
 export type {
@@ -74,6 +85,7 @@ export type {
   CreateUserPayload,
   CurrentUser,
   UserSearchResult,
+  UserSearchResponse,
 } from './users.js';
 
 export { roomSchema } from './realtime.js';

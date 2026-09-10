@@ -127,7 +127,7 @@ export function AccountSettingsPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await turnOnTwoFactor(verifyCode.trim());
+      await turnOnTwoFactor({code: verifyCode.trim()});
 
       setIsTwoFactorEnabled(true);
       setShowSetupModal(false);

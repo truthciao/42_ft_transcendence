@@ -1,10 +1,5 @@
 import { z } from 'zod';
 
-export const twoFactorLoginResponseSchema = z.object({
-  requiresTwoFactor: z.literal(true),
-  userId: z.number(),
-});
-
 export const emailSchema = z
   .string()
   .email('email must be a valid email address');
@@ -23,6 +18,10 @@ export const passwordSchema = z
   .min(8, 'password must be at least 8 characters long')
   .max(64, 'password must not exceed 64 characters');
 
+export const twoFactorCodeSchema = z
+  .string()
+  .regex(/^\d{6}$/, 'code must be exactly 6 digits');
+
 export const registerSchema = z.object({
   email: emailSchema,
   username: usernameSchema,
@@ -34,9 +33,14 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'password is required'),
 });
 
-export const twoFactorCodeSchema = z
-  .string()
-  .regex(/^\d{6}$/, 'code must be exactly 6 digits');
+export const twoFactorLoginSchema = z.object({
+  userId: z.number().int().positive(),
+  code: twoFactorCodeSchema,
+});
+
+export const twoFactorCodePayloadSchema = z.object({
+  code: twoFactorCodeSchema,
+});
 
 export const authUserSchema = z.object({
   id: z.number(),
@@ -44,16 +48,54 @@ export const authUserSchema = z.object({
   username: z.string(),
 });
 
-export const authResponseSchema = z.union([
-  z.object({
-    access_token: z.string(),
-    user: authUserSchema.optional(),
-  }),
+export const authSuccessResponseSchema = z.object({
+  access_token: z.string(),
+  user: authUserSchema,
+});
 
-  twoFactorLoginResponseSchema,
+export const twoFactorRequiredResponseSchema = z.object({
+  requiresTwoFactor: z.literal(true),
+  userId: z.number(),
+  message: z.string(),
+});
+
+export const authResponseSchema = z.union([
+  authSuccessResponseSchema,
+  twoFactorRequiredResponseSchema,
 ]);
+
+export const registerResponseSchema = z.object({
+  message: z.string(),
+  userId: z.number(),
+});
+
+export const twoFactorGenerateResponseSchema = z.object({
+  otpauthUrl: z.string(),
+  secret: z.string(),
+});
 
 export type RegisterPayload = z.infer<typeof registerSchema>;
 export type LoginPayload = z.infer<typeof loginSchema>;
+export type TwoFactorLoginPayload = z.infer<
+  typeof twoFactorLoginSchema
+>;
+export type TwoFactorCodePayload = z.infer<
+  typeof twoFactorCodePayloadSchema
+>;
+
 export type AuthUser = z.infer<typeof authUserSchema>;
+export type AuthSuccessResponse = z.infer<
+  typeof authSuccessResponseSchema
+>;
+export type TwoFactorRequiredResponse = z.infer<
+  typeof twoFactorRequiredResponseSchema
+>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+
+export type RegisterResponse = z.infer<
+  typeof registerResponseSchema
+>;
+
+export type TwoFactorGenerateResponse = z.infer<
+  typeof twoFactorGenerateResponseSchema
+>;

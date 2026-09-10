@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type {
-  createWorkspacePayload,
+  CreateWorkspacePayload,
   UpdateWorkspacePayload,
   CreateChannelPayload,
-  updateMemberRolePayload,
+  UpdateMemberRolePayload,
   InviteMemberPayload,
-  transferOwnershipPayload,
+  TransferOwnershipPayload,
 } from '@repo/shared-types';
 import {
   createWorkspace,
@@ -25,7 +25,7 @@ import { workspaceKeys } from './useWorkspaces';
 export function useCreateWorkspace() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: createWorkspacePayload) => createWorkspace(payload),
+    mutationFn: (payload: CreateWorkspacePayload) => createWorkspace(payload),
     onSuccess: (workspace) => {
       queryClient.invalidateQueries({ queryKey: workspaceKeys.all });
       queryClient.setQueryData(workspaceKeys.detail(workspace.id), workspace);
@@ -86,7 +86,7 @@ export function useUpdateMemberRole(workspaceId: number) {
     mutationFn: ({
       memberUserId,
       role,
-    }: { memberUserId: number } & updateMemberRolePayload) =>
+    }: { memberUserId: number } & UpdateMemberRolePayload) =>
       updateMemberRole(workspaceId, memberUserId, { role }),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -156,7 +156,7 @@ export function useRejectInvite() {
 export function useTransferOwnership(workspaceId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: transferOwnershipPayload) =>
+    mutationFn: (payload: TransferOwnershipPayload) =>
       transferOwnership(workspaceId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({

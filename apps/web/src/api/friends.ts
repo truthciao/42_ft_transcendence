@@ -1,10 +1,11 @@
 import { httpDelete, httpGet, httpPost } from '../lib/http';
 import type {
   Friend,
+  Friendship,
   PendingRequest,
   SendFriendRequestDto,
   MessageResponse,
-  UserSearchResult,
+  UserSearchResponse,
   SentPendingRequest,
 } from '@repo/shared-types';
 
@@ -21,17 +22,17 @@ export function getSentPendingRequests() {
 }
 
 export function searchUsers(username: string) {
-  return httpGet<UserSearchResult[]>(
+  return httpGet<UserSearchResponse>(
     `/users/search?username=${encodeURIComponent(username)}`,
   );
 }
 
 export function sendFriendRequest(data: SendFriendRequestDto) {
-  return httpPost('/friends/requests', data);
+  return httpPost<Friendship>('/friends/requests', data);
 }
 
 export function acceptFriendRequest(requestId: number) {
-  return httpPost(`/friends/requests/${requestId}/accept`);
+  return httpPost<Friendship>(`/friends/requests/${requestId}/accept`);
 }
 
 export function rejectFriendRequest(requestId: number) {

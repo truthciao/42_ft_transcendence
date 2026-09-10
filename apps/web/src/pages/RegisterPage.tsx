@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import { registerUser, type RegisterPayload } from '../api/auth';
+import { registerUser } from '../api/auth';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
@@ -10,6 +10,7 @@ import {
   emailSchema,
   usernameSchema,
   passwordSchema,
+  type RegisterPayload
 } from '@repo/shared-types';
 
 type RegisterStatus = 'idle' | 'creating' | 'success' | 'failed';

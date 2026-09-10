@@ -4,13 +4,15 @@ import type {
   WorkspaceMemberSummary,
   WorkspaceChannel,
   UpdateWorkspacePayload,
+  CreateWorkspacePayload,
   CreateChannelPayload,
-  updateMemberRolePayload,
+  UpdateMemberRolePayload,
   IncomingWorkspaceInvite,
+  AcceptInviteResponse,
   WorkspaceInviteSummary,
   WorkspaceInviteDetail,
   InviteMemberPayload,
-  transferOwnershipPayload,
+  TransferOwnershipPayload,
 } from '@repo/shared-types';
 
 export function getWorkspaces() {
@@ -21,7 +23,7 @@ export function getWorkspace(id: number) {
   return httpGet<Workspace>(`/workspaces/${id}`);
 }
 
-export function createWorkspace(payload: CreateChannelPayload) {
+export function createWorkspace(payload: CreateWorkspacePayload) {
   return httpPost<Workspace>('/workspaces', payload);
 }
 
@@ -51,7 +53,7 @@ export function removeWorkspaceMember(
 export function updateMemberRole(
   workspaceId: number,
   memberUserId: number,
-  payload: updateMemberRolePayload,
+  payload: UpdateMemberRolePayload,
 ) {
   return httpPatch<void>(
     `/workspaces/${workspaceId}/members/${memberUserId}/role`,
@@ -106,7 +108,7 @@ export function getInviteByToken(token: string) {
 }
 
 export function acceptInvite(inviteId: number) {
-  return httpPost<{ workspaceId: number }>(
+  return httpPost<AcceptInviteResponse>(
     `/workspaces/invites/${inviteId}/accept`,
   );
 }
@@ -117,7 +119,7 @@ export function rejectInvite(inviteId: number) {
 
 export function transferOwnership(
   workspaceId: number,
-  payload: transferOwnershipPayload,
+  payload: TransferOwnershipPayload,
 ) {
   return httpPost<void>(
     `/workspaces/${workspaceId}/transfer-ownership`,

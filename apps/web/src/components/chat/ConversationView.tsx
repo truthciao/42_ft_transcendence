@@ -17,6 +17,7 @@ import {
   type MessagePage,
 } from '@/api/chat';
 import { useChatMessages } from '@/hooks/useChatMessages';
+import { useChatScroll } from '@/hooks/useChatScroll';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -81,20 +82,15 @@ export function ConversationView({
     number | null
   >(null);
 
-  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const {
+    messagesContainerRef,
+    previousScrollHeightRef,
+  } = useChatScroll({
+    conversationId,
+    messages,
+    isLoading,
+  });
 
-  const previousScrollHeightRef = useRef<number | null>(null);
-
-  const shouldScrollToBottomRef = useRef(true);
-
-  const isNearBottom = (container: HTMLDivElement) => {
-    const threshold = 100;
-
-    return (
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      threshold
-    );
-  };
 
   const handleLoadOlderMessages = () => {
     const container = messagesContainerRef.current;
@@ -148,64 +144,7 @@ export function ConversationView({
       }, 2000);
     });
   };
-
-  useEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const handleScroll = () => {
-      shouldScrollToBottomRef.current = isNearBottom(container);
-    };
-
-    container.addEventListener('scroll', handleScroll);
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
  
-  useLayoutEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const previousScrollHeight = previousScrollHeightRef.current;
-
-    if (previousScrollHeight === null) {
-      return;
-    }
-
-    const heightDifference = container.scrollHeight - previousScrollHeight;
-
-    container.scrollTop += heightDifference;
-
-    previousScrollHeightRef.current = null;
-  }, [messages]);
-
-
-  useEffect(() => {
-    const container = messagesContainerRef.current;
-
-    if (!container || isLoading) {
-      return;
-    }
-
-    if (previousScrollHeightRef.current !== null) {
-      return;
-    }
-
-    if (shouldScrollToBottomRef.current) {
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
-    }
-  }, [conversationId, isLoading, messages.length]);
-
   useEffect(() => {
     const socket = getSocket();
 

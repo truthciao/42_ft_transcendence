@@ -14,13 +14,13 @@ export function useChatRealtime({
   conversationId,
 }: UseChatRealtimeProps) {
 
-  console.log('[useChatRealtime] render', conversationId);
+  // console.log('[useChatRealtime] render', conversationId);
 
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
-     console.log('[useChatRealtime] effect', conversationId);
+    //  console.log('[useChatRealtime] effect', conversationId);
 
      const socket = getSocket();
 
@@ -82,7 +82,7 @@ export function useChatRealtime({
         });
     };
 
-    console.log('[useChatRealtime] register message listener');
+    // console.log('[useChatRealtime] register message listener');
 
     socket.on('chat:message:created', handleMessageCreated);
 

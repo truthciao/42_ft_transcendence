@@ -29,8 +29,6 @@ const DOT_SIZE_CLASS = {
   xl: 'size-3.5',
 } as const;
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
-
 interface AvatarProps {
   src?: string | null;
   name: string;
@@ -41,17 +39,8 @@ interface AvatarProps {
 }
 
 function getAvatarUrl(src?: string | null): string {
-  if (!src) {
-    return '/images.jpg';
-  }
-
-  if (src.startsWith('http://') || src.startsWith('https://')) {
-    return src;
-  }
-
-  return `${API_BASE_URL}${src}`;
+  return src || '/images.jpg';
 }
-
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
 

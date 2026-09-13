@@ -27,7 +27,7 @@ export function ConversationListItem({
     (member) => member.userId !== currentUserId,
   );
 
-  const avatarUrl = otherMember?.user.profile?.avatarUrl
+  const avatarUrl = otherMember?.user?.profile?.avatarUrl
     ? `${apiBaseUri}${otherMember.user.profile.avatarUrl}`
     : undefined;
 

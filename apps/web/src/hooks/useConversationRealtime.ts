@@ -8,12 +8,14 @@ interface UseConversationRealtimeProps {
   setConversations: React.Dispatch<
     React.SetStateAction<ConversationItem[]>
   >;
+  fetchConversations: () => Promise<void>;
 }
 
 export function useConversationRealtime({
   currentUserId,
   currentConversationId,
   setConversations,
+  fetchConversations,
 }: UseConversationRealtimeProps) {
   useEffect(() => {
     const socket = getSocket();
@@ -54,6 +56,7 @@ export function useConversationRealtime({
         );
 
         if (conversationIndex === -1) {
+          fetchConversations();
           return updated;
         }
 
@@ -75,5 +78,6 @@ export function useConversationRealtime({
     currentUserId,
     currentConversationId,
     setConversations,
+    fetchConversations,
   ]);
 }

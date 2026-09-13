@@ -42,12 +42,14 @@ export function ConversationListSidebar() {
     conversations,
     setConversations,
     isLoading,
+    fetchConversations,
   } = useConversations();
 
   useConversationRealtime({
     currentUserId: currentUser?.id,
     currentConversationId: Number(location.pathname.split('/').pop()),
     setConversations,
+    fetchConversations,
   });
 
   const handleUserSelect = async (username: string) => {

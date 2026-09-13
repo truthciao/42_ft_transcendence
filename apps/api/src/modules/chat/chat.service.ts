@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { ConversationType } from '../../generated/prisma/enums.js';
+import { ConversationType, FriendshipStatus } from '../../generated/prisma/enums.js';
 import { RealtimeGateway } from '../realtime/gateways/realtime.gateway.js';
 import type { GetMessagesPayload } from '@repo/shared-types';
 import { NotificationsService } from '../notifications/notifications.service.js';
@@ -46,6 +46,7 @@ export class ChatService {
     const conversation = await this.prisma.conversation.create({
       data: {
         type: ConversationType.DIRECT,
+        createdById: userId,
         members: {
           create: [{ userId }, { userId: targetUserId }],
         },
@@ -108,6 +109,7 @@ export class ChatService {
 
     const friendships = await this.prisma.friendship.findMany({
       where: {
+        status: FriendshipStatus.ACCEPTED,
         OR: [{ requesterId: userId }, { addresseeId: userId }],
       },
       select: { requesterId: true, addresseeId: true },
@@ -119,8 +121,9 @@ export class ChatService {
       ),
     );
 
-    return Promise.all(
-      conversations.map(async (conv) => {
+    const results= await Promise.all(
+      conversations.map(async (conv) => { 
+        
         let conversationName = conv.name;
         let isFriend = false;
 
@@ -137,6 +140,16 @@ export class ChatService {
               otherUser.username ||
               `Chat Room #${conv.id}`;
           }
+        }
+
+        const shouldShow =
+          conv.type !== ConversationType.DIRECT ||
+          isFriend ||
+          conv.createdById === userId ||
+          conv.messages.length > 0;
+
+        if (!shouldShow) {
+          return null;
         }
 
         const lastMessage = conv.messages[0] ?? null;
@@ -177,6 +190,8 @@ export class ChatService {
         };
       }),
     );
+
+    return results.filter((conversation) => conversation !== null);
   }
 
   async getMessages(

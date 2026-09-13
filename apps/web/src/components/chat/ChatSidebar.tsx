@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query'; 
 import {
   createConversationByUsername,
   type ConversationItem,
@@ -19,6 +20,7 @@ import { formatMessageTime } from '@/lib/formatMessageTime';
 import { UserSearchDialog } from './UserSearchDialog';
 
 export function ConversationListSidebar() {
+  const queryClient = useQueryClient();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
@@ -88,6 +90,10 @@ export function ConversationListSidebar() {
         return [newConversation, ...current];
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ['chat-conversations'],
+      });
+      
       setIsSearchOpen(false);
       setSearchQuery('');
 

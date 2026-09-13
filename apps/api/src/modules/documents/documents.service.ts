@@ -89,31 +89,6 @@ export class DocumentsService {
     });
   }
 
-  async findOneForUser(documentId: number, userId: number) {
-    const document = await this.prisma.document.findUnique({
-      where: { id: documentId },
-    });
-
-    if (!document) {
-      throw new NotFoundException('Document not found');
-    }
-
-    const membership = await this.prisma.workspaceMember.findUnique({
-      where: {
-        workspaceId_userId: {
-          workspaceId: document.workspaceId,
-          userId,
-        },
-      },
-    });
-
-    if (!membership) {
-      throw new ForbiddenException('You are not a member of this workspace');
-    }
-
-    return document;
-  }
-
   async findById(documentId: number) {
     const document = await this.prisma.document.findUnique({
       where: { id: documentId },

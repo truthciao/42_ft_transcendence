@@ -2,456 +2,133 @@
 
 # ft_transcendence
 
-A full-stack web application developed for the 42 School **ft_transcendence** project.
+## Description
 
-## Overview
+### Project Name
 
-ft_transcendence is a collaborative web application providing real-time communication, user profiles, friendships, notifications, workspaces, and internationalization.
+**ft_transcendence** is a web-based collaborative platform inspired by tools such as Notion and modern team communication platforms.
 
-The application is built as a monorepo containing a React frontend and a NestJS backend.
+### Goal
 
----
+The goal of the project is to build a complete web application where users can communicate, manage workspaces, collaborate on documents in real time, and manage their profiles, relationships, notifications, and permissions.
 
-# Team Information
+The project was developed as a team following the 42 curriculum and focuses on full-stack development, real-time communication, authentication, collaboration, and a modular permission system.
 
-The project was developed by a five-member team. Each member was assigned a specific role while also contributing to the implementation of the project.
+### Overview
 
-## yshi — Product Owner (PO)
+The application provides a unified environment where users can:
 
-**Responsibilities:**
+* Create an account and authenticate securely.
+* Sign in using standard authentication or Google OAuth.
+* Enable two-factor authentication.
+* Manage their profile and avatar.
+* Search for and interact with other users.
+* Send and manage friendship requests.
+* Communicate through direct messages and group conversations.
+* Create and manage workspaces.
+* Invite users to workspaces and assign workspace roles.
+* Create and manage workspace channels.
+* Receive real-time notifications.
+* Configure notification preferences.
+* Upload and manage files and message attachments.
+* Create and edit collaborative documents.
+* Collaborate on documents in real time.
+* Use the application in English, French, or Chinese.
+* Access the application using supported additional browsers.
+* Use a consistent custom design system and reusable UI components.
 
-* Define and prioritize product requirements.
-* Coordinate the overall product direction.
-* Help define the user experience and feature priorities.
-* Contribute to the custom design system and reusable UI components.
-* Implement advanced permissions.
-* Contribute to real-time functionality.
-* Coordinate the team's product-level decisions.
+### Key Features
 
-## yanzhao — Project Manager (PM)
+The main features of the application include:
 
-**Responsibilities:**
-
-* Coordinate the team's development activities.
-* Organize and distribute project tasks.
-* Track project progress and deadlines.
-* Contribute to user management and authentication.
-* Implement user interaction features.
-* Implement OAuth 2.0 remote authentication.
-* Implement two-factor authentication (2FA).
-
-## helin — Tech Lead
-
-**Responsibilities:**
-
-* Define and maintain the technical architecture.
-* Make technical decisions and help ensure consistency across the codebase.
-* Contribute to frontend and backend framework integration.
-* Implement the ORM-based database layer.
-* Review technical implementation and help resolve technical issues.
-
-## zhwu — Developer
-
-**Responsibilities:**
-
-* Implement the notification system.
-* Implement real-time collaborative features.
-* Implement multilingual support and internationalization.
-* Contribute to accessibility and browser compatibility.
-* Contribute to frontend and backend development as required.
-
-## hanwang — Developer
-
-**Responsibilities:**
-
-* Implement the file upload and management system.
-* Contribute to application development and integration.
-* Contribute to accessibility and browser compatibility.
+* User registration and authentication
+* Google OAuth 2.0 authentication
+* Two-factor authentication (2FA)
+* User profiles and avatar management
+* User search and interaction
+* Friendship management
+* Direct and group communication
+* Workspace and organization management
+* Workspace invitations and roles
+* Advanced workspace permissions
+* Real-time presence and communication
+* Real-time collaborative document editing
+* Notification system
+* Notification preferences
+* File upload and management
+* Multilingual interface
+* Custom reusable design system
+* Additional browser support
+* HTTPS development environment
 
 ---
 
-## Project Management
+# Instructions
 
-The project is managed collaboratively using GitHub and Notion, with Discord as the main communication channel.
+## Prerequisites
 
-### Task Management
+The following software is required to run the project locally:
 
-* **GitHub Issues** are used to create, track, and discuss development tasks, bugs, and feature requests.
-* **Notion** is used for project organization, planning, documentation, and keeping track of project-related information.
+* **Node.js** `>= 22`
+* **pnpm** `11.x`
+* **PostgreSQL** `17`
+* **Docker** and **Docker Compose**
 
-### Communication
+The project uses a pnpm workspace/monorepo structure.
 
-* **Discord** is the main communication channel for day-to-day discussions, coordination, technical questions, and team communication.
-* **Weekly meetings** are held to review progress, discuss ongoing work, identify blockers, and coordinate upcoming tasks.
-
-### Development Workflow
-
-The team follows a feature-based Git workflow:
-
-1. Tasks and features are tracked through **GitHub Issues**.
-2. Developers create dedicated **feature branches** for their work.
-3. Changes are committed to the corresponding branch.
-4. A **Pull Request** is opened when the work is ready for review.
-5. Team members perform **code reviews** before changes are merged.
-6. Weekly meetings and Discord discussions are used to coordinate work and resolve blockers.
-
-This workflow helps keep responsibilities clear, provides a history of development decisions, and ensures that changes are reviewed before being integrated into the main codebase.
-
-
----
-
-# Tech Stack
-
-| Layer                | Technology                    |
-| -------------------- | ----------------------------- |
-| Frontend             | React, TypeScript, Vite       |
-| Backend              | NestJS                        |
-| ORM                  | Prisma                        |
-| Database             | PostgreSQL                    |
-| Realtime             | Socket.IO                     |
-| Validation           | Zod / nestjs-zod              |
-| Internationalization | i18next / react-i18next       |
-| Infrastructure       | Docker, Docker Compose, Nginx |
-| Package Manager      | pnpm                          |
-| Monorepo             | pnpm Workspace                |
-
----
-
-## Database Schema
-
-The project uses **PostgreSQL** with **Prisma ORM**. The database is designed around users, profiles, workspaces, conversations, friendships, notifications, file attachments, and collaborative documents.
-
-### Main Entities
-
-| Entity                   | Purpose                                                                 | Key Fields                                                                                |
-| ------------------------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `User`                   | Stores account and authentication information                           | `id`, `email`, `username`, `passwordHash`, `isTwoFactorEnabled`, `createdAt`, `updatedAt` |
-| `Profile`                | Stores user profile information                                         | `id`, `userId`, `displayName`, `bio`, `avatarUrl`, `preferredLanguage`                    |
-| `OAuthAccount`           | Links users to external OAuth providers                                 | `id`, `userId`, `provider`, `providerId`                                                  |
-| `Workspace`              | Represents an organization/workspace                                    | `id`, `name`, `slug`, `description`, `ownerId`                                            |
-| `WorkspaceMember`        | Associates users with workspaces and stores their roles                 | `id`, `workspaceId`, `userId`, `role`, `joinedAt`                                         |
-| `WorkspaceInvite`        | Manages invitations to workspaces                                       | `id`, `workspaceId`, `inviterId`, `inviteeId`, `role`, `status`, `token`, `expiresAt`     |
-| `Conversation`           | Represents direct messages, group conversations, and workspace channels | `id`, `type`, `name`, `workspaceId`, `createdById`                                        |
-| `ConversationMember`     | Associates users with conversations                                     | `id`, `conversationId`, `userId`, `joinedAt`, `lastReadMessageId`                         |
-| `Message`                | Stores messages sent in conversations                                   | `id`, `conversationId`, `senderId`, `content`, `createdAt`                                |
-| `Friendship`             | Represents friendship requests and relationships                        | `id`, `requesterId`, `addresseeId`, `status`, `createdAt`, `updatedAt`                    |
-| `Notification`           | Stores user and workspace-related notifications                         | `id`, `recipientId`, `actorId`, `type`, `read`, `createdAt`                               |
-| `NotificationPreference` | Stores per-user notification delivery preferences                       | `id`, `userId`, `type`, `viaInApp`, `viaEmail`                                            |
-| `Attachment`             | Stores uploaded file metadata                                           | `id`, `uploaderId`, `messageId`, `fileName`, `fileUrl`, `fileType`, `fileSize`            |
-| `Document`               | Stores collaborative workspace documents and their Yjs state            | `id`, `title`, `content`, `yjsState`, `workspaceId`, `creatorId`                          |
-
-### Main Relationships
-
-* A `User` can have one optional `Profile`.
-* A `User` can have multiple `OAuthAccount` records.
-* A `User` can own multiple `Workspace` records.
-* `WorkspaceMember` creates a many-to-many relationship between `User` and `Workspace` and stores the user's `WorkspaceRole`.
-* `WorkspaceInvite` connects a workspace with an inviter and an optional invitee.
-* A `Workspace` can contain multiple `Conversation` channels and `Document` records.
-* `ConversationMember` creates a many-to-many relationship between `User` and `Conversation`.
-* A `Conversation` contains multiple `Message` records.
-* Each `Message` belongs to a `User` as its sender and can contain multiple `Attachment` records.
-* `Friendship` connects two `User` records through requester/addressee relationships.
-* `Notification` belongs to a recipient and can optionally reference an actor, friendship, or workspace.
-* `NotificationPreference` stores notification settings for each user and notification type.
-* `Attachment` belongs to an uploading user and can optionally be associated with a message.
-* A `Document` belongs to a `Workspace` and has a creator represented by a `User`.
-
-### Important Enums
-
-The schema also defines enums for controlled values:
-
-* `PreferredLanguage`: `en`, `fr`, `zh`
-* `WorkspaceRole`: `OWNER`, `ADMIN`, `MEMBER`
-* `WorkspaceInviteStatus`: `PENDING`, `ACCEPTED`, `REJECTED`, `REVOKED`
-* `ConversationType`: `DIRECT`, `GROUP`, `CHANNEL`
-* `FriendshipStatus`: `PENDING`, `ACCEPTED`, `BLOCKED`
-* `NotificationType`: friendship and workspace notification events
-
-### Database Design
-
-Primary keys are mainly auto-incrementing integers. `Attachment.id` and invitation tokens use UUID/string-based identifiers where appropriate.
-
-The schema uses foreign keys, unique constraints, indexes, and cascading rules to maintain data integrity and support common queries. For example:
-
-* `Profile.userId` is unique, enforcing a one-to-one relationship with `User`.
-* `WorkspaceMember` has a unique constraint on `(workspaceId, userId)` to prevent duplicate memberships.
-* `ConversationMember` has a unique constraint on `(conversationId, userId)`.
-* `NotificationPreference` has a unique constraint on `(userId, type)`.
-* `OAuthAccount` has a unique constraint on `(provider, providerId)`.
-* Frequently queried fields such as workspace membership, friendship status, and notification state are indexed.
-
-### Entity Relationship Overview
-
-```text
-User
-├── Profile
-├── OAuthAccount
-├── Workspace ──< WorkspaceMember >── User
-├── WorkspaceInvite
-├── Conversation ──< ConversationMember >── User
-│                  └── Message ──< Attachment
-├── Friendship ── User
-├── Notification
-├── NotificationPreference
-├── Attachment
-└── Document ── Workspace
-```
-
-For the final submission, an ER diagram can also be included under `docs/` to provide a visual representation of these relationships.
-
----
-
-# Features List
-
-The following table summarizes the main implemented features and their contributors.
-
-| Feature                    | Description                                                                                       | Contributor(s) |
-| -------------------------- | ------------------------------------------------------------------------------------------------- | -------------- |
-| User Registration          | Allows users to create an account.                                                                | yanzhao        |
-| User Authentication        | Provides login and logout functionality.                                                          | yanzhao        |
-| Google OAuth               | Allows authentication through Google OAuth 2.0.                                                   | yanzhao        |
-| Two-Factor Authentication  | Provides an additional authentication step for user accounts.                                     | yanzhao        |
-| User Profiles              | Allows users to manage profile information and avatars.                                           | zhwu           |
-| Friend System              | Allows users to search for and interact with other users through friend requests and friendships. | yshi,zhwu        |
-| Real-time Presence         | Displays users' online/offline status.                                                            | yshi           |
-| Real-time Communication    | Enables real-time communication between users.                                                    | yshi, yanzhao  |
-| Notifications              | Provides notifications for relevant application events.                                           | zhwu           |
-| Notification Preferences   | Allows users to configure notification behavior.                                                  | zhwu           |
-| Workspaces / Organizations | Provides shared organizational and collaborative spaces.                                          | yshi            |
-| Permissions                | Controls access to resources according to user permissions.                                       | yshi           |
-| File Uploads               | Allows users to upload and manage files.                                                          | hanwang        |
-| Internationalization       | Provides English, French, and Chinese translations.                                               | zhwu           |
-| Design System              | Provides reusable UI components and consistent styling.                                           | yshi           |
-| Browser Compatibility      | Supports additional browsers and ensures cross-browser compatibility.                             | All            |
-| HTTPS                      | Serves the application through HTTPS using Nginx.                                                 | helin            |
-| Accessibility              | Provides accessible interactions, keyboard navigation, and assistive-technology support.          | All            |
-
----
-
-# Modules
-
-The following modules were selected for the project. Major modules are worth 2 points and Minor modules are worth 1 point.
-
-## Web
-
-| Module                                                                  | Type  | Points | Contributor(s) |
-| ----------------------------------------------------------------------- | ----- | -----: | -------------- |
-| Use a framework for both the frontend and backend                       | Major |      2 | helin          |
-| Implement real-time features using WebSockets or similar technology     | Major |      2 | yshi           |
-| Allow users to interact with other users                                | Major |      2 | yanzhao        |
-| Use an ORM for the database                                             | Minor |      1 | helin          |
-| Complete notification system for creation, update, and deletion actions | Minor |      1 | zhwu           |
-| Real-time collaborative features                                        | Minor |      1 | zhwu           |
-| Custom-made design system with reusable components                      | Minor |      1 | yshi           |
-| File upload and management system                                       | Minor |      1 | hanwang        |
-
-**Web subtotal: 11 points**
-
-### Framework for Frontend and Backend — Major
-
-The project uses React with TypeScript for the frontend and NestJS for the backend. The frontend is built with Vite, while the backend follows NestJS's modular architecture.
-
-**Contributor:** helin
-
-### Real-time Features — Major
-
-Real-time communication is implemented using Socket.IO/WebSockets. This is used for features such as real-time presence, notifications, and communication between users.
-
-**Contributor:** yshi
-
-### User Interaction — Major
-
-Users can interact with each other through features such as friendships, friend requests, messaging, and other user-to-user interactions.
-
-**Contributor:** yanzhao
-
-### ORM — Minor
-
-Prisma ORM is used to communicate with the PostgreSQL database. It provides type-safe database access and migration management.
-
-**Contributor:** helin
-
-### Notification System — Minor
-
-The application provides a notification system for relevant creation, update, and deletion events. Notifications can be delivered and displayed to users through the application's notification interface.
-
-**Contributor:** zhwu
-
-### Real-time Collaborative Features — Minor
-
-Real-time functionality is used to support collaborative interactions between users, allowing changes and events to be communicated without requiring a manual page refresh.
-
-**Contributor:** zhwu
-
-### Custom Design System — Minor
-
-A custom design system provides reusable UI components and shared styling patterns. Components are designed to maintain visual consistency and reduce duplication across the application.
-
-**Contributor:** yshi
-
-### File Upload and Management — Minor
-
-The application provides file upload and management functionality, including storing file metadata and making uploaded files available to the relevant application features.
-
-**Contributor:** hanwang
-
----
-
-## Accessibility and Internationalization
-
-| Module                          | Type  | Points | Contributor(s) |
-| ------------------------------- | ----- | -----: | -------------- |
-| Support for multiple languages  | Minor |      1 | zhwu           |
-| Support for additional browsers | Minor |      1 | All            |
-
-**Accessibility and Internationalization subtotal: 2 points**
-
-### Multiple Languages — Minor
-
-The application supports multiple languages through an internationalization system. The currently supported languages are English, French, and Chinese.
-
-**Contributor:** zhwu
-
-### Additional Browser Support — Minor
-
-The team tested and adapted the application to support additional browsers beyond the primary development environment.
-
-**Contributors:** All team members
-
----
-
-## User Management
-
-| Module                                      | Type  | Points | Contributor(s) |
-| ------------------------------------------- | ----- | -----: | -------------- |
-| Standard user management and authentication | Major |      2 | yanzhao        |
-| Advanced permissions system                 | Major |      2 | yshi           |
-| Organization system                         | Major |      2 | All            |
-| Remote authentication with OAuth 2.0        | Minor |      1 | yanzhao        |
-| Complete 2FA system                         | Minor |      1 | yanzhao        |
-
-**User Management subtotal: 8 points**
-
-### Standard User Management and Authentication — Major
-
-The application provides standard user management and authentication functionality, including account registration, login, logout, and profile-related user management.
-
-**Contributor:** yanzhao
-
-### Advanced Permissions System — Major
-
-An advanced permissions system controls access to application resources and functionality according to user roles and permissions.
-
-**Contributor:** yshi
-
-### Organization System — Major
-
-The application provides an organization/workspace structure allowing users to belong to and interact within shared collaborative spaces.
-
-**Contributors:** All team members
-
-### OAuth 2.0 Remote Authentication — Minor
-
-Google OAuth 2.0 is implemented to allow users to authenticate using their Google account.
-
-**Contributor:** yanzhao
-
-### Two-Factor Authentication — Minor
-
-The application provides a two-factor authentication mechanism to add an additional authentication step and improve account security.
-
-**Contributor:** yanzhao
-
----
-
-## Module Point Summary
-
-| Category                             | Major Points | Minor Points |  Total |
-| ------------------------------------ | -----------: | -----------: | -----: |
-| Web                                  |            6 |            5 |     11 |
-| Accessibility & Internationalization |            0 |            2 |      2 |
-| User Management                      |            6 |            2 |      8 |
-| **Total**                            |       **12** |        **9** | **21** |
-
----
-
-# Requirements
-
-Before running the project, make sure the following are installed:
-
-* Git
-* Docker
-* Docker Compose
-
-Node.js and pnpm are only required when running the project directly on the host machine.
-
-Verify Docker:
+You can verify your installed versions with:
 
 ```bash
+node --version
+pnpm --version
 docker --version
 docker compose version
 ```
 
----
+## Installation
 
-# Quick Start
-
-## 1. Clone the repository
+Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd transcendence
+git clone https://github.com/truthciao/42_ft_transcendence.git
+cd 42_ft_transcendence
 ```
 
-## 2. Configure environment variables
+Install dependencies:
 
-Create:
-
-```text
-apps/api/.env
+```bash
+pnpm install
 ```
 
-At minimum, configure the database connection:
+Generate the Prisma client:
+
+```bash
+pnpm --filter api prisma generate
+```
+
+## Environment Configuration
+
+Create the required environment configuration according to the example provided by the project.
+
+The application uses environment variables for authentication, database access, OAuth, and optional email functionality.
+
+A typical configuration includes:
 
 ```env
-DATABASE_URL="postgresql://transcendence:transcendence@postgres:5432/transcendence?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/transcendence"
+
+JWT_SECRET="your-secret"
+
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+GOOGLE_CALLBACK_URL="http://localhost:3000/auth/google/callback"
 ```
 
-### Google OAuth
+### Optional Email Configuration
 
-Google OAuth is required to test Google login.
-
-Add the following variables:
+Email functionality can be configured using SMTP:
 
 ```env
-GOOGLE_CLIENT_ID=<your-client-id>
-GOOGLE_CLIENT_SECRET=<your-client-secret>
-GOOGLE_CALLBACK_URL=https://localhost:8443/api/auth/google/callback
-```
-
-The Google OAuth application must have the following Authorized Redirect URI:
-
-```text
-https://localhost:8443/api/auth/google/callback
-```
-
-Do not commit `.env` files or private credentials.
-
-### Email Configuration
-
-Email functionality is optional.
-
-If email configuration is not provided, email notifications will be skipped and the rest of the application will continue to work normally.
-
-To enable email functionality, add the following variables to:
-
-```text
-apps/api/.env
-```
-
-```env
-# Email Configuration
 MAIL_HOST="smtp.gmail.com"
 MAIL_PORT="587"
 MAIL_SECURE="false"
@@ -460,158 +137,764 @@ MAIL_PASS="your-app-password"
 MAIL_FROM="noreply@yourdomain.com"
 ```
 
-#### Configuration
+Email configuration is optional. If SMTP is not configured, email notifications are skipped.
 
-| Variable      | Description                                    |
-| ------------- | ---------------------------------------------- |
-| `MAIL_HOST`   | SMTP server hostname                           |
-| `MAIL_PORT`   | SMTP server port                               |
-| `MAIL_SECURE` | Whether to use a secure SMTP connection        |
-| `MAIL_USER`   | SMTP account username                          |
-| `MAIL_PASS`   | SMTP password or application-specific password |
-| `MAIL_FROM`   | Sender address used for outgoing emails        |
+When using Gmail, `MAIL_PASS` should normally be a Gmail **App Password**, rather than the account's regular password.
 
-For Gmail, `MAIL_PASS` should normally be an **App Password** rather than your regular Google account password.
+For the complete list of environment variables and development configuration, see the project development documentation.
 
-If these variables are not configured, the application will skip email delivery instead of failing.
+## Database Setup
 
-Do not commit `.env` files or email credentials to the repository.
+Start PostgreSQL and make sure the configured database is available.
 
-## 3. Start the application
+Run Prisma migrations:
 
 ```bash
-make start
+pnpm --filter api prisma migrate dev
 ```
 
-The Makefile starts the complete Docker environment.
+Generate the Prisma client:
 
-Alternatively:
+```bash
+pnpm --filter api prisma generate
+```
+
+If the project seed is available, the database can also be populated using the project's seed workflow.
+
+## Running the Application
+
+Start the frontend and backend in development mode:
+
+```bash
+pnpm dev
+```
+
+The project uses the following main applications:
+
+```text
+apps/web   → React frontend
+apps/api   → NestJS backend
+```
+
+The frontend communicates with the backend through HTTP APIs and WebSocket connections.
+
+## Docker Development
+
+The project also provides a Docker Compose environment.
+
+Start the services with:
 
 ```bash
 docker compose up --build
 ```
 
-## 4. Open the application
+Stop the services with:
 
-Open:
-
-```text
-https://localhost:8443
+```bash
+docker compose down
 ```
 
-The application is served through Nginx over HTTPS.
+To remove containers and associated volumes:
 
-HTTP requests on port `8080` are redirected to HTTPS.
+```bash
+docker compose down -v
+```
 
-> The development certificate is self-signed. Your browser may display a certificate warning when accessing the application locally.
+## HTTPS
+
+The project supports HTTPS through an Nginx reverse proxy.
+
+Development certificates can be generated using:
+
+```bash
+make certs
+```
+
+The HTTPS development environment can then be started using the project's Makefile/Compose workflow.
+
+HTTPS is used to reproduce a production-like secure connection and to support browser features that require a secure context.
+
+For more detailed development commands and troubleshooting information, see:
+
+`docs/DEVELOPMENT.md`
+
+---
+
+# Team Information
+
+The project was developed by a five-person team.
+
+| Member      | Role            | Main Responsibilities                                                                                                            |
+| ----------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **yshi**    | Product Owner   | Product planning and priorities, custom design system, advanced permissions, real-time functionality                             |
+| **yanzhao** | Project Manager | Project coordination, task distribution, progress tracking, user management and authentication, OAuth 2.0, 2FA, user interaction |
+| **helin**   | Tech Lead       | Technical architecture, framework integration, ORM/database, technical decisions and code review                                 |
+| **zhwu**    | Developer       | Notification system, real-time collaborative features, multilingual support/i18n                                                 |
+| **hanwang** | Developer       | File upload and management system, related application development and integration                                               |
+
+The responsibilities listed above describe the primary ownership of the corresponding features. Development was collaborative and team members also contributed to integration, testing, review, and other project tasks.
+
+---
+
+# Project Management
+
+The project is managed collaboratively using GitHub and Notion, with Discord as the main communication channel.
+
+## Task Management
+
+* **GitHub Issues** are used to create, track, and discuss development tasks, bugs, and feature requests.
+* **Notion** is used for project organization, planning, documentation, and project-related information.
+
+## Communication
+
+* **Discord** is the main communication channel for day-to-day discussions, coordination, technical questions, and team communication.
+* **Weekly meetings** are held to review progress, discuss ongoing work, identify blockers, and coordinate upcoming tasks.
+
+## Development Workflow
+
+The team follows a feature-based Git workflow:
+
+1. Tasks and features are tracked through GitHub Issues.
+2. Developers create dedicated feature branches.
+3. Changes are committed to the corresponding branch.
+4. A Pull Request is opened when the work is ready for review.
+5. Team members perform code reviews before changes are merged.
+6. Weekly meetings and Discord discussions are used to coordinate work and resolve blockers.
+
+This workflow keeps responsibilities clear and ensures that changes are reviewed before being integrated into the main codebase.
+
+---
+
+# Technical Stack
+
+## Frontend
+
+| Technology                  | Purpose                                         |
+| --------------------------- | ----------------------------------------------- |
+| **React**                   | Component-based frontend application            |
+| **TypeScript**              | Static typing and safer application development |
+| **Vite**                    | Development server and frontend build tooling   |
+| **React Router**            | Client-side routing                             |
+| **TanStack Query**          | Server-state management and API data fetching   |
+| **i18next / react-i18next** | Internationalization                            |
+| **Tailwind CSS**            | Utility-based styling                           |
+| **shadcn/UI / Base UI**     | Reusable interface components                   |
+| **Sonner**                  | Toast notifications                             |
+
+### Why React and TypeScript?
+
+React provides a component-based architecture that fits the application's large number of reusable UI elements.
+
+TypeScript is used throughout the frontend to make component interfaces, API data, and shared types more explicit and easier to maintain.
+
+Vite provides a fast development environment and efficient production builds.
+
+## Backend
+
+| Technology                   | Purpose                                         |
+| ---------------------------- | ----------------------------------------------- |
+| **NestJS**                   | Backend framework                               |
+| **TypeScript**               | Type-safe backend development                   |
+| **Prisma**                   | ORM and database access                         |
+| **Zod**                      | Runtime schema validation                       |
+| **nestjs-zod**               | Integration between Zod schemas and NestJS DTOs |
+| **Socket.IO**                | Real-time communication                         |
+| **JWT**                      | Authentication                                  |
+| **OAuth 2.0 / Google OAuth** | Remote authentication                           |
+
+### Why NestJS?
+
+NestJS provides a modular backend architecture based on controllers, services, modules, and dependency injection. This structure is suitable for separating authentication, profiles, workspaces, conversations, notifications, documents, and other application domains.
+
+Using TypeScript on both frontend and backend also provides a consistent development environment.
+
+## Database
+
+### PostgreSQL
+
+PostgreSQL is used as the relational database.
+
+It was chosen because the application contains many structured relationships between users, workspaces, conversations, messages, friendships, notifications, documents, and attachments.
+
+A relational database is well suited to these relationships and provides foreign keys, unique constraints, indexes, and transactional consistency.
+
+### Prisma
+
+Prisma is used as the ORM.
+
+It provides:
+
+* Type-safe database access
+* Database migrations
+* Schema-based data modeling
+* Generated TypeScript database client
+* Clear relationships between entities
+
+## Real-Time Communication
+
+**Socket.IO** is used for real-time communication.
+
+It supports the application's real-time requirements, including:
+
+* Online presence
+* Notifications
+* Communication events
+* Workspace-related events
+* Collaborative document events
+
+## Infrastructure
+
+| Technology         | Purpose                               |
+| ------------------ | ------------------------------------- |
+| **Docker**         | Containerization                      |
+| **Docker Compose** | Multi-service development environment |
+| **Nginx**          | Reverse proxy and HTTPS               |
+| **GitHub**         | Source control and collaboration      |
+
+---
+
+# Database Schema
+
+The project uses PostgreSQL with Prisma ORM.
+
+The database is centered around users, profiles, workspaces, conversations, friendships, notifications, attachments, and collaborative documents.
+
+## Main Entities
+
+| Entity                   | Purpose                               | Key Fields                                                                                |
+| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `User`                   | User account and authentication data  | `id`, `email`, `username`, `passwordHash`, `isTwoFactorEnabled`, `createdAt`, `updatedAt` |
+| `Profile`                | User profile information              | `id`, `userId`, `displayName`, `bio`, `avatarUrl`, `preferredLanguage`                    |
+| `OAuthAccount`           | External OAuth account associations   | `id`, `userId`, `provider`, `providerId`                                                  |
+| `Workspace`              | Organization/workspace                | `id`, `name`, `slug`, `description`, `icon`, `ownerId`                                    |
+| `WorkspaceMember`        | Workspace membership and role         | `id`, `workspaceId`, `userId`, `role`, `joinedAt`                                         |
+| `WorkspaceInvite`        | Workspace invitation management       | `id`, `workspaceId`, `inviterId`, `inviteeId`, `role`, `status`, `token`, `expiresAt`     |
+| `Conversation`           | Direct, group, or workspace channel   | `id`, `type`, `name`, `workspaceId`, `isDefault`                                          |
+| `ConversationMember`     | User membership in conversations      | `id`, `conversationId`, `userId`, `joinedAt`, `lastReadMessageId`                         |
+| `Message`                | Messages sent in conversations        | `id`, `conversationId`, `senderId`, `content`, `createdAt`                                |
+| `Friendship`             | Friendship requests and relationships | `id`, `requesterId`, `addresseeId`, `status`, `createdAt`, `updatedAt`                    |
+| `Notification`           | User and workspace notifications      | `id`, `recipientId`, `actorId`, `type`, `read`, `createdAt`                               |
+| `NotificationPreference` | Per-user notification preferences     | `id`, `userId`, `type`, `viaInApp`, `viaEmail`                                            |
+| `Attachment`             | Uploaded file metadata                | `id`, `uploaderId`, `messageId`, `fileName`, `fileUrl`, `fileType`, `fileSize`            |
+| `Document`               | Collaborative workspace documents     | `id`, `title`, `content`, `yjsState`, `workspaceId`, `creatorId`                          |
+
+## Main Relationships
+
+* A `User` can have one optional `Profile`.
+* A `User` can have multiple `OAuthAccount` records.
+* A `User` can own multiple `Workspace` records.
+* `WorkspaceMember` creates a many-to-many relationship between `User` and `Workspace` and stores the user's role.
+* A `Workspace` can contain multiple `WorkspaceInvite` records.
+* A `Workspace` can contain multiple conversations/channels.
+* A `Workspace` can contain multiple collaborative documents.
+* `ConversationMember` creates a many-to-many relationship between `User` and `Conversation`.
+* A `Conversation` contains multiple `Message` records.
+* Each `Message` belongs to a `User` as its sender.
+* A `Message` can have multiple `Attachment` records.
+* `Friendship` connects two users through requester and addressee relationships.
+* `Notification` belongs to a recipient and can optionally reference an actor, friendship, or workspace.
+* `NotificationPreference` stores notification settings for each user and notification type.
+* An `Attachment` belongs to its uploader and can optionally be associated with a message.
+* A `Document` belongs to a `Workspace` and has a creator represented by a `User`.
+
+## Enums
+
+The schema defines the following enums:
+
+* `PreferredLanguage`: `en`, `fr`, `zh`
+* `WorkspaceRole`: `OWNER`, `ADMIN`, `MEMBER`
+* `WorkspaceInviteStatus`: `PENDING`, `ACCEPTED`, `REJECTED`, `REVOKED`
+* `ConversationType`: `DIRECT`, `GROUP`, `CHANNEL`
+* `FriendshipStatus`: `PENDING`, `ACCEPTED`, `BLOCKED`
+* `NotificationType`: notification events related to friendships and workspaces
+
+## Database Constraints and Indexes
+
+The schema uses primary keys, foreign keys, unique constraints, indexes, and cascading rules.
+
+Examples include:
+
+* `User.email` and `User.username` are unique.
+* `Profile.userId` is unique, enforcing a one-to-one relationship between `User` and `Profile`.
+* `OAuthAccount` has a unique constraint on `(provider, providerId)`.
+* `Workspace.slug` is unique.
+* `WorkspaceMember` has a unique constraint on `(workspaceId, userId)`.
+* `ConversationMember` has a unique constraint on `(conversationId, userId)`.
+* `Friendship` has a unique constraint on `(requesterId, addresseeId)`.
+* `NotificationPreference` has a unique constraint on `(userId, type)`.
+* Notification and workspace membership queries use dedicated indexes.
+* Several relationships use cascading deletes to maintain referential integrity.
+
+### Entity Relationship Overview
+
+```text
+                                  ┌──────────────┐
+                                  │     User     │
+                                  └──────┬───────┘
+             ┌──────────────────────────┼──────────────────────────┐
+             │             │            │             │            │
+             ▼             ▼            ▼             ▼            ▼
+         Profile     OAuthAccount   Workspace     Friendship   Notification
+                                      │
+                         ┌────────────┼──────────────┐
+                         │            │              │
+                         ▼            ▼              ▼
+                  WorkspaceMember  Invite       Document
+                         │
+                         ▼
+                       User
+
+Workspace
+   │
+   └── Conversation
+          │
+          ├── ConversationMember ── User
+          │
+          └── Message
+                │
+                └── Attachment
+
+User
+ ├── NotificationPreference
+ └── Attachment
+```
+
+---
+
+# Features List
+
+The following table summarizes the main implemented features and their primary contributors.
+
+| Feature                    | Primary Contributor(s) | Description                                        |
+| -------------------------- | ---------------------- | -------------------------------------------------- |
+| User Registration          | yanzhao                | Standard account creation                          |
+| User Authentication        | yanzhao                | Login, logout, and authenticated sessions          |
+| Google OAuth 2.0           | yanzhao                | Remote authentication through Google               |
+| Two-Factor Authentication  | yanzhao                | Additional authentication security                 |
+| User Profiles              | zhwu                   | Profile information and account-related UI         |
+| Avatar Upload              | zhwu                   | Upload and serve user avatars                      |
+| User Search                | yanzhao / team         | Search for other users                             |
+| Friendship System          | yanzhao                | Send, accept, reject, and remove friendships       |
+| Online Presence            | yshi                   | Real-time online user presence                     |
+| Direct Communication       | yanzhao / yshi         | User-to-user communication                         |
+| Group Communication        | yanzhao / team         | Group conversations                                |
+| Workspace Management       | All                    | Create and manage organizations/workspaces         |
+| Workspace Invitations      | All                    | Invite users and manage invitation status          |
+| Workspace Roles            | yshi                   | OWNER, ADMIN, and MEMBER permissions               |
+| Advanced Permissions       | yshi                   | Role-based workspace access control                |
+| Workspace Channels         | All                    | Create and manage workspace communication channels |
+| Notifications              | zhwu                   | Notification creation, retrieval, and lifecycle    |
+| Notification Preferences   | zhwu                   | Configure notification delivery preferences        |
+| Real-Time Notifications    | zhwu / yshi            | Deliver relevant events without page refresh       |
+| Collaborative Documents    | zhwu                   | Workspace document creation and management         |
+| Real-Time Collaboration    | zhwu                   | Real-time collaborative document functionality     |
+| File Upload and Management | hanwang                | Upload and manage application files                |
+| Message Attachments        | hanwang                | Attach files to messages                           |
+| Internationalization       | zhwu                   | English, French, and Chinese interfaces            |
+| Browser Compatibility      | All                    | Support for additional browsers                    |
+| Custom Design System       | yshi                   | Reusable components and consistent visual language |
+| HTTPS                      | Team                   | Secure development environment using Nginx/TLS     |
+
+---
+
+# Modules
+
+The project includes the following modules selected from the 42 ft_transcendence subject.
+
+Points are calculated according to the subject:
+
+* **Major module = 2 points**
+* **Minor module = 1 point**
+
+## Web
+
+| Module                                                                        | Type  | Points | Contributor(s) | Implementation                                                                  |
+| ----------------------------------------------------------------------------- | ----- | -----: | -------------- | ------------------------------------------------------------------------------- |
+| Use a framework for both the frontend and backend                             | Major |      2 | helin          | React is used for the frontend and NestJS for the backend                       |
+| Implement real-time features using WebSockets or similar technology           | Major |      2 | yshi           | Socket.IO is used for real-time events and presence                             |
+| Allow users to interact with other users                                      | Major |      2 | yanzhao        | User search, friendships, communication, and interaction features               |
+| Use an ORM for the database                                                   | Minor |      1 | helin          | Prisma is used for PostgreSQL database access                                   |
+| A complete notification system for all creation, update, and deletion actions | Minor |      1 | zhwu           | Notification models, services, preferences, and real-time notification delivery |
+| Real-time collaborative features                                              | Minor |      1 | zhwu           | Collaborative workspace document functionality                                  |
+| Custom-made design system with reusable components                            | Minor |      1 | yshi           | Custom reusable UI components and consistent design tokens                      |
+| File upload and management system                                             | Minor |      1 | hanwang        | File upload, metadata management, and message attachments                       |
+
+**Web subtotal: 11 points**
+
+## Accessibility and Internationalization
+
+| Module                          | Type  | Points | Contributor(s) | Implementation                                                                                                              |
+| ------------------------------- | ----- | -----: | -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Support for multiple languages  | Minor |      1 | zhwu           | The application supports English, French, and Chinese using i18next/react-i18next.                                          |
+| Support for additional browsers | Minor |      1 | All            | The application is developed and tested with multiple modern browsers to ensure consistent functionality and compatibility. |
+
+**Accessibility & Internationalization subtotal: 2 points**
+
+## User Management
+
+| Module                                                                    | Type  | Points | Contributor(s) | Implementation                                                   |
+| ------------------------------------------------------------------------- | ----- | -----: | -------------- | ---------------------------------------------------------------- |
+| Standard user management and authentication                               | Major |      2 | yanzhao        | Registration, login, logout, sessions, and account management    |
+| Advanced permissions system                                               | Major |      2 | yshi           | Workspace roles and role-based access control                    |
+| An organization system                                                    | Major |      2 | All            | Workspaces, members, invitations, roles, channels, and documents |
+| Implement remote authentication with OAuth 2.0                            | Minor |      1 | yanzhao        | Google OAuth 2.0 integration                                     |
+| Implement a complete 2FA (Two-Factor Authentication) system for the users | Minor |      1 | yanzhao        | Two-factor authentication workflow and account security          |
+
+**User Management subtotal: 8 points**
+
+## Total
+
+| Category                             | Points |
+| ------------------------------------ | -----: |
+| Web                                  |     11 |
+| Accessibility & Internationalization |      2 |
+| User Management                      |      8 |
+| **Total**                            | **21** |
+
+The module implementations were developed as part of the overall application and integrated across frontend, backend, database, and real-time services where required.
+
+---
+
+# Individual Contributions
+
+## yshi — Product Owner
+
+### Responsibilities
+
+* Product planning and feature priorities
+* Custom-made design system
+* Advanced permissions system
+* Real-time functionality
+* Product-level technical and UX decisions
+
+### Main Contributions
+
+* Custom reusable UI components and design system
+* Workspace permission and role-based access control
+* Real-time presence and related real-time functionality
+* Product coordination and feature prioritization
+
+### Challenges
+
+One of the main challenges was maintaining consistent permissions across workspace-related features while keeping the application easy to use.
+
+The solution was to establish a common workspace role system based on:
+
+```text
+OWNER
+ADMIN
+MEMBER
+```
+
+and reuse the same permission mechanism across workspace operations.
+
+---
+
+## yanzhao — Project Manager
+
+### Responsibilities
+
+* Project coordination
+* Task distribution
+* Progress tracking
+* User management and authentication
+* User interaction
+* OAuth 2.0
+* Two-factor authentication
+
+### Main Contributions
+
+* Standard user authentication
+* User interaction features
+* Friendship functionality
+* Google OAuth 2.0
+* Two-factor authentication
+* Project coordination and task organization
+
+### Challenges
+
+Authentication required coordination between frontend and backend, including authenticated sessions and protected API access.
+
+The implementation separates authentication responsibilities between the frontend authentication state and backend authentication/authorization mechanisms.
+
+---
+
+## helin — Tech Lead
+
+### Responsibilities
+
+* Technical architecture
+* Frontend/backend framework integration
+* ORM and database architecture
+* Technical decisions
+* Code review and technical coordination
+* HTTPS infrastructure
+
+### Main Contributions
+
+* React and NestJS application architecture
+* Prisma ORM integration
+* PostgreSQL database integration
+* Shared frontend/backend development structure
+* HTTPS configuration using Nginx and TLS
+* Technical decisions and code review
+
+---
+
+## zhwu — Developer
+
+### Responsibilities
+
+* User profiles
+* Notification system
+* Real-time collaborative features
+* Internationalization
+
+### Main Contributions
+
+* User profile functionality
+* Profile information management
+* Notification system
+* Notification preferences
+* Real-time notification-related functionality
+* Collaborative document functionality
+* Multilingual support
+* English, French, and Chinese localization
+
+### Challenges
+
+Real-time collaboration requires changes made by one user to be propagated to other connected users without requiring a page refresh.
+
+The project uses Socket.IO-based real-time communication together with document state management to synchronize collaborative activity.
+
+Internationalization also requires keeping translated resources consistent across supported languages. Translation keys are maintained separately for English, French, and Chinese.
+
+---
+
+## hanwang — Developer
+
+### Responsibilities
+
+* File upload and management system
+* File-related application integration
+* General development and feature integration
+
+### Main Contributions
+
+* File upload functionality
+* Attachment management
+* Message attachments
+* Integration of uploaded files into application features
+
+### Challenges
+
+Uploaded files require both file-system handling and database metadata.
+
+The implementation separates the stored file from its database metadata, allowing the application to track information such as:
+
+```text
+fileName
+fileUrl
+fileType
+fileSize
+uploaderId
+messageId
+```
 
 ---
 
 # Project Structure
 
+The repository is organized as a pnpm monorepo:
+
 ```text
-transcendence/
+42_ft_transcendence/
 ├── apps/
-│   ├── api/                 # NestJS backend
-│   └── web/                 # React frontend
-├── packages/                # Shared packages and types
-├── docs/                    # Project documentation
+│   ├── web/                 # React frontend
+│   └── api/                 # NestJS backend
+│
+├── packages/
+│   └── shared-types/        # Shared TypeScript/Zod types and schemas
+│
+├── docs/                    # Project and development documentation
 ├── infra/                   # Infrastructure configuration
-├── scripts/                 # Development and CI scripts
+├── scripts/                 # Development and validation scripts
+│
 ├── compose.yaml             # Docker Compose configuration
-├── Makefile                 # Common development commands
-└── pnpm-workspace.yaml      # pnpm workspace configuration
+├── Makefile                 # Common project commands
+├── package.json             # Root workspace configuration
+├── pnpm-workspace.yaml      # pnpm workspace definition
+└── README.md
 ```
 
 ---
 
-# Useful Commands
+# Architecture Overview
 
-Start the complete application:
-
-```bash
-make start
-```
-
-Stop the application:
-
-```bash
-make stop
-```
-
-Restart the application:
-
-```bash
-make restart
-```
-
-View running containers:
-
-```bash
-docker compose ps
-```
-
-View logs:
-
-```bash
-docker compose logs -f
-```
-
----
-
-# Troubleshooting
-
-### Check the application containers
-
-```bash
-docker compose ps
-```
-
-### View backend logs
-
-```bash
-docker compose logs -f api
-```
-
-### View frontend logs
-
-```bash
-docker compose logs -f web
-```
-
-### View database logs
-
-```bash
-docker compose logs -f postgres
-```
-
-### Restart the complete environment
-
-```bash
-make restart
-```
-
-### Reset the development database
-
-```bash
-make db-reset
-```
-
-> Resetting the database removes local development data.
-
----
-
-# Developer Documentation
-
-For development setup, testing, Prisma migrations, database access, Docker development, HTTPS configuration, i18n, and other internal documentation, see:
+The application follows a full-stack architecture:
 
 ```text
-docs/DEVELOPMENT.md
+┌──────────────────────┐
+│      Browser         │
+│                      │
+│ React + TypeScript   │
+└──────────┬───────────┘
+           │
+      HTTP / WebSocket
+      (Socket.IO)
+           │
+           ▼
+┌──────────────────────┐
+│      NestJS API      │
+│                      │
+│ Controllers/Services │
+└──────────┬───────────┘
+           │
+        Prisma ORM
+           │
+           ▼
+┌──────────────────────┐
+│     PostgreSQL       │
+└──────────────────────┘
 ```
+
+For HTTPS deployments/development, Nginx is used as a reverse proxy:
+
+```text
+Browser
+   │
+ HTTPS
+   ▼
+ Nginx
+   │
+   ├── Frontend
+   │
+   └── NestJS API
+```
+
+Real-time communication is handled through Socket.IO alongside the HTTP API.
+
+---
+
+# Resources
+
+## Documentation and References
+
+The project was developed using official documentation and technical references, including:
+
+* React documentation
+* TypeScript documentation
+* Vite documentation
+* React Router documentation
+* TanStack Query documentation
+* NestJS documentation
+* Prisma documentation
+* PostgreSQL documentation
+* Socket.IO documentation
+* Zod documentation
+* i18next documentation
+* Docker documentation
+* Docker Compose documentation
+* Nginx documentation
+* OAuth 2.0 / Google OAuth documentation
+
+These resources were used to understand APIs, frameworks, configuration, database operations, authentication, real-time communication, and development best practices.
+
+## AI Usage
+
+AI tools were used as development assistants during the project.
+
+AI assistance was mainly used for:
+
+* Understanding unfamiliar technical concepts and APIs.
+* Explaining React, TypeScript, NestJS, Prisma, WebSocket, and authentication concepts.
+* Investigating and debugging frontend/backend integration issues.
+* Reviewing database schemas and Prisma relationships.
+* Helping diagnose TypeScript and dependency errors.
+* Reviewing internationalization coverage and translation-key usage.
+* Assisting with test design and debugging.
+* Reviewing security-related implementation details.
+* Improving technical documentation and README organization.
+* Discussing implementation approaches before writing or modifying code.
+
+AI was used as an assistant for research, explanation, debugging, and review. The team remained responsible for the final implementation, integration, testing, and code decisions.
+
+---
+
+# Evaluation Guide
+
+For evaluation, the application can be started using the installation and development instructions above.
+
+The main areas to explore are:
+
+### Authentication
+
+* Registration
+* Login/logout
+* Google OAuth
+* Two-factor authentication
+
+### User Interaction
+
+* User search
+* Friend requests
+* Friendship management
+* Direct and group communication
+* Online presence
+
+### Workspaces
+
+* Workspace creation
+* Workspace members
+* Workspace invitations
+* Workspace roles
+* Permission checks
+* Workspace channels
+
+### Notifications
+
+* Notification creation
+* Notification display
+* Read/unread state
+* Notification preferences
+* Real-time notification updates
+
+### Collaboration
+
+* Workspace documents
+* Document editing
+* Real-time collaborative functionality
+
+### Files
+
+* File upload
+* File metadata
+* Message attachments
+
+### Internationalization
+
+The interface supports:
+
+* English
+* French
+* Chinese
+
+### Design System
+
+The application uses reusable UI components and shared design tokens to maintain visual consistency across pages.
+
+---
+
+# Development Documentation
+
+Additional technical information, including detailed development commands, Prisma workflows, database operations, Docker usage, HTTPS configuration, and troubleshooting, is available in:
+
+`docs/DEVELOPMENT.md`
 
 ---
 
 # License
 
-42 School Project
+This project was created as part of the **42 curriculum**.
 
+Unless otherwise specified by the project repository, the source code is intended for educational purposes within the context of the 42 curriculum.

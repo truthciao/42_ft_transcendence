@@ -493,7 +493,7 @@ The following table summarizes the main implemented features and their primary c
 | Internationalization       | zhwu                   | English, French, and Chinese interfaces            |
 | Browser Compatibility      | All                    | Support for additional browsers                    |
 | Custom Design System       | yshi                   | Reusable components and consistent visual language |
-| HTTPS                      | Team                   | Secure development environment using Nginx/TLS     |
+| HTTPS                      | helin                  | Secure development environment using Nginx/TLS     |
 
 ---
 

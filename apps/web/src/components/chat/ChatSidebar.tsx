@@ -18,8 +18,6 @@ import { useConversations } from '@/hooks/useConversations';
 import { formatMessageTime } from '@/lib/formatMessageTime';
 import { UserSearchDialog } from './UserSearchDialog';
 
-const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
-
 export function ConversationListSidebar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -148,7 +146,6 @@ export function ConversationListSidebar() {
                   key={conversation.id}
                   conversation={conversation}
                   currentUserId={currentUser?.id}
-                  apiBaseUri={API_BASE_URI}
                   formatMessageTime={(dateString) =>
                     formatMessageTime(dateString, t('chat.yesterday'))
                   }

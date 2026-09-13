@@ -1,11 +1,11 @@
 import { Avatar } from '../common/Avatar';
 import type { ConversationItem } from '@/api/chat';
 import { useTranslation } from 'react-i18next';
+import { useRealtime } from '@/hooks/useRealtime';
 
 interface ConversationItemProps {
   conversation: ConversationItem;
   currentUserId?: number;
-  apiBaseUri: string;
     formatMessageTime: (
     dateString: string,
     yesterdayLabel: string,
@@ -16,7 +16,6 @@ interface ConversationItemProps {
 export function ConversationListItem({
   conversation,
   currentUserId,
-  apiBaseUri,
   formatMessageTime,
   onSelectConversation,
 }: ConversationItemProps) {
@@ -27,13 +26,18 @@ export function ConversationListItem({
     (member) => member.userId !== currentUserId,
   );
 
-  const avatarUrl = otherMember?.user?.profile?.avatarUrl
-    ? `${apiBaseUri}${otherMember.user.profile.avatarUrl}`
-    : undefined;
+  const avatarUrl = otherMember?.user?.profile?.avatarUrl;
 
   const lastMessage = conversation.lastMessage;
 
   const unreadCount = conversation.unreadCount ?? 0;
+
+  const { onlineUserIds } = useRealtime();
+
+  const otherUserId = otherMember?.userId;
+
+  const isOtherUserOnline =
+    otherUserId !== undefined && onlineUserIds.has(otherUserId);
 
   const { t } = useTranslation();
 
@@ -54,6 +58,7 @@ export function ConversationListItem({
           src={avatarUrl}
           name={displayName}
           size="lg"
+          status={isOtherUserOnline ? 'online' : 'offline'}
           unreadCount={unreadCount}
         />
 

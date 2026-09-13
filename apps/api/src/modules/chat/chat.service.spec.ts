@@ -151,6 +151,7 @@ describe('ChatService', () => {
       expect(prisma.conversation.create).toHaveBeenCalledWith({
         data: {
           type: ConversationType.DIRECT,
+          createdById: 1,
           members: {
             create: [{ userId: 1 }, { userId: 2 }],
           },

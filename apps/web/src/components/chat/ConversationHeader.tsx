@@ -7,7 +7,6 @@ interface ConversationHeaderProps {
   title: ReactNode;
   headerIcon?: ReactNode;
   otherUserName?: string;
-  isOtherUserOnline: boolean;
   onSearch: () => void;
 }
 
@@ -15,7 +14,6 @@ export function ConversationHeader({
   title,
   headerIcon,
   otherUserName,
-  isOtherUserOnline,
   onSearch,
 }: ConversationHeaderProps) {
   const { t } = useTranslation();
@@ -24,25 +22,11 @@ export function ConversationHeader({
     <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
       <h1 className="font-semibold text-sm flex items-center gap-2">
         {headerIcon ?? (
-          <>
-            <span
-              className={`w-2 h-2 rounded-full ${
-                isOtherUserOnline
-                  ? 'bg-success'
-                  : 'bg-muted-foreground'
-              }`}
-            />
-            <span>
-              {otherUserName
-                ? t(
-                    isOtherUserOnline
-                      ? 'chat.online'
-                      : 'chat.offline',
-                    { friendName: otherUserName },
-                  )
-                : title}
-            </span>
-          </>
+          <span>
+            {otherUserName
+              ? t('chat.chatWith', { friendName: otherUserName })
+              : title}
+          </span>
         )}
       </h1>
 

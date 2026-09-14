@@ -70,6 +70,23 @@ export class NotificationsService {
     return { success: true };
   }
 
+  async markMessageNotificationsAsRead(
+    userId: number,
+    conversationId: number,
+  ) {
+    await this.prisma.notification.updateMany({
+      where: {
+        recipientId: userId,
+        conversationId,
+        type: NotificationType.MESSAGE_RECEIVED,
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+  }
+
   async markAsRead(notificationId: number, userId: number) {
     const notification = await this.prisma.notification.findUnique({
       where: {

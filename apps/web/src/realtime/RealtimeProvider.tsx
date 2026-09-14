@@ -172,7 +172,16 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
         queryKey: ['notifications', 'unread-count'],
       });
     };
-  
+
+    const handleConversationRead = () => {
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      });
+    }; 
 
     socket.on('users:online', handleUsersOnline);
     socket.on('user:online', handleOnline);
@@ -203,6 +212,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       handleNotificationCreated
     );
 
+    window.addEventListener(
+      'conversation_read',
+      handleConversationRead,
+    );
+
     return () => {
       socket.off('users:online', handleUsersOnline);
       socket.off('user:online', handleOnline);
@@ -229,6 +243,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       socket.off('workspace-role:changed', handleWorkspaceRoleChanged);
 
       socket.off('notification:created', handleNotificationCreated);
+
+      window.removeEventListener(
+        'conversation_read',
+        handleConversationRead,
+      );
 
       setOnlineUserIds(new Set());
     };

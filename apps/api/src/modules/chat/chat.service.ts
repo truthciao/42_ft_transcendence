@@ -346,6 +346,11 @@ export class ChatService {
         lastReadMessageId: lastMessage.id,
       },
     });
+
+    await this.notificationsService.markMessageNotificationsAsRead(
+      userId,
+      conversationId,
+    );
   }
 
   async verifyMembership(conversationId: number, userId: number) {

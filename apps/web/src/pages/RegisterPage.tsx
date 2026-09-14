@@ -97,9 +97,9 @@ export function RegisterPage() {
         error instanceof HttpError &&
         error.message === 'Email or username already exists'
         ) {
-          setRegisterError(t('auth.emailOrUsernameExists'));
+          setRegisterError('auth.emailOrUsernameExists');
         } else {
-          setRegisterError(t('auth.registerStatus.failed'));
+          setRegisterError('auth.registerStatus.failed');
         }
       } finally {
         setLoading(false);
@@ -216,7 +216,7 @@ export function RegisterPage() {
 
       {registerError ? (
         <p className="mt-4 text-sm text-destructive">
-          {registerError}
+          {t(registerError)}
         </p>
       ) : null}  
 

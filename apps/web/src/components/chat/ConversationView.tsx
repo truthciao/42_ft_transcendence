@@ -12,7 +12,6 @@ import {
 import { useChatMessages } from '@/hooks/useChatMessages';
 import { useChatScroll } from '@/hooks/useChatScroll';
 import { useAuth } from '@/hooks/useAuth';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useChatRealtime } from '@/hooks/useChatRealtime';
 import { useChatSendMessage } from '@/hooks/useChatSendMessage';
 import { useChatRead } from '@/hooks/useChatRead';
@@ -39,7 +38,6 @@ export function ConversationView({
 }: ConversationViewProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
-  const { onlineUserIds } = useRealtime();
 
   const { data: conversations } = useQuery({
     queryKey: ['chat-conversations'],
@@ -54,11 +52,7 @@ export function ConversationView({
     (member) => member.userId !== currentUser?.id,
   );
 
-  const otherUserId = otherMember?.userId;
   const otherUserName = otherMember?.user.username;
-
-  const isOtherUserOnline =
-    otherUserId !== undefined && onlineUserIds.has(otherUserId);
 
   const {
     messages,
@@ -179,7 +173,6 @@ export function ConversationView({
       title={title}
       headerIcon={headerIcon}
       otherUserName={otherUserName}
-      isOtherUserOnline={isOtherUserOnline}
       onSearch={() => setIsSearchOpen(true)}
     /> 
       <ConversationMessageList

@@ -607,7 +607,8 @@
       "WORKSPACE_INVITE_RECEIVED": "Workspace invite received",
       "WORKSPACE_INVITE_ACCEPTED": "Workspace invite accepted",
       "WORKSPACE_MEMBER_REMOVED": "Workspace member removed",
-      "WORKSPACE_ROLE_CHANGED": "Workspace role changed"
+      "WORKSPACE_ROLE_CHANGED": "Workspace role changed",
+      "MESSAGE_RECEIVED": "Message received"
     },
     "descriptions": {
       "FRIEND_REQUEST_RECEIVED": "You receive a friend request.",
@@ -617,7 +618,8 @@
       "WORKSPACE_INVITE_RECEIVED": "You're invited to join a workspace.",
       "WORKSPACE_INVITE_ACCEPTED": "Your workspace invite was accepted.",
       "WORKSPACE_MEMBER_REMOVED": "You were removed from a workspace.",
-      "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed."
+      "WORKSPACE_ROLE_CHANGED": "Your role in a workspace changed.",
+      "MESSAGE_RECEIVED": "You received a new message."
     }
   },
 

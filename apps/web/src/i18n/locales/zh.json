@@ -607,7 +607,8 @@
       "WORKSPACE_INVITE_RECEIVED": "收到工作区邀请",
       "WORKSPACE_INVITE_ACCEPTED": "工作区邀请被接受",
       "WORKSPACE_MEMBER_REMOVED": "被从工作区移除",
-      "WORKSPACE_ROLE_CHANGED": "工作区角色已更改"
+      "WORKSPACE_ROLE_CHANGED": "工作区角色已更改",
+      "MESSAGE_RECEIVED": "收到消息"
     },
     "descriptions": {
       "FRIEND_REQUEST_RECEIVED": "您收到了一条好友请求。",
@@ -617,7 +618,8 @@
       "WORKSPACE_INVITE_RECEIVED": "您被邀请加入一个工作区。",
       "WORKSPACE_INVITE_ACCEPTED": "有人接受了您的工作区邀请。",
       "WORKSPACE_MEMBER_REMOVED": "您被从工作区移除。",
-      "WORKSPACE_ROLE_CHANGED": "您在工作区的角色已更改。"
+      "WORKSPACE_ROLE_CHANGED": "您在工作区的角色已更改。",
+      "MESSAGE_RECEIVED": "您收到了一条新消息。"
     }
   },
 

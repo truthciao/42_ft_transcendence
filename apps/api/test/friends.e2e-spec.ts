@@ -89,14 +89,14 @@ describe('Friends (e2e)', () => {
     user: TestUser,
   ): Promise<AuthenticatedTestUser> {
     const registerResponse = await request(server)
-      .post('/auth/register')
+      .post('/api/auth/register')
       .send(user)
       .expect(201);
 
     const registerBody = registerResponse.body as RegisterResponse;
 
     const loginResponse = await request(server)
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({
         email: user.email,
         password: user.password,
@@ -111,13 +111,13 @@ describe('Friends (e2e)', () => {
     };
   }
 
-  describe('POST /friends/requests', () => {
+  describe('POST /api/friends/requests', () => {
     it('should reject a reverse request while one is pending', async () => {
       const a = await createAuthenticatedUser(userA);
       const b = await createAuthenticatedUser(userB);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -125,7 +125,7 @@ describe('Friends (e2e)', () => {
         .expect(201);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${b.token}`)
         .send({
           addresseeId: a.id,
@@ -136,7 +136,7 @@ describe('Friends (e2e)', () => {
       const b = await createAuthenticatedUser(userB);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .send({
           addresseeId: b.id,
         })
@@ -147,7 +147,7 @@ describe('Friends (e2e)', () => {
       const a = await createAuthenticatedUser(userA);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: a.id,
@@ -160,7 +160,7 @@ describe('Friends (e2e)', () => {
       const b = await createAuthenticatedUser(userB);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -168,7 +168,7 @@ describe('Friends (e2e)', () => {
         .expect(201);
 
       await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -183,7 +183,7 @@ describe('Friends (e2e)', () => {
       const b = await createAuthenticatedUser(userB);
 
       const requestResponse = await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -201,7 +201,7 @@ describe('Friends (e2e)', () => {
       const friendshipId = requestBody.id;
 
       const pendingResponse = await request(server)
-        .get('/friends/requests')
+        .get('/api/friends/requests')
         .set('Authorization', `Bearer ${b.token}`)
         .expect(200);
 
@@ -222,7 +222,7 @@ describe('Friends (e2e)', () => {
       ]);
 
       const acceptResponse = await request(server)
-        .post(`/friends/requests/${friendshipId}/accept`)
+        .post(`/api/friends/requests/${friendshipId}/accept`)
         .set('Authorization', `Bearer ${b.token}`)
         .expect(201);
 
@@ -234,14 +234,14 @@ describe('Friends (e2e)', () => {
       });
 
       const pendingAfterAcceptResponse = await request(server)
-        .get('/friends/requests')
+        .get('/api/friends/requests')
         .set('Authorization', `Bearer ${b.token}`)
         .expect(200);
 
       expect(pendingAfterAcceptResponse.body).toEqual([]);
 
       const aFriendsResponse = await request(server)
-        .get('/friends')
+        .get('/api/friends')
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
@@ -254,7 +254,7 @@ describe('Friends (e2e)', () => {
       ]);
 
       const bFriendsResponse = await request(server)
-        .get('/friends')
+        .get('/api/friends')
         .set('Authorization', `Bearer ${b.token}`)
         .expect(200);
 
@@ -293,7 +293,7 @@ describe('Friends (e2e)', () => {
       const b = await createAuthenticatedUser(userB);
 
       const response = await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -303,19 +303,19 @@ describe('Friends (e2e)', () => {
       const body = response.body as FriendshipResponse;
 
       await request(server)
-        .post(`/friends/requests/${body.id}/accept`)
+        .post(`/api/friends/requests/${body.id}/accept`)
         .set('Authorization', `Bearer ${a.token}`)
         .expect(403);
     });
   });
 
-  describe('DELETE /friends/:userId', () => {
+  describe('DELETE /api/friends/:userId', () => {
     it('should remove an accepted friend', async () => {
       const a = await createAuthenticatedUser(userA);
       const b = await createAuthenticatedUser(userB);
 
       const requestResponse = await request(server)
-        .post('/friends/requests')
+        .post('/api/friends/requests')
         .set('Authorization', `Bearer ${a.token}`)
         .send({
           addresseeId: b.id,
@@ -325,24 +325,24 @@ describe('Friends (e2e)', () => {
       const requestBody = requestResponse.body as FriendshipResponse;
 
       await request(server)
-        .post(`/friends/requests/${requestBody.id}/accept`)
+        .post(`/api/friends/requests/${requestBody.id}/accept`)
         .set('Authorization', `Bearer ${b.token}`)
         .expect(201);
 
       await request(server)
-        .delete(`/friends/${b.id}`)
+        .delete(`/api/friends/${b.id}`)
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
       const aFriendsResponse = await request(server)
-        .get('/friends')
+        .get('/api/friends')
         .set('Authorization', `Bearer ${a.token}`)
         .expect(200);
 
       expect(aFriendsResponse.body).toEqual([]);
 
       const bFriendsResponse = await request(server)
-        .get('/friends')
+        .get('/api/friends')
         .set('Authorization', `Bearer ${b.token}`)
         .expect(200);
 

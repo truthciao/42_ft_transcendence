@@ -54,16 +54,16 @@ describe('Profiles (e2e)', () => {
     await app.close();
   });
 
-  describe('GET /profiles/me', () => {
+  describe('GET /api/profiles/me', () => {
     it('should reject unauthenticated requests', async () => {
-      await request(server).get('/profiles/me').expect(401);
+      await request(server).get('/api/profiles/me').expect(401);
     });
 
     it('should return the current user profile', async () => {
       const token = await registerAndLogin(server, testUser);
 
       const response = await request(server)
-        .get('/profiles/me')
+        .get('/api/profiles/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
@@ -76,7 +76,7 @@ describe('Profiles (e2e)', () => {
     });
   });
 
-  describe('PATCH /profiles/me', () => {
+  describe('PATCH /api/profiles/me', () => {
     it('should update the current user profile', async () => {
       const token = await registerAndLogin(server, testUser);
 
@@ -87,13 +87,13 @@ describe('Profiles (e2e)', () => {
       };
 
       await request(server)
-        .patch('/profiles/me')
+        .patch('/api/profiles/me')
         .set('Authorization', `Bearer ${token}`)
         .send(updatePayload)
         .expect(200);
 
       const response = await request(server)
-        .get('/profiles/me')
+        .get('/api/profiles/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
@@ -102,7 +102,7 @@ describe('Profiles (e2e)', () => {
 
     it('should reject unauthenticated updates', async () => {
       await request(server)
-        .patch('/profiles/me')
+        .patch('/api/profiles/me')
         .send({
           displayName: 'Should fail',
         })
@@ -113,7 +113,7 @@ describe('Profiles (e2e)', () => {
       const token = await registerAndLogin(server, testUser);
 
       await request(server)
-        .patch('/profiles/me')
+        .patch('/api/profiles/me')
         .set('Authorization', `Bearer ${token}`)
         .send({
           displayName: 12345,

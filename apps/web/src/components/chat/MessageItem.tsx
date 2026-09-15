@@ -42,7 +42,6 @@ export function MessageItem({
       >
         <MessageContent
           content={message.content}
-          type={message.type}
           apiBaseUri={apiBaseUri}
           downloadLabel={downloadLabel}
         />

@@ -30,15 +30,23 @@ export type {
 
 export {
   createConversationSchema,
+  createConversationByUsernameSchema,
   sendMessageSchema,
   joinConversationSchema,
   getMessagesSchema,
+  searchMessagesSchema,
 } from './chat.js';
 
 export type {
   CreateConversationPayload,
   SendMessagePayload,
+  JoinConversationPayload,
   GetMessagesPayload,
+  ChatMessage,
+  ConversationMember,
+  Conversation,
+  MessagePage,
+  ConversationItem,
 } from './chat.js';
 
 export {

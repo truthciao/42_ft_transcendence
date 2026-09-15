@@ -7,6 +7,13 @@ import type {
   MessagePage,
 } from '@repo/shared-types';
 
+export type {
+  ChatMessage,
+  Conversation,
+  ConversationItem,
+  MessagePage,
+} from '@repo/shared-types';
+
 export async function getMyConversations(): Promise<ConversationItem[]> {
   return httpGet<ConversationItem[]>('/chat/conversations');
 }

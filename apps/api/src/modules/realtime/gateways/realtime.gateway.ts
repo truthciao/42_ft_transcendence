@@ -26,6 +26,10 @@ import { DocumentsService } from '../../documents/documents.service.js';
 import { getDocumentRoom } from '../utils/document-room-naming.util.js';
 import { DocumentsYjsService } from '../../documents/documents-yjs.service.js';
 import * as Y from 'yjs';
+import { DocumentJoinDto } from '../dto/document-join.dto.js';
+import { DocumentLeaveDto } from '../dto/document-leave.dto.js';
+import { DocumentTitleUpdatedDto } from '../dto/document-title-updated.dto.js';
+import { DocumentYjsUpdateDto } from '../dto/document-yjs-update.dto.js';
 
 @WebSocketGateway({
   cors: {
@@ -99,13 +103,11 @@ export class RealtimeGateway
 
   async handleDisconnect(client: Socket): Promise<void> {
     const userId = this.socketRegistry.getUserId(client.id);
-
     const documents = this.socketDocuments.get(client.id);
 
     if (documents) {
       for (const documentId of documents) {
         const room = getDocumentRoom(documentId);
-
         const memberCount = await this.roomService.getRoomMemberCount(room);
 
         if (memberCount === 1) {
@@ -188,7 +190,7 @@ export class RealtimeGateway
   @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_JOIN)
   async handleDocumentJoin(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() dto: { documentId: number },
+    @MessageBody() dto: DocumentJoinDto,
   ): Promise<WsResponse<{ documentId: number }>> {
     this.logger.log(
       `[DOCUMENT JOIN] socket=${client.id} document=${dto.documentId}`,
@@ -197,32 +199,23 @@ export class RealtimeGateway
       dto.documentId,
       client.data.user.userId,
     );
-
     const room = getDocumentRoom(dto.documentId);
-
     await this.roomService.joinRoom(client, room);
-
     let documents = this.socketDocuments.get(client.id);
-
     if (!documents) {
       documents = new Set<number>();
       this.socketDocuments.set(client.id, documents);
     }
-
     documents.add(dto.documentId);
-
     const ydoc = await this.documentsYjsService.getDoc(
       dto.documentId,
       client.data.user.userId,
     );
-
     const state = Y.encodeStateAsUpdate(ydoc);
-
     client.emit(REALTIME_EVENTS.DOCUMENT_SYNC, {
       documentId: dto.documentId,
       update: Buffer.from(state),
     });
-
     return {
       event: REALTIME_EVENTS.DOCUMENT_JOINED,
       data: {
@@ -234,26 +227,19 @@ export class RealtimeGateway
   @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_LEAVE)
   async handleDocumentLeave(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() dto: { documentId: number },
+    @MessageBody() dto: DocumentLeaveDto,
   ): Promise<WsResponse<{ documentId: number }>> {
     const room = getDocumentRoom(dto.documentId);
-
     await this.roomService.leaveRoom(client, room);
-
     const documents = this.socketDocuments.get(client.id);
-
     documents?.delete(dto.documentId);
-
     if (documents?.size === 0) {
       this.socketDocuments.delete(client.id);
     }
-
     const memberCount = await this.roomService.getRoomMemberCount(room);
-
     if (memberCount === 0) {
       this.documentsYjsService.removeDoc(dto.documentId);
     }
-
     return {
       event: REALTIME_EVENTS.DOCUMENT_LEFT,
       data: {
@@ -265,11 +251,7 @@ export class RealtimeGateway
   @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_TITLE_UPDATED)
   async handleDocumentTitleUpdated(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody()
-    dto: {
-      documentId: number;
-      title: string;
-    },
+    @MessageBody() dto: DocumentTitleUpdatedDto,
   ): Promise<void> {
     await this.documentsService.findByIdForUser(
       dto.documentId,
@@ -291,11 +273,7 @@ export class RealtimeGateway
   @SubscribeMessage(REALTIME_EVENTS.DOCUMENT_YJS_UPDATE)
   async handleDocumentYjsUpdate(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody()
-    dto: {
-      documentId: number;
-      update: number[];
-    },
+    @MessageBody() dto: DocumentYjsUpdateDto,
   ): Promise<void> {
     await this.documentsService.findByIdForUser(
       dto.documentId,

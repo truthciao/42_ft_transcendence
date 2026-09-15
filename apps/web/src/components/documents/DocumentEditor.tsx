@@ -87,5 +87,9 @@ export function DocumentEditor({ documentId }: DocumentEditorProps) {
     };
   }, [documentId, ydoc]);
 
-  return <EditorContent editor={editor} className="min-h-100 w-full" />;
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      <EditorContent editor={editor} className="w-full" />
+    </div>
+  );
 }

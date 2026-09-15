@@ -113,10 +113,10 @@ export function DocumentPage() {
   );
 
   const { t } = useTranslation();
-
   const titleRealtimeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const titleRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     return () => {
@@ -212,22 +212,38 @@ export function DocumentPage() {
     };
   }, [documentId]);
 
+  useEffect(() => {
+    if (!titleRef.current) {
+      return;
+    }
+
+    titleRef.current.style.height = 'auto';
+    titleRef.current.style.height = `${titleRef.current.scrollHeight}px`;
+  }, [title]);
+
   const handleBack = () => {
     navigate(`/app/spaces/${workspaceId}`);
   };
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
 
     setTitle(value);
 
-    scheduleSave({
-      title: value,
-    });
+    event.target.style.height = 'auto';
+    event.target.style.height = `${event.target.scrollHeight}px`;
 
     if (titleRealtimeTimerRef.current) {
       clearTimeout(titleRealtimeTimerRef.current);
     }
+
+    if (value.trim() === '') {
+      return;
+    }
+
+    scheduleSave({
+      title: value,
+    });
 
     titleRealtimeTimerRef.current = setTimeout(() => {
       const socket = getSocket();
@@ -296,12 +312,15 @@ export function DocumentPage() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-10 py-10">
-        <input
+      <main className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col px-10 py-10">
+        <textarea
+          ref={titleRef}
           value={title}
           onChange={handleTitleChange}
           placeholder={t('workspaces.pages.document.untitled')}
-          className="mb-6 w-full border-none bg-transparent text-4xl font-bold tracking-tight outline-none placeholder:text-muted-foreground"
+          maxLength={200}
+          rows={1}
+          className="mb-6 w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold tracking-tight outline-none placeholder:text-muted-foreground"
         />
 
         <DocumentEditor documentId={documentId} />

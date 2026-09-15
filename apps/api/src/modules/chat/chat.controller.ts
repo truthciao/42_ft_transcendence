@@ -14,6 +14,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { ChatService } from './chat.service.js';
 import { CreateConversationDto } from './dto/create-conversation.dto.js';
 import { GetMessagesDto } from './dto/get-messages.dto.js';
+import { CreateConversationByUsernameDto } from './dto/create-conversation-by-username.dto.js';
+import { SearchMessagesDto } from './dto/search-messages.dto.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
@@ -31,9 +33,9 @@ export class ChatController {
   @Post('conversations/by-username')
   async createByUsername(
     @CurrentUser('userId') userId: number,
-    @Body('username') username: string,
+    @Body() dto: CreateConversationByUsernameDto,
   ) {
-    return this.chatService.createByUsername(userId, username);
+    return this.chatService.createByUsername(userId, dto.username);
   }
 
   @Get('conversations')
@@ -54,9 +56,9 @@ export class ChatController {
   searchMessages(
     @CurrentUser('userId') userId: number,
     @Param('id', ParseIntPipe) id: number,
-    @Query('q') query: string,
+    @Query() query: SearchMessagesDto,
   ) {
-    return this.chatService.searchMessages(id, userId, query);
+    return this.chatService.searchMessages(id, userId, query.q);
   }
 
   @Patch('conversations/:id/message')

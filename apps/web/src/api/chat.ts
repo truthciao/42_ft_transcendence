@@ -1,64 +1,11 @@
 import { httpGet, httpPatch, httpPost } from '../lib/http';
 
-export interface ChatMessage {
-  id: number;
-  conversationId: number;
-  content: string;
-  senderId: number;
-  createdAt: string;
-  sender?: {
-    id: number;
-    username: string;
-  };
-  // 加上与文件上传相关的可选字段
-  type?: string;
-  fileUrl?: string;
-  fileName?: string;
-}
-
-export interface AcceptedFriend {
-  id: number;
-  username: string;
-  avatarUrl?: string;
-}
-
-export interface Conversation {
-  id: string | number;
-  type?: string;
-  name?: string;
-  isFriend?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-
-  lastReadMessageId?: number | null;
-  unreadCount?: number;
-
-  lastMessage?: {
-    id: number;
-    content: string;
-    createdAt: string;
-    senderId: number;
-  } | null;
-
-  members?: Array<{
-    userId: number;
-    user: {
-      id: number;
-      username: string;
-      profile?: {
-        displayName?: string;
-        avatarUrl?: string;
-      } | null;
-    };
-  }>;
-}
-
-export interface MessagePage {
-  messages: ChatMessage[];
-  nextCursor: number | null;
-}
-
-export type ConversationItem = Conversation;
+import type {
+  ChatMessage,
+  Conversation,
+  ConversationItem,
+  MessagePage,
+} from '@repo/shared-types';
 
 export async function getMyConversations(): Promise<ConversationItem[]> {
   return httpGet<ConversationItem[]>('/chat/conversations');

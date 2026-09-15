@@ -34,7 +34,7 @@ export function AppLayout() {
 
           <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
 
-          <main className="min-h-0 min-w-0 overflow-hidden">
+          <main className="min-h-0 min-w-0 overflow-y-auto">
             <ErrorBoundary>
               <Outlet />
             </ErrorBoundary>

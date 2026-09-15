@@ -7,6 +7,9 @@ import { configureApp } from './app.setup.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  configureApp(app);
+
   const config = new DocumentBuilder()
     .setTitle("Transcendence API")
     .setDescription("API documentation")
@@ -16,7 +19,6 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup("api", app, document);
-  configureApp(app);
 
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',

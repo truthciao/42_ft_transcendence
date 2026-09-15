@@ -12,22 +12,15 @@ import { GoogleStrategy } from './strategies/google.strategy.js';
   imports: [
     UsersModule,
     PassportModule,
+    ConfigModule,
     JwtModule.registerAsync({
+      global: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      global: true,
-      useFactory: (configService: ConfigService) => {
-        const secret = configService.get<string>('JWT_SECRET');
-
-        if (!secret) {
-          throw new Error('JWT_SECRET is not configured');
-        }
-
-        return {
-          secret,
-          signOptions: { expiresIn: '1d' },
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
     }),
   ],
   controllers: [AuthController],

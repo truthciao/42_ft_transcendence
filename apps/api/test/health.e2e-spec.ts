@@ -40,7 +40,7 @@ describe('Health (e2e)', () => {
 
   describe('GET /health/live', () => {
     it('should report that the API process is alive', async () => {
-      const response = await request(server).get('/health/live').expect(200);
+      const response = await request(server).get('/api/health/live').expect(200);
 
       expect(response.body).toEqual({
         status: 'ok',
@@ -54,7 +54,7 @@ describe('Health (e2e)', () => {
 
   describe('GET /health/ready', () => {
     it('should report that the API and database are ready', async () => {
-      const response = await request(server).get('/health/ready').expect(200);
+      const response = await request(server).get('/api/health/ready').expect(200);
 
       expect(response.body).toEqual({
         status: 'ok',

@@ -352,16 +352,18 @@ export function NotificationSettingsPage() {
                 </span>
               </label>
 
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={p.viaEmail}
-                  onChange={() => handleToggle(p.type, 'viaEmail')}
-                />
-                <span className="text-sm">
-                  {t('notifications.channels.email')}
-                </span>
-              </label>
+              {p.type !== 'MESSAGE_RECEIVED' && (
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={p.viaEmail}
+                    onChange={() => handleToggle(p.type, 'viaEmail')}
+                  />
+                  <span className="text-sm">
+                    {t('notifications.channels.email')}
+                  </span>
+                </label>
+              )}
             </div>
           </div>
         ))}

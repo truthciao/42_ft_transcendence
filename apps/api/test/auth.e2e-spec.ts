@@ -53,10 +53,10 @@ describe('Auth (e2e)', () => {
     await app.close();
   });
 
-  describe('POST /auth/register', () => {
+  describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
       const response = await request(server)
-        .post('/auth/register')
+        .post('/api/auth/register')
         .send(testUser)
         .expect(201);
 
@@ -67,21 +67,21 @@ describe('Auth (e2e)', () => {
     });
 
     it('should reject an invalid registration payload', async () => {
-      await request(server).post('/auth/register').send({}).expect(400);
+      await request(server).post('/api/auth/register').send({}).expect(400);
     });
 
     it('should reject a duplicate user', async () => {
-      await request(server).post('/auth/register').send(testUser).expect(201);
+      await request(server).post('/api/auth/register').send(testUser).expect(201);
 
-      await request(server).post('/auth/register').send(testUser).expect(400);
+      await request(server).post('/api/auth/register').send(testUser).expect(400);
     });
   });
-  describe('POST /auth/login', () => {
+  describe('POST /api/auth/login', () => {
     it('should login with valid credentials', async () => {
-      await request(server).post('/auth/register').send(testUser).expect(201);
+      await request(server).post('/api/auth/register').send(testUser).expect(201);
 
       const response = await request(server)
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           email: testUser.email,
           password: testUser.password,
@@ -99,10 +99,10 @@ describe('Auth (e2e)', () => {
     });
 
     it('should reject an incorrect password', async () => {
-      await request(server).post('/auth/register').send(testUser).expect(201);
+      await request(server).post('/api/auth/register').send(testUser).expect(201);
 
       await request(server)
-        .post('/auth/login')
+        .post('/api/auth/login')
         .send({
           email: testUser.email,
           password: 'WrongPassword123!',

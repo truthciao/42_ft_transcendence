@@ -610,7 +610,8 @@
       "WORKSPACE_INVITE_RECEIVED": "Invitation à l'espace reçue",
       "WORKSPACE_INVITE_ACCEPTED": "Invitation à l'espace acceptée",
       "WORKSPACE_MEMBER_REMOVED": "Membre retiré de l'espace",
-      "WORKSPACE_ROLE_CHANGED": "Rôle dans l'espace modifié"
+      "WORKSPACE_ROLE_CHANGED": "Rôle dans l'espace modifié",
+      "MESSAGE_RECEIVED": "Message reçu"
     },
     "descriptions": {
       "FRIEND_REQUEST_RECEIVED": "Vous avez reçu une demande d'ami.",
@@ -620,7 +621,8 @@
       "WORKSPACE_INVITE_RECEIVED": "Vous êtes invité à rejoindre un espace.",
       "WORKSPACE_INVITE_ACCEPTED": "Votre invitation à un espace a été acceptée.",
       "WORKSPACE_MEMBER_REMOVED": "Vous avez été retiré d'un espace.",
-      "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié."
+      "WORKSPACE_ROLE_CHANGED": "Votre rôle dans un espace a été modifié.",
+      "MESSAGE_RECEIVED": "Vous avez reçu un nouveau message."
     }
   },
 

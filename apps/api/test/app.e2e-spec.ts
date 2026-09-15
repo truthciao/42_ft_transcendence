@@ -38,9 +38,9 @@ describe('Application (e2e)', () => {
     await app.close();
   });
 
-  describe('GET /', () => {
+  describe('GET /api/', () => {
     it('should return 200', async () => {
-      await request(server).get('/').expect(200).expect('Hello World!');
+      await request(server).get('/api/').expect(200).expect('Hello World!');
     });
   });
 });

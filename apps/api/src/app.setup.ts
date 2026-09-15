@@ -3,6 +3,7 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { ALLOWED_ORIGINS } from './config/cors.config.js';
 
 export function configureApp(app: INestApplication): void {
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(new ZodValidationPipe());
 
   app.enableCors({

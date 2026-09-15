@@ -24,6 +24,9 @@ env:
   DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/devhub_ci
   JWT_SECRET: ci-only-jwt-secret
   JWT_EXPIRES_IN: 1h
+  GOOGLE_CLIENT_ID: test-client-id
+  GOOGLE_CLIENT_SECRET: test-client-secret
+  GOOGLE_CALLBACK_URL: http://localhost:8443/auth/google/callback
 
 jobs:
   quality:

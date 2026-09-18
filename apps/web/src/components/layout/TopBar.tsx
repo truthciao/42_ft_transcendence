@@ -154,59 +154,57 @@ export function TopBar() {
                 {t('notifications.empty')}
               </div>
             ) : (
-              notifications.map((notification) => (
-                <DropdownMenuItem
-                  key={notification.id}
-                  className="flex flex-col items-start gap-1"
-                  onClick={() => {
-                    if (notification.type === 'FRIEND_REQUEST_RECEIVED') {
-                      navigate('/app/friends');
-                      return;
-                    }
-
-                    if (notification.type === 'MESSAGE_RECEIVED') {
-                      const conversation = notification.conversation;
-
-                      if (!conversation) return;
-
-                      if (conversation.type === 'CHANNEL') {
-            
-                      if (!conversation.workspaceId) return;
-
-                        navigate(
-                          `/app/spaces/${conversation.workspaceId}/c/${conversation.id}`,
-                        );
+              <div className="max-h-80 overflow-y-auto">
+                {notifications.map((notification) => (
+                  <DropdownMenuItem
+                    key={notification.id}
+                    className="flex flex-col items-start gap-1"
+                    onClick={() => {
+                      if (notification.type === 'FRIEND_REQUEST_RECEIVED') {
+                        navigate('/app/friends');
                         return;
                       }
 
-                      navigate(`/app/chat/${conversation.id}`, {
-                        state: {
-                          friendName: notification.actor?.username,
-                        },
-                      });  
-                      return ;     
-                    }
+                      if (notification.type === 'MESSAGE_RECEIVED') {
+                        const conversation = notification.conversation;
 
-                    const workspaceId = notification.workspace?.id;
+                        if (!conversation) return;
+                        if (conversation.type === 'CHANNEL') {
+                          if (!conversation.workspaceId) return;
+                          navigate(
+                            `/app/spaces/${conversation.workspaceId}/c/${conversation.id}`,
+                          );
+                          return;
+                        }
+                        navigate(`/app/chat/${conversation.id}`, {
+                          state: {
+                            friendName: notification.actor?.username,
+                          },
+                        });  
+                        return ;     
+                      }
 
-                    if (!workspaceId) return;
+                      const workspaceId = notification.workspace?.id;
 
-                    if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
-                      navigate('/app/spaces');
-                    } else if (notification.type.startsWith('WORKSPACE')) {
-                      navigate(`/app/spaces/${workspaceId}`);
-                    }
-                  }}
-                >
-                  <span className="font-medium">
-                    {notification.actor?.username ?? t('common.unknownUser')}
-                  </span>
+                      if (!workspaceId) return;
 
-                  <span className="text-xs text-muted-foreground">
-                    {getNotificationMessage(notification)}
-                  </span>
-                </DropdownMenuItem>
-              ))
+                      if (notification.type === 'WORKSPACE_INVITE_RECEIVED') {
+                        navigate('/app/spaces');
+                      } else if (notification.type.startsWith('WORKSPACE')) {
+                        navigate(`/app/spaces/${workspaceId}`);
+                      }
+                    }}
+                  >
+                    <span className="font-medium">
+                      {notification.actor?.username ?? t('common.unknownUser')}
+                    </span>
+
+                    <span className="text-xs text-muted-foreground">
+                      {getNotificationMessage(notification)}
+                    </span>
+                  </DropdownMenuItem>
+                ))}
+              </div>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

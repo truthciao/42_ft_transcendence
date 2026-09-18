@@ -24,10 +24,14 @@ export function MessageContent({
         ? 'file'
         : 'text';
 
+  // /uploads/ 路径由 nginx 直接代理到 API，不需要加 /api 前缀
+  const resolveUrl = (path: string) =>
+    path.startsWith('/uploads/') ? path : `${apiBaseUri}${path}`;
+
   if (renderType === 'image') {
     return (
       <img
-        src={`${apiBaseUri}${content}`}
+        src={resolveUrl(content)}
         alt="attachment"
         className="max-w-full rounded-md cursor-pointer hover:opacity-90"
       />
@@ -37,7 +41,7 @@ export function MessageContent({
   if (renderType === 'file') {
     return (
       <a
-        href={`${apiBaseUri}${content}`}
+        href={resolveUrl(content)}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-1 underline underline-offset-2"

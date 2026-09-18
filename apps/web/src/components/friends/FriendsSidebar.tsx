@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router';
 import { useFriends } from '../../hooks/useFriends';
 import { useTranslation } from 'react-i18next';
 
@@ -25,17 +26,19 @@ export function FriendsSidebar() {
 
       <div className="space-y-2">
         {friends?.map((friend) => (
-          <div
+          <NavLink
             key={friend.id}
-            className="
-              cursor-pointer
-              rounded
-              p-2
-              hover:bg-muted
-            "
+            to={`/app/friends/${friend.id}`}
+            className={({ isActive }) =>
+              `block rounded p-2 ${
+                isActive
+                  ? 'bg-muted font-medium'
+                  : 'hover:bg-muted'
+              }`
+            }
           >
             {friend.username}
-          </div>
+          </NavLink>
         ))}
       </div>
     </aside>

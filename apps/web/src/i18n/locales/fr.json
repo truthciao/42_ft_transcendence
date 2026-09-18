@@ -98,8 +98,11 @@
       "backToFriends": "Retour aux amis",
       "friend": "Ami",
       "username": "Nom d'utilisateur",
-      "email": "Email",
-      "message": "message"
+      "message": "message",
+      "bio": "Bio",
+      "noBio": "Aucune bio pour le moment",
+      "displayName": "Nom affiché",
+      "noDisplayName": "Aucun nom affiché"
     }
   },
 

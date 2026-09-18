@@ -112,11 +112,8 @@ export function FriendProfilePage() {
           />
 
           <div>
-            <h1 className="text-2xl font-semibold">{friend.username}</h1>
-
-            <p className="text-muted-foreground">
-              {t('friends.profile.friend')}
-            </p>
+            <h1 className="text-2xl font-semibold">{friend.displayName || friend.username}</h1>
+            <p className="text-muted-foreground">@{friend.username}</p>
           </div>
         </div>
 
@@ -125,16 +122,25 @@ export function FriendProfilePage() {
             <p className="text-sm text-muted-foreground">
               {t('friends.profile.username')}
             </p>
-
             <p className="font-medium">{friend.username}</p>
           </div>
 
           <div>
             <p className="text-sm text-muted-foreground">
-              {t('friends.profile.email')}
+              {t('friends.profile.displayName')}
             </p>
+            <p className="font-medium">
+              {friend.displayName || t('friends.profile.noDisplayName')}
+            </p>
+          </div>
 
-            <p className="font-medium">{friend.email}</p>
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {t('friends.profile.bio')}
+            </p>
+            <p className="whitespace-pre-wrap">
+              {friend.bio || t('friends.profile.noBio')}
+            </p>
           </div>
         </div>
 

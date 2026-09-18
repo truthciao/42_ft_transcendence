@@ -20,9 +20,23 @@ export const userSchema = z.object({
   username: z.string(),
   email: z.string(),
   avatarUrl: z.string().nullable(),
+  displayName: z.string().nullable(),
+  bio: z.string().nullable(),
 });
 
 export type User = z.infer<typeof userSchema>;
+
+export const publicUserProfileSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  avatarUrl: z.string().nullable(),
+  bio: z.string().nullable(),
+  displayName: z.string().nullable(),
+});
+
+export type PublicUserProfile = z.infer<
+  typeof publicUserProfileSchema
+>;
 
 export const currentUserSchema = userSchema.extend({
   isTwoFactorEnabled: z.boolean(),

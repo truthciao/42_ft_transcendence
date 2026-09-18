@@ -92,8 +92,7 @@
       "loadError": "Échec du chargement des demandes d'ami.",
       "empty": "Aucune demande d'ami en attente.",
       "accept": "Accepter",
-      "reject": "Refuser",
-      "viewAll": "Tout afficher"
+      "reject": "Refuser"
     },
     "profile": {
       "backToFriends": "Retour aux amis",

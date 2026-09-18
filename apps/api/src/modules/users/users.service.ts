@@ -70,10 +70,11 @@ export class UsersService {
       select: {
         id: true,
         username: true,
-        email: true,
         profile: {
           select: {
             avatarUrl: true,
+            displayName: true,
+            bio: true,
           },
         },
       },
@@ -86,8 +87,9 @@ export class UsersService {
     return {
       id: user.id,
       username: user.username,
-      email: user.email,
       avatarUrl: user.profile?.avatarUrl ?? null,
+      displayName: user.profile?.displayName ?? null,
+      bio: user.profile?.bio ?? null,
     };
   }
 

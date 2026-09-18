@@ -1,5 +1,5 @@
 import { httpGet } from '@/lib/http';
-import type { User, CurrentUser } from '@repo/shared-types';
+import type { User, CurrentUser, PublicUserProfile } from '@repo/shared-types';
 
 export interface TestUser {
   id: number;
@@ -20,7 +20,7 @@ export function getUsers() {
 }
 
 export function getUserProfile(userId: number) {
-  return httpGet<User>(`/users/${userId}/profile`);
+  return httpGet<PublicUserProfile>(`/users/${userId}/profile`);
 }
 
 export function searchUsers(username: string, limit = 20, offset = 0) {

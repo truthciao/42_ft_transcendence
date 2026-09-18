@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@/components/common/Avatar';
@@ -15,6 +16,8 @@ export function FriendProfilePage() {
   const navigate = useNavigate();
 
   const numericUserId = Number(userId);
+  const { onlineUserIds } = useRealtime();
+  const isOnline = onlineUserIds.has(numericUserId);
 
   const {
     data: friend,
@@ -101,7 +104,12 @@ export function FriendProfilePage() {
 
       <div className="space-y-6 rounded-lg border p-6">
         <div className="flex items-center gap-4">
-          <Avatar src={null} name={friend.username} size="xl" />
+          <Avatar
+            src={friend.avatarUrl}
+            name={friend.username}
+            size="xl"
+            status={isOnline ? 'online' : 'offline'}
+          />
 
           <div>
             <h1 className="text-2xl font-semibold">{friend.username}</h1>

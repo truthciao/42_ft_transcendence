@@ -11,7 +11,8 @@
     "unknownUser": "Utilisateur inconnu",
     "genericWorkspace": "un espace de travail",
     "selectSection": "Sélectionnez une section",
-    "or": "OU"
+    "or": "OU",
+    "openApp": "App"
   },
 
   "home": {
@@ -496,7 +497,7 @@
     "room": "Salon de discussion #{{id}}",
     "chatWith": "Discussion avec {{friendName}}",
     "online": "{{friendName}} est en ligne",
-    "offline": "{{friendName}} est hors ligne", 
+    "offline": "{{friendName}} est hors ligne",
     "loadingHistory": "Chargement de l'historique...",
     "empty": "Aucun historique de messages. Dites bonjour ci-dessous !",
     "loadOlder": "Charger les messages précédents",

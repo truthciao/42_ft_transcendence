@@ -11,7 +11,8 @@
     "unknownUser": "Unknown user",
     "genericWorkspace": "a workspace",
     "selectSection": "Select a section",
-    "or": "OR"
+    "or": "OR",
+    "openApp": "App"
   },
 
   "home": {
@@ -404,7 +405,7 @@
     "description": "Enter your credentials to access your account.",
     "verifyAndEnter": "Verify & Enter System",
     "signInWithGoogle": "Sign in with Google",
- 
+
     "loginStatus": {
       "loggingIn": "Logging in..."
     },
@@ -421,7 +422,7 @@
     "twoFactorCodeLabel": "Google Authenticator 6-digit Code",
     "codePlaceholder": "e.g. 482910",
     "loginFailed": "Login or 2FA verification failed, please check your input",
-    
+
     "errors": {
       "invalidCredentials": "Invalid email or password",
       "oauthAccount": "Please log in using your OAuth provider",

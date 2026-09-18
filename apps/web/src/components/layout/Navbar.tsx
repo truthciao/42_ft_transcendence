@@ -1,6 +1,7 @@
 import { NavLink, type NavLinkRenderProps } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher';
+import { useAuth } from '@/hooks/useAuth';
 
 function getNavLinkClass({ isActive }: NavLinkRenderProps): string {
   return [
@@ -13,6 +14,7 @@ function getNavLinkClass({ isActive }: NavLinkRenderProps): string {
 
 export function Navbar() {
   const { t } = useTranslation();
+  const { user, loading } = useAuth();
 
   return (
     <header className="border-b border-border">
@@ -21,13 +23,23 @@ export function Navbar() {
           {t('home.title')}
         </NavLink>
 
-        <NavLink to="/login" className={getNavLinkClass}>
-          {t('common.login')}
-        </NavLink>
+        {!loading && user ? (
+          <NavLink
+            to="/app"
+            className={getNavLinkClass}          >
+            {t('common.openApp')}
+          </NavLink>
+        ) : (
+          <>
+            <NavLink to="/login" className={getNavLinkClass}>
+              {t('common.login')}
+            </NavLink>
 
-        <NavLink to="/register" className={getNavLinkClass}>
-          {t('auth.register')}
-        </NavLink>
+            <NavLink to="/register" className={getNavLinkClass}>
+              {t('auth.register')}
+            </NavLink>
+          </>
+        )}
 
         <NavLink to="/showcase" className={getNavLinkClass}>
           {t('showcase.title')}

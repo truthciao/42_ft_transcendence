@@ -21,7 +21,7 @@ import type { Notification } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function TopBar() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const { data: notifications = [] } = useNotifications();
   const { data: unreadCount = 0 } = useUnreadNotificationCount();
@@ -29,11 +29,12 @@ export function TopBar() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  function logout() {
+  async function logout() {
     disconnectSocket();
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     queryClient.clear();
+    await refreshUser();
     navigate('/login', { replace: true });
   }
 

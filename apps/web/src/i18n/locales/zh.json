@@ -109,7 +109,7 @@
   },
 
   "workspaces": {
-    "title": "空间",
+    "title": "工作区",
     "create": {
       "title": "创建工作区",
       "name": "名称",

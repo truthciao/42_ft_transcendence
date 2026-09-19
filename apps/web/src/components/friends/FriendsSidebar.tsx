@@ -67,8 +67,6 @@ export function FriendsSidebar() {
 
   return (
     <aside className="flex h-full min-h-0 flex-col p-4">
-      <h3 className="mb-4 font-semibold">{t('friends.title')}</h3>
-
       <Input
         value={search}
         onChange={(event) => setSearch(event.target.value)}

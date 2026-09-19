@@ -31,21 +31,19 @@ export function SettingsSidebar() {
   const { t } = useTranslation();
 
   return (
-    <div>
-      <h3 className="mb-4 font-semibold">{t('settings.title')}</h3>
-
+    <div className="px-4 py-3">
       <nav className="flex flex-col gap-1">
-        <NavLink to="/app/settings/profile" className="rounded-md px-2 py-1.5">
+        <NavLink to="/app/settings/profile" className="rounded-md py-1.5">
           {t('settings.profile')}
         </NavLink>
 
-        <NavLink to="/app/settings/account" className="rounded-md px-2 py-1.5">
+        <NavLink to="/app/settings/account" className="rounded-md py-1.5">
           {t('settings.account')}
         </NavLink>
 
         <NavLink
           to="/app/settings/notifications"
-          className="rounded-md px-2 py-1.5"
+          className="rounded-md py-1.5"
         >
           {t('settings.notifications')}
         </NavLink>

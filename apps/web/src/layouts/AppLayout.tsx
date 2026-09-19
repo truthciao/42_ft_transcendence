@@ -9,16 +9,20 @@ import { ConfirmProvider } from '@/lib/confirm';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface AppRouteHandle {
-  secondarySidebar?: () => ReactNode;
+  secondarySidebar?: {
+    titleKey: string;
+    render: () => ReactNode;
+  };
 }
 
 export function AppLayout() {
   const matches = useMatches();
 
-  const secondarySidebarContent = [...matches]
+  const secondarySidebar = [...matches]
     .reverse()
-    .map((match) =>
-      (match.handle as AppRouteHandle | undefined)?.secondarySidebar?.(),
+    .map(
+      (match) =>
+        (match.handle as AppRouteHandle | undefined)?.secondarySidebar,
     )
     .find(Boolean);
 
@@ -32,7 +36,9 @@ export function AppLayout() {
 
           <TabRail />
 
-          <SecondarySidebar>{secondarySidebarContent}</SecondarySidebar>
+          <SecondarySidebar titleKey={secondarySidebar?.titleKey}>
+            {secondarySidebar?.render()}
+          </SecondarySidebar>
 
           <main className="min-h-0 min-w-0 overflow-y-auto">
             <ErrorBoundary>

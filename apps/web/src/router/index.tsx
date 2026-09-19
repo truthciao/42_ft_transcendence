@@ -62,7 +62,12 @@ export const router = createBrowserRouter([
           {
             path: 'chat',
             element: <ChatPage />,
-            handle: { secondarySidebar: () => <ConversationListSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'chat.title',
+                render: () => <ConversationListSidebar />,
+              },
+            },
             children: [
               { index: true, element: <ChatEmptyState /> },
               { path: ':conversationId', element: <ConversationPage /> },
@@ -71,22 +76,42 @@ export const router = createBrowserRouter([
           {
             path: 'friends',
             element: <FriendsPage />,
-            handle: { secondarySidebar: () => <FriendsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'friends.title',
+                render: () => <FriendsSidebar />,
+              },
+            },
           },
           {
             path: 'friends/:userId',
             element: <FriendProfilePage />,
-            handle: { secondarySidebar: () => <FriendsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'friends.title',
+                render: () => <FriendsSidebar />,
+              },
+            },
           },
           {
             path: 'spaces',
             element: <SpacesIndexPage />,
-            handle: { secondarySidebar: () => <SpacesSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'workspaces.title',
+                render: () => <SpacesSidebar />,
+              },
+            },
           },
           {
             path: 'spaces/:workspaceId',
             element: <WorkspaceGuard />,
-            handle: { secondarySidebar: () => <SpacesSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'settings.title',
+                render: () => <SettingsSidebar />,
+              },
+            },
             children: [
               { index: true, element: <SpaceDetailPage /> },
               { path: 'c/:channelId', element: <SpaceChannelPage /> },
@@ -101,22 +126,42 @@ export const router = createBrowserRouter([
           {
             path: 'settings',
             element: <SettingsPage />,
-            handle: { secondarySidebar: () => <SettingsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'settings.title',
+                render: () => <SettingsSidebar />,
+              },
+            },
           },
           {
             path: 'settings/profile',
             element: <ProfilePage />,
-            handle: { secondarySidebar: () => <SettingsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'settings.title',
+                render: () => <SettingsSidebar />,
+              },
+            },
           },
           {
             path: 'settings/account',
             element: <AccountSettingsPage />,
-            handle: { secondarySidebar: () => <SettingsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'settings.title',
+                render: () => <SettingsSidebar />,
+              },
+            },
           },
           {
             path: 'settings/notifications',
             element: <NotificationSettingsPage />,
-            handle: { secondarySidebar: () => <SettingsSidebar /> },
+            handle: {
+              secondarySidebar: {
+                titleKey: 'settings.title',
+                render: () => <SettingsSidebar />,
+              },
+            },
           },
         ],
       },

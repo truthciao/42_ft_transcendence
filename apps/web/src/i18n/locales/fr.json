@@ -65,6 +65,8 @@
     "loading": "Chargement des amis...",
     "loadError": "Échec du chargement des amis.",
     "empty": "Vous n'avez pas encore d'amis.",
+    "searchPlaceholder": "Rechercher des amis...",
+    "noSearchResults": "Aucun ami trouvé",
     "addFriend": {
       "title": "Ajouter un ami",
       "searchPlaceholder": "Rechercher par nom d'utilisateur",

@@ -65,6 +65,8 @@
     "loading": "正在加载好友...",
     "loadError": "加载好友失败。",
     "empty": "你还没有好友。",
+    "searchPlaceholder": "搜索好友...",
+    "noSearchResults": "没有找到好友",
     "addFriend": {
       "title": "添加好友",
       "searchPlaceholder": "按用户名搜索",

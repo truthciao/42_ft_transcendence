@@ -108,8 +108,8 @@ export const router = createBrowserRouter([
             element: <WorkspaceGuard />,
             handle: {
               secondarySidebar: {
-                titleKey: 'settings.title',
-                render: () => <SettingsSidebar />,
+                titleKey: 'workspaces.title',
+                render: () => <SpacesSidebar />,
               },
             },
             children: [

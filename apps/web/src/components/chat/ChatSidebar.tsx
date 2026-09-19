@@ -8,7 +8,6 @@ import {
   createConversationByUsername,
   type ConversationItem,
 } from '../../api/chat';
-import { SecondarySidebar } from '../layout/SecondarySidebar';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import { useTranslation } from 'react-i18next';
@@ -110,7 +109,7 @@ export function ConversationListSidebar() {
   };
 
   return (
-    <SecondarySidebar>
+    <>
       <div className="flex h-full min-h-0 flex-col bg-background">
         <div className="border-b border-border p-3 bg-muted/20">
           <div className="flex items-center justify-between">
@@ -196,6 +195,6 @@ export function ConversationListSidebar() {
           onSearchQueryChange={setSearchQuery}
           onUserSelect={handleUserSelect}
         />
-    </SecondarySidebar>
+    </>
   );
 }

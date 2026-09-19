@@ -32,7 +32,6 @@ function WorkspaceDirectorySidebar() {
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-semibold">{t('workspaces.sidebar.spaces')}</h3>
         <Button
           type="button"
           variant="ghost"

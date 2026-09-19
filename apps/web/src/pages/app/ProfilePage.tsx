@@ -46,14 +46,7 @@ export function ProfilePage() {
     });
 
     setInitialized(true);
-
-    if (
-      profile.preferredLanguage &&
-      profile.preferredLanguage !== i18n.language
-    ) {
-      void i18n.changeLanguage(profile.preferredLanguage);
-    }
-  }, [profile, i18n, form, initialized]);
+  }, [profile, form, initialized]);
 
   const mutation = useUpdateProfile();
   const uploadAvatarMutation = useUploadAvatar();

@@ -61,7 +61,7 @@
     "title": "Amis",
     "description": "Gérez vos amis et vos demandes.",
     "close": "Fermer",
-    "yourFriends": "Vos amis",
+    "myFriends": "Mes amis",
     "loading": "Chargement des amis...",
     "loadError": "Échec du chargement des amis.",
     "empty": "Vous n'avez pas encore d'amis.",

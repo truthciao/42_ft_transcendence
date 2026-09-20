@@ -9,6 +9,7 @@ import { useRemoveFriend } from '../../hooks/useFriendMutations';
 import { useConfirm } from '@/lib/confirm-context';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import { Search } from 'lucide-react';
 
 export function FriendsSidebar() {
   const { data: friends, isLoading, isError } = useFriends();
@@ -66,67 +67,78 @@ export function FriendsSidebar() {
   }
 
   return (
-    <aside className="flex h-full min-h-0 flex-col p-4">
-      <Input
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder={t('friends.searchPlaceholder')}
-        className="mb-4"
-      />
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="p-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
-      {filteredFriends?.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t('friends.noSearchResults')}
-        </p>
-      ) : (
-        <div className="min-h-0 flex-1 space-y-1 overflow-y-auto">
-          {filteredFriends?.map((friend) => {
-            const isRemoving =
-              removeFriendMutation.isPending &&
-              removingFriendId === friend.id;
-
-            return (
-              <div
-                key={friend.id}
-                className="group flex items-center gap-1 rounded-md"
-              >
-                <NavLink
-                  to={`/app/friends/${friend.id}`}
-                  className={({ isActive }) =>
-                    `flex min-w-0 flex-1 items-center gap-3 rounded-md p-2 ${
-                      isActive
-                        ? 'bg-muted font-medium'
-                        : 'hover:bg-muted'
-                    }`
-                  }
-                >
-                  <Avatar
-                    src={friend.avatarUrl}
-                    name={friend.username}
-                    size="sm"
-                    status={onlineUserIds.has(friend.id) ? 'online' : 'offline'}
-                  />
-
-                  <span className="truncate">{friend.username}</span>
-                </NavLink>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  disabled={isRemoving}
-                  onClick={() => handleRemoveFriend(friend.id)}
-                  className="shrink-0"
-                >
-                  {isRemoving
-                    ? t('friends.removeFriend.removing')
-                    : t('friends.removeFriend.confirm')}
-                </Button>
-              </div>
-            );
-          })}
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t('friends.searchPlaceholder')}
+            autoComplete="off"
+            className="pl-9"
+          />
         </div>
-      )}
-    </aside>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto p-3">
+        <div className="mb-2 px-1 text-xs font-semibold text-muted-foreground">
+          {t('friends.myFriends')}
+        </div>
+        {filteredFriends?.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t('friends.noSearchResults')}
+          </p>
+        ) : (
+          <div className="space-y-1">
+            {filteredFriends?.map((friend) => {
+              const isRemoving =
+                removeFriendMutation.isPending &&
+                removingFriendId === friend.id;
+
+              return (
+                <div
+                  key={friend.id}
+                  className="group flex items-center gap-1 rounded-md"
+                >
+                  <NavLink
+                    to={`/app/friends/${friend.id}`}
+                    className={({ isActive }) =>
+                      `flex min-w-0 flex-1 items-center gap-3 rounded-md p-2 ${
+                        isActive
+                          ? 'bg-muted font-medium'
+                          : 'hover:bg-muted'
+                      }`
+                    }
+                  >
+                    <Avatar
+                      src={friend.avatarUrl}
+                      name={friend.username}
+                      size="sm"
+                      status={onlineUserIds.has(friend.id) ? 'online' : 'offline'}
+                    />
+
+                    <span className="truncate">{friend.username}</span>
+                  </NavLink>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    disabled={isRemoving}
+                    onClick={() => handleRemoveFriend(friend.id)}
+                    className="shrink-0"
+                  >
+                    {isRemoving
+                      ? t('friends.removeFriend.removing')
+                      : t('friends.removeFriend.confirm')}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

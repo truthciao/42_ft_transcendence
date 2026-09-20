@@ -61,7 +61,7 @@
     "title": "Friends",
     "description": "Manage your friends and requests.",
     "close": "Close",
-    "yourFriends": "Your Friends",
+    "myFriends": "My Friends",
     "loading": "Loading friends...",
     "loadError": "Failed to load friends.",
     "empty": "You don't have any friends yet.",

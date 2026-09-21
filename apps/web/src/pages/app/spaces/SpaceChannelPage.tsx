@@ -38,7 +38,6 @@ export function SpaceChannelPage() {
     <ConversationView
       conversationId={channelId}
       title={channel.name}
-      headerIcon={<Hash className="size-4 text-muted-foreground" />}
     />
   );
 }

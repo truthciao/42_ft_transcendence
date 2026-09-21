@@ -21,13 +21,13 @@ export function ConversationHeader({
   return (
     <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
       <h1 className="font-semibold text-sm flex items-center gap-2">
-        {headerIcon ?? (
-          <span>
-            {otherUserName
-              ? t('chat.chatWith', { friendName: otherUserName })
-              : title}
-          </span>
-        )}
+          {headerIcon ?? (
+            <span>
+              {otherUserName
+                ? t('chat.chatWith', { friendName: otherUserName })
+                : title}
+            </span>
+          )}
       </h1>
 
       <Button

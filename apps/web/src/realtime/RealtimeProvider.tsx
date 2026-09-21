@@ -147,14 +147,21 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
 
     const handleWorkspaceMemberRemoved = (payload: { workspaceId: number }) => {
+      console.log('[Realtime] workspace member removed:', payload);
+
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       queryClient.invalidateQueries({
         queryKey: ['notifications', 'unread-count'],
       });
+
       queryClient.invalidateQueries({
+        queryKey: ['workspaces'],
+      });
+
+      queryClient.removeQueries({
         queryKey: ['workspace', payload.workspaceId],
       });
-      queryClient.invalidateQueries({
+      queryClient.removeQueries({
         queryKey: ['workspace', payload.workspaceId, 'channels'],
       });
     };

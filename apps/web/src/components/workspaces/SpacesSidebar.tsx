@@ -1,6 +1,6 @@
-import { NavLink, useParams } from 'react-router';
+import { NavLink, useNavigate, useParams } from 'react-router';
 import { Hash, Plus, Settings, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useWorkspace,
   useWorkspaces,
@@ -16,6 +16,27 @@ import { useTranslation } from 'react-i18next';
 export function SpacesSidebar() {
   const { workspaceId } = useParams();
   const id = workspaceId ? Number(workspaceId) : undefined;
+
+  const navigate = useNavigate();
+  const { data: workspaces } = useWorkspaces();
+
+  useEffect(() => {
+    if (
+      id !== undefined &&
+      workspaces &&
+      !workspaces.some((workspace) => workspace.id === id)
+    ) {
+      navigate('/app/spaces', { replace: true });
+    }
+  }, [id, workspaces, navigate]);
+
+  if (
+    id !== undefined &&
+    workspaces &&
+    !workspaces.some((workspace) => workspace.id === id)
+  ) {
+    return null;
+  }
 
   if (id !== undefined) {
     return <WorkspaceNavSidebar workspaceId={id} />;

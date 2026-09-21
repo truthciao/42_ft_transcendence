@@ -52,7 +52,10 @@ export function ConversationView({
     (member) => member.userId !== currentUser?.id,
   );
 
-  const otherUserName = otherMember?.user.username;
+  const otherUserName =
+    currentConversation?.type === 'DIRECT'
+      ? otherMember?.user.username
+      : undefined;
 
   const {
     messages,
@@ -170,7 +173,11 @@ export function ConversationView({
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
      <ConversationHeader
-      title={title}
+      title={
+        currentConversation?.type === 'CHANNEL'
+          ? `# ${title}`
+          : title
+      }
       headerIcon={headerIcon}
       otherUserName={otherUserName}
       onSearch={() => setIsSearchOpen(true)}

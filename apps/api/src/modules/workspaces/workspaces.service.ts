@@ -626,6 +626,12 @@ export class WorkspacesService {
         });
       }
 
+      console.log('[Workspace Remove] sending realtime event', {
+        targetUserId,
+        workspaceId,
+        event: REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,
+      });
+
       this.realtimeRoomService.emitToUser(
         targetUserId,
         REALTIME_EVENTS.WORKSPACE_MEMBER_REMOVED,

@@ -145,6 +145,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       });
     };
 
+
     const handleWorkspaceMemberRemoved = (payload: { workspaceId: number }) => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       queryClient.invalidateQueries({
@@ -152,6 +153,15 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       });
       queryClient.invalidateQueries({
         queryKey: ['workspace', payload.workspaceId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['workspace', payload.workspaceId, 'channels'],
+      });
+    };
+
+    const handleWorkspaceChannelCreated = (payload: { workspaceId: number }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['workspace', payload.workspaceId, 'channels'],
       });
     };
 
@@ -208,6 +218,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     socket.on('workspace-role:changed', handleWorkspaceRoleChanged);
 
     socket.on(
+      'workspace-channel:created',
+      handleWorkspaceChannelCreated,
+    );
+
+    socket.on(
       REALTIME_EVENTS.NOTIFICATION_CREATED, 
       handleNotificationCreated
     );
@@ -243,6 +258,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       socket.off('workspace-role:changed', handleWorkspaceRoleChanged);
 
       socket.off('notification:created', handleNotificationCreated);
+
+      socket.off(
+        'workspace-channel:created',
+        handleWorkspaceChannelCreated,
+      );
 
       window.removeEventListener(
         'conversation_read',

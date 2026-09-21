@@ -700,28 +700,38 @@ export class WorkspacesService {
     userId: number,
     dto: CreateChannelDto,
   ) {
-    const members = await this.prisma.workspaceMember.findMany({
-      where: { workspaceId },
-      select: { userId: true },
-    });
+      const members = await this.prisma.workspaceMember.findMany({
+        where: { workspaceId },
+        select: { userId: true },
+      });
 
-    const nameTaken = await this.prisma.conversation.findFirst({
-      where: { workspaceId, type: 'CHANNEL', name: dto.name },
-    });
-    if (nameTaken) throw new ConflictException('Channel name already exists');
+      const nameTaken = await this.prisma.conversation.findFirst({
+        where: { workspaceId, type: 'CHANNEL', name: dto.name },
+      });
+      if (nameTaken) throw new ConflictException('Channel name already exists');
 
-    return this.prisma.conversation.create({
-      data: {
-        workspaceId,
-        type: 'CHANNEL',
-        name: dto.name,
-        createdById: userId,
-        members: {
-          create: members.map((m) => ({ userId: m.userId })),
+      const channel = await this.prisma.conversation.create({
+        data: {
+          workspaceId,
+          type: 'CHANNEL',
+          name: dto.name,
+          createdById: userId,
+          members: {
+            create: members.map((m) => ({ userId: m.userId })),
+          },
         },
-      },
-      include: { members: true },
-    });
+        include: { members: true },
+      });
+
+      for (const member of members) {
+        this.realtimeRoomService.emitToUser(
+          member.userId,
+          REALTIME_EVENTS.WORKSPACE_CHANNEL_CREATED,
+          { workspaceId },
+        );
+      }
+
+      return channel;
   }
 
   async listChannels(workspaceId: number, userId: number) {

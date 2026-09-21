@@ -23,7 +23,7 @@ export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
 export async function loginWithTwoFactor(
   payload: TwoFactorLoginPayload,
 ): Promise<AuthSuccessResponse> {
-  return httpPost<AuthSuccessResponse>('/auth/2fa/login', payload, { auth: false });
+  return httpPost<AuthSuccessResponse>('/auth/login-2fa', payload, { auth: false });
 }
 
 export function generateTwoFactor() : Promise<TwoFactorGenerateResponse> {

@@ -4,15 +4,9 @@
 
 ## Description
 
-### Project Name
-
-**ft_transcendence** is a web-based collaborative platform inspired by tools such as Notion and modern team communication platforms.
-
 ### Goal
 
 The goal of the project is to build a complete web application where users can communicate, manage workspaces, collaborate on documents in real time, and manage their profiles, relationships, notifications, and permissions.
-
-The project was developed as a team following the 42 curriculum and focuses on full-stack development, real-time communication, authentication, collaboration, and a modular permission system.
 
 ### Overview
 
@@ -36,30 +30,6 @@ The application provides a unified environment where users can:
 * Use the application in English, French, or Chinese.
 * Access the application using supported additional browsers.
 * Use a consistent custom design system and reusable UI components.
-
-### Key Features
-
-The main features of the application include:
-
-* User registration and authentication
-* Google OAuth 2.0 authentication
-* Two-factor authentication (2FA)
-* User profiles and avatar management
-* User search and interaction
-* Friendship management
-* Direct and group communication
-* Workspace and organization management
-* Workspace invitations and roles
-* Advanced workspace permissions
-* Real-time presence and communication
-* Real-time collaborative document editing
-* Notification system
-* Notification preferences
-* File upload and management
-* Multilingual interface
-* Custom reusable design system
-* Additional browser support
-* HTTPS development environment
 
 ---
 
@@ -110,14 +80,62 @@ pnpm --filter api prisma generate
 
 Create the required environment configuration according to the example provided by the project.
 
-The application uses environment variables for authentication, database access, OAuth, and optional email functionality.
+The application uses environment variables for database access, authentication, OAuth, email functionality, and initial administrator seeding.
+
+### JWT Secret
+
+The application requires a secure `JWT_SECRET` for authentication.
+
+Generate a random secret from the terminal:
+
+```bash
+openssl rand -base64 32
+```
+
+Copy the generated value and add it to your `.env` file:
+
+```env
+JWT_SECRET="your-generated-secret"
+```
+
+Do not commit your actual `JWT_SECRET` or other secrets to the repository.
+
+### Initial Global Administrator
+
+The database seed can create an initial global administrator account.
+
+Add the following variables to your `.env` file:
+
+```env
+SEED_ADMIN_EMAIL="admin@example.com"
+SEED_ADMIN_USERNAME="admin"
+SEED_ADMIN_PASSWORD="change-me"
+```
+
+These variables define the credentials of the initial global administrator created by the database seed.
+
+For local development, replace the example password with a secure password before running the seed.
+
+Run the database seed with:
+
+```bash
+pnpm --filter api prisma db seed
+```
+
+**Do not use example credentials in a production environment.**
+
+### Other Environment Variables
 
 A typical configuration includes:
 
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/transcendence"
 
-JWT_SECRET="your-secret"
+JWT_SECRET="your-generated-secret"
+
+SEED_ADMIN_EMAIL="admin@example.com"
+SEED_ADMIN_USERNAME="admin"
+SEED_ADMIN_PASSWORD="change-me"
 
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
@@ -140,8 +158,6 @@ MAIL_FROM="noreply@yourdomain.com"
 Email configuration is optional. If SMTP is not configured, email notifications are skipped.
 
 When using Gmail, `MAIL_PASS` should normally be a Gmail **App Password**, rather than the account's regular password.
-
-For the complete list of environment variables and development configuration, see the project development documentation.
 
 ## Database Setup
 

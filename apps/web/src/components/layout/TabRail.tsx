@@ -1,4 +1,11 @@
-import { MessageCircle, Plus, Settings, Users, Waypoints } from 'lucide-react';
+import {
+  MessageCircle,
+  Plus,
+  Settings,
+  ShieldCheck,
+  Users,
+  Waypoints,
+} from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router';
 import { cn } from '@/lib/utils';
 import { usePrefetchWorkspace, useWorkspaces } from '@/hooks/useWorkspaces';
@@ -6,6 +13,7 @@ import { useState } from 'react';
 import { CreateWorkspaceDialog } from '../workspaces/CreateWorkspaceDialog';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
 
 const PALETTE = [
   'bg-indigo-500',
@@ -35,10 +43,14 @@ function initials(name: string): string {
 export function TabRail() {
   const { t } = useTranslation();
 
+  const { user } = useAuth();
   const tabs = [
     { to: '/app/chat', label: t('chat.title'), icon: MessageCircle },
     { to: '/app/friends', label: t('friends.title'), icon: Users },
     { to: '/app/spaces', label: t('workspaces.title'), icon: Waypoints },
+    ...(user?.role === 'ADMIN'
+      ? [{ to: '/app/admin', label: t('admin.title'), icon: ShieldCheck }]
+      : []),
     { to: '/app/settings/profile', label: t('settings.title'), icon: Settings },
   ];
   const { data: workspaces } = useWorkspaces();

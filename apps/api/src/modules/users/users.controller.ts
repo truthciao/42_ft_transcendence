@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
+  Delete,
   Param,
   ParseIntPipe,
   Post,
@@ -13,8 +15,11 @@ import {
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UsersService } from './users.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { AdminGuard } from '../auth/guards/admin.guard.js';
 import type { Request } from 'express';
 import { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto.js';
 
 interface RequestWithUser extends Request {
   user: {
@@ -28,6 +33,7 @@ interface AuthenticatedRequest extends Request {
   user: AuthenticatedUser;
 }
 
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -48,6 +54,31 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('admin')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  findAllForAdmin() {
+    return this.usersService.findAllForAdmin();
+  }
+
+  @Patch(':id/role')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  updateUserRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserRoleDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.usersService.updateUserRole(id, dto.role, req.user.userId);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.usersService.deleteUser(id, req.user.userId);
   }
 
   @Get('search')

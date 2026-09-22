@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import type { User } from '@repo/shared-types';
+import type { CurrentUser } from '@repo/shared-types';
 
 export interface AuthContextType {
-  user: User | null;
+  user: CurrentUser | null;
   loading: boolean;
   refreshUser: () => Promise<void>;
 }

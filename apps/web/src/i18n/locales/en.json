@@ -15,6 +15,26 @@
     "openApp": "Open App"
   },
 
+  "admin": {
+    "title": "User Management",
+    "subtitle": "Manage users and their roles.",
+    "roles": {
+      "USER": "User",
+      "ADMIN": "Admin"
+    },
+    "messages": {
+      "roleUpdated": "User role updated successfully.",
+      "roleUpdateFailed": "Failed to update user role.",
+      "userDeleted": "User deleted successfully",
+      "userDeleteFailed": "Failed to delete user"
+    },
+    "deleteUser": {
+      "title": "Delete user?",
+      "description": "This will permanently delete the user and their account data. This action cannot be undone.",
+      "confirm": "Delete user"
+    }
+  },
+
   "home": {
     "title": "Home",
     "welcome": "Welcome to ft_transcendence.",

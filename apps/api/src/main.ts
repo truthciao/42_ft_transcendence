@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
     .setTitle("Transcendence API")
     .setDescription("API documentation")
     .setVersion("1.0")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

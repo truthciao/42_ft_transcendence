@@ -1,5 +1,11 @@
-import { httpGet } from '@/lib/http';
-import type { User, CurrentUser, PublicUserProfile } from '@repo/shared-types';
+import { httpGet, httpPatch, httpDelete } from '@/lib/http';
+import type {
+  User,
+  AdminUser,
+  CurrentUser,
+  PublicUserProfile,
+  UserRole,
+} from '@repo/shared-types';
 
 export interface TestUser {
   id: number;
@@ -17,6 +23,18 @@ export function getCurrentUser() {
 
 export function getUsers() {
   return httpGet<User[]>('/users');
+}
+
+export function getAdminUsers() {
+  return httpGet<AdminUser[]>('/users/admin');
+}
+
+export function updateUserRole(userId: number, role: UserRole) {
+  return httpPatch<AdminUser>(`/users/${userId}/role`, { role });
+}
+
+export function deleteUser(userId: number) {
+  return httpDelete<{ message: string }>(`/users/${userId}`);
 }
 
 export function getUserProfile(userId: number) {

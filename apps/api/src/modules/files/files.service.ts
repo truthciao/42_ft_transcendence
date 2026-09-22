@@ -54,4 +54,32 @@ export class FilesService {
     await this.prisma.attachment.delete({ where: { id: fileId } });
     return { message: 'FILE_DELETED_SUCCESSFULLY' };
   }
+
+  async getFileUrlsByUser(userId: number) {
+    return this.prisma.attachment.findMany({
+      where: { uploaderId: userId },
+      select: { fileUrl: true },
+    });
+  }
+
+  deletePhysicalFiles(fileUrls: string[]) {
+    for (const fileUrl of fileUrls) {
+      const filePath = path.join(process.cwd(), fileUrl);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+  }
+  deletePhysicalFile(fileUrl: string | null) {
+    if (!fileUrl) {
+      return;
+    }
+
+    const filePath = path.join(process.cwd(), fileUrl);
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
 }

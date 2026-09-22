@@ -63,6 +63,7 @@ export class WsAuthService {
       userId: user.id,
       email: user.email,
       username: user.username,
+      role: user.role,
     };
   }
 }

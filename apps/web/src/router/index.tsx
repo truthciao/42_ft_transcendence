@@ -35,6 +35,8 @@ import {
 import { RouteErrorBoundary } from '@/components/common/RouteErrorBoundary';
 import { ComponentShowcasePage } from '@/pages/dev/ComponentShowcasePage';
 import { EvaluationPage } from '../pages/EvaluationPage';
+import { AdminRoute } from '@/components/AdminRoute';
+import { AdminPage } from '@/pages/app/AdminPage';
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +122,16 @@ export const router = createBrowserRouter([
               {
                 path: 'documents/:documentId',
                 element: <DocumentPage />,
+              },
+            ],
+          },
+          {
+            path: 'admin',
+            element: <AdminRoute />,
+            children: [
+              {
+                index: true,
+                element: <AdminPage />,
               },
             ],
           },

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import type { User } from '@repo/shared-types';
+import type { CurrentUser } from '@repo/shared-types';
 import { AuthContext } from './AuthContext';
 import { getCurrentUser } from '../api/users';
 import i18n from '../i18n';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function refreshUser() {

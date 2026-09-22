@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
 import type { CreateUserPayload } from '@repo/shared-types';
+import { UserRole } from '../../generated/prisma/enums.js';
+import { FilesService } from '../files/files.service.js';
 
 type CreateUserData = CreateUserPayload & {
   passwordHash?: string;
@@ -9,7 +15,10 @@ type CreateUserData = CreateUserPayload & {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly filesService: FilesService,
+  ) {}
 
   async createUser(data: CreateUserData) {
     //Check if passwordHash is avaiable!
@@ -100,6 +109,7 @@ export class UsersService {
         id: true,
         email: true,
         username: true,
+        role: true,
         isTwoFactorEnabled: true,
         profile: {
           select: {
@@ -118,6 +128,7 @@ export class UsersService {
       id: user.id,
       email: user.email,
       username: user.username,
+      role: user.role,
       isTwoFactorEnabled: user.isTwoFactorEnabled,
       avatarUrl: user.profile?.avatarUrl ?? null,
       preferredLanguage: user.profile?.preferredLanguage ?? null,
@@ -156,6 +167,127 @@ export class UsersService {
         isTwoFactorEnabled: true,
       },
     });
+  }
+
+  async findAllForAdmin() {
+    const users = await this.prisma.user.findMany({
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        createdAt: true,
+        profile: {
+          select: {
+            avatarUrl: true,
+            displayName: true,
+            bio: true,
+          },
+        },
+      },
+    });
+
+    return users.map(({ profile, ...user }) => ({
+      ...user,
+      avatarUrl: profile?.avatarUrl ?? null,
+      displayName: profile?.displayName ?? null,
+      bio: profile?.bio ?? null,
+    }));
+  }
+
+  async updateUserRole(
+    userId: number,
+    role: UserRole,
+    currentUserId: number,
+  ) {
+    if (userId === currentUserId && role === UserRole.USER) {
+      throw new BadRequestException('You cannot demote yourself');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+      },
+    });
+  }
+
+  async deleteUser(userId: number, currentUserId: number) {
+    if (userId === currentUserId) {
+      throw new BadRequestException('You cannot delete yourself');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const ownedWorkspace = await this.prisma.workspace.findFirst({
+      where: { ownerId: userId },
+      select: { id: true },
+    });
+
+    if (ownedWorkspace) {
+      throw new BadRequestException(
+        'Transfer workspace ownership before deleting this user',
+      );
+    }
+
+    const attachments = await this.filesService.getFileUrlsByUser(userId);
+
+    const profile = await this.prisma.profile.findUnique({
+      where: { userId },
+      select: { avatarUrl: true },
+    });
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.workspaceInvite.deleteMany({
+        where: {
+          OR: [{ inviterId: userId }, { inviteeId: userId }],
+        },
+      });
+
+      await tx.conversationMember.deleteMany({
+        where: { userId },
+      });
+
+      await tx.workspaceMember.deleteMany({
+        where: { userId },
+      });
+
+      await tx.attachment.deleteMany({
+        where: { uploaderId: userId },
+      });
+
+      await tx.user.delete({
+        where: { id: userId },
+      });
+    });
+
+    this.filesService.deletePhysicalFiles(
+      attachments.map((attachment) => attachment.fileUrl),
+    );
+    this.filesService.deletePhysicalFile(profile?.avatarUrl ?? null);
+
+    return { message: 'User deleted successfully' };
   }
 
   async updateTwoFactorSecret(userId: number, secret: string) {

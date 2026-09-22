@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export const userRoleSchema = z.enum(['USER', 'ADMIN']);
+
+export type UserRole = z.infer<typeof userRoleSchema>;
+
 export const createUserSchema = z.object({
   email: z.string().email('email must be a valid email address'),
 
@@ -26,6 +30,13 @@ export const userSchema = z.object({
 
 export type User = z.infer<typeof userSchema>;
 
+export const adminUserSchema = userSchema.extend({
+  role: userRoleSchema,
+  createdAt: z.string(),
+});
+
+export type AdminUser = z.infer<typeof adminUserSchema>;
+
 export const publicUserProfileSchema = z.object({
   id: z.number(),
   username: z.string(),
@@ -39,6 +50,7 @@ export type PublicUserProfile = z.infer<
 >;
 
 export const currentUserSchema = userSchema.extend({
+  role: userRoleSchema,
   isTwoFactorEnabled: z.boolean(),
   preferredLanguage: z.string().nullable(),
 });

@@ -16,7 +16,6 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter });
 
-const TEST_USER_COUNT = 10_000;
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL;
 const SEED_ADMIN_USERNAME = process.env.SEED_ADMIN_USERNAME;
 const SEED_ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD;
@@ -50,18 +49,6 @@ async function ensureAdminUser() {
 
 async function main() {
   await ensureAdminUser();
-
-  const users = Array.from({ length: TEST_USER_COUNT }, (_, index) => ({
-    username: `virtual-user-${index + 1}`,
-    email: `virtual-user-${index + 1}@example.com`,
-  }));
-
-  const result = await prisma.user.createMany({
-    data: users,
-    skipDuplicates: true,
-  });
-
-  console.log(`Created ${result.count} test users.`);
 }
 
 main()

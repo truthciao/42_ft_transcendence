@@ -119,7 +119,7 @@ For local development, replace the example password with a secure password befor
 Run the database seed with:
 
 ```bash
-pnpm --filter api prisma db seed
+docker compose --profile seed run --rm seed
 ```
 
 **Do not use example credentials in a production environment.**

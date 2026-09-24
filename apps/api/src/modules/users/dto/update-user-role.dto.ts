@@ -1,7 +1,4 @@
-import { UserRole } from '../../../generated/prisma/enums.js';
-import { IsEnum } from 'class-validator';
+import { updateUserRoleSchema } from '@repo/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class UpdateUserRoleDto {
-  @IsEnum(UserRole)
-  role!: UserRole;
-}
+export class UpdateUserRoleDto extends createZodDto(updateUserRoleSchema) {}

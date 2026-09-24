@@ -4,6 +4,12 @@ export const userRoleSchema = z.enum(['USER', 'ADMIN']);
 
 export type UserRole = z.infer<typeof userRoleSchema>;
 
+export const updateUserRoleSchema = z.object({
+  role: userRoleSchema,
+});
+
+export type UpdateUserRolePayload = z.infer<typeof updateUserRoleSchema>;
+
 export const createUserSchema = z.object({
   email: z.string().email('email must be a valid email address'),
 

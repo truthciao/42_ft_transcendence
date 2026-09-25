@@ -41,6 +41,19 @@ async function ensureAdminUser() {
       username: SEED_ADMIN_USERNAME,
       passwordHash,
       role: UserRole.ADMIN,
+      profile: {
+        create: {},
+      },
+    },
+  });
+
+  await prisma.profile.upsert({
+    where: {
+      userId: admin.id,
+    },
+    update: {},
+    create: {
+      userId: admin.id,
     },
   });
 

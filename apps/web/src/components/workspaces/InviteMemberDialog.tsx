@@ -141,9 +141,12 @@ export function InviteMemberDialog({
                   key={u.id}
                   className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted"
                 >
-                  <span className="text-sm font-medium">{u.username}</span>
+                  <span className="min-w-0 flex-1 break-all text-sm font-medium">
+                    {u.username}
+                  </span>
 
                   <Button
+                    className="shrink-0"
                     size="sm"
                     disabled={inviteMutation.isPending}
                     onClick={() => handleInvite(u.id)}

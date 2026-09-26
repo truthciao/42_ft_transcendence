@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useAuth } from '@/hooks/useAuth';
 import {
   useWorkspaceInvites,
@@ -20,6 +20,7 @@ import { UserPlus } from 'lucide-react';
 import { PermissionGate } from '@/components/workspaces/PermissionGate';
 import { InviteMemberDialog } from '@/components/workspaces/InviteMemberDialog';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
 
 const ROLE_OPTIONS: WorkspaceRole[] = ['ADMIN', 'MEMBER'];
 
@@ -30,7 +31,7 @@ export function SpaceMembersPage() {
   const confirm = useConfirm();
   const [inviteOpen, setInviteOpen] = useState(false);
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
   const { data: members, isLoading } = useWorkspaceMembers(id);
   const { can } = usePermission(id);
   const removeMutation = useRemoveWorkspaceMember(id);
@@ -70,6 +71,13 @@ export function SpaceMembersPage() {
 
   return (
     <div className="h-full overflow-y-auto p-6">
+      <Button
+        variant="ghost"
+        className="mb-2 px-0 md:hidden"
+        onClick={() => navigate(`/app/spaces/${id}`)}
+      >
+        ← {t('common.back')}
+      </Button>
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">

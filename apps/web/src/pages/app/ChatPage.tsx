@@ -36,5 +36,9 @@ export function ChatPage() {
 }
 
 export function ChatEmptyState() {
-  return <ConversationListSidebar />;
+  return (
+    <div className="md:hidden">
+      <ConversationListSidebar />
+    </div>
+  );
 }

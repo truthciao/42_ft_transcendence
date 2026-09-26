@@ -145,7 +145,15 @@ export function SpaceSettingPage() {
   const isOwner = workspace.myMembership?.role === 'OWNER';
 
   return (
-    <div className=" mx-auto max-w-xl space-y-8 p-6">
+    <div className="mx-auto max-w-xl space-y-8 p-6">
+      <Button
+        variant="ghost"
+        className="mb-2 px-0 md:hidden"
+        onClick={() => navigate(`/app/spaces/${id}`)}
+      >
+        ← {t('common.back')}
+      </Button>
+
       <header>
         <h1 className=" text-2xl font-semibold">
           {t('workspaces.pages.settings.title')}

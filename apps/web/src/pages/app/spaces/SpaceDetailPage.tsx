@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { FileText, Hash, Plus } from 'lucide-react';
+import { FileText, Hash, Plus, Settings, Users } from 'lucide-react';
 import { useWorkspace, useWorkspaceChannels } from '@/hooks/useWorkspaces';
 import { useCreateChannel } from '@/hooks/useWorkspaceMutations';
 import { usePermission } from '@/hooks/usePermission';
@@ -51,15 +51,37 @@ export function SpaceDetailPage() {
         <span className="flex size-14 items-center justify-center rounded-2xl bg-muted text-2xl">
           {workspace?.icon || '💻'}
         </span>
-        <div className="min-w-0">
+
+        <div className="min-w-0 flex-1">
           <h1 className="break-words text-2xl font-semibold">
             {workspace?.name}
           </h1>
+
           {workspace?.description ? (
             <p className="mt-1 max-w-xl break-words text-muted-foreground">
               {workspace.description}
             </p>
           ) : null}
+        </div>
+
+        <div className="flex shrink-0 gap-2 md:hidden">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(`/app/spaces/${id}/members`)}
+          >
+            <Users className="size-4" />
+            {t('workspaces.sidebar.members')}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(`/app/spaces/${id}/settings`)}
+          >
+            <Settings className="size-4" />
+            {t('workspaces.sidebar.settings')}
+          </Button>
         </div>
       </header>
 

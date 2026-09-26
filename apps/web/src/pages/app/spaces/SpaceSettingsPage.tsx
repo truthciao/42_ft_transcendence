@@ -150,7 +150,7 @@ export function SpaceSettingPage() {
         <h1 className=" text-2xl font-semibold">
           {t('workspaces.pages.settings.title')}
         </h1>
-        <p className=" text-muted-foreground">
+        <p className="break-words text-muted-foreground">
           {t('workspaces.pages.settings.subtitle', { name: workspace.name })}
         </p>
       </header>

@@ -59,7 +59,7 @@ export function TabRail() {
   const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <nav className="flex min-h-0 flex-col items-center gap-3 overflow-y-auto border-r border-border bg-sidebar px-2 py-3">
+    <nav className="flex h-full min-h-0 flex-col items-center gap-3 overflow-y-auto border-r border-border bg-sidebar px-2 py-3">
       {tabs.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}

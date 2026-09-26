@@ -76,11 +76,14 @@ export function FriendRequests() {
               key={request.id}
               className="
                 flex
-                items-center
-                justify-between
+                flex-col
+                gap-3
                 border
                 rounded-lg
                 p-4
+                md:flex-row
+                md:items-center
+                md:justify-between
               "
             >
               <div className="flex items-center gap-3">
@@ -95,8 +98,8 @@ export function FriendRequests() {
                   />
                 </Link>
 
-                <div>
-                  <div className="font-medium">
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-medium">
                     <Link
                       to={`/app/friends/${request.requester.id}`}
                       className="hover:underline"
@@ -105,7 +108,7 @@ export function FriendRequests() {
                     </Link>
                   </div>
 
-                  <div className="text-sm text-muted-foreground">
+                  <div className="truncate text-sm text-muted-foreground">
                     {request.requester.email}
                   </div>
                 </div>

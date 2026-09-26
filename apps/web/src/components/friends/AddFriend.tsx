@@ -183,7 +183,9 @@ export function AddFriend() {
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                 >
-                  <p className="font-medium">{user.username}</p>
+                  <p className="min-w-0 flex-1 truncate font-medium">
+                    {user.username}
+                  </p>
 
                   <Button
                     size="sm"

@@ -18,7 +18,7 @@ export function Navbar() {
 
   return (
     <header className="border-b border-border">
-      <nav className="flex items-center p-4">
+      <nav className="flex flex-wrap items-center gap-1 p-4">
         <NavLink to="/" end className={getNavLinkClass}>
           {t('home.title')}
         </NavLink>

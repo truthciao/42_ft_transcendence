@@ -1,4 +1,5 @@
 import { type ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import { Input } from '@/components/ui/input';
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const { data: profile, isLoading, isError, refetch } = useProfile();
 
@@ -109,6 +111,13 @@ export function ProfilePage() {
 
   return (
     <main className="mx-auto max-w-xl space-y-6 p-6">
+      <Button
+        variant="ghost"
+        className="px-0 md:hidden"
+        onClick={() => navigate('/app/settings')}
+      >
+        ← {t('common.back')}
+      </Button>
       <header className="border-b border-border pb-4">
         <div className="flex items-center gap-4">
           <div className="flex shrink-0 flex-col items-center gap-2">

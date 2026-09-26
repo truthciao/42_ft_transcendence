@@ -8,6 +8,7 @@ interface ConversationHeaderProps {
   headerIcon?: ReactNode;
   otherUserName?: string;
   onSearch: () => void;
+  onBack?: () => void;
 }
 
 export function ConversationHeader({
@@ -15,20 +16,36 @@ export function ConversationHeader({
   headerIcon,
   otherUserName,
   onSearch,
+  onBack,
 }: ConversationHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <header className="border-b border-border px-5 py-3 shadow-sm flex items-center justify-between">
-      <h1 className="font-semibold text-sm flex items-center gap-2">
+    <header className="flex items-center justify-between border-b border-border px-5 py-3 shadow-sm">
+      <div className="flex min-w-0 items-center gap-2">
+        {onBack && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-8 md:hidden"
+            onClick={onBack}
+            aria-label={t('common.back')}
+          >
+            ←
+          </Button>
+        )}
+
+        <h1 className="flex min-w-0 items-center gap-2 text-sm font-semibold">
           {headerIcon ?? (
-            <span>
+            <span className="truncate">
               {otherUserName
                 ? t('chat.chatWith', { friendName: otherUserName })
                 : title}
             </span>
           )}
-      </h1>
+        </h1>
+      </div>
 
       <Button
         type="button"

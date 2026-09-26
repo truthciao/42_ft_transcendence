@@ -256,7 +256,7 @@ export function EvaluationPage() {
                       {mod.link ? (
                         <Button
                           variant={isPassed ? 'secondary' : 'default'}
-                          className="w-full"
+                          className="w-full whitespace-normal break-words"
                           onClick={() => navigate(mod.link!)}
                         >
                           {t('evaluation.launchDemo', { link: mod.link })}

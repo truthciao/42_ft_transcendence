@@ -96,7 +96,7 @@ export function FriendProfilePage() {
     <main className="mx-auto max-w-md p-6">
       <Button
         variant="ghost"
-        className="mb-6 px-0"
+        className="mb-6 px-0 md:hidden"
         onClick={() => navigate('/app/friends')}
       >
         ← {t('common.back')}
@@ -111,9 +111,13 @@ export function FriendProfilePage() {
             status={isOnline ? 'online' : 'offline'}
           />
 
-          <div>
-            <h1 className="text-2xl font-semibold">{friend.displayName || friend.username}</h1>
-            <p className="text-muted-foreground">@{friend.username}</p>
+          <div className="min-w-0">
+            <h1 className="break-words text-2xl font-semibold">
+              {friend.displayName || friend.username}
+            </h1>
+            <p className="break-words text-muted-foreground">
+              @{friend.username}
+            </p>
           </div>
         </div>
 

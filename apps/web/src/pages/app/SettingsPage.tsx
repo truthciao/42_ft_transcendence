@@ -26,6 +26,7 @@ import { Button } from '../../components/ui/button';
 import { getCurrentUser } from '../../api/users';
 import { HttpError } from '@/lib/http';
 import type { NotificationType } from '@repo/shared-types';
+import { useNavigate } from 'react-router';
 
 export function SettingsSidebar() {
   const { t } = useTranslation();
@@ -53,20 +54,16 @@ export function SettingsSidebar() {
 }
 
 export function SettingsPage() {
-  const { t } = useTranslation();
-
   return (
-    <div className="flex-1 bg-background p-6">
-      <h2 className="text-2xl font-semibold">{t('settings.title')}</h2>
-
-      <p className="mt-2 text-muted-foreground">{t('settings.description')}</p>
+    <div className="md:hidden">
+      <SettingsSidebar />
     </div>
   );
 }
 
 export function AccountSettingsPage() {
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
 
   // States to control setup modal, secret key, otpauth url, and verification code input
@@ -176,6 +173,13 @@ export function AccountSettingsPage() {
 
   return (
     <div className="flex-1 bg-background p-4 space-y-4">
+      <Button
+        variant="ghost"
+        className="mb-2 px-0 md:hidden"
+        onClick={() => navigate('/app/settings')}
+      >
+        ← {t('common.back')}
+      </Button>
       <div>
         <h2 className="text-2xl font-semibold">{t('settings.accountTitle')}</h2>
         <p className="text-muted-foreground mt-2">
@@ -274,6 +278,7 @@ export function AccountSettingsPage() {
 
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data: prefs = [], isLoading, isError } = useNotificationPreferences();
   const updatePrefs = useUpdateNotificationPreferences();
 
@@ -314,6 +319,13 @@ export function NotificationSettingsPage() {
 
   return (
     <div className="flex-1 bg-background p-4">
+      <Button
+        variant="ghost"
+        className="mb-2 px-0 md:hidden"
+        onClick={() => navigate('/app/settings')}
+      >
+        ← {t('common.back')}
+      </Button>
       <h2 className="text-2xl font-semibold">
         {t('settings.notificationsTitle')}
       </h2>

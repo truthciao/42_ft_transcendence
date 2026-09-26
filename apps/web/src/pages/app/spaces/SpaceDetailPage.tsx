@@ -46,15 +46,17 @@ export function SpaceDetailPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      <header className="mb-6 flex items-start gap-4">
+    <div className="h-full min-w-0 overflow-y-auto p-6">
+      <header className="mb-6 flex min-w-0 items-start gap-4">
         <span className="flex size-14 items-center justify-center rounded-2xl bg-muted text-2xl">
           {workspace?.icon || '💻'}
         </span>
-        <div>
-          <h1 className="text-2xl font-semibold">{workspace?.name}</h1>
+        <div className="min-w-0">
+          <h1 className="break-words text-2xl font-semibold">
+            {workspace?.name}
+          </h1>
           {workspace?.description ? (
-            <p className="mt-1 max-w-xl text-muted-foreground">
+            <p className="mt-1 max-w-xl break-words text-muted-foreground">
               {workspace.description}
             </p>
           ) : null}

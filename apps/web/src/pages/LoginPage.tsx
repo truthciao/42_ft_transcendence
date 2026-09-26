@@ -183,7 +183,7 @@ export function LoginPage() {
   };
 
   return (
-    <main className="mx-auto max-w-[400px] font-sans">
+    <main className="mx-auto w-full max-w-[400px] px-4 font-sans">
       <h1>{t('auth.login')}</h1>
       <p>
         {requires2FA ? t('auth.twoFactorDescription') : t('auth.description')}

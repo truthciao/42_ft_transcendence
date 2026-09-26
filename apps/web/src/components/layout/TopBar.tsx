@@ -1,5 +1,12 @@
 import { disconnectSocket } from '@/lib/realtime';
-import { Bell, LogOut, Settings, User } from 'lucide-react';
+import {
+  Bell,
+  Languages,
+  LogOut,
+  Menu,
+  Settings,
+  User,
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +16,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import {
   useUnreadNotificationCount,
   useMarkAllNotificationsAsRead,
@@ -20,13 +32,17 @@ import {
 import type { Notification } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 
-export function TopBar() {
+interface TopBarProps {
+  onMenuClick: () => void;
+}
+
+export function TopBar({ onMenuClick }: TopBarProps) {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const { data: notifications = [] } = useNotifications();
   const { data: unreadCount = 0 } = useUnreadNotificationCount();
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
 
   async function logout() {
@@ -101,12 +117,25 @@ export function TopBar() {
 
   return (
     <div className="flex h-full min-w-0 items-center gap-3 px-4">
-      <Link to="/" className="font-semibold tracking-normal">
-        transcendence
-      </Link>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-md hover:bg-accent md:hidden"
+          aria-label="Open navigation"
+          onClick={onMenuClick}
+        >
+          <Menu className="size-5" />
+        </button>
+
+        <Link to="/" className="font-semibold tracking-normal">
+          transcendence
+        </Link>
+      </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <LanguageSwitcher />
+        <div className="hidden md:block">
+          <LanguageSwitcher />
+        </div>
 
         <DropdownMenu
           onOpenChange={(open) => {
@@ -230,6 +259,40 @@ export function TopBar() {
               {t('settings.account')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Languages className="size-4" />
+                Language
+              </DropdownMenuSubTrigger>
+
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup
+                  value={
+                    i18n.language.startsWith('en')
+                      ? 'en'
+                      : i18n.language.startsWith('fr')
+                        ? 'fr'
+                        : 'zh'
+                  }
+                  onValueChange={(value) => {
+                    void i18n.changeLanguage(value);
+                  }}
+                >
+                  <DropdownMenuRadioItem value="en">
+                    English
+                  </DropdownMenuRadioItem>
+
+                  <DropdownMenuRadioItem value="fr">
+                    Français
+                  </DropdownMenuRadioItem>
+
+                  <DropdownMenuRadioItem value="zh">
+                    中文
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
 
             <DropdownMenuItem variant="destructive" onClick={logout}>
               <LogOut className="size-4" />

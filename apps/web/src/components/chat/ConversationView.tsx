@@ -29,12 +29,14 @@ interface ConversationViewProps {
   conversationId: string;
   title: ReactNode;
   headerIcon?: ReactNode;
+  onBack?: () => void;
 }
 
 export function ConversationView({
   conversationId,
   title,
   headerIcon,
+  onBack,
 }: ConversationViewProps) {
   const { t } = useTranslation();
   const { user: currentUser } = useAuth();
@@ -172,16 +174,17 @@ export function ConversationView({
 
   return (
     <section className="flex h-full min-h-0 flex-col bg-background">
-     <ConversationHeader
-      title={
-        currentConversation?.type === 'CHANNEL'
-          ? `# ${title}`
-          : title
-      }
-      headerIcon={headerIcon}
-      otherUserName={otherUserName}
-      onSearch={() => setIsSearchOpen(true)}
-    /> 
+      <ConversationHeader
+        title={
+          currentConversation?.type === 'CHANNEL'
+            ? `# ${title}`
+            : title
+        }
+        headerIcon={headerIcon}
+        otherUserName={otherUserName}
+        onSearch={() => setIsSearchOpen(true)}
+        onBack={onBack}
+      />
       <ConversationMessageList
         messagesContainerRef={messagesContainerRef}
         messages={messages}

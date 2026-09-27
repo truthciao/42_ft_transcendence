@@ -80,13 +80,13 @@ export function FriendsList() {
             return (
               <div
                 key={friend.id}
-                className="group flex items-center gap-1 rounded-md"
+                className="group flex min-w-0 items-center gap-1 rounded-md hover:bg-muted"
               >
                 <NavLink
                   to={`/app/friends/${friend.id}`}
                   className={({ isActive }) =>
-                    `flex min-w-0 flex-1 items-center gap-3 rounded-md p-2 ${
-                      isActive ? 'bg-muted font-medium' : 'hover:bg-muted'
+                    `flex min-w-0 flex-1 items-center gap-3 p-2 ${
+                      isActive ? 'font-medium' : ''
                     }`
                   }
                 >

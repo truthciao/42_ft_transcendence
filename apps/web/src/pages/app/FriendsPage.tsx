@@ -14,19 +14,16 @@ export function FriendsPage() {
         </div>
 
         <FriendsList />
-        <FriendRequests />
+
+        <div className="p-3">
+          <FriendRequests />
+        </div>
       </div>
 
-      <div className="hidden md:block">
-        <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">{t('friends.title')}</h1>
-
-          <p className="text-muted-foreground">
-            {t('friends.description')}
-          </p>
-        </header>
-
-        <FriendRequests />
+      <div className="hidden h-full items-center justify-center md:flex">
+        <p className="text-sm text-muted-foreground">
+          {t('friends.selectFriend')}
+        </p>
       </div>
     </div>
   );

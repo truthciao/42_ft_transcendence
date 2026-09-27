@@ -88,6 +88,7 @@
     "empty": "You don't have any friends yet.",
     "searchPlaceholder": "Search friends...",
     "noSearchResults": "No friends found",
+    "selectFriend": "Select a friend to view their profile",
     "addFriend": {
       "title": "Add Friend",
       "searchPlaceholder": "Search by username",

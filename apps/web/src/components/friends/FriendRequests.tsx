@@ -78,12 +78,9 @@ export function FriendRequests() {
                 flex
                 flex-col
                 gap-3
-                border
                 rounded-lg
+                border
                 p-4
-                md:flex-row
-                md:items-center
-                md:justify-between
               "
             >
               <div className="flex items-center gap-3">

@@ -88,6 +88,7 @@
     "empty": "你还没有好友。",
     "searchPlaceholder": "搜索好友...",
     "noSearchResults": "没有找到好友",
+    "selectFriend": "请选择一个好友来查看好友资料",
     "addFriend": {
       "title": "添加好友",
       "searchPlaceholder": "按用户名搜索",

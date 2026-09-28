@@ -1,6 +1,6 @@
 .PHONY: help install dev start stop restart build lint typecheck \
         test test-api test-web test-e2e ci \
-        db-up db-down db-logs db-migrate db-generate db-reset \
+        db-up db-down db-logs db-migrate db-generate db-reset db-seed\
         certs clean fclean
 
 help:
@@ -21,6 +21,7 @@ help:
 	@echo "  make db-up         Start PostgreSQL only"
 	@echo "  make db-down       Stop PostgreSQL"
 	@echo "  make db-logs       Show PostgreSQL logs"
+	@echo "  make db-seed       Seed the database"
 	@echo "  make db-generate   Generate Prisma client"
 	@echo "  make db-migrate    Apply Prisma migrations"
 	@echo "  make db-reset      Reset the development database"
@@ -98,6 +99,9 @@ db-down:
 db-logs:
 	docker compose logs -f postgres
 
+db-seed:
+	docker compose --env-file ./apps/api/.env --profile seed run --rm seed
+
 db-generate:
 	pnpm --filter api exec prisma generate
 
@@ -106,7 +110,6 @@ db-migrate:
 
 db-reset:
 	pnpm --dir apps/api exec prisma migrate reset
-
 
 clean:
 	rm -rf apps/api/dist

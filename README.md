@@ -37,23 +37,20 @@ The application provides a unified environment where users can:
 
 ## Prerequisites
 
-The following software is required to run the project locally:
+For the recommended Docker setup, you only need:
 
-* **Node.js** `>= 22`
-* **pnpm** `11.x`
-* **PostgreSQL** `17`
-* **Docker** and **Docker Compose**
+* **Docker**
+* **Docker Compose**
+* **GNU Make**
+* **OpenSSL**
 
-The project uses a pnpm workspace/monorepo structure.
-
-You can verify your installed versions with:
+Verify the required tools:
 
 ```bash
-node --version
-pnpm --version
 docker --version
 docker compose version
-```
+make --version
+openssl version
 
 ## Installation
 
@@ -64,21 +61,13 @@ git clone https://github.com/truthciao/42_ft_transcendence.git
 cd 42_ft_transcendence
 ```
 
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Generate the Prisma client:
-
-```bash
-pnpm --filter api prisma generate
-```
-
 ## Environment Configuration
 
 Create the required environment configuration according to the example provided by the project.
+
+```bash
+cp apps/api/.env.example apps/api/.env
+```
 
 The application uses environment variables for database access, authentication, OAuth, email functionality, and initial administrator seeding.
 
@@ -119,7 +108,7 @@ For local development, replace the example password with a secure password befor
 Run the database seed with:
 
 ```bash
-docker compose --profile seed run --rm seed
+make db-seed
 ```
 
 **Do not use example credentials in a production environment.**
@@ -139,7 +128,7 @@ SEED_ADMIN_PASSWORD="change-me"
 
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GOOGLE_CALLBACK_URL="http://localhost:3000/auth/google/callback"
+GOOGLE_CALLBACK_URL="http://localhost:8443/auth/google/callback"
 ```
 
 ### Optional Email Configuration
@@ -159,74 +148,29 @@ Email configuration is optional. If SMTP is not configured, email notifications 
 
 When using Gmail, `MAIL_PASS` should normally be a Gmail **App Password**, rather than the account's regular password.
 
-## Database Setup
-
-Start PostgreSQL and make sure the configured database is available.
-
-Run Prisma migrations:
-
-```bash
-pnpm --filter api prisma migrate dev
-```
-
-Generate the Prisma client:
-
-```bash
-pnpm --filter api prisma generate
-```
-
-If the project seed is available, the database can also be populated using the project's seed workflow.
-
 ## Running the Application
 
-Start the frontend and backend in development mode:
+Start the complete application with:
 
 ```bash
-pnpm dev
+make start
 ```
 
-The project uses the following main applications:
+Once all services are running, open the application at:
 
 ```text
-apps/web   → React frontend
-apps/api   → NestJS backend
+https://localhost:8443
 ```
 
-The frontend communicates with the backend through HTTP APIs and WebSocket connections.
+The application is served through Nginx over HTTPS. Because a self-signed TLS certificate is used for local development, the browser may display a security warning on the first visit.
 
-## Docker Development
-
-The project also provides a Docker Compose environment.
-
-Start the services with:
+To stop the application, run:
 
 ```bash
-docker compose up --build
-```
-
-Stop the services with:
-
-```bash
-docker compose down
-```
-
-To remove containers and associated volumes:
-
-```bash
-docker compose down -v
+make stop
 ```
 
 ## HTTPS
-
-The project supports HTTPS through an Nginx reverse proxy.
-
-Development certificates can be generated using:
-
-```bash
-make certs
-```
-
-The HTTPS development environment can then be started using the project's Makefile/Compose workflow.
 
 HTTPS is used to reproduce a production-like secure connection and to support browser features that require a secure context.
 
@@ -834,70 +778,6 @@ AI assistance was mainly used for:
 * Discussing implementation approaches before writing or modifying code.
 
 AI was used as an assistant for research, explanation, debugging, and review. The team remained responsible for the final implementation, integration, testing, and code decisions.
-
----
-
-# Evaluation Guide
-
-For evaluation, the application can be started using the installation and development instructions above.
-
-The main areas to explore are:
-
-### Authentication
-
-* Registration
-* Login/logout
-* Google OAuth
-* Two-factor authentication
-
-### User Interaction
-
-* User search
-* Friend requests
-* Friendship management
-* Direct and group communication
-* Online presence
-
-### Workspaces
-
-* Workspace creation
-* Workspace members
-* Workspace invitations
-* Workspace roles
-* Permission checks
-* Workspace channels
-
-### Notifications
-
-* Notification creation
-* Notification display
-* Read/unread state
-* Notification preferences
-* Real-time notification updates
-
-### Collaboration
-
-* Workspace documents
-* Document editing
-* Real-time collaborative functionality
-
-### Files
-
-* File upload
-* File metadata
-* Message attachments
-
-### Internationalization
-
-The interface supports:
-
-* English
-* French
-* Chinese
-
-### Design System
-
-The application uses reusable UI components and shared design tokens to maintain visual consistency across pages.
 
 ---
 

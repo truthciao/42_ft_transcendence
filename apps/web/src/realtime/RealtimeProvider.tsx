@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { getSocket } from '@/lib/realtime';
+import { connectSocket, getSocket } from '@/lib/realtime';
 import { RealtimeContext } from './RealtimeContext';
 import { REALTIME_EVENTS } from './realtime.constants';
 
@@ -238,6 +238,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       'conversation_read',
       handleConversationRead,
     );
+
+    // `getSocket` deliberately does not auto-connect.  Connecting only after
+    // these handlers exist ensures the initial `users:online` snapshot cannot
+    // be missed during a fast page reload (for example, F5).
+    connectSocket();
 
     return () => {
       socket.off('users:online', handleUsersOnline);

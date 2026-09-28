@@ -62,9 +62,9 @@ export function FriendsList() {
 
   return (
     <div className="p-3">
-      <div className="mb-2 px-1 text-xs font-semibold text-muted-foreground">
+      <h2 className="text-xl font-semibold">
         {t('friends.myFriends')}
-      </div>
+      </h2>
 
       {friends?.length === 0 ? (
         <p className="text-sm text-muted-foreground">

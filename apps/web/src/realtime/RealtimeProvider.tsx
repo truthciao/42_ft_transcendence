@@ -26,22 +26,18 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       });
     };
 
-    const handleUsersOnline = ({ userIds }: { userIds: number[] }) => {
-      console.log('[Realtime] users:online', userIds);
-
-      setOnlineUserIds(new Set(userIds));
-    };
-
     const handleOffline = ({ userId }: { userId: number }) => {
-
-      console.log('[Realtime] user:online', userId);
-
       setOnlineUserIds((current) => {
         const next = new Set(current);
         next.delete(userId);
         return next;
       });
     };
+
+    const handleUsersOnline = ({ userIds }: { userIds: number[] }) => {
+      setOnlineUserIds(new Set(userIds));
+    };
+
 
     const handleFriendRequest = () => {
       queryClient.invalidateQueries({
@@ -275,8 +271,6 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
         'conversation_read',
         handleConversationRead,
       );
-
-      setOnlineUserIds(new Set());
     };
   }, [loading, user, queryClient]);
 

@@ -7,7 +7,6 @@ const termsSections = [
   'accounts',
   'acceptableUse',
   'communication',
-  'gaming',
   'content',
   'intellectualProperty',
   'termination',
@@ -54,3 +53,5 @@ export function TermsOfServicePage() {
     </main>
   );
 }
+
+

@@ -673,51 +673,51 @@
       "sections": {
         "introduction": {
           "title": "1. Introduction",
-          "body": "Cette Politique de confidentialité explique comment notre application collecte, utilise, stocke et protège les informations lorsque vous utilisez notre plateforme de jeux en ligne et de fonctionnalités sociales. Nous nous engageons à respecter votre vie privée et à traiter vos informations personnelles de manière responsable."
+          "body": "Cette Politique de confidentialité explique comment notre application collecte, utilise, stocke et protège les informations lorsque vous utilisez notre espace collaboratif en temps réel. En utilisant l'application, vous acceptez les pratiques décrites dans cette politique."
         },
         "information": {
           "title": "2. Informations que nous collectons",
-          "body": "Selon votre utilisation de l'application, nous pouvons collecter des informations relatives à votre compte, telles que votre nom d'utilisateur et vos informations d'authentification ; des informations de profil telles que votre nom d'affichage, votre biographie, votre avatar et votre langue préférée ; des informations sociales telles que vos relations et demandes d'amitié ; des informations de communication telles que vos messages ; des informations liées aux jeux telles que les matchs, scores, résultats et statistiques ; ainsi que les informations techniques nécessaires au fonctionnement et à la sécurité du service."
+          "body": "Selon la manière dont vous utilisez l'application, nous pouvons collecter des informations de compte telles que votre nom d'utilisateur et vos informations d'authentification ; des informations de profil telles que votre nom d'affichage, votre biographie, votre avatar et votre langue préférée ; des informations sociales telles que vos relations d'amitié et vos demandes d'amitié ; des informations de communication telles que vos messages privés et vos messages dans les canaux ; ainsi que des informations techniques nécessaires au fonctionnement et à la sécurité du service."
         },
         "use": {
           "title": "3. Utilisation des informations",
-          "body": "Nous utilisons les informations collectées pour créer et gérer les comptes utilisateurs, fournir l'authentification, afficher les profils, proposer les fonctionnalités d'amitié et sociales, permettre la communication, fournir les jeux en ligne et le matchmaking, conserver les résultats et statistiques de jeu, gérer les préférences linguistiques, maintenir et améliorer le service, résoudre les problèmes techniques et détecter ou prévenir les abus, fraudes et incidents de sécurité."
+          "body": "Nous utilisons les informations collectées pour créer et gérer les comptes utilisateurs, fournir l'authentification, afficher les profils utilisateurs, fournir les fonctionnalités d'amitié et les fonctionnalités sociales, permettre les communications privées et dans les canaux, fournir des notifications, maintenir et améliorer le service, résoudre les problèmes techniques et détecter et prévenir les abus, les fraudes et les incidents de sécurité."
         },
         "uploadedContent": {
-          "title": "4. Photos de profil et contenu téléchargé",
-          "body": "Si vous téléchargez un avatar ou un autre contenu de profil, l'application stocke et affiche ce contenu dans le cadre de votre profil. Vous devez uniquement télécharger du contenu que vous êtes autorisé à utiliser. Vous restez responsable du contenu que vous téléchargez."
+          "title": "4. Contenu fourni par les utilisateurs",
+          "body": "Les utilisateurs peuvent fournir du contenu tel que des informations de profil, des messages et d'autres contenus dans le cadre des fonctionnalités de communication de l'application. Vous restez responsable du contenu que vous fournissez et devez vous assurer que vous disposez des droits nécessaires pour le partager."
         },
         "authentication": {
-          "title": "5. Authentification et cookies",
-          "body": "L'application peut utiliser des mécanismes d'authentification tels que des sessions, des cookies ou des jetons afin de maintenir votre connexion et de protéger votre compte. Les informations liées à l'authentification sont utilisées pour fournir un accès sécurisé à l'application et ne sont pas destinées à des fins publicitaires."
+          "title": "5. Authentification",
+          "body": "Nous utilisons des mécanismes d'authentification et de sécurité appropriés pour protéger les comptes utilisateurs. Les mots de passe sont stockés sous forme de valeurs hachées et ne sont pas conservés en texte brut. Lorsque l'authentification à deux facteurs est activée, des informations supplémentaires nécessaires à son fonctionnement peuvent également être stockées."
         },
         "security": {
-          "title": "6. Stockage et sécurité des données",
-          "body": "Nous prenons des mesures techniques et organisationnelles raisonnables pour protéger les informations personnelles contre tout accès, modification, divulgation ou destruction non autorisés. Les données peuvent être stockées dans les bases de données et espaces de stockage nécessaires au fonctionnement du service. Toutefois, aucun service accessible sur Internet ne peut garantir une sécurité absolue."
+          "title": "6. Sécurité",
+          "body": "Nous mettons en œuvre des mesures techniques et organisationnelles raisonnables pour protéger les informations contre les accès non autorisés, les pertes, les utilisations abusives ou les modifications. Cependant, aucune méthode de transmission ou de stockage électronique ne peut garantir une sécurité absolue."
         },
         "sharing": {
           "title": "7. Partage des informations",
-          "body": "Nous ne vendons pas vos informations personnelles. Les informations peuvent être traitées par les infrastructures techniques et les prestataires nécessaires au fonctionnement de l'application, tels que les services d'hébergement, de base de données ou de communication. Des informations peuvent également être communiquées lorsque la loi l'exige ou lorsque cela est nécessaire pour protéger la sécurité et les droits du service et de ses utilisateurs."
+          "body": "Nous ne vendons pas les informations personnelles des utilisateurs. Les informations peuvent être traitées ou communiquées lorsque cela est nécessaire au fonctionnement du service, à la sécurité, au respect des obligations légales ou à la protection des droits de nos utilisateurs et de notre application."
         },
         "retention": {
           "title": "8. Conservation des données",
-          "body": "Nous conservons les informations aussi longtemps que raisonnablement nécessaire pour fournir le service, maintenir les fonctionnalités du compte, résoudre les litiges, faire respecter nos conditions, assurer la sécurité et respecter nos obligations légales. Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées ou anonymisées lorsque cela est approprié."
+          "body": "Nous conservons les informations personnelles aussi longtemps que nécessaire pour fournir et sécuriser le service, maintenir les fonctionnalités de communication et respecter nos obligations légales. Certaines informations peuvent être supprimées ou anonymisées lorsque leur conservation n'est plus nécessaire."
         },
         "rights": {
           "title": "9. Vos droits",
-          "body": "Selon la législation applicable en matière de protection des données, vous pouvez disposer de droits concernant vos informations personnelles, notamment le droit de demander l'accès, la rectification, la suppression, la limitation du traitement, de vous opposer à certains traitements et d'obtenir une copie de certaines informations dans un format portable. Pour exercer vos droits, veuillez contacter l'équipe du projet via les coordonnées fournies par l'application."
+          "body": "Selon la législation applicable, vous pouvez disposer de droits concernant vos informations personnelles, notamment le droit d'accéder à vos données, de les rectifier, de demander leur suppression ou de limiter certains traitements. Vous pouvez nous contacter pour exercer les droits applicables."
         },
         "children": {
           "title": "10. Protection des mineurs",
-          "body": "L'application n'a pas pour objectif de collecter sciemment des informations personnelles concernant des enfants en violation des lois applicables. Si vous pensez qu'un enfant a fourni des informations personnelles sans autorisation appropriée, veuillez nous contacter afin que nous puissions examiner la situation et, le cas échéant, supprimer ces informations."
+          "body": "L'application n'est pas destinée à collecter intentionnellement des informations personnelles auprès d'enfants. Si vous pensez qu'un enfant nous a fourni des informations personnelles, veuillez nous contacter afin que nous puissions prendre les mesures appropriées."
         },
         "changes": {
-          "title": "11. Modifications de cette Politique de confidentialité",
-          "body": "Nous pouvons mettre à jour cette Politique de confidentialité lorsque l'application ou ses pratiques en matière de données évoluent. Les modifications seront publiées sur cette page avec une nouvelle date de mise à jour."
+          "title": "11. Modifications de cette politique",
+          "body": "Nous pouvons mettre à jour cette Politique de confidentialité lorsque nos fonctionnalités ou nos pratiques évoluent. La date de dernière mise à jour sera indiquée en haut de cette page. Nous vous encourageons à consulter régulièrement cette page."
         },
         "contact": {
           "title": "12. Contact",
-          "body": "Si vous avez des questions concernant cette Politique de confidentialité ou la manière dont vos informations sont traitées, veuillez contacter l'équipe du projet via les coordonnées fournies par l'application."
+          "body": "Si vous avez des questions concernant cette Politique de confidentialité ou le traitement de vos informations personnelles, veuillez nous contacter via les moyens de contact disponibles dans l'application."
         }
       }
     },
@@ -726,64 +726,59 @@
       "sections": {
         "acceptance": {
           "title": "1. Acceptation des conditions",
-          "body": "En accédant à cette application ou en l'utilisant, vous acceptez de respecter les présentes Conditions d'utilisation. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser l'application."
+          "body": "En accédant à notre application ou en l'utilisant, vous acceptez d'être lié par les présentes Conditions d'utilisation. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser le service."
         },
         "service": {
           "title": "2. Description du service",
-          "body": "L'application fournit une plateforme de jeux en ligne et de fonctionnalités sociales pouvant inclure des comptes et profils utilisateurs, des jeux en ligne, du matchmaking, des statistiques de jeu, des demandes d'amitié, des relations sociales et des fonctionnalités de communication. Les fonctionnalités peuvent être ajoutées, modifiées ou supprimées au cours du développement du projet."
+          "body": "Notre application fournit un espace collaboratif en temps réel permettant aux utilisateurs de créer des comptes et des profils, de se connecter avec d'autres utilisateurs, d'échanger des messages privés et de communiquer dans des canaux partagés et d'autres espaces sociaux. Le service peut également inclure des notifications et d'autres fonctionnalités de collaboration."
         },
         "accounts": {
           "title": "3. Comptes utilisateurs",
-          "body": "Vous êtes responsable de la sécurité de votre compte et de vos informations d'authentification. Vous devez fournir des informations exactes lors de la création ou de la modification de votre compte. Vous ne devez pas usurper l'identité d'une autre personne, utiliser le compte d'un autre utilisateur sans autorisation ou tenter d'accéder sans autorisation à un autre compte."
+          "body": "Vous êtes responsable de la confidentialité de vos identifiants de connexion et de toutes les activités effectuées depuis votre compte. Vous devez fournir des informations exactes et maintenir vos informations de compte à jour. Vous devez nous informer rapidement de toute utilisation non autorisée de votre compte."
         },
         "acceptableUse": {
           "title": "4. Utilisation acceptable",
-          "body": "Vous acceptez d'utiliser l'application de manière responsable et conformément aux lois applicables. Vous ne devez pas harceler, menacer ou maltraiter d'autres utilisateurs, distribuer des logiciels malveillants, tenter de compromettre ou perturber le service, exploiter des vulnérabilités de sécurité, manipuler les résultats des jeux par des moyens non autorisés ou accéder à des données auxquelles vous n'êtes pas autorisé à accéder."
+          "body": "Vous acceptez d'utiliser le service de manière légale et respectueuse. Vous ne devez pas utiliser l'application pour harceler, menacer ou usurper l'identité d'autres utilisateurs, envoyer du spam ou du contenu malveillant, tenter d'obtenir un accès non autorisé, perturber le fonctionnement du service ou enfreindre les droits d'autrui."
         },
         "communication": {
           "title": "5. Fonctionnalités sociales et de communication",
-          "body": "Les utilisateurs peuvent interagir grâce à des fonctionnalités telles que les demandes d'amitié et la messagerie. Les utilisateurs sont responsables du contenu qu'ils transmettent par ces fonctionnalités. Les outils de communication ne doivent pas être utilisés pour le harcèlement, les menaces, le spam, la diffusion de contenu malveillant ou des activités illégales."
-        },
-        "gaming": {
-          "title": "6. Règles des jeux",
-          "body": "Les utilisateurs doivent participer aux jeux de manière équitable. Il est interdit de modifier les données de jeu, d'exploiter des bugs pour obtenir un avantage, d'interférer avec la connexion d'un autre joueur, de manipuler les scores ou résultats, ou d'utiliser des logiciels non autorisés pour obtenir un avantage déloyal."
+          "body": "L'application permet aux utilisateurs d'envoyer des demandes d'amitié, d'échanger des messages privés et de participer à des canaux partagés. Les utilisateurs sont responsables de leurs communications et doivent respecter les présentes Conditions d'utilisation lorsqu'ils interagissent avec d'autres utilisateurs."
         },
         "content": {
-          "title": "7. Contenu généré par les utilisateurs",
-          "body": "Les utilisateurs peuvent télécharger ou soumettre du contenu tel que des photos de profil, biographies, noms d'utilisateur ou messages. Vous conservez les droits que vous détenez sur le contenu que vous soumettez. Vous êtes responsable de vous assurer que votre contenu ne viole pas les lois applicables ni les droits d'autrui."
+          "title": "6. Contenu généré par les utilisateurs",
+          "body": "Vous restez responsable du contenu que vous créez, envoyez ou partagez via l'application. Vous devez disposer des droits nécessaires pour utiliser ce contenu et vous ne devez pas partager de contenu illégal, frauduleux, abusif ou portant atteinte aux droits d'autrui."
         },
         "intellectualProperty": {
-          "title": "8. Propriété intellectuelle",
-          "body": "L'application, notamment ses logiciels, son design, son interface, ses logos et ses contenus originaux, est protégée par les lois applicables en matière de propriété intellectuelle. Sauf autorisation contraire, vous ne pouvez pas copier, modifier, distribuer, effectuer de l'ingénierie inverse ou exploiter commercialement une partie de l'application sans autorisation appropriée. Les logiciels et bibliothèques tiers restent soumis à leurs licences respectives."
+          "title": "7. Propriété intellectuelle",
+          "body": "L'application, sa conception, son code, ses fonctionnalités et son contenu, à l'exception du contenu fourni par les utilisateurs, sont protégés par les lois applicables relatives à la propriété intellectuelle. Vous ne devez pas copier, modifier, distribuer ou exploiter ces éléments sans autorisation appropriée."
         },
         "termination": {
-          "title": "9. Suspension et résiliation",
-          "body": "Nous pouvons suspendre ou résilier l'accès à un compte lorsque cela est raisonnablement nécessaire, notamment lorsqu'un utilisateur viole les présentes Conditions d'utilisation, tente de compromettre la sécurité de l'application, abuse d'autres utilisateurs, utilise le service à des fins illégales ou tente de manipuler ou perturber le service."
+          "title": "8. Suspension et résiliation",
+          "body": "Nous pouvons suspendre ou résilier un compte lorsque cela est nécessaire pour faire respecter les présentes Conditions d'utilisation, protéger les utilisateurs ou maintenir la sécurité et le fonctionnement du service. Les utilisateurs peuvent également cesser d'utiliser le service et demander la suppression de leur compte lorsque cette fonctionnalité est disponible."
         },
         "availability": {
-          "title": "10. Disponibilité du service",
-          "body": "Nous nous efforçons de maintenir l'application disponible et fonctionnelle, mais nous ne garantissons pas une disponibilité ininterrompue. Le service peut être temporairement indisponible en raison de maintenance, de mises à jour, de défaillances techniques, d'incidents de sécurité, de problèmes d'infrastructure ou de circonstances indépendantes de notre volonté."
+          "title": "9. Disponibilité du service",
+          "body": "Nous nous efforçons de maintenir le service disponible et fonctionnel, mais nous ne garantissons pas qu'il sera disponible sans interruption ou exempt d'erreurs. Le service peut être temporairement indisponible en raison de maintenance, de mises à jour ou de problèmes techniques."
         },
         "disclaimer": {
-          "title": "11. Exclusion de garantie",
-          "body": "L'application est fournie « en l'état » et « selon sa disponibilité », dans la mesure permise par la loi applicable. Nous ne garantissons pas que l'application sera toujours exempte d'erreurs, sécurisée ou disponible."
+          "title": "10. Exclusion de garantie",
+          "body": "Le service est fourni dans la mesure permise par la loi applicable. Nous ne garantissons pas que le service répondra à toutes vos attentes ni qu'il sera toujours disponible, sécurisé ou exempt d'erreurs."
         },
         "liability": {
-          "title": "12. Limitation de responsabilité",
-          "body": "Dans la mesure maximale autorisée par la loi applicable, l'équipe du projet ne pourra être tenue responsable des dommages indirects, accessoires ou consécutifs résultant de l'utilisation de l'application. Aucune disposition des présentes Conditions ne vise à exclure ou limiter une responsabilité lorsque cette exclusion ou limitation est interdite par la loi."
+          "title": "11. Limitation de responsabilité",
+          "body": "Dans la mesure permise par la loi applicable, nous ne sommes pas responsables des dommages indirects résultant de votre utilisation ou de votre impossibilité d'utiliser le service. Rien dans ces conditions ne limite une responsabilité qui ne peut légalement être exclue ou limitée."
         },
         "changes": {
-          "title": "13. Modifications des conditions",
-          "body": "Nous pouvons mettre à jour les présentes Conditions d'utilisation lorsque l'application ou ses fonctionnalités évoluent. Les conditions mises à jour seront publiées sur cette page avec une nouvelle date de mise à jour."
+          "title": "12. Modifications des conditions",
+          "body": "Nous pouvons modifier les présentes Conditions d'utilisation lorsque cela est nécessaire pour refléter l'évolution du service ou des exigences légales. Les conditions mises à jour seront publiées sur cette page avec une nouvelle date de mise à jour."
         },
         "law": {
-          "title": "14. Droit applicable",
-          "body": "Les présentes Conditions sont soumises au droit applicable. Les droits impératifs des consommateurs ou les droits relatifs à la protection des données qui s'appliquent aux utilisateurs restent inchangés."
+          "title": "13. Droit applicable",
+          "body": "Les présentes Conditions d'utilisation sont régies par les lois applicables à l'utilisation du service, sous réserve des dispositions impératives qui pourraient s'appliquer dans votre juridiction."
         },
         "contact": {
-          "title": "15. Contact",
-          "body": "Si vous avez des questions concernant ces Conditions d'utilisation, veuillez contacter l'équipe du projet via les coordonnées fournies par l'application."
-        }
+          "title": "14. Contact",
+          "body": "Si vous avez des questions concernant l'application, ses Conditions d'utilisation ou sa Politique de confidentialité, vous pouvez nous contacter à l'adresse transcendence.team@example.com."        }
       }
     }
   }

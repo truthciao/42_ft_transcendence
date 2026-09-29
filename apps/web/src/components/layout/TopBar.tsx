@@ -121,7 +121,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         <button
           type="button"
           className="inline-flex size-9 shrink-0 items-center justify-center rounded-md hover:bg-accent md:hidden"
-          aria-label="Open navigation"
+          aria-label={t('common.openNavigation')}
           onClick={onMenuClick}
         >
           <Menu className="size-5" />

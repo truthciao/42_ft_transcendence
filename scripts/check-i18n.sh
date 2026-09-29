@@ -54,11 +54,9 @@ echo "----------------------------------------"
 
 matches=$(
   rg_filtered -n \
-    'placeholder[[:space:]]*=[[:space:]]*"[^"{]*[A-Za-z][^"{]*"' \
+    '>[[:space:]]*[A-Za-z][A-Za-z0-9 ,.!?'"'"'’-]*[[:space:]]*</' \
     "$WEB_SRC" \
     2>/dev/null \
-    | grep -Ev \
-      'placeholder="(user@example\.com|https?://[^"]*|[0-9]+)"' \
     || true
 )
 

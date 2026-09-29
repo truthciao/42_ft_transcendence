@@ -3,6 +3,7 @@ import type { CurrentUser } from '@repo/shared-types';
 import { AuthContext } from './AuthContext';
 import { getCurrentUser } from '../api/users';
 import i18n from '../i18n';
+import { HttpError } from '../lib/http';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -28,9 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ) {
         void i18n.changeLanguage(currentUser.preferredLanguage);
       }
-    } catch {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user');
+    } catch (error) {
+      if (error instanceof HttpError && error.status === 401) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+      }
 
       setUser(null);
     }

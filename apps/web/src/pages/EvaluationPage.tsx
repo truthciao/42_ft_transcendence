@@ -185,7 +185,7 @@ export function EvaluationPage() {
             >
               {currentScore}{' '}
               <span className="text-2xl text-muted-foreground font-normal">
-                / {maxScore} pts
+                {t('evaluation.maxScore', { max: maxScore })}
               </span>
             </div>
           </div>

@@ -14,7 +14,8 @@
     "or": "或",
     "openApp": "打开应用",
     "navigation": "导航",
-    "openNavigation": "打开导航"
+    "openNavigation": "打开导航",
+    "language": "语言"
   },
 
   "admin": {
@@ -340,6 +341,7 @@
     "reset": "重置",
     "resetConfirm": "您确定要重置所有分数吗？",
     "totalScore": "总分",
+    "maxScore": "/ {{max}} 分",
     "pointsShort": "分",
     "moduleType": {
       "major": "主要要求",
@@ -440,7 +442,7 @@
     "loginInvalidCredentials": "邮箱或密码错误",
     "loginInvalidTwoFactorCode": "验证码错误",
 
-    "noAccount": "没有账户",
+    "noAccount": "还没有账号？",
     "submitting": "提交中...",
     "alreadyHaveAccount": "已有账户？",
     "loginHere": "在此登录",
@@ -488,7 +490,7 @@
       "title": "双因素身份验证（2FA）",
       "setupTitle": "设置双因素身份验证",
       "setupDescription": "1. 打开您的身份验证应用（例如 Google Authenticator）。\n2. 扫描下方的二维码，或手动输入密钥。",
-      "status": "状态",
+      "statusLine": "状态：{{status}}",
       "statusEnabled": "已启用",
       "statusDisabled": "已禁用",
       "enable": "启用 2FA",

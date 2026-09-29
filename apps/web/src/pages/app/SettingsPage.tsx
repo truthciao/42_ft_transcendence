@@ -190,12 +190,13 @@ export function AccountSettingsPage() {
       <div className="p-4 border rounded-lg bg-card flex items-center justify-between max-w-xl">
         <div>
           <h4 className="font-medium">{t('settings.twoFactor.title')}</h4>
-          <p className="text-sm text-muted-foreground">
-            {t('settings.twoFactor.status')}:{' '}
-            {isTwoFactorEnabled
-              ? `✅ ${t('settings.twoFactor.statusEnabled')}`
-              : `❌ ${t('settings.twoFactor.statusDisabled')}`}
-          </p>
+            <p className="text-sm text-muted-foreground">
+              {t('settings.twoFactor.statusLine', {
+                status: isTwoFactorEnabled
+                  ? `✅ ${t('settings.twoFactor.statusEnabled')}`
+                  : `❌ ${t('settings.twoFactor.statusDisabled')}`,
+              })}
+            </p>
         </div>
 
         {/* Render enable or disable button based on current status */}

@@ -102,7 +102,7 @@ jobs:
         run: pnpm --filter web lint
 
       - name: Check web i18n
-        run: pnpm i18n:check
+        run: pnpm eslint "apps/web/src/**/*.tsx"
 
       - name: Typecheck API
         run: pnpm --filter api typecheck

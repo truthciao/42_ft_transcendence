@@ -14,7 +14,8 @@
     "or": "OR",
     "openApp": "Open App",
     "navigation": "Navigation",
-    "openNavigation": "Open navigation"
+    "openNavigation": "Open navigation",
+    "language": "language"
   },
 
   "admin": {
@@ -340,6 +341,7 @@
     "reset": "Reset",
     "resetConfirm": "Are you sure you want to reset all scores?",
     "totalScore": "Total Score",
+    "maxScore": "/ {{max}} pts",
     "pointsShort": "pts",
     "moduleType": {
       "major": "Major Requirement",
@@ -440,7 +442,7 @@
     "loginInvalidCredentials": "Invalid email or password",
     "loginInvalidTwoFactorCode": "Invalid verification code",
 
-    "noAccount": "No account",
+    "noAccount": "Don't have an account?",
     "submitting": "Submitting...",
     "alreadyHaveAccount": "Already have an account?",
     "loginHere": "Login here",
@@ -488,7 +490,7 @@
       "title": "Two-Factor Authentication (2FA)",
       "setupTitle": "Set up Two-Factor Authentication",
       "setupDescription": "1. Open your authenticator app (like Google Authenticator). \n2. Scan the QR code below or enter the key manually.",
-      "status": "Status",
+      "statusLine": "Status: {{status}}",
       "statusEnabled": "Enabled",
       "statusDisabled": "Disabled",
       "enable": "Enable 2FA",

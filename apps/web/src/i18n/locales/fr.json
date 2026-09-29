@@ -88,7 +88,7 @@
     "empty": "Vous n'avez pas encore d'amis.",
     "searchPlaceholder": "Rechercher des amis...",
     "noSearchResults": "Aucun ami trouvé",
-    "selectFriend": "Sélectionnez un ami pour voir son profil",
+    "selectUser": "Sélectionnez un utilisateur pour voir son profil",
     "addFriend": {
       "title": "Ajouter un ami",
       "searchPlaceholder": "Rechercher par nom d'utilisateur",

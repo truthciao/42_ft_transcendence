@@ -22,7 +22,7 @@ export function FriendsPage() {
 
       <div className="hidden h-full items-center justify-center md:flex">
         <p className="text-sm text-muted-foreground">
-          {t('friends.selectFriend')}
+          {t('friends.selectUser')}
         </p>
       </div>
     </div>

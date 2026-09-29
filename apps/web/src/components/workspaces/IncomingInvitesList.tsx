@@ -56,10 +56,8 @@ export function IncomingInvitesList() {
               </p>
               <p className="truncate text-xs text-muted-foreground">
                 {t('workspaces.invites.invitedBy', {
-                  name:
-                    invite.inviter.profile?.displayName ||
-                    invite.inviter.username,
-                  role: t(`workspaces.roles.${invite.role}`),
+                  name: invite.inviter.username,
+                  role: t(`workspaces.roles.${invite.role}`, { defaultValue: invite.role }),
                 })}
               </p>
             </div>

@@ -86,7 +86,7 @@ export function TransferOwnershipDialog({
                 <span className="text-sm">
                   {member.user.profile?.displayName || member.user.username}
                   <span className="ml-1.5 text-xs text-muted-foreground">
-                    ({member.role})
+                    ({t(`workspaces.roles.${member.role}`, { defaultValue: member.role })})
                   </span>
                 </span>
               </label>

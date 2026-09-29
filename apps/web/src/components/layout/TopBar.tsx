@@ -263,7 +263,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <Languages className="size-4" />
-                Language
+                {t('common.language')}
               </DropdownMenuSubTrigger>
 
               <DropdownMenuSubContent>

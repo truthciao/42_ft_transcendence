@@ -14,7 +14,8 @@
     "or": "OU",
     "openApp": "Ouvrir l’application",
     "navigation": "Navigation",
-    "openNavigation": "Ouvrir la navigation"
+    "openNavigation": "Ouvrir la navigation",
+    "language": "langue"
   },
 
   "admin": {
@@ -340,6 +341,7 @@
     "reset": "Réinitialiser",
     "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser tous les scores ?",
     "totalScore": "Score total",
+    "maxScore": "/ {{max}} pts",
     "pointsShort": "pts",
     "moduleType": {
       "major": "Exigence majeure",
@@ -443,7 +445,7 @@
     "loginInvalidCredentials": "Adresse e-mail ou mot de passe incorrect",
     "loginInvalidTwoFactorCode": "Code de vérification incorrect",
 
-    "noAccount": "Pas de compte",
+    "noAccount": "Vous n'avez pas de compte ?",
     "submitting": "Envoi en cours...",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "loginHere": "Connectez-vous ici",
@@ -491,7 +493,7 @@
       "title": "Authentification à deux facteurs (2FA)",
       "setupTitle": "Configurer l’authentification à deux facteurs",
       "setupDescription": "1. Ouvrez votre application d’authentification (comme Google Authenticator).\n2. Scannez le code QR ci-dessous ou saisissez la clé manuellement.",
-      "status": "Statut",
+      "statusLine": "Statut : {{status}}",
       "statusEnabled": "Activée",
       "statusDisabled": "Désactivée",
       "enable": "Activer la 2FA",

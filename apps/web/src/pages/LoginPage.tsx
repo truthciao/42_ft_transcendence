@@ -300,7 +300,7 @@ export function LoginPage() {
 
       {!requires2FA && (
         <div className="mt-6 text-center text-sm">
-          {t('auth.noAccount')}?
+          {t('auth.noAccount')}
           <Link to="/register" className="text-primary hover:underline">
             {t('auth.register')}
           </Link>

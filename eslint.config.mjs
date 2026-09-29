@@ -4,6 +4,7 @@
 import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import i18next from 'eslint-plugin-i18next';
 
 const commonRules = {
   '@typescript-eslint/no-explicit-any': 'off',
@@ -123,6 +124,52 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars':
         commonRules['@typescript-eslint/no-unused-vars'],
+    },
+  },
+  
+  /*
+    * Web 前端 i18n 检查
+    *
+    * 只做 AST 层面的硬编码文案检查，不需要类型信息，
+    * 所以不用 projectService，速度快。
+    */
+  {
+    files: ['apps/web/src/**/*.tsx'],
+
+    ignores: [
+      'apps/web/src/**/pages/dev/**',
+      'apps/web/src/**/*.test.tsx',
+      'apps/web/src/**/*.spec.tsx',
+    ],
+
+    extends: [i18next.configs['flat/recommended']],
+
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+      globals: {
+        ...globals.browser,
+      },
+    },
+
+    rules: {
+      'i18next/no-literal-string': [
+        'error',
+        {
+          mode: 'jsx-text-only',
+          words: {
+            exclude: [
+              'transcendence',
+              'English',
+              'Français',
+              '中文',
+              '^[^\\p{L}]*$',
+            ],
+          },
+        },
+      ],
     },
   },
 );

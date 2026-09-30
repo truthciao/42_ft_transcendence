@@ -189,11 +189,11 @@ export function SpaceMembersPage() {
         <PendingInvitesSection workspaceId={id} />
       </PermissionGate>
 
-      <InviteMemberDialog
+      {can.inviteMember && (<InviteMemberDialog
         workspaceId={id}
         open={inviteOpen}
         onOpenChange={setInviteOpen}
-      />
+      />)}
     </div>
   );
 }

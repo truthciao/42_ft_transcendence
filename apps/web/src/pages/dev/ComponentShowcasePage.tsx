@@ -103,9 +103,9 @@ export function ComponentShowcasePage() {
 
       <Section title={t('showcase.sections.typography')}>
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold">Heading 1</h1>
-          <h2 className="text-3xl font-semibold">Heading 2</h2>
-          <h3 className="text-2xl font-semibold">Heading 3</h3>
+          <h1 className="text-4xl font-bold">{t('showcase.typography.heading1')}</h1>
+          <h2 className="text-3xl font-semibold">{t('showcase.typography.heading2')}</h2>
+          <h3 className="text-2xl font-semibold">{t('showcase.typography.heading3')}</h3>
 
           <p className="text-base">{t('showcase.typography.body')}</p>
 

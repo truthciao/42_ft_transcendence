@@ -566,7 +566,10 @@
     "typography": {
       "body": "Texte principal — Le vif renard brun saute par-dessus le chien paresseux.",
       "small": "Petit texte / texte secondaire",
-      "caption": "Texte de légende"
+      "caption": "Texte de légende",
+      "heading1": "Titre 1",
+      "heading2": "Titre 2",
+      "heading3": "Titre 3"
     },
     "input": {
       "usernamePlaceholder": "Entrez votre nom d'utilisateur...",

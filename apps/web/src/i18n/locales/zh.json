@@ -563,7 +563,10 @@
     "typography": {
       "body": "正文 — The quick brown fox jumps over the lazy dog.",
       "small": "小号 / 次要文本",
-      "caption": "说明文字"
+      "caption": "说明文字",
+      "heading1": "标题 1",
+      "heading2": "标题 2",
+      "heading3": "标题 3"
     },
     "input": {
       "usernamePlaceholder": "输入你的用户名...",

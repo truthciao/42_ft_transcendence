@@ -563,7 +563,10 @@
     "typography": {
       "body": "Body text — The quick brown fox jumps over the lazy dog.",
       "small": "Small / secondary text",
-      "caption": "Caption text"
+      "caption": "Caption text",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3"
     },
     "input": {
       "usernamePlaceholder": "Enter your username...",

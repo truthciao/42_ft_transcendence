@@ -688,53 +688,70 @@ The repository is organized as a pnpm monorepo:
 ```
 
 ---
+## Architecture Overview
 
-# Architecture Overview
+The application follows a containerized full-stack architecture managed by Docker Compose. Nginx acts as a reverse proxy, routing requests between the React frontend and the NestJS API. The API uses Prisma ORM to interact with PostgreSQL and manages uploaded files through persistent storage.
 
-The application follows a full-stack architecture:
+Real-time communication is handled by Socket.IO within the NestJS API.
 
-```text
-┌──────────────────────┐
-│      Browser         │
-│                      │
-│ React + TypeScript   │
-└──────────┬───────────┘
-           │
-      HTTP / WebSocket
-      (Socket.IO)
-           │
-           ▼
-┌──────────────────────┐
-│      NestJS API      │
-│                      │
-│ Controllers/Services │
-└──────────┬───────────┘
-           │
-        Prisma ORM
-           │
-           ▼
-┌──────────────────────┐
-│     PostgreSQL       │
-└──────────────────────┘
+```mermaid
+flowchart TB
+    Browser["Browser"]
+
+    subgraph Compose["Docker Compose"]
+        direction TB
+
+        Nginx["Nginx<br/>Reverse Proxy · HTTPS"]
+
+        subgraph App["Application"]
+            direction LR
+            Web["Web<br/>React · TypeScript · Vite"]
+            API["API<br/>NestJS · REST · Socket.IO"]
+        end
+
+        subgraph Storage["Persistent Storage"]
+            direction LR
+            DB[("PostgreSQL")]
+            Uploads[("Upload Volume")]
+        end
+
+        subgraph Init["Database Tasks"]
+            direction LR
+            Migrate["Migrate<br/>Prisma + Migrations"]
+            Seed["Seed<br/>Initial Data"]
+        end
+
+        Nginx --> Web
+        Nginx --> API
+        API -->|"Prisma ORM"| DB
+        API -->|"File storage"| Uploads
+        Migrate --> DB
+        Seed --> DB
+
+        subgraph Legend["Legend"]
+            direction LR
+            L1["Proxy"]
+            L2["Application"]
+            L3["Storage"]
+        end
+    end
+
+    Browser -->|"HTTP :8080 (Redirect) / HTTPS :8443"| Nginx
+
+    classDef proxy fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,stroke-width:2px
+    classDef service fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:2px,font-weight:bold
+    classDef storage fill:#fef3c7,stroke:#b45309,color:#78350f,stroke-width:2px
+
+    class Nginx,L1 proxy
+    class Web,API,Migrate,Seed,L2 service
+    class DB,Uploads,L3 storage
+
+    style Compose stroke:#475569,stroke-width:2px
+    style App stroke:#64748b,stroke-width:2px
+    style Storage stroke:#b45309,stroke-width:2px
+    style Init stroke:#15803d,stroke-width:2px
+    style Legend stroke:#94a3b8,stroke-width:1px
 ```
-
-For HTTPS deployments/development, Nginx is used as a reverse proxy:
-
-```text
-Browser
-   │
- HTTPS
-   ▼
- Nginx
-   │
-   ├── Frontend
-   │
-   └── NestJS API
-```
-
-Real-time communication is handled through Socket.IO alongside the HTTP API.
-
----
 
 # Resources
 

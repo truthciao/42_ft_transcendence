@@ -8,9 +8,6 @@ services:
       POSTGRES_PASSWORD: transcendence
       POSTGRES_DB: transcendence
 
-    ports:
-      - '5432:5432'
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -140,8 +137,6 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
-    # 同样不要指定 user。
-
     command:
       - /app/docker/dev-entrypoint.sh
       - pnpm
@@ -151,9 +146,6 @@ services:
       - vite
       - --host
       - 0.0.0.0
-
-    ports:
-      - '5173:5173'
 
     depends_on:
       api:

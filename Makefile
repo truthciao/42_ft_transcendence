@@ -58,10 +58,10 @@ rebuild: certs
 	docker compose --env-file ./apps/api/.env up -d --build --force-recreate -V
 
 stop:
-	docker compose down
+	docker compose --env-file ./apps/api/.env down
 
 restart: certs
-	docker compose restart
+	docker compose --env-file ./apps/api/.env restart
 
 build:
 	pnpm build
@@ -91,7 +91,7 @@ ci:
 	pnpm build
 
 db-up:
-	docker compose up -d postgres
+	docker compose --env-file ./apps/api/.env up -d postgres
 
 db-down:
 	docker compose stop postgres
@@ -116,6 +116,6 @@ clean:
 	rm -rf apps/web/dist
 
 fclean: stop clean
-	docker compose down -v --remove-orphans
+	docker compose --env-file ./apps/api/.env down -v --remove-orphans
 
 re: fclean start

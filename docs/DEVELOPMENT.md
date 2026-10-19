@@ -459,7 +459,21 @@ make ci
 
 # PostgreSQL
 
-Connect to the PostgreSQL container:
+## Database Users and Permissions
+
+The project uses separate PostgreSQL accounts for different responsibilities:
+
+- `transcendence`: Administrative account with superuser privileges. It should not be used for normal API requests.
+- `transcendence_app`: Application runtime account used by the API to access business data. It is not a superuser and cannot create objects in the `public` schema.
+- `transcendence_migrator`: Account used by the migration service to apply Prisma migrations.
+
+In Docker Compose, the API uses `DATABASE_URL_APP_DOCKER`, while the migration service uses `DATABASE_URL_MIGRATOR_DOCKER`.
+
+This separation follows the principle of least privilege and limits the permissions available to the application at runtime.
+
+Keep database credentials in the local environment configuration. Never commit real database passwords to Git.</WritingBlock>
+
+## Connect to the PostgreSQL container:
 
 ```bash
 docker compose exec postgres psql \

@@ -4,15 +4,20 @@ services:
     container_name: transcendence-postgres
 
     environment:
-      POSTGRES_USER: transcendence
-      POSTGRES_PASSWORD: transcendence
-      POSTGRES_DB: transcendence
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      TRANSCENDENCE_APP_PASSWORD: ${TRANSCENDENCE_APP_PASSWORD:?APP password is required}
+      TRANSCENDENCE_MIGRATOR_PASSWORD: ${TRANSCENDENCE_MIGRATOR_PASSWORD:?MIGRATOR password is required}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgresql/init:/docker-entrypoint-initdb.d:ro
 
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U transcendence -d transcendence']
+      test: 
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,7 +29,7 @@ services:
       dockerfile: Dockerfile.dev
 
     environment:
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL: ${DATABASE_URL_MIGRATOR_DOCKER:?MIGRATOR URL is required}
 
     # 先由 dev-entrypoint 同步 workspace dependencies，
     # 再执行 Prisma generate + migrate。
@@ -54,11 +59,11 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
-    env_file:
-      - ./apps/api/.env
-
     environment:
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL: ${DATABASE_URL_APP_DOCKER:?APP URL is required}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
+      SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:?SEED_ADMIN_USERNAME is required}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -99,7 +104,7 @@ services:
       NODE_ENV: development
       PORT: 3000
 
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL: ${DATABASE_URL_APP_DOCKER:?APP URL is required}
 
       JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
@@ -111,7 +116,7 @@ services:
       MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
 
-      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:5173}
+      APP_BASE_URL: ${APP_BASE_URL:-https://localhost:8443}
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -162,6 +167,9 @@ services:
     image: docker.io/library/nginx:1.27-alpine
     container_name: transcendence-nginx
 
+    security_opt:
+      - no-new-privileges:true
+  
     ports:
       - '8080:80'
       - '8443:443'

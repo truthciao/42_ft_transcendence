@@ -2,15 +2,12 @@
 
 set -eu
 
-# Read DATABASE_URL from a mounted Podman Secret.
+# Verify that the database URL Secret is readable.
 if [ -n "${DATABASE_URL_SECRET_FILE:-}" ]; then
     if [ ! -r "$DATABASE_URL_SECRET_FILE" ]; then
         echo "Error: database URL secret is not readable." >&2
         exit 1
     fi
-
-    DATABASE_URL=$(cat "$DATABASE_URL_SECRET_FILE")
-    export DATABASE_URL
 fi
 
 echo "Synchronizing workspace dependencies..."

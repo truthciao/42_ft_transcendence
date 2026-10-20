@@ -48,13 +48,8 @@ services:
       - |
         pnpm --dir apps/api exec prisma generate &&
         pnpm --dir apps/api exec prisma migrate deploy &&
-        psql "$(node -e '
-          const u = new URL(process.env.DATABASE_URL);
-          u.searchParams.delete("schema");
-          console.log(u.toString());
-        ')" -v ON_ERROR_STOP=1 \
-          -f /app/infra/postgresql/scripts/02-restrict-app-migrations.sql
-
+        sh /app/infra/postgresql/scripts/restrict-app-migrations.sh
+ 
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,12 +71,13 @@ services:
     secrets:
       - postgres_app_password
       - database_url_app
+      - seed_admin_password
 
     environment:
       DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
+      SEED_ADMIN_PASSWORD_FILE: /run/secrets/seed_admin_password
       SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
       SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:?SEED_ADMIN_USERNAME is required}
-      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -113,13 +109,15 @@ services:
     secrets:
       - postgres_app_password
       - database_url_app
+      - google_client_secret
+      - jwt_secret
+      - mail_pass
 
     # 不要指定 user。
     # Docker / rootless Podman 使用各自默认的容器用户映射。
 
     environment:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
       WEB_ORIGIN: ${WEB_ORIGIN}
 
@@ -127,15 +125,16 @@ services:
       PORT: 3000
 
       DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      GOOGLE_CLIENT_SECRET_FILE: /run/secrets/google_client_secret
+      MAIL_PASS_FILE: /run/secrets/mail_pass
 
-      JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
 
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
       MAIL_SECURE: ${MAIL_SECURE}
       MAIL_USER: ${MAIL_USER}
-      MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
 
       APP_BASE_URL: ${APP_BASE_URL:-https://localhost:8443}
@@ -214,6 +213,14 @@ secrets:
   database_url_app:
     external: true
   database_url_migrator:
+    external: true
+  google_client_secret:
+    external: true
+  jwt_secret:
+    external: true
+  mail_pass:
+    external: true
+  seed_admin_password:
     external: true
 
 volumes:

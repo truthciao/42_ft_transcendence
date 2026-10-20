@@ -41,4 +41,9 @@ create_secret postgres_migrator_password "${TRANSCENDENCE_MIGRATOR_PASSWORD:-}"
 create_secret database_url_app "${DATABASE_URL_APP_DOCKER:-}"
 create_secret database_url_migrator "${DATABASE_URL_MIGRATOR_DOCKER:-}"
 
+create_secret google_client_secret "${GOOGLE_CLIENT_SECRET:-}"
+create_secret jwt_secret "${JWT_SECRET:-}"
+create_secret mail_pass "${MAIL_PASS:-}"
+create_secret seed_admin_password "${SEED_ADMIN_PASSWORD:-}"
+
 echo "Secret preparation completed."

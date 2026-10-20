@@ -3,16 +3,20 @@ services:
     image: docker.io/library/postgres:17-alpine
     container_name: transcendence-postgres
 
+    secrets:
+      - postgres_admin_password
+      - postgres_app_password
+      - postgres_migrator_password
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_admin_password
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-      TRANSCENDENCE_APP_PASSWORD: ${TRANSCENDENCE_APP_PASSWORD:?APP password is required}
-      TRANSCENDENCE_MIGRATOR_PASSWORD: ${TRANSCENDENCE_MIGRATOR_PASSWORD:?MIGRATOR password is required}
-
+     
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infra/postgresql/init:/docker-entrypoint-initdb.d:ro
+      - ./infra/postgresql/scripts:/infra/postgresql/scripts:ro
 
     healthcheck:
       test: 
@@ -28,8 +32,12 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    secrets:
+      - postgres_migrator_password
+      - database_url_migrator
+
     environment:
-      DATABASE_URL: ${DATABASE_URL_MIGRATOR_DOCKER:?MIGRATOR URL is required}
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_migrator
 
     # 先由 dev-entrypoint 同步 workspace dependencies，
     # 再执行 Prisma generate + migrate。
@@ -65,8 +73,12 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    secrets:
+      - postgres_app_password
+      - database_url_app
+
     environment:
-      DATABASE_URL: ${DATABASE_URL_APP_DOCKER:?APP URL is required}
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
       SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
       SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:?SEED_ADMIN_USERNAME is required}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
@@ -98,6 +110,10 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    secrets:
+      - postgres_app_password
+      - database_url_app
+
     # 不要指定 user。
     # Docker / rootless Podman 使用各自默认的容器用户映射。
 
@@ -110,7 +126,7 @@ services:
       NODE_ENV: development
       PORT: 3000
 
-      DATABASE_URL: ${DATABASE_URL_APP_DOCKER:?APP URL is required}
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
 
       JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
@@ -188,6 +204,17 @@ services:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./infra/nginx/certs:/etc/nginx/certs:ro
 
+secrets:
+  postgres_admin_password:
+    external: true
+  postgres_app_password:
+    external: true
+  postgres_migrator_password:
+    external: true
+  database_url_app:
+    external: true
+  database_url_migrator:
+    external: true
 
 volumes:
   postgres_data:

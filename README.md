@@ -4,32 +4,20 @@
 
 ## Description
 
-### Goal
+ft_transcendence is a full-stack web application designed for real-time communication and collaboration. It allows users to connect with others, manage workspaces, exchange messages and files, and collaborate on documents in a shared environment.
 
-The goal of the project is to build a complete web application where users can communicate, manage workspaces, collaborate on documents in real time, and manage their profiles, relationships, notifications, and permissions.
+The application combines user authentication, workspace management, real-time communication, and collaborative features in a single platform.
 
-### Overview
+### Features
+* Authentication and Security: User registration and login, Google OAuth 2.0, and two-factor authentication.
+* User Management: Profiles, avatars, user search, and friendship requests.
+* Communication: Direct messages, group conversations, workspace channels, and online presence.
+* Workspace Management: Workspaces, member invitations, and role-based permissions.
+* Real-Time Notifications: Notifications and configurable notification preferences.
+* File Management: File uploads and message attachments.
+* Collaborative Documents: Document creation, editing, and real-time collaboration.
+* Internationalization: English, French, and Chinese interfaces.
 
-The application provides a unified environment where users can:
-
-* Create an account and authenticate securely.
-* Sign in using standard authentication or Google OAuth.
-* Enable two-factor authentication.
-* Manage their profile and avatar.
-* Search for and interact with other users.
-* Send and manage friendship requests.
-* Communicate through direct messages and group conversations.
-* Create and manage workspaces.
-* Invite users to workspaces and assign workspace roles.
-* Create and manage workspace channels.
-* Receive real-time notifications.
-* Configure notification preferences.
-* Upload and manage files and message attachments.
-* Create and edit collaborative documents.
-* Collaborate on documents in real time.
-* Use the application in English, French, or Chinese.
-* Access the application using supported additional browsers.
-* Use a consistent custom design system and reusable UI components.
 
 ---
 
@@ -93,52 +81,34 @@ HTTPS is used to reproduce a production-like secure connection and to support br
 
 For more detailed development commands and troubleshooting information, see:
 
-[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+[DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ---
 
 # Team Information
 
-The project was developed by a five-person team.
+## Team
 
-| Member      | Role            | Main Responsibilities                                                                                                            |
-| ----------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **yshi**    | Product Owner   | Product planning and priorities, custom design system, advanced permissions, real-time functionality                             |
-| **yanzhao** | Project Manager | Project coordination, task distribution, progress tracking, user management and authentication, OAuth 2.0, 2FA, user interaction |
-| **helin**   | Tech Lead       | Technical architecture, framework integration, ORM/database, technical decisions and code review                                 |
-| **zhwu**    | Developer       | Notification system, real-time collaborative features, multilingual support/i18n                                                 |
-| **hanwang** | Developer       | File upload and management system, related application development and integration                                               |
+The project was developed collaboratively by a five-person team.
 
-The responsibilities listed above describe the primary ownership of the corresponding features. Development was collaborative and team members also contributed to integration, testing, review, and other project tasks.
+| Member | Role | Main Responsibilities |
+|---|---|---|
+| **yshi** | Product Owner | Product planning, design system, permissions, real-time features |
+| **yanzhao** | Project Manager | Project coordination, task tracking, user management, OAuth 2.0, 2FA |
+| **helin** | Tech Lead | Technical architecture, database integration, technical decisions, code review |
+| **zhwu** | Developer | Notifications, real-time collaboration, internationalization |
+| **hanwang** | Developer | File uploads, file management, application integration |
+
+Responsibilities indicate primary ownership; development, integration, testing, and review were collaborative efforts.
+
 
 ---
 
-# Project Management
+## Project Management
 
-The project is managed collaboratively using GitHub and Notion, with Discord as the main communication channel.
+The team uses **GitHub Issues** for task tracking, **Notion** for planning and documentation, and **Discord** for daily communication.
 
-## Task Management
-
-* **GitHub Issues** are used to create, track, and discuss development tasks, bugs, and feature requests.
-* **Notion** is used for project organization, planning, documentation, and project-related information.
-
-## Communication
-
-* **Discord** is the main communication channel for day-to-day discussions, coordination, technical questions, and team communication.
-* **Weekly meetings** are held to review progress, discuss ongoing work, identify blockers, and coordinate upcoming tasks.
-
-## Development Workflow
-
-The team follows a feature-based Git workflow:
-
-1. Tasks and features are tracked through GitHub Issues.
-2. Developers create dedicated feature branches.
-3. Changes are committed to the corresponding branch.
-4. A Pull Request is opened when the work is ready for review.
-5. Team members perform code reviews before changes are merged.
-6. Weekly meetings and Discord discussions are used to coordinate work and resolve blockers.
-
-This workflow keeps responsibilities clear and ensures that changes are reviewed before being integrated into the main codebase.
+Development follows a feature-based Git workflow, with dedicated branches, Pull Requests, and code reviews before changes are merged into the main branch. Weekly meetings help the team review progress, discuss blockers, and coordinate upcoming work.
 
 ---
 

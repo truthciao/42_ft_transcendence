@@ -51,6 +51,7 @@ docker --version
 docker compose version
 make --version
 openssl version
+```
 
 ## Installation
 
@@ -63,112 +64,28 @@ cd 42_ft_transcendence
 
 ## Environment Configuration
 
-Create the required environment configuration according to the example provided by the project.
+Create your local environment configuration from the example provided by the project:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
 ```
 
-The application uses environment variables for database access, authentication, OAuth, email functionality, and initial administrator seeding.
+Configure the required variables in apps/api/.env before starting the application. Replace the placeholder values with your own credentials and settings, including Google OAuth credentials, database passwords, and the JWT secret.
 
-### JWT Secret
+For details, see the
+[Environment Configuration Guide](docs/environment-configuration.md).
 
-The application requires a secure `JWT_SECRET` for authentication.
+The .env file and generated secret files are local configuration files and must not be committed to version control.
 
-Generate a random secret from the terminal:
-
-```bash
-openssl rand -base64 32
-```
-
-Copy the generated value and add it to your `.env` file:
-
-```env
-JWT_SECRET="your-generated-secret"
-```
-
-Do not commit your actual `JWT_SECRET` or other secrets to the repository.
-
-### Initial Global Administrator
-
-The database seed can create an initial global administrator account.
-
-Add the following variables to your `.env` file:
-
-```env
-SEED_ADMIN_EMAIL="admin@example.com"
-SEED_ADMIN_USERNAME="admin"
-SEED_ADMIN_PASSWORD="change-me"
-```
-
-These variables define the credentials of the initial global administrator created by the database seed.
-
-For local development, replace the example password with a secure password before running the seed.
-
-Run the database seed with:
-
-```bash
-make db-seed
-```
-
-**Do not use example credentials in a production environment.**
-
-### Other Environment Variables
-
-A typical configuration includes:
-
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/transcendence"
-
-JWT_SECRET="your-generated-secret"
-
-SEED_ADMIN_EMAIL="admin@example.com"
-SEED_ADMIN_USERNAME="admin"
-SEED_ADMIN_PASSWORD="change-me"
-
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GOOGLE_CALLBACK_URL="http://localhost:8443/auth/google/callback"
-```
-
-### Optional Email Configuration
-
-Email functionality can be configured using SMTP:
-
-```env
-MAIL_HOST="smtp.gmail.com"
-MAIL_PORT="587"
-MAIL_SECURE="false"
-MAIL_USER="your-email@gmail.com"
-MAIL_PASS="your-app-password"
-MAIL_FROM="noreply@yourdomain.com"
-```
-
-Email configuration is optional. If SMTP is not configured, email notifications are skipped.
-
-When using Gmail, `MAIL_PASS` should normally be a Gmail **App Password**, rather than the account's regular password.
-
-## Running the Application
-
-Start the complete application with:
+Once the configuration is complete, start the application:
 
 ```bash
 make start
 ```
 
-Once all services are running, open the application at:
+The Makefile automatically generates the required Docker Compose secret files before starting the services.
 
-```text
-https://localhost:8443
-```
 
-The application is served through Nginx over HTTPS. Because a self-signed TLS certificate is used for local development, the browser may display a security warning on the first visit.
-
-To stop the application, run:
-
-```bash
-make stop
-```
 
 ## HTTPS
 
@@ -176,7 +93,7 @@ HTTPS is used to reproduce a production-like secure connection and to support br
 
 For more detailed development commands and troubleshooting information, see:
 
-`docs/DEVELOPMENT.md`
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ---
 
@@ -688,70 +605,11 @@ The repository is organized as a pnpm monorepo:
 ```
 
 ---
-## Architecture Overview
+## Architecture
+The application follows a containerized full-stack architecture managed by Docker Compose. Nginx serves as the reverse proxy, connecting the React frontend and NestJS API to PostgreSQL and persistent file storage.
+For a detailed overview of the system architecture, service responsibilities, and networking, see the [Architecture Documentation](/docs/ARCHITECTURE.md).
 
-The application follows a containerized full-stack architecture managed by Docker Compose. Nginx acts as a reverse proxy, routing requests between the React frontend and the NestJS API. The API uses Prisma ORM to interact with PostgreSQL and manages uploaded files through persistent storage.
 
-Real-time communication is handled by Socket.IO within the NestJS API.
-
-```mermaid
-flowchart TB
-    Browser["Browser"]
-
-    subgraph Compose["Docker Compose"]
-        direction TB
-
-        Nginx["Nginx<br/>Reverse Proxy · HTTPS"]
-
-        subgraph App["Application"]
-            direction LR
-            Web["Web<br/>React · TypeScript · Vite"]
-            API["API<br/>NestJS · REST · Socket.IO"]
-        end
-
-        subgraph Storage["Persistent Storage"]
-            direction LR
-            DB[("PostgreSQL")]
-            Uploads[("Upload Volume")]
-        end
-
-        subgraph Init["Database Tasks"]
-            direction LR
-            Migrate["Migrate<br/>Prisma + Migrations"]
-            Seed["Seed<br/>Initial Data"]
-        end
-
-        Nginx --> Web
-        Nginx --> API
-        API -->|"Prisma ORM"| DB
-        API -->|"File storage"| Uploads
-        Migrate --> DB
-        Seed --> DB
-
-        subgraph Legend["Legend"]
-            direction LR
-            L1["Proxy"]
-            L2["Application"]
-            L3["Storage"]
-        end
-    end
-
-    Browser -->|"HTTP :8080 (Redirect) / HTTPS :8443"| Nginx
-
-    classDef proxy fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,stroke-width:2px
-    classDef service fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:2px,font-weight:bold
-    classDef storage fill:#fef3c7,stroke:#b45309,color:#78350f,stroke-width:2px
-
-    class Nginx,L1 proxy
-    class Web,API,Migrate,Seed,L2 service
-    class DB,Uploads,L3 storage
-
-    style Compose stroke:#475569,stroke-width:2px
-    style App stroke:#64748b,stroke-width:2px
-    style Storage stroke:#b45309,stroke-width:2px
-    style Init stroke:#15803d,stroke-width:2px
-    style Legend stroke:#94a3b8,stroke-width:1px
-```
 
 # Resources
 

@@ -342,7 +342,7 @@ For Gmail SMTP, the typical configuration is:
 ```env
 MAIL_HOST="smtp.gmail.com"
 MAIL_PORT="587"
-MAIL_SECURE="false"
+MAIL_SECURE="false":
 ```
 
 When using a Gmail account, use a Google **App Password** for `MAIL_PASS` when required by the account's security configuration. Do not use or commit your normal Google account password.
@@ -651,37 +651,9 @@ When modifying shared schemas, make sure both applications continue to compile c
 
 # Application Architecture
 
-The project follows a monorepo architecture:
+The application follows a containerized full-stack architecture managed by Docker Compose. Nginx serves as the reverse proxy, connecting the React frontend and NestJS API to PostgreSQL and persistent file storage.
+For a detailed overview of the system architecture, service responsibilities, and networking, see the [Architecture Documentation](ARCHITECTURE.md).
 
-```text
-                    ┌──────────────────┐
-                    │     Browser      │
-                    └────────┬─────────┘
-                             │
-                             │ HTTPS
-                             ▼
-                    ┌──────────────────┐
-                    │      Nginx       │
-                    │ Reverse Proxy    │
-                    └───────┬───┬──────┘
-                            │   │
-                     Web    │   │    API
-                            │   │
-              ┌─────────────┘   └─────────────┐
-              ▼                               ▼
-      ┌────────────────┐              ┌────────────────┐
-      │ React / Vite   │              │    NestJS      │
-      │   Frontend     │              │    Backend     │
-      └────────────────┘              └───────┬────────┘
-                                              │
-                                              │ Prisma
-                                              ▼
-                                      ┌────────────────┐
-                                      │  PostgreSQL    │
-                                      └────────────────┘
-```
-
-Realtime functionality is handled through Socket.IO between the frontend and backend.
 
 ---
 

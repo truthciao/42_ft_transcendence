@@ -56,7 +56,7 @@ secrets:
 	
 # Full Docker environment
 start: certs secrets
-	docker compose --env-file ./apps/api/.env up -d
+	docker compose --env-file ./apps/api/.env up 
 
 rebuild: certs secrets
 	docker compose --env-file ./apps/api/.env up -d --build --force-recreate -V

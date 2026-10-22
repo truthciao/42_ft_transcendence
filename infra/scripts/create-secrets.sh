@@ -1,4 +1,3 @@
-
 #!/bin/sh
 set -eu
 umask 077
@@ -46,7 +45,7 @@ write_secret() {
         exit 1
     fi
 
-    chmod 600 "$tmp"
+    chmod 644 "$tmp"
     mv -f "$tmp" "$target"
     echo "Generated $name.txt"
 }

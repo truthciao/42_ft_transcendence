@@ -203,25 +203,26 @@ services:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./infra/nginx/certs:/etc/nginx/certs:ro
 
+
 secrets:
   postgres_admin_password:
-    external: true
+    file: ./infra/secrets/postgres_admin_password.txt
   postgres_app_password:
-    external: true
+    file: ./infra/secrets/postgres_app_password.txt
   postgres_migrator_password:
-    external: true
+    file: ./infra/secrets/postgres_migrator_password.txt
   database_url_app:
-    external: true
+    file: ./infra/secrets/database_url_app.txt
   database_url_migrator:
-    external: true
+    file: ./infra/secrets/database_url_migrator.txt
   google_client_secret:
-    external: true
+    file: ./infra/secrets/google_client_secret.txt
   jwt_secret:
-    external: true
+    file: ./infra/secrets/jwt_secret.txt
   mail_pass:
-    external: true
+    file: ./infra/secrets/mail_pass.txt
   seed_admin_password:
-    external: true
+    file: ./infra/secrets/seed_admin_password.txt
 
 volumes:
   postgres_data:

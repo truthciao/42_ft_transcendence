@@ -81,3 +81,4 @@ apps/api/uploads/
 .env
 infra/nginx/certs/*
 !infra/nginx/certs/.gitkeep
+/docs/database-panorama.svg

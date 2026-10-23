@@ -25,14 +25,18 @@ The application combines user authentication, workspace management, real-time co
 
 ## Prerequisites
 
-For the recommended Docker setup, you only need:
+For the recommended container setup, you need:
 
-* **Docker**
-* **Docker Compose**
-* **GNU Make**
-* **OpenSSL**
+* A container engine: Docker Engine or Podman
+* A Compose tool: Docker Compose or a compatible alternative, such as podman compose
+* GNU Make
+* OpenSSL
 
-Verify the required tools:
+Note: The exact setup may vary depending on the container engine and Compose implementation. Ensure that the commands and features used by the project are supported by your environment.
+
+Verify the tools for your chosen container setup:
+
+**Option 1: Docker**
 
 ```bash
 docker --version
@@ -40,6 +44,18 @@ docker compose version
 make --version
 openssl version
 ```
+
+**Option 2: Podman**
+
+```bash
+podman --version
+podman compose --version
+make --version
+openssl version
+```
+
+**Note:** Depending on your Podman setup, you may use Docker Compose with Podman's Docker-compatible API instead of `podman compose`. Ensure that your Compose implementation supports the features used by this project.
+
 
 ## Installation
 
@@ -103,100 +119,48 @@ Responsibilities indicate primary ownership; development, integration, testing, 
 
 
 ---
-
 ## Project Management
 
-The team uses **GitHub Issues** for task tracking, **Notion** for planning and documentation, and **Discord** for daily communication.
+The team uses **GitHub Issues** for task tracking, **Notion** for project planning and knowledge sharing, and **Discord** for daily communication.
 
-Development follows a feature-based Git workflow, with dedicated branches, Pull Requests, and code reviews before changes are merged into the main branch. Weekly meetings help the team review progress, discuss blockers, and coordinate upcoming work.
+- **Task Tracking & Planning:** Notion Kanban boards track tasks through to-do, in-progress, and completed states. Notion is also used to plan task assignments and distribute responsibilities across the team.
+- **Documentation:** Notion centralizes meeting notes, database schema documentation, backend API conventions, architecture diagrams, and user journey flows.
+- **Development Workflow:** Development follows a feature-based Git workflow with dedicated branches, Pull Requests, and code reviews before merging into the main branch. Weekly meetings help review progress, identify blockers, and coordinate upcoming work.
+- **GitHub–Discord Integration:** A Discord bot sends automatic notifications when Pull Requests are opened or changes are merged on GitHub, keeping the team informed of code review and integration activity.
 
 ---
+## Technical Stack
 
-# Technical Stack
+### Stack Overview
 
-## Frontend
+| Layer | Technologies | Purpose |
+|---|---|---|
+| **Frontend** | React, TypeScript, Vite, React Router | User interface, routing, and build tooling |
+| **Frontend Data & UI** | TanStack Query, Tailwind CSS, shadcn/ui, Base UI, Sonner | Server-state management, styling, reusable components, and notifications |
+| **Internationalization** | i18next, react-i18next | Multilingual user interface |
+| **Backend** | NestJS, TypeScript | Modular backend and REST API |
+| **Validation** | Zod, nestjs-zod | Runtime validation and NestJS DTO integration |
+| **Database** | PostgreSQL, Prisma | Relational data storage, type-safe database access, and migrations |
+| **Authentication** | JWT, Google OAuth 2.0, TOTP-based 2FA | Authentication and account security |
+| **Real-Time Communication** | Socket.IO | Real-time messaging, presence, and collaborative events |
+| **Infrastructure** | Docker, Docker Compose, Nginx | Containerization, service orchestration, reverse proxy, and HTTPS |
+| **Version Control** | Git, GitHub | Source control, issue tracking, and code review |
 
-| Technology                  | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| **React**                   | Component-based frontend application            |
-| **TypeScript**              | Static typing and safer application development |
-| **Vite**                    | Development server and frontend build tooling   |
-| **React Router**            | Client-side routing                             |
-| **TanStack Query**          | Server-state management and API data fetching   |
-| **i18next / react-i18next** | Internationalization                            |
-| **Tailwind CSS**            | Utility-based styling                           |
-| **shadcn/UI / Base UI**     | Reusable interface components                   |
-| **Sonner**                  | Toast notifications                             |
+### Why These Technologies?
 
-### Why React and TypeScript?
+- **React and TypeScript:** React provides reusable UI components to facilitate and standardize the development process. When it comes to TypeScript, the frontend and backend (NestJS) can share data types, allowing errors to be detected immediately at compile-time. 
+  
+- **NestJS:** NestJS helps us organize our backend business logic in a structured manner by breaking code into dedicated modules, such as auth, chat, and files. It strictly separates controllers from services, ensuring that each file is in charge of a specific responsibility within the backend.
 
-React provides a component-based architecture that fits the application's large number of reusable UI elements.
+- **PostgreSQL and Prisma:** Our real-time workspace includes friend networks, multiple chat rooms, workspace permission management, and complex interactions among several entities. To maintain data consistency and relational integrity, we chose PostgreSQL as our relational database. We adopted Prisma as our ORM to manage database migrations, which automatically establishes our database schema without having to write SQL manually. On the other hand, it generates TypeScript code so the backend can directly use type-safe methods to manipulate the database efficiently.
 
-TypeScript is used throughout the frontend to make component interfaces, API data, and shared types more explicit and easier to maintain.
+- **Socket.IO:** Socket.io enables two-way communication over WebSockets between the frontend and backend. It allows users to receive live updates on the page instantly without refreshing, greatly improving the user experience.
 
-Vite provides a fast development environment and efficient production builds.
+- **Docker Compose and Nginx:** Docker Compose solves the "it works on my machine" problem by packaging services into consistent, reproducible containers. Meanwhile, Nginx serves as the single reverse proxy and HTTPS entry point, ensuring internal services are never directly exposed to the public network, thereby minimizing the attack surface.
 
-## Backend
+The application also uses Docker Compose secrets to provide sensitive configuration to services without hardcoding credentials in the Compose configuration.
 
-| Technology                   | Purpose                                         |
-| ---------------------------- | ----------------------------------------------- |
-| **NestJS**                   | Backend framework                               |
-| **TypeScript**               | Type-safe backend development                   |
-| **Prisma**                   | ORM and database access                         |
-| **Zod**                      | Runtime schema validation                       |
-| **nestjs-zod**               | Integration between Zod schemas and NestJS DTOs |
-| **Socket.IO**                | Real-time communication                         |
-| **JWT**                      | Authentication                                  |
-| **OAuth 2.0 / Google OAuth** | Remote authentication                           |
 
-### Why NestJS?
-
-NestJS provides a modular backend architecture based on controllers, services, modules, and dependency injection. This structure is suitable for separating authentication, profiles, workspaces, conversations, notifications, documents, and other application domains.
-
-Using TypeScript on both frontend and backend also provides a consistent development environment.
-
-## Database
-
-### PostgreSQL
-
-PostgreSQL is used as the relational database.
-
-It was chosen because the application contains many structured relationships between users, workspaces, conversations, messages, friendships, notifications, documents, and attachments.
-
-A relational database is well suited to these relationships and provides foreign keys, unique constraints, indexes, and transactional consistency.
-
-### Prisma
-
-Prisma is used as the ORM.
-
-It provides:
-
-* Type-safe database access
-* Database migrations
-* Schema-based data modeling
-* Generated TypeScript database client
-* Clear relationships between entities
-
-## Real-Time Communication
-
-**Socket.IO** is used for real-time communication.
-
-It supports the application's real-time requirements, including:
-
-* Online presence
-* Notifications
-* Communication events
-* Workspace-related events
-* Collaborative document events
-
-## Infrastructure
-
-| Technology         | Purpose                               |
-| ------------------ | ------------------------------------- |
-| **Docker**         | Containerization                      |
-| **Docker Compose** | Multi-service development environment |
-| **Nginx**          | Reverse proxy and HTTPS               |
-| **GitHub**         | Source control and collaboration      |
 
 ---
 

@@ -1,0 +1,171 @@
+Table Attachment [headercolor: #C5D8FC] {
+	id uuid [ pk, not null ]
+	uploaderId integer [ not null ]
+	messageId integer
+	fileName text [ not null ]
+}
+
+Table NotificationPreference [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	userId integer [ not null ]
+	type text [ not null ]
+}
+
+Table Notification [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	recipientId integer [ not null ]
+	type text [ not null ]
+}
+
+Table Friendship [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	requesterId integer [ not null ]
+	addresseeId integer [ not null ]
+	status text [ not null ]
+}
+
+Table oauthAccount [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	userId integer [ not null ]
+	provider text [ not null ]
+	providerId text [ not null ]
+
+	indexes {
+		(provider, providerId) [ name: 'uq_oauth_provider_identity', unique ]
+	}
+}
+
+Table Profile [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	userId integer [ not null, unique ]
+}
+
+Table ConversationMember [headercolor: #7CA6F8] {
+	id integer [ pk, increment, not null ]
+	conversationId integer [ not null ]
+	userId integer [ not null ]
+
+	indexes {
+		(conversationId, userId) [ name: 'uq_conversation_member', unique ]
+	}
+}
+
+Table Message [headercolor: #BCD2FC] {
+	id integer [ pk, increment, not null ]
+	conversationId integer [ not null ]
+	senderId integer
+}
+
+Table Conversation [headercolor: #9BBBF9] {
+	id integer [ pk, increment, not null ]
+	type text [ not null ]
+	workspaceId integer
+}
+
+Table Document [headercolor: #F4A261] {
+	id integer [ pk, increment, not null ]
+	title text [ not null ]
+	workspaceId integer [ not null ]
+	creatorId integer
+}
+
+Table WorkspaceInvite [headercolor: #F4A261] {
+	id integer [ pk, increment, not null ]
+	workspaceId integer [ not null ]
+	inviterId integer [ not null ]
+	inviteeId integer
+}
+
+Table WorkspaceMember [headercolor: #F4A261] {
+	id integer [ pk, increment, not null ]
+	userId integer [ not null ]
+	workspaceId integer [ not null ]
+
+	indexes {
+		(workspaceId, userId) [ name: 'uq_workspace_member', unique ]
+	}
+}
+
+Table Workspace [headercolor: #C2410C] {
+	id integer [ pk, increment, not null ]
+	ownerId integer [ not null ]
+	name text [ not null ]
+}
+
+Table User [headercolor: #155EEF] {
+	id integer [ pk, increment, not null ]
+	email varchar(255) [ not null, unique ]
+	username text [ not null, unique ]
+}
+
+Ref FK1 {
+	User.id - Profile.userId [ delete: cascade, update: no action ]
+}
+
+Ref FK2 {
+	User.id < oauthAccount.userId [ delete: cascade, update: no action ]
+}
+
+Ref FK3 {
+	User.id < Workspace.ownerId [ delete: no action, update: no action ]
+}
+
+Ref FK4 {
+	User.id < WorkspaceMember.userId [ delete: no action, update: no action ]
+}
+
+Ref FK11 {
+	User.id < Friendship.requesterId [ delete: cascade, update: no action ]
+}
+
+Ref FK12 {
+	User.id < Friendship.addresseeId [ delete: cascade, update: no action ]
+}
+
+Ref FK14 {
+	User.id < Message.senderId [ delete: set null, update: no action ]
+}
+
+Ref FK15 {
+	User.id < Notification.recipientId [ delete: cascade, update: no action ]
+}
+
+Ref FK16 {
+	User.id < NotificationPreference.userId [ delete: cascade, update: no action ]
+}
+
+Ref FK17 {
+	User.id < Attachment.uploaderId [ delete: no action, update: no action ]
+}
+
+Ref FK5 {
+	Workspace.id < WorkspaceMember.workspaceId [ delete: cascade, update: no action ]
+}
+
+Ref FK6 {
+	Workspace.id < Document.workspaceId [ delete: cascade, update: no action ]
+}
+
+Ref FK7 {
+	Workspace.id < WorkspaceInvite.workspaceId [ delete: cascade, update: no action ]
+}
+
+Ref FK10 {
+	Workspace.id < Conversation.workspaceId [ delete: cascade, update: no action ]
+}
+
+Ref FK8 {
+	User.id < ConversationMember.userId [ delete: no action, update: no action ]
+}
+
+Ref FK9 {
+	Conversation.id < ConversationMember.conversationId [ delete: cascade, update: no action ]
+}
+
+Ref FK13 {
+	Conversation.id < Message.conversationId [ delete: cascade, update: no action ]
+}
+
+Ref FK18 {
+	Message.id < Attachment.messageId [ delete: no action, update: no action ]
+}

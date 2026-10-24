@@ -25,7 +25,6 @@ env:
   GOOGLE_CLIENT_ID: test-client-id
   GOOGLE_CLIENT_SECRET: test-client-secret
   GOOGLE_CALLBACK_URL: http://localhost:8443/auth/google/callback
-  # This CI uses dummy SMTP credentials; unit tests should mock delivery.
   MAIL_PASS: ci-only-mail-password
 
 jobs:
@@ -33,7 +32,6 @@ jobs:
     name: Quality and build
     runs-on: ubuntu-latest
     timeout-minutes: 25
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -45,14 +43,11 @@ jobs:
           umask 077
           secret_dir="${RUNNER_TEMP}/tsds-ci-secrets"
           mkdir -p "$secret_dir"
-          chmod 700 "$secret_dir"
-
           printf '%s' "$DATABASE_URL" > "$secret_dir/database_url_app.txt"
           printf '%s' "$DATABASE_URL" > "$secret_dir/database_url_migrator.txt"
           printf '%s' "$JWT_SECRET" > "$secret_dir/jwt_secret.txt"
           printf '%s' "$GOOGLE_CLIENT_SECRET" > "$secret_dir/google_client_secret.txt"
           printf '%s' "$MAIL_PASS" > "$secret_dir/mail_pass.txt"
-
           {
             echo "DATABASE_URL_SECRET_FILE=$secret_dir/database_url_app.txt"
             echo "JWT_SECRET_FILE=$secret_dir/jwt_secret.txt"
@@ -91,27 +86,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           for attempt in 1 2; do
             echo "pnpm install attempt ${attempt}/2"
-
             if pnpm install --frozen-lockfile --reporter=append-only; then
               echo "Dependencies installed successfully"
               break
             fi
-
             if [ "$attempt" -eq 2 ]; then
               echo "pnpm install failed after 2 attempts"
-              exit 1
-            fi
-
-            echo "Install failed; retrying..."
-            sleep 15
-          done
-
-        shell: bash
-        run: |
-          for attempt in 1 2; do
-            echo "pnpm install attempt ${attempt}/2"
-
-            if pnpm install --frozen-lockfile --reporter=append-only; then

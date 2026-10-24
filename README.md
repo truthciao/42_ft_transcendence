@@ -163,112 +163,22 @@ The application also uses Docker Compose secrets to provide sensitive configurat
 
 
 ---
+# Database Design
 
-# Database Schema
+The application uses **PostgreSQL** and **Prisma ORM** to manage relational data across four main modules:
 
-The project uses PostgreSQL with Prisma ORM.
+- **User & Identity** — user profiles, OAuth accounts, and friendships.
+- **Workspace & Documents** — workspaces, memberships, invitations, and documents.
+- **Messaging** — conversations, members, messages, and attachments.
+- **Notifications** — user notifications and notification preferences.
 
-The database is centered around users, profiles, workspaces, conversations, friendships, notifications, attachments, and collaborative documents.
+The schema uses foreign keys, unique constraints, and indexes to maintain data integrity and support efficient queries.
 
-## Main Entities
+<p align="center">
+  <img src="./docs/database-panorama.png" width="950" alt="Database Schema Overview">
+</p>
 
-| Entity                   | Purpose                               | Key Fields                                                                                |
-| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `User`                   | User account and authentication data  | `id`, `email`, `username`, `passwordHash`, `isTwoFactorEnabled`, `createdAt`, `updatedAt` |
-| `Profile`                | User profile information              | `id`, `userId`, `displayName`, `bio`, `avatarUrl`, `preferredLanguage`                    |
-| `OAuthAccount`           | External OAuth account associations   | `id`, `userId`, `provider`, `providerId`                                                  |
-| `Workspace`              | Organization/workspace                | `id`, `name`, `slug`, `description`, `icon`, `ownerId`                                    |
-| `WorkspaceMember`        | Workspace membership and role         | `id`, `workspaceId`, `userId`, `role`, `joinedAt`                                         |
-| `WorkspaceInvite`        | Workspace invitation management       | `id`, `workspaceId`, `inviterId`, `inviteeId`, `role`, `status`, `token`, `expiresAt`     |
-| `Conversation`           | Direct, group, or workspace channel   | `id`, `type`, `name`, `workspaceId`, `isDefault`                                          |
-| `ConversationMember`     | User membership in conversations      | `id`, `conversationId`, `userId`, `joinedAt`, `lastReadMessageId`                         |
-| `Message`                | Messages sent in conversations        | `id`, `conversationId`, `senderId`, `content`, `createdAt`                                |
-| `Friendship`             | Friendship requests and relationships | `id`, `requesterId`, `addresseeId`, `status`, `createdAt`, `updatedAt`                    |
-| `Notification`           | User and workspace notifications      | `id`, `recipientId`, `actorId`, `type`, `read`, `createdAt`                               |
-| `NotificationPreference` | Per-user notification preferences     | `id`, `userId`, `type`, `viaInApp`, `viaEmail`                                            |
-| `Attachment`             | Uploaded file metadata                | `id`, `uploaderId`, `messageId`, `fileName`, `fileUrl`, `fileType`, `fileSize`            |
-| `Document`               | Collaborative workspace documents     | `id`, `title`, `content`, `yjsState`, `workspaceId`, `creatorId`                          |
-
-## Main Relationships
-
-* A `User` can have one optional `Profile`.
-* A `User` can have multiple `OAuthAccount` records.
-* A `User` can own multiple `Workspace` records.
-* `WorkspaceMember` creates a many-to-many relationship between `User` and `Workspace` and stores the user's role.
-* A `Workspace` can contain multiple `WorkspaceInvite` records.
-* A `Workspace` can contain multiple conversations/channels.
-* A `Workspace` can contain multiple collaborative documents.
-* `ConversationMember` creates a many-to-many relationship between `User` and `Conversation`.
-* A `Conversation` contains multiple `Message` records.
-* Each `Message` belongs to a `User` as its sender.
-* A `Message` can have multiple `Attachment` records.
-* `Friendship` connects two users through requester and addressee relationships.
-* `Notification` belongs to a recipient and can optionally reference an actor, friendship, or workspace.
-* `NotificationPreference` stores notification settings for each user and notification type.
-* An `Attachment` belongs to its uploader and can optionally be associated with a message.
-* A `Document` belongs to a `Workspace` and has a creator represented by a `User`.
-
-## Enums
-
-The schema defines the following enums:
-
-* `PreferredLanguage`: `en`, `fr`, `zh`
-* `WorkspaceRole`: `OWNER`, `ADMIN`, `MEMBER`
-* `WorkspaceInviteStatus`: `PENDING`, `ACCEPTED`, `REJECTED`, `REVOKED`
-* `ConversationType`: `DIRECT`, `GROUP`, `CHANNEL`
-* `FriendshipStatus`: `PENDING`, `ACCEPTED`, `BLOCKED`
-* `NotificationType`: notification events related to friendships and workspaces
-
-## Database Constraints and Indexes
-
-The schema uses primary keys, foreign keys, unique constraints, indexes, and cascading rules.
-
-Examples include:
-
-* `User.email` and `User.username` are unique.
-* `Profile.userId` is unique, enforcing a one-to-one relationship between `User` and `Profile`.
-* `OAuthAccount` has a unique constraint on `(provider, providerId)`.
-* `Workspace.slug` is unique.
-* `WorkspaceMember` has a unique constraint on `(workspaceId, userId)`.
-* `ConversationMember` has a unique constraint on `(conversationId, userId)`.
-* `Friendship` has a unique constraint on `(requesterId, addresseeId)`.
-* `NotificationPreference` has a unique constraint on `(userId, type)`.
-* Notification and workspace membership queries use dedicated indexes.
-* Several relationships use cascading deletes to maintain referential integrity.
-
-### Entity Relationship Overview
-
-```text
-                                  ┌──────────────┐
-                                  │     User     │
-                                  └──────┬───────┘
-             ┌──────────────────────────┼──────────────────────────┐
-             │             │            │             │            │
-             ▼             ▼            ▼             ▼            ▼
-         Profile     OAuthAccount   Workspace     Friendship   Notification
-                                      │
-                         ┌────────────┼──────────────┐
-                         │            │              │
-                         ▼            ▼              ▼
-                  WorkspaceMember  Invite       Document
-                         │
-                         ▼
-                       User
-
-Workspace
-   │
-   └── Conversation
-          │
-          ├── ConversationMember ── User
-          │
-          └── Message
-                │
-                └── Attachment
-
-User
- ├── NotificationPreference
- └── Attachment
-```
+For detailed entity relationships, foreign key constraints, and indexes, see the [Database Documentation](./docs/DATABASE.md).
 
 ---
 

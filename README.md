@@ -4,32 +4,20 @@
 
 ## Description
 
-### Goal
+ft_transcendence is a full-stack web application designed for real-time communication and collaboration. It allows users to connect with others, manage workspaces, exchange messages and files, and collaborate on documents in a shared environment.
 
-The goal of the project is to build a complete web application where users can communicate, manage workspaces, collaborate on documents in real time, and manage their profiles, relationships, notifications, and permissions.
+The application combines user authentication, workspace management, real-time communication, and collaborative features in a single platform.
 
-### Overview
+### Features
+* Authentication and Security: User registration and login, Google OAuth 2.0, and two-factor authentication.
+* User Management: Profiles, avatars, user search, and friendship requests.
+* Communication: Direct messages, group conversations, workspace channels, and online presence.
+* Workspace Management: Workspaces, member invitations, and role-based permissions.
+* Real-Time Notifications: Notifications and configurable notification preferences.
+* File Management: File uploads and message attachments.
+* Collaborative Documents: Document creation, editing, and real-time collaboration.
+* Internationalization: English, French, and Chinese interfaces.
 
-The application provides a unified environment where users can:
-
-* Create an account and authenticate securely.
-* Sign in using standard authentication or Google OAuth.
-* Enable two-factor authentication.
-* Manage their profile and avatar.
-* Search for and interact with other users.
-* Send and manage friendship requests.
-* Communicate through direct messages and group conversations.
-* Create and manage workspaces.
-* Invite users to workspaces and assign workspace roles.
-* Create and manage workspace channels.
-* Receive real-time notifications.
-* Configure notification preferences.
-* Upload and manage files and message attachments.
-* Create and edit collaborative documents.
-* Collaborate on documents in real time.
-* Use the application in English, French, or Chinese.
-* Access the application using supported additional browsers.
-* Use a consistent custom design system and reusable UI components.
 
 ---
 
@@ -37,20 +25,37 @@ The application provides a unified environment where users can:
 
 ## Prerequisites
 
-For the recommended Docker setup, you only need:
+For the recommended container setup, you need:
 
-* **Docker**
-* **Docker Compose**
-* **GNU Make**
-* **OpenSSL**
+* A container engine: Docker Engine or Podman
+* A Compose tool: Docker Compose or a compatible alternative, such as podman compose
+* GNU Make
+* OpenSSL
 
-Verify the required tools:
+Note: The exact setup may vary depending on the container engine and Compose implementation. Ensure that the commands and features used by the project are supported by your environment.
+
+Verify the tools for your chosen container setup:
+
+**Option 1: Docker**
 
 ```bash
 docker --version
 docker compose version
 make --version
 openssl version
+```
+
+**Option 2: Podman**
+
+```bash
+podman --version
+podman compose --version
+make --version
+openssl version
+```
+
+**Note:** Depending on your Podman setup, you may use Docker Compose with Podman's Docker-compatible API instead of `podman compose`. Ensure that your Compose implementation supports the features used by this project.
+
 
 ## Installation
 
@@ -63,112 +68,28 @@ cd 42_ft_transcendence
 
 ## Environment Configuration
 
-Create the required environment configuration according to the example provided by the project.
+Create your local environment configuration from the example provided by the project:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
 ```
 
-The application uses environment variables for database access, authentication, OAuth, email functionality, and initial administrator seeding.
+Configure the required variables in apps/api/.env before starting the application. Replace the placeholder values with your own credentials and settings, including Google OAuth credentials, database passwords, and the JWT secret.
 
-### JWT Secret
+For details, see the
+[Environment Configuration Guide](docs/environment-configuration.md).
 
-The application requires a secure `JWT_SECRET` for authentication.
+The .env file and generated secret files are local configuration files and must not be committed to version control.
 
-Generate a random secret from the terminal:
-
-```bash
-openssl rand -base64 32
-```
-
-Copy the generated value and add it to your `.env` file:
-
-```env
-JWT_SECRET="your-generated-secret"
-```
-
-Do not commit your actual `JWT_SECRET` or other secrets to the repository.
-
-### Initial Global Administrator
-
-The database seed can create an initial global administrator account.
-
-Add the following variables to your `.env` file:
-
-```env
-SEED_ADMIN_EMAIL="admin@example.com"
-SEED_ADMIN_USERNAME="admin"
-SEED_ADMIN_PASSWORD="change-me"
-```
-
-These variables define the credentials of the initial global administrator created by the database seed.
-
-For local development, replace the example password with a secure password before running the seed.
-
-Run the database seed with:
-
-```bash
-make db-seed
-```
-
-**Do not use example credentials in a production environment.**
-
-### Other Environment Variables
-
-A typical configuration includes:
-
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/transcendence"
-
-JWT_SECRET="your-generated-secret"
-
-SEED_ADMIN_EMAIL="admin@example.com"
-SEED_ADMIN_USERNAME="admin"
-SEED_ADMIN_PASSWORD="change-me"
-
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-GOOGLE_CALLBACK_URL="http://localhost:8443/auth/google/callback"
-```
-
-### Optional Email Configuration
-
-Email functionality can be configured using SMTP:
-
-```env
-MAIL_HOST="smtp.gmail.com"
-MAIL_PORT="587"
-MAIL_SECURE="false"
-MAIL_USER="your-email@gmail.com"
-MAIL_PASS="your-app-password"
-MAIL_FROM="noreply@yourdomain.com"
-```
-
-Email configuration is optional. If SMTP is not configured, email notifications are skipped.
-
-When using Gmail, `MAIL_PASS` should normally be a Gmail **App Password**, rather than the account's regular password.
-
-## Running the Application
-
-Start the complete application with:
+Once the configuration is complete, start the application:
 
 ```bash
 make start
 ```
 
-Once all services are running, open the application at:
+The Makefile automatically generates the required Docker Compose secret files before starting the services.
 
-```text
-https://localhost:8443
-```
 
-The application is served through Nginx over HTTPS. Because a self-signed TLS certificate is used for local development, the browser may display a security warning on the first visit.
-
-To stop the application, run:
-
-```bash
-make stop
-```
 
 ## HTTPS
 
@@ -176,248 +97,88 @@ HTTPS is used to reproduce a production-like secure connection and to support br
 
 For more detailed development commands and troubleshooting information, see:
 
-`docs/DEVELOPMENT.md`
+[DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ---
 
 # Team Information
 
-The project was developed by a five-person team.
+## Team
 
-| Member      | Role            | Main Responsibilities                                                                                                            |
-| ----------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **yshi**    | Product Owner   | Product planning and priorities, custom design system, advanced permissions, real-time functionality                             |
-| **yanzhao** | Project Manager | Project coordination, task distribution, progress tracking, user management and authentication, OAuth 2.0, 2FA, user interaction |
-| **helin**   | Tech Lead       | Technical architecture, framework integration, ORM/database, technical decisions and code review                                 |
-| **zhwu**    | Developer       | Notification system, real-time collaborative features, multilingual support/i18n                                                 |
-| **hanwang** | Developer       | File upload and management system, related application development and integration                                               |
+The project was developed collaboratively by a five-person team.
 
-The responsibilities listed above describe the primary ownership of the corresponding features. Development was collaborative and team members also contributed to integration, testing, review, and other project tasks.
+| Member | Role | Main Responsibilities |
+|---|---|---|
+| **yshi** | Product Owner | Product planning, design system, permissions, real-time features |
+| **yanzhao** | Project Manager | Project coordination, task tracking, user management, OAuth 2.0, 2FA |
+| **helin** | Tech Lead | Technical architecture, database integration, technical decisions, code review |
+| **zhwu** | Developer | Notifications, real-time collaboration, internationalization |
+| **hanwang** | Developer | File uploads, file management, application integration |
 
----
+Responsibilities indicate primary ownership; development, integration, testing, and review were collaborative efforts.
 
-# Project Management
-
-The project is managed collaboratively using GitHub and Notion, with Discord as the main communication channel.
-
-## Task Management
-
-* **GitHub Issues** are used to create, track, and discuss development tasks, bugs, and feature requests.
-* **Notion** is used for project organization, planning, documentation, and project-related information.
-
-## Communication
-
-* **Discord** is the main communication channel for day-to-day discussions, coordination, technical questions, and team communication.
-* **Weekly meetings** are held to review progress, discuss ongoing work, identify blockers, and coordinate upcoming tasks.
-
-## Development Workflow
-
-The team follows a feature-based Git workflow:
-
-1. Tasks and features are tracked through GitHub Issues.
-2. Developers create dedicated feature branches.
-3. Changes are committed to the corresponding branch.
-4. A Pull Request is opened when the work is ready for review.
-5. Team members perform code reviews before changes are merged.
-6. Weekly meetings and Discord discussions are used to coordinate work and resolve blockers.
-
-This workflow keeps responsibilities clear and ensures that changes are reviewed before being integrated into the main codebase.
 
 ---
+## Project Management
 
-# Technical Stack
+The team uses **GitHub Issues** for task tracking, **Notion** for project planning and knowledge sharing, and **Discord** for daily communication.
 
-## Frontend
-
-| Technology                  | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| **React**                   | Component-based frontend application            |
-| **TypeScript**              | Static typing and safer application development |
-| **Vite**                    | Development server and frontend build tooling   |
-| **React Router**            | Client-side routing                             |
-| **TanStack Query**          | Server-state management and API data fetching   |
-| **i18next / react-i18next** | Internationalization                            |
-| **Tailwind CSS**            | Utility-based styling                           |
-| **shadcn/UI / Base UI**     | Reusable interface components                   |
-| **Sonner**                  | Toast notifications                             |
-
-### Why React and TypeScript?
-
-React provides a component-based architecture that fits the application's large number of reusable UI elements.
-
-TypeScript is used throughout the frontend to make component interfaces, API data, and shared types more explicit and easier to maintain.
-
-Vite provides a fast development environment and efficient production builds.
-
-## Backend
-
-| Technology                   | Purpose                                         |
-| ---------------------------- | ----------------------------------------------- |
-| **NestJS**                   | Backend framework                               |
-| **TypeScript**               | Type-safe backend development                   |
-| **Prisma**                   | ORM and database access                         |
-| **Zod**                      | Runtime schema validation                       |
-| **nestjs-zod**               | Integration between Zod schemas and NestJS DTOs |
-| **Socket.IO**                | Real-time communication                         |
-| **JWT**                      | Authentication                                  |
-| **OAuth 2.0 / Google OAuth** | Remote authentication                           |
-
-### Why NestJS?
-
-NestJS provides a modular backend architecture based on controllers, services, modules, and dependency injection. This structure is suitable for separating authentication, profiles, workspaces, conversations, notifications, documents, and other application domains.
-
-Using TypeScript on both frontend and backend also provides a consistent development environment.
-
-## Database
-
-### PostgreSQL
-
-PostgreSQL is used as the relational database.
-
-It was chosen because the application contains many structured relationships between users, workspaces, conversations, messages, friendships, notifications, documents, and attachments.
-
-A relational database is well suited to these relationships and provides foreign keys, unique constraints, indexes, and transactional consistency.
-
-### Prisma
-
-Prisma is used as the ORM.
-
-It provides:
-
-* Type-safe database access
-* Database migrations
-* Schema-based data modeling
-* Generated TypeScript database client
-* Clear relationships between entities
-
-## Real-Time Communication
-
-**Socket.IO** is used for real-time communication.
-
-It supports the application's real-time requirements, including:
-
-* Online presence
-* Notifications
-* Communication events
-* Workspace-related events
-* Collaborative document events
-
-## Infrastructure
-
-| Technology         | Purpose                               |
-| ------------------ | ------------------------------------- |
-| **Docker**         | Containerization                      |
-| **Docker Compose** | Multi-service development environment |
-| **Nginx**          | Reverse proxy and HTTPS               |
-| **GitHub**         | Source control and collaboration      |
+- **Task Tracking & Planning:** Notion Kanban boards track tasks through to-do, in-progress, and completed states. Notion is also used to plan task assignments and distribute responsibilities across the team.
+- **Documentation:** Notion centralizes meeting notes, database schema documentation, backend API conventions, architecture diagrams, and user journey flows.
+- **Development Workflow:** Development follows a feature-based Git workflow with dedicated branches, Pull Requests, and code reviews before merging into the main branch. Weekly meetings help review progress, identify blockers, and coordinate upcoming work.
+- **GitHub–Discord Integration:** A Discord bot sends automatic notifications when Pull Requests are opened or changes are merged on GitHub, keeping the team informed of code review and integration activity.
 
 ---
+## Technical Stack
 
-# Database Schema
+### Stack Overview
 
-The project uses PostgreSQL with Prisma ORM.
+| Layer | Technologies | Purpose |
+|---|---|---|
+| **Frontend** | React, TypeScript, Vite, React Router | User interface, routing, and build tooling |
+| **Frontend Data & UI** | TanStack Query, Tailwind CSS, shadcn/ui, Base UI, Sonner | Server-state management, styling, reusable components, and notifications |
+| **Internationalization** | i18next, react-i18next | Multilingual user interface |
+| **Backend** | NestJS, TypeScript | Modular backend and REST API |
+| **Validation** | Zod, nestjs-zod | Runtime validation and NestJS DTO integration |
+| **Database** | PostgreSQL, Prisma | Relational data storage, type-safe database access, and migrations |
+| **Authentication** | JWT, Google OAuth 2.0, TOTP-based 2FA | Authentication and account security |
+| **Real-Time Communication** | Socket.IO | Real-time messaging, presence, and collaborative events |
+| **Infrastructure** | Docker, Docker Compose, Nginx | Containerization, service orchestration, reverse proxy, and HTTPS |
+| **Version Control** | Git, GitHub | Source control, issue tracking, and code review |
 
-The database is centered around users, profiles, workspaces, conversations, friendships, notifications, attachments, and collaborative documents.
+### Why These Technologies?
 
-## Main Entities
+- **React and TypeScript:** React provides reusable UI components to facilitate and standardize the development process. When it comes to TypeScript, the frontend and backend (NestJS) can share data types, allowing errors to be detected immediately at compile-time. 
+  
+- **NestJS:** NestJS helps us organize our backend business logic in a structured manner by breaking code into dedicated modules, such as auth, chat, and files. It strictly separates controllers from services, ensuring that each file is in charge of a specific responsibility within the backend.
 
-| Entity                   | Purpose                               | Key Fields                                                                                |
-| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `User`                   | User account and authentication data  | `id`, `email`, `username`, `passwordHash`, `isTwoFactorEnabled`, `createdAt`, `updatedAt` |
-| `Profile`                | User profile information              | `id`, `userId`, `displayName`, `bio`, `avatarUrl`, `preferredLanguage`                    |
-| `OAuthAccount`           | External OAuth account associations   | `id`, `userId`, `provider`, `providerId`                                                  |
-| `Workspace`              | Organization/workspace                | `id`, `name`, `slug`, `description`, `icon`, `ownerId`                                    |
-| `WorkspaceMember`        | Workspace membership and role         | `id`, `workspaceId`, `userId`, `role`, `joinedAt`                                         |
-| `WorkspaceInvite`        | Workspace invitation management       | `id`, `workspaceId`, `inviterId`, `inviteeId`, `role`, `status`, `token`, `expiresAt`     |
-| `Conversation`           | Direct, group, or workspace channel   | `id`, `type`, `name`, `workspaceId`, `isDefault`                                          |
-| `ConversationMember`     | User membership in conversations      | `id`, `conversationId`, `userId`, `joinedAt`, `lastReadMessageId`                         |
-| `Message`                | Messages sent in conversations        | `id`, `conversationId`, `senderId`, `content`, `createdAt`                                |
-| `Friendship`             | Friendship requests and relationships | `id`, `requesterId`, `addresseeId`, `status`, `createdAt`, `updatedAt`                    |
-| `Notification`           | User and workspace notifications      | `id`, `recipientId`, `actorId`, `type`, `read`, `createdAt`                               |
-| `NotificationPreference` | Per-user notification preferences     | `id`, `userId`, `type`, `viaInApp`, `viaEmail`                                            |
-| `Attachment`             | Uploaded file metadata                | `id`, `uploaderId`, `messageId`, `fileName`, `fileUrl`, `fileType`, `fileSize`            |
-| `Document`               | Collaborative workspace documents     | `id`, `title`, `content`, `yjsState`, `workspaceId`, `creatorId`                          |
+- **PostgreSQL and Prisma:** Our real-time workspace includes friend networks, multiple chat rooms, workspace permission management, and complex interactions among several entities. To maintain data consistency and relational integrity, we chose PostgreSQL as our relational database. We adopted Prisma as our ORM to manage database migrations, which automatically establishes our database schema without having to write SQL manually. On the other hand, it generates TypeScript code so the backend can directly use type-safe methods to manipulate the database efficiently.
 
-## Main Relationships
+- **Socket.IO:** Socket.io enables two-way communication over WebSockets between the frontend and backend. It allows users to receive live updates on the page instantly without refreshing, greatly improving the user experience.
 
-* A `User` can have one optional `Profile`.
-* A `User` can have multiple `OAuthAccount` records.
-* A `User` can own multiple `Workspace` records.
-* `WorkspaceMember` creates a many-to-many relationship between `User` and `Workspace` and stores the user's role.
-* A `Workspace` can contain multiple `WorkspaceInvite` records.
-* A `Workspace` can contain multiple conversations/channels.
-* A `Workspace` can contain multiple collaborative documents.
-* `ConversationMember` creates a many-to-many relationship between `User` and `Conversation`.
-* A `Conversation` contains multiple `Message` records.
-* Each `Message` belongs to a `User` as its sender.
-* A `Message` can have multiple `Attachment` records.
-* `Friendship` connects two users through requester and addressee relationships.
-* `Notification` belongs to a recipient and can optionally reference an actor, friendship, or workspace.
-* `NotificationPreference` stores notification settings for each user and notification type.
-* An `Attachment` belongs to its uploader and can optionally be associated with a message.
-* A `Document` belongs to a `Workspace` and has a creator represented by a `User`.
+- **Docker Compose and Nginx:** Docker Compose solves the "it works on my machine" problem by packaging services into consistent, reproducible containers. Meanwhile, Nginx serves as the single reverse proxy and HTTPS entry point, ensuring internal services are never directly exposed to the public network, thereby minimizing the attack surface.
 
-## Enums
+The application also uses Docker Compose secrets to provide sensitive configuration to services without hardcoding credentials in the Compose configuration.
 
-The schema defines the following enums:
 
-* `PreferredLanguage`: `en`, `fr`, `zh`
-* `WorkspaceRole`: `OWNER`, `ADMIN`, `MEMBER`
-* `WorkspaceInviteStatus`: `PENDING`, `ACCEPTED`, `REJECTED`, `REVOKED`
-* `ConversationType`: `DIRECT`, `GROUP`, `CHANNEL`
-* `FriendshipStatus`: `PENDING`, `ACCEPTED`, `BLOCKED`
-* `NotificationType`: notification events related to friendships and workspaces
 
-## Database Constraints and Indexes
+---
+# Database Design
 
-The schema uses primary keys, foreign keys, unique constraints, indexes, and cascading rules.
+The application uses **PostgreSQL** and **Prisma ORM** to manage relational data across four main modules:
 
-Examples include:
+- **User & Identity** — user profiles, OAuth accounts, and friendships.
+- **Workspace & Documents** — workspaces, memberships, invitations, and documents.
+- **Messaging** — conversations, members, messages, and attachments.
+- **Notifications** — user notifications and notification preferences.
 
-* `User.email` and `User.username` are unique.
-* `Profile.userId` is unique, enforcing a one-to-one relationship between `User` and `Profile`.
-* `OAuthAccount` has a unique constraint on `(provider, providerId)`.
-* `Workspace.slug` is unique.
-* `WorkspaceMember` has a unique constraint on `(workspaceId, userId)`.
-* `ConversationMember` has a unique constraint on `(conversationId, userId)`.
-* `Friendship` has a unique constraint on `(requesterId, addresseeId)`.
-* `NotificationPreference` has a unique constraint on `(userId, type)`.
-* Notification and workspace membership queries use dedicated indexes.
-* Several relationships use cascading deletes to maintain referential integrity.
+The schema uses foreign keys, unique constraints, and indexes to maintain data integrity and support efficient queries.
 
-### Entity Relationship Overview
+<p align="center">
+  <img src="./docs/database-panorama.png" width="950" alt="Database Schema Overview">
+</p>
 
-```text
-                                  ┌──────────────┐
-                                  │     User     │
-                                  └──────┬───────┘
-             ┌──────────────────────────┼──────────────────────────┐
-             │             │            │             │            │
-             ▼             ▼            ▼             ▼            ▼
-         Profile     OAuthAccount   Workspace     Friendship   Notification
-                                      │
-                         ┌────────────┼──────────────┐
-                         │            │              │
-                         ▼            ▼              ▼
-                  WorkspaceMember  Invite       Document
-                         │
-                         ▼
-                       User
-
-Workspace
-   │
-   └── Conversation
-          │
-          ├── ConversationMember ── User
-          │
-          └── Message
-                │
-                └── Attachment
-
-User
- ├── NotificationPreference
- └── Attachment
-```
+For detailed entity relationships, foreign key constraints, and indexes, see the [Database Documentation](./docs/DATABASE.md).
 
 ---
 
@@ -688,53 +449,11 @@ The repository is organized as a pnpm monorepo:
 ```
 
 ---
+## Architecture
+The application follows a containerized full-stack architecture managed by Docker Compose. Nginx serves as the reverse proxy, connecting the React frontend and NestJS API to PostgreSQL and persistent file storage.
+For a detailed overview of the system architecture, service responsibilities, and networking, see the [Architecture Documentation](/docs/ARCHITECTURE.md).
 
-# Architecture Overview
 
-The application follows a full-stack architecture:
-
-```text
-┌──────────────────────┐
-│      Browser         │
-│                      │
-│ React + TypeScript   │
-└──────────┬───────────┘
-           │
-      HTTP / WebSocket
-      (Socket.IO)
-           │
-           ▼
-┌──────────────────────┐
-│      NestJS API      │
-│                      │
-│ Controllers/Services │
-└──────────┬───────────┘
-           │
-        Prisma ORM
-           │
-           ▼
-┌──────────────────────┐
-│     PostgreSQL       │
-└──────────────────────┘
-```
-
-For HTTPS deployments/development, Nginx is used as a reverse proxy:
-
-```text
-Browser
-   │
- HTTPS
-   ▼
- Nginx
-   │
-   ├── Frontend
-   │
-   └── NestJS API
-```
-
-Real-time communication is handled through Socket.IO alongside the HTTP API.
-
----
 
 # Resources
 

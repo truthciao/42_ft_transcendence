@@ -1,21 +1,27 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: docker.io/library/postgres:17-alpine
     container_name: transcendence-postgres
 
+    secrets:
+      - postgres_admin_password
+      - postgres_app_password
+      - postgres_migrator_password
+
     environment:
-      POSTGRES_USER: transcendence
-      POSTGRES_PASSWORD: transcendence
-      POSTGRES_DB: transcendence
-
-    ports:
-      - '5432:5432'
-
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_admin_password
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+     
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgresql/init:/docker-entrypoint-initdb.d:ro
+      - ./infra/postgresql/scripts:/infra/postgresql/scripts:ro
 
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U transcendence -d transcendence']
+      test: 
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
       interval: 5s
       timeout: 5s
       retries: 10
@@ -26,8 +32,12 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    secrets:
+      - postgres_migrator_password
+      - database_url_migrator
+
     environment:
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_migrator
 
     # 先由 dev-entrypoint 同步 workspace dependencies，
     # 再执行 Prisma generate + migrate。
@@ -37,8 +47,9 @@ services:
       - -c
       - |
         pnpm --dir apps/api exec prisma generate &&
-        pnpm --dir apps/api exec prisma migrate deploy
-
+        pnpm --dir apps/api exec prisma migrate deploy &&
+        sh /app/infra/postgresql/scripts/restrict-app-migrations.sh
+ 
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,11 +68,16 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
-    env_file:
-      - ./apps/api/.env
+    secrets:
+      - postgres_app_password
+      - database_url_app
+      - seed_admin_password
 
     environment:
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
+      SEED_ADMIN_PASSWORD_FILE: /run/secrets/seed_admin_password
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
+      SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:?SEED_ADMIN_USERNAME is required}
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -90,31 +106,38 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
+    secrets:
+      - postgres_app_password
+      - database_url_app
+      - google_client_secret
+      - jwt_secret
+      - mail_pass
+
     # 不要指定 user。
     # Docker / rootless Podman 使用各自默认的容器用户映射。
 
     environment:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
       WEB_ORIGIN: ${WEB_ORIGIN}
 
       NODE_ENV: development
       PORT: 3000
 
-      DATABASE_URL: postgresql://transcendence:transcendence@postgres:5432/transcendence
+      DATABASE_URL_SECRET_FILE: /run/secrets/database_url_app
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      GOOGLE_CLIENT_SECRET_FILE: /run/secrets/google_client_secret
+      MAIL_PASS_FILE: /run/secrets/mail_pass
 
-      JWT_SECRET: ${JWT_SECRET}
       GENERATE_PRISMA: 'true'
 
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
       MAIL_SECURE: ${MAIL_SECURE}
       MAIL_USER: ${MAIL_USER}
-      MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
 
-      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:5173}
+      APP_BASE_URL: ${APP_BASE_URL:-https://localhost:8443}
 
     command:
       - /app/docker/dev-entrypoint.sh
@@ -140,8 +163,6 @@ services:
       context: .
       dockerfile: Dockerfile.dev
 
-    # 同样不要指定 user。
-
     command:
       - /app/docker/dev-entrypoint.sh
       - pnpm
@@ -151,9 +172,6 @@ services:
       - vite
       - --host
       - 0.0.0.0
-
-    ports:
-      - '5173:5173'
 
     depends_on:
       api:
@@ -167,9 +185,12 @@ services:
 
 
   nginx:
-    image: nginx:1.27-alpine
+    image: docker.io/library/nginx:1.27-alpine
     container_name: transcendence-nginx
 
+    security_opt:
+      - no-new-privileges:true
+  
     ports:
       - '8080:80'
       - '8443:443'
@@ -182,6 +203,26 @@ services:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./infra/nginx/certs:/etc/nginx/certs:ro
 
+
+secrets:
+  postgres_admin_password:
+    file: ./infra/secrets/postgres_admin_password.txt
+  postgres_app_password:
+    file: ./infra/secrets/postgres_app_password.txt
+  postgres_migrator_password:
+    file: ./infra/secrets/postgres_migrator_password.txt
+  database_url_app:
+    file: ./infra/secrets/database_url_app.txt
+  database_url_migrator:
+    file: ./infra/secrets/database_url_migrator.txt
+  google_client_secret:
+    file: ./infra/secrets/google_client_secret.txt
+  jwt_secret:
+    file: ./infra/secrets/jwt_secret.txt
+  mail_pass:
+    file: ./infra/secrets/mail_pass.txt
+  seed_admin_password:
+    file: ./infra/secrets/seed_admin_password.txt
 
 volumes:
   postgres_data:

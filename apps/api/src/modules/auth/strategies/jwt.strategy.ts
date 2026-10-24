@@ -4,16 +4,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { AuthenticatedUser } from '../interfaces/authenticated-user.interface.js';
 import { JwtPayload } from '../interfaces/jwt-payload.interface.js';
+import { readSecretFile } from '../../../utils/read-secret.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly prisma: PrismaService) {
 
-  const jwtSecret = process.env.JWT_SECRET;
-
-  if (!jwtSecret) {
-    throw new Error('JWT_SECRET is not configured');
-  }
+    const jwtSecret = readSecretFile(process.env.JWT_SECRET_FILE);
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

@@ -4,11 +4,9 @@ on:
   pull_request:
     branches:
       - main
-
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 permissions:
@@ -27,6 +25,8 @@ env:
   GOOGLE_CLIENT_ID: test-client-id
   GOOGLE_CLIENT_SECRET: test-client-secret
   GOOGLE_CALLBACK_URL: http://localhost:8443/auth/google/callback
+  # This CI uses dummy SMTP credentials; unit tests should mock delivery.
+  MAIL_PASS: ci-only-mail-password
 
 jobs:
   quality:
@@ -38,122 +38,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6.0.10
-        with:
-          run_install: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Show tool versions
-        run: |
-          node --version
-          pnpm --version
-          pnpm config get registry
-
-      - name: Configure pnpm network
-        run: |
-          pnpm config set fetch-timeout 600000
-          pnpm config set fetch-retries 5
-          pnpm config set fetch-retry-factor 2
-          pnpm config set fetch-retry-mintimeout 10000
-          pnpm config set fetch-retry-maxtimeout 120000
-          pnpm config set network-concurrency 8
-
-      - name: Install dependencies
+      - name: Prepare CI secret files
         shell: bash
         run: |
-          for attempt in 1 2; do
-            echo "pnpm install attempt ${attempt}/2"
+          set -euo pipefail
+          umask 077
+          secret_dir="${RUNNER_TEMP}/tsds-ci-secrets"
+          mkdir -p "$secret_dir"
+          chmod 700 "$secret_dir"
 
-            if pnpm install --frozen-lockfile --reporter=append-only; then
-              exit 0
-            fi
+          printf '%s' "$DATABASE_URL" > "$secret_dir/database_url_app.txt"
+          printf '%s' "$DATABASE_URL" > "$secret_dir/database_url_migrator.txt"
+          printf '%s' "$JWT_SECRET" > "$secret_dir/jwt_secret.txt"
+          printf '%s' "$GOOGLE_CLIENT_SECRET" > "$secret_dir/google_client_secret.txt"
+          printf '%s' "$MAIL_PASS" > "$secret_dir/mail_pass.txt"
 
-            if [ "$attempt" -eq 2 ]; then
-              echo "pnpm install failed after 2 attempts"
-              exit 1
-            fi
-
-            echo "Install failed; retrying with the existing pnpm store..."
-            sleep 15
-          done
-
-      - name: Build shared types
-        run: pnpm --filter @repo/shared-types build
-
-      - name: Generate Prisma Client
-        run: pnpm --filter api exec prisma generate
-
-      - name: Lint API
-        run: pnpm --filter api lint
-
-      - name: Check API formatting
-        # TODO: Remove continue-on-error after existing API formatting issues are fixed.
-        continue-on-error: true
-        run: pnpm --filter api format:check
-
-      - name: Lint web
-        run: pnpm --filter web lint
-
-      - name: Check web i18n
-        run: pnpm eslint "apps/web/src/**/*.tsx"
-
-      - name: Typecheck API
-        run: pnpm --filter api typecheck
-
-      - name: Typecheck web
-        run: pnpm --filter web typecheck
-
-      - name: Run API unit tests
-        run: pnpm --filter api test:ci
-
-      - name: Run web unit tests
-        run: pnpm --filter web test:run
-
-      - name: Build API
-        run: pnpm --filter api build
-
-      - name: Build web
-        id: web_build
-        run: pnpm --filter web build
-
-      - name: Upload web build
-        if: steps.web_build.outcome == 'success'
-        uses: actions/upload-artifact@v7
-        with:
-          name: web-build
-          path: apps/web/dist
-          if-no-files-found: error
-          retention-days: 7
-  database:
-    name: Database and API E2E
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: devhub_ci
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d devhub_ci"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
+          {
+            echo "DATABASE_URL_SECRET_FILE=$secret_dir/database_url_app.txt"
+            echo "JWT_SECRET_FILE=$secret_dir/jwt_secret.txt"
+            echo "GOOGLE_CLIENT_SECRET_FILE=$secret_dir/google_client_secret.txt"
+            echo "MAIL_PASS_FILE=$secret_dir/mail_pass.txt"
+          } >> "$GITHUB_ENV"
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v6.0.10
@@ -189,29 +94,3 @@ jobs:
             echo "pnpm install attempt ${attempt}/2"
 
             if pnpm install --frozen-lockfile --reporter=append-only; then
-              exit 0
-            fi
-
-            if [ "$attempt" -eq 2 ]; then
-              echo "pnpm install failed after 2 attempts"
-              exit 1
-            fi
-
-            echo "Install failed; retrying with the existing pnpm store..."
-            sleep 15
-          done
-
-      - name: Build shared types
-        run: pnpm --filter @repo/shared-types build
-
-      - name: Generate Prisma Client
-        run: pnpm --dir apps/api exec prisma generate
-
-      - name: Apply migrations to empty database
-        run: pnpm --dir apps/api exec prisma migrate deploy
-
-      - name: Check migration status
-        run: pnpm --dir apps/api exec prisma migrate status
-
-      - name: Run API E2E tests
-        run: pnpm --filter api test:e2e

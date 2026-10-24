@@ -18,7 +18,7 @@ import { readSecretFile } from '../../utils/read-secret.js';
       global: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (_configService: ConfigService) => ({
         secret: readSecretFile(process.env.JWT_SECRET_FILE),
         signOptions: { expiresIn: '1d' },
       }),

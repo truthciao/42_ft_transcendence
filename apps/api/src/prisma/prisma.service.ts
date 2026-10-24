@@ -1,7 +1,34 @@
+
 import { readFileSync } from 'node:fs';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
+
+function getDatabaseUrl(): string {
+  const secretFile = process.env.DATABASE_URL_SECRET_FILE;
+
+  // Docker: prioritize the mounted secret file
+  if (secretFile) {
+    const databaseUrl = readFileSync(secretFile, 'utf8').trim();
+
+    if (!databaseUrl) {
+      throw new Error('Database connection configuration is empty');
+    }
+
+    return databaseUrl;
+  }
+
+  // CI / local development: use DATABASE_URL
+  const databaseUrl = process.env.DATABASE_URL?.trim();
+
+  if (databaseUrl) {
+    return databaseUrl;
+  }
+
+  throw new Error(
+    'Neither DATABASE_URL_SECRET_FILE nor DATABASE_URL is defined',
+  );
+}
 
 @Injectable()
 export class PrismaService
@@ -9,20 +36,8 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    const secretFile = process.env.DATABASE_URL_SECRET_FILE;
-
-    if (!secretFile) {
-       throw new Error('DATABASE_URL_SECRET_FILE is not defined');
-    }
-
-    const connectionString = readFileSync(secretFile, 'utf8').trim();
-
-     if (!connectionString) {
-        throw new Error('Database connection configuration is empty');
-    }
-
     const adapter = new PrismaPg({
-      connectionString,
+      connectionString: getDatabaseUrl(),
     });
 
     super({ adapter });

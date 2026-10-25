@@ -1,7 +1,17 @@
 #!/bin/sh
+
 set -eu
 
+# Verify that the database URL Secret is readable.
+if [ -n "${DATABASE_URL_SECRET_FILE:-}" ]; then
+    if [ ! -r "$DATABASE_URL_SECRET_FILE" ]; then
+        echo "Error: database URL secret is not readable." >&2
+        exit 1
+    fi
+fi
+
 echo "Synchronizing workspace dependencies..."
+
 
 pnpm install \
   --frozen-lockfile \

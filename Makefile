@@ -1,7 +1,7 @@
 .PHONY: help install dev start stop restart build lint typecheck \
         test test-api test-web test-e2e ci \
         db-up db-down db-logs db-migrate db-generate db-reset db-seed\
-        certs clean fclean
+        certs secrets clean fclean
 
 help:
 	@echo "Available commands:"
@@ -49,19 +49,23 @@ certs:
 			-subj "/CN=localhost" \
 			-addext "subjectAltName=DNS:localhost,IP:127.0.0.1"; \
 	fi
+
+# Prepare Podman Secrets
+secrets: 
+	sh infra/scripts/create-secrets.sh
 	
 # Full Docker environment
-start: certs
+start: certs secrets
 	docker compose --env-file ./apps/api/.env up -d
 
-rebuild: certs
+rebuild: certs secrets
 	docker compose --env-file ./apps/api/.env up -d --build --force-recreate -V
 
 stop:
-	docker compose down
+	docker compose --env-file ./apps/api/.env down
 
-restart: certs
-	docker compose restart
+restart: secrets certs
+	docker compose --env-file ./apps/api/.env restart
 
 build:
 	pnpm build
@@ -90,8 +94,8 @@ ci:
 	pnpm --filter web test:run
 	pnpm build
 
-db-up:
-	docker compose up -d postgres
+db-up: secrets
+	docker compose --env-file ./apps/api/.env up -d postgres
 
 db-down:
 	docker compose stop postgres
@@ -116,6 +120,6 @@ clean:
 	rm -rf apps/web/dist
 
 fclean: stop clean
-	docker compose down -v --remove-orphans
+	docker compose --env-file ./apps/api/.env down -v --remove-orphans
 
 re: fclean start

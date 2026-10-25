@@ -133,48 +133,6 @@ pnpm install
 
 ---
 
-# Environment Variables
-
-Backend environment variables are stored in:
-
-```text
-apps/api/.env
-```
-
-A local development configuration may contain:
-
-```env
-DATABASE_URL="postgresql://transcendence:transcendence@localhost:5432/transcendence?schema=public"
-```
-
-Additional environment variables may be required depending on the enabled features.
-
-For Google OAuth:
-
-```env
-GOOGLE_CLIENT_ID=<your-client-id>
-GOOGLE_CLIENT_SECRET=<your-client-secret>
-GOOGLE_CALLBACK_URL=https://localhost:8443/api/auth/google/callback
-```
-
-## JWT Secret
-
-Generate a secure local JWT secret with:
-
-```bash
-openssl rand -base64 32
-```
-
-Then add the generated value to the appropriate environment variable, for example:
-
-```env
-JWT_SECRET=<generated-secret>
-```
-
-Never commit secrets or `.env` files.
-
----
-
 # Local Development
 
 Local development runs the frontend and backend directly on the host machine while PostgreSQL can be provided by Docker.
@@ -274,108 +232,30 @@ and redirects to HTTPS.
 
 The local certificate is self-signed, so browsers may display a certificate warning.
 
----
 
-# Google OAuth
+# Environment Variables
+Create your local environment configuration from the example provided by the project:
 
-Google OAuth can be used to test authentication.
-
-Create:
-
-```text
-apps/api/.env
+```bash
+cp apps/api/.env.example apps/api/.env
 ```
 
-and configure:
+Configure the required variables in apps/api/.env before starting the application. Replace the placeholder values with your own credentials and settings, including Google OAuth credentials, database passwords, and the JWT secret.
 
-```env
-GOOGLE_CLIENT_ID=<your-client-id>
-GOOGLE_CLIENT_SECRET=<your-client-secret>
-GOOGLE_CALLBACK_URL=https://localhost:8443/api/auth/google/callback
+For details, see the
+[Environment Configuration Guide](environment-configuration.md).
+
+The .env file and generated secret files are local configuration files and must not be committed to version control.
+
+Once the configuration is complete, start the application:
+
+```bash
+make start
 ```
 
-The Google OAuth client must have the following Authorized Redirect URI:
+The Makefile automatically generates the required Docker Compose secret files before starting the services.
 
-```text
-https://localhost:8443/api/auth/google/callback
-```
 
-Do not commit OAuth credentials.
-
-# Email Configuration
-
-The application supports email delivery through an SMTP server.
-
-Email configuration is **optional**. If the SMTP configuration is not provided, email delivery is skipped and the application can continue running without email functionality.
-
-Configure the following variables in:
-
-```text
-apps/api/.env
-```
-
-```env
-# Email Configuration
-MAIL_HOST="smtp.gmail.com"
-MAIL_PORT="587"
-MAIL_SECURE="false"
-MAIL_USER="your-email@gmail.com"
-MAIL_PASS="your-app-password"
-MAIL_FROM="noreply@yourdomain.com"
-```
-
-## Environment Variables
-
-| Variable      | Description                                                   |
-| ------------- | ------------------------------------------------------------- |
-| `MAIL_HOST`   | SMTP server hostname                                          |
-| `MAIL_PORT`   | SMTP server port                                              |
-| `MAIL_SECURE` | Whether the SMTP connection uses a secure connection          |
-| `MAIL_USER`   | SMTP authentication username                                  |
-| `MAIL_PASS`   | SMTP authentication password or application-specific password |
-| `MAIL_FROM`   | Email address used as the sender                              |
-
-### Gmail
-
-For Gmail SMTP, the typical configuration is:
-
-```env
-MAIL_HOST="smtp.gmail.com"
-MAIL_PORT="587"
-MAIL_SECURE="false"
-```
-
-When using a Gmail account, use a Google **App Password** for `MAIL_PASS` when required by the account's security configuration. Do not use or commit your normal Google account password.
-
-### Optional Configuration
-
-No email configuration is required to start the application.
-
-When the SMTP variables are not configured:
-
-```text
-Application starts normally
-        ↓
-Email functionality is requested
-        ↓
-Email delivery is skipped
-        ↓
-Application continues running
-```
-
-This allows developers and evaluators to run the project without configuring an external SMTP provider.
-
-### Security
-
-Never commit SMTP credentials to Git.
-
-Keep them in:
-
-```text
-apps/api/.env
-```
-
-and make sure `.env` files are excluded from version control.
 
 ---
 
@@ -459,7 +339,21 @@ make ci
 
 # PostgreSQL
 
-Connect to the PostgreSQL container:
+## Database Users and Permissions
+
+The project uses separate PostgreSQL accounts for different responsibilities:
+
+- `transcendence`: Administrative account with superuser privileges. It should not be used for normal API requests.
+- `transcendence_app`: Application runtime account used by the API to access business data. It is not a superuser and cannot create objects in the `public` schema.
+- `transcendence_migrator`: Account used by the migration service to apply Prisma migrations.
+
+In Docker Compose, the API uses `DATABASE_URL_APP_DOCKER`, while the migration service uses `DATABASE_URL_MIGRATOR_DOCKER`.
+
+This separation follows the principle of least privilege and limits the permissions available to the application at runtime.
+
+Keep database credentials in the local environment configuration. Never commit real database passwords to Git.</WritingBlock>
+
+## Connect to the PostgreSQL container:
 
 ```bash
 docker compose exec postgres psql \
@@ -637,37 +531,9 @@ When modifying shared schemas, make sure both applications continue to compile c
 
 # Application Architecture
 
-The project follows a monorepo architecture:
+The application follows a containerized full-stack architecture managed by Docker Compose. Nginx serves as the reverse proxy, connecting the React frontend and NestJS API to PostgreSQL and persistent file storage.
+For a detailed overview of the system architecture, service responsibilities, and networking, see the [Architecture Documentation](ARCHITECTURE.md).
 
-```text
-                    ┌──────────────────┐
-                    │     Browser      │
-                    └────────┬─────────┘
-                             │
-                             │ HTTPS
-                             ▼
-                    ┌──────────────────┐
-                    │      Nginx       │
-                    │ Reverse Proxy    │
-                    └───────┬───┬──────┘
-                            │   │
-                     Web    │   │    API
-                            │   │
-              ┌─────────────┘   └─────────────┐
-              ▼                               ▼
-      ┌────────────────┐              ┌────────────────┐
-      │ React / Vite   │              │    NestJS      │
-      │   Frontend     │              │    Backend     │
-      └────────────────┘              └───────┬────────┘
-                                              │
-                                              │ Prisma
-                                              ▼
-                                      ┌────────────────┐
-                                      │  PostgreSQL    │
-                                      └────────────────┘
-```
-
-Realtime functionality is handled through Socket.IO between the frontend and backend.
 
 ---
 

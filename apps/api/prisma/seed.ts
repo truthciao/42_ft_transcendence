@@ -3,6 +3,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '../src/generated/prisma/enums.js';
+import { readSecretFile } from '../src/utils/read-secret.js';
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -18,7 +19,9 @@ const prisma = new PrismaClient({ adapter });
 
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL;
 const SEED_ADMIN_USERNAME = process.env.SEED_ADMIN_USERNAME;
-const SEED_ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD;
+const SEED_ADMIN_PASSWORD = readSecretFile(
+  process.env.SEED_ADMIN_PASSWORD_FILE,
+);
 
 async function ensureAdminUser() {
   if (!SEED_ADMIN_EMAIL || !SEED_ADMIN_USERNAME || !SEED_ADMIN_PASSWORD) {

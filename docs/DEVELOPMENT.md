@@ -2,63 +2,75 @@
 
 This document contains development, testing, database, Docker, and infrastructure instructions for **ft_transcendence**.
 
-For evaluator-oriented setup and application usage, see the root `README.md`.
+For evaluator-oriented setup and application usage, see the root [README.md](../README.md).
 
 ---
 
-# Project Structure
+## Project Structure
+
+The project is organized as a pnpm monorepo, with separate frontend and backend applications, shared TypeScript types, and infrastructure configuration.
 
 ```text
 transcendence/
 ├── apps/
-│   ├── api/                 # NestJS backend
-│   └── web/                 # React frontend
-├── packages/                # Shared packages
-├── docs/                    # Documentation
-├── infra/                   # Infrastructure configuration
-├── scripts/                 # Development and CI scripts
-├── compose.yaml             # Docker Compose configuration
-├── Makefile                 # Common development commands
-└── pnpm-workspace.yaml      # pnpm workspace configuration
+│   ├── api/
+│   │   ├── prisma/
+│   │   │   ├── migrations/       # Database schema migrations
+│   │   │   ├── schema.prisma     # Prisma data models
+│   │   │   └── seed.ts           # Database seed data
+│   │   ├── src/
+│   │   │   ├── modules/          # Feature modules and business logic
+│   │   │   ├── prisma/           # Prisma service and module
+│   │   │   ├── config/           # Backend configuration
+│   │   │   ├── generated/        # Generated Prisma Client
+│   │   │   └── main.ts           # API entry point
+│   │   └── test/                 # End-to-end tests
+│   │
+│   └── web/
+│       └── src/
+│           ├── api/              # HTTP API client functions
+│           ├── auth/             # Authentication context and provider
+│           ├── components/       # Reusable UI components
+│           ├── hooks/            # Custom React hooks
+│           ├── layouts/          # Application layouts
+│           ├── lib/              # Shared utilities and client setup
+│           ├── pages/            # Application pages
+│           ├── realtime/         # Realtime connection and context
+│           ├── router/           # Route configuration
+│           └── i18n/             # Internationalization and translations
+│
+├── packages/
+│   └── shared-types/
+│       └── src/                  # Shared TypeScript types and Zod schemas
+│
+├── docs/                         # Architecture, database and development docs
+├── infra/
+│   ├── nginx/                    # Reverse proxy and TLS configuration
+│   ├── postgresql/               # Database initialization and role scripts
+│   └── scripts/                  # Infrastructure automation
+├── docker/
+│   └── dev-entrypoint.sh         # Development container entry point
+│
+├── compose.yaml                  # Container orchestration
+├── Dockerfile.dev                 # Development image
+├── Makefile                      # Common development commands
+├── package.json                  # Root workspace configuration
+└── pnpm-workspace.yaml            # pnpm workspace definition
 ```
 
----
+### Directory Responsibilities
 
-# Tech Stack
-
-## Frontend
-
-* React
-* Vite
-* TypeScript
-* React Router
-* TanStack Query
-* i18next / react-i18next
-* shadcn/ui
-* Tailwind CSS
-
-## Backend
-
-* NestJS
-* Prisma ORM
-* Zod
-* nestjs-zod
-* Socket.IO
-
-## Database
-
-* PostgreSQL
-
-## Infrastructure
-
-* Docker
-* Docker Compose
-* Nginx
-* HTTPS / TLS
-
-## Monorepo
-
-* pnpm Workspace
+| Directory | Purpose |
+|---|---|
+| `apps/api/src/modules/` | Backend features, including authentication, chat, friends, documents, notifications, users and workspaces |
+| `apps/api/prisma/` | Database schema, migrations and seed scripts |
+| `apps/api/test/` | End-to-end API tests |
+| `apps/web/src/components/` | Reusable frontend components grouped by feature |
+| `apps/web/src/hooks/` | Custom hooks for data fetching, mutations and realtime interactions |
+| `apps/web/src/api/` | Frontend functions for calling backend endpoints |
+| `packages/shared-types/` | Types and Zod schemas shared between the frontend and backend |
+| `infra/` | Reverse proxy, PostgreSQL initialization and infrastructure scripts |
+| `docs/` | Technical documentation and development guides |
 
 ---
 
@@ -101,18 +113,37 @@ Verify:
 pnpm -v
 ```
 
----
+## Container Engine
 
-## Docker
+Choose **one** of the following container setups.
 
-Install Docker Desktop on Windows/macOS or Docker Engine and Docker Compose on Linux.
+### Option 1: Docker
 
-Verify:
+Install Docker Engine and the Docker Compose plugin on Linux, or Docker Desktop on Windows/macOS.
+
+Verify the required tools:
 
 ```bash
 docker --version
 docker compose version
+make --version
+openssl version
 ```
+
+### Option 2: Podman
+
+Install Podman and a compatible Compose provider. On Linux, the required packages and setup may vary by distribution.
+
+Verify the required tools:
+
+```bash
+podman --version
+podman compose --version
+make --version
+openssl version
+```
+
+**Note:** Depending on your Podman setup, you may use Docker Compose with Podman's Docker-compatible API instead of `podman compose`. Ensure that your Compose implementation supports the features used by this project, including Compose secrets and service dependencies.
 
 ---
 
@@ -121,7 +152,7 @@ docker compose version
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:truthciao/42_ft_transcendence.git
 cd transcendence
 ```
 

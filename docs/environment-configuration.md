@@ -2,15 +2,37 @@
 
 ## Google OAuth
 
+Google sign-in requires your own OAuth 2.0 credentials.
+
+1. Create or select a project in the [Google Cloud Console](https://console.cloud.google.com/).
+2. Configure the OAuth consent screen and create an OAuth client ID for a web application.
+3. Add the callback URL below to the authorized redirect URIs of your OAuth client.
+4. Copy your credentials into `apps/api/.env`.
+
 ```env
 GOOGLE_CLIENT_ID="your_google_client_id_here"
 GOOGLE_CLIENT_SECRET="your_google_client_secret_here"
-GOOGLE_CALLBACK_URL=https://localhost:8443/api/auth/google/callback
+GOOGLE_CALLBACK_URL="https://localhost:8443/api/auth/google/callback"
 ```
 
-Configure your Google OAuth credentials in the Google Cloud Console. Ensure that the callback URL matches the authorized redirect URI configured for your OAuth client.
+The callback URL must match the URL configured in Google Cloud Console and the application configuration. Update it if you use a different deployment URL.
+
+For more information, see the [Google OAuth 2.0 documentation](https://developers.google.com/identity/protocols/oauth2).
+
+Never commit your OAuth client secret to version control.
+
 
 ## PostgreSQL
+
+Generate strong, unique passwords for the PostgreSQL administrator, application, and migration accounts using OpenSSL:
+
+```bash
+openssl rand -base64 32
+```
+
+Generate a **separate password for each account** and use the corresponding value consistently throughout the configuration.
+
+When inserting a password into a PostgreSQL connection URL, URL-encode any special characters as required. Use the original password value in the corresponding password environment variable, not its URL-encoded form.
 
 ### Administrator Connection
 

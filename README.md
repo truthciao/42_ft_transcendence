@@ -186,247 +186,117 @@ For detailed entity relationships, foreign key constraints, and indexes, see the
 
 The following table summarizes the main implemented features and their primary contributors.
 
-| Feature                    | Primary Contributor(s) | Description                                        |
-| -------------------------- | ---------------------- | -------------------------------------------------- |
-| User Registration          | yanzhao                | Standard account creation                          |
-| User Authentication        | yanzhao                | Login, logout, and authenticated sessions          |
-| Google OAuth 2.0           | yanzhao                | Remote authentication through Google               |
-| Two-Factor Authentication  | yanzhao                | Additional authentication security                 |
-| User Profiles              | zhwu                   | Profile information and account-related UI         |
-| Avatar Upload              | zhwu                   | Upload and serve user avatars                      |
-| User Search                | yanzhao / team         | Search for other users                             |
-| Friendship System          | yanzhao                | Send, accept, reject, and remove friendships       |
-| Online Presence            | yshi                   | Real-time online user presence                     |
-| Direct Communication       | yanzhao / yshi         | User-to-user communication                         |
-| Group Communication        | yanzhao / team         | Group conversations                                |
-| Workspace Management       | All                    | Create and manage organizations/workspaces         |
-| Workspace Invitations      | All                    | Invite users and manage invitation status          |
-| Workspace Roles            | yshi                   | OWNER, ADMIN, and MEMBER permissions               |
-| Advanced Permissions       | yshi                   | Role-based workspace access control                |
-| Workspace Channels         | All                    | Create and manage workspace communication channels |
-| Notifications              | zhwu                   | Notification creation, retrieval, and lifecycle    |
-| Notification Preferences   | zhwu                   | Configure notification delivery preferences        |
-| Real-Time Notifications    | zhwu / yshi            | Deliver relevant events without page refresh       |
-| Collaborative Documents    | zhwu                   | Workspace document creation and management         |
-| Real-Time Collaboration    | zhwu                   | Real-time collaborative document functionality     |
-| File Upload and Management | hanwang                | Upload and manage application files                |
-| Message Attachments        | hanwang                | Attach files to messages                           |
-| Internationalization       | zhwu                   | English, French, and Chinese interfaces            |
-| Browser Compatibility      | All                    | Support for additional browsers                    |
-| Custom Design System       | yshi                   | Reusable components and consistent visual language |
-| HTTPS                      | helin                  | Secure development environment using Nginx/TLS     |
+| Feature | Contributor(s) | Description |
+|---|---|---|
+| User Registration & Authentication | yanzhao | Account creation, login, logout, and authenticated sessions |
+| Google OAuth 2.0 | yanzhao | Remote authentication through Google |
+| Two-Factor Authentication | yanzhao | Additional authentication security |
+| User Profiles & Avatar Upload | zhwu | Profile information and avatar management |
+| User Search | yanzhao / team | Search for other users |
+| Friendship System | zhwu | Send, accept, reject, and remove friendships |
+| Online Presence | yshi | Real-time online user presence |
+| Direct Communication | yanzhao / yshi | User-to-user communication |
+| Group Communication | yanzhao / team | Group conversations |
+| Workspace Management | All | Workspaces, invitations, and member management |
+| Workspace Roles & Permissions | yshi | Workspace roles and role-based access control |
+| Workspace Channels | All | Create and manage workspace communication channels |
+| Notification System | zhwu / yshi / yanzhao | Notification lifecycle, preferences, and real-time delivery |
+| Collaborative Documents | zhwu | Document management and real-time collaboration |
+| File Upload & Management | hanwang | File uploads, storage management, and message attachments |
+| Internationalization | zhwu | English, French, and Chinese interfaces |
+| Browser Compatibility | All | Support for additional browsers |
+| Custom Design System | yshi | Reusable components and consistent visual language |
+| HTTPS | helin | Secure development environment using Nginx/TLS |
 
 ---
+# 42 Curriculum Modules
 
-# Modules
+The project implements modules from the 42 ft_transcendence subject across web development, user management, and internationalization.
 
-The project includes the following modules selected from the 42 ft_transcendence subject.
-
-Points are calculated according to the subject:
-
-* **Major module = 2 points**
-* **Minor module = 1 point**
-
-## Web
-
-| Module                                                                        | Type  | Points | Contributor(s) | Implementation                                                                  |
-| ----------------------------------------------------------------------------- | ----- | -----: | -------------- | ------------------------------------------------------------------------------- |
-| Use a framework for both the frontend and backend                             | Major |      2 | helin          | React is used for the frontend and NestJS for the backend                       |
-| Implement real-time features using WebSockets or similar technology           | Major |      2 | yshi           | Socket.IO is used for real-time events and presence                             |
-| Allow users to interact with other users                                      | Major |      2 | yanzhao        | User search, friendships, communication, and interaction features               |
-| Use an ORM for the database                                                   | Minor |      1 | helin          | Prisma is used for PostgreSQL database access                                   |
-| A complete notification system for all creation, update, and deletion actions | Minor |      1 | zhwu           | Notification models, services, preferences, and real-time notification delivery |
-| Real-time collaborative features                                              | Minor |      1 | zhwu           | Collaborative workspace document functionality                                  |
-| Custom-made design system with reusable components                            | Minor |      1 | yshi           | Custom reusable UI components and consistent design tokens                      |
-| File upload and management system                                             | Minor |      1 | hanwang        | File upload, metadata management, and message attachments                       |
-
-**Web subtotal: 11 points**
-
-## Accessibility and Internationalization
-
-| Module                          | Type  | Points | Contributor(s) | Implementation                                                                                                              |
-| ------------------------------- | ----- | -----: | -------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Support for multiple languages  | Minor |      1 | zhwu           | The application supports English, French, and Chinese using i18next/react-i18next.                                          |
-| Support for additional browsers | Minor |      1 | All            | The application is developed and tested with multiple modern browsers to ensure consistent functionality and compatibility. |
-
-**Accessibility & Internationalization subtotal: 2 points**
-
-## User Management
-
-| Module                                                                    | Type  | Points | Contributor(s) | Implementation                                                   |
-| ------------------------------------------------------------------------- | ----- | -----: | -------------- | ---------------------------------------------------------------- |
-| Standard user management and authentication                               | Major |      2 | yanzhao        | Registration, login, logout, sessions, and account management    |
-| Advanced permissions system                                               | Major |      2 | yshi           | Workspace roles and role-based access control                    |
-| An organization system                                                    | Major |      2 | All            | Workspaces, members, invitations, roles, channels, and documents |
-| Implement remote authentication with OAuth 2.0                            | Minor |      1 | yanzhao        | Google OAuth 2.0 integration                                     |
-| Implement a complete 2FA (Two-Factor Authentication) system for the users | Minor |      1 | yanzhao        | Two-factor authentication workflow and account security          |
-
-**User Management subtotal: 8 points**
-
-## Total
-
-| Category                             | Points |
-| ------------------------------------ | -----: |
-| Web                                  |     11 |
-| Accessibility & Internationalization |      2 |
-| User Management                      |      8 |
-| **Total**                            | **21** |
-
-The module implementations were developed as part of the overall application and integrated across frontend, backend, database, and real-time services where required.
+See [Modules & Evaluation](./docs/MODULE.md) for the complete module list, contributors, implementation details, and point breakdown.
 
 ---
-
 # Individual Contributions
 
-## yshi — Product Owner
+The following table summarizes each team member's main responsibilities and contributions.
 
-### Responsibilities
+| Contributor | Role | Main Responsibilities |
+|---|---|---|
+| yshi | Product Owner | Product planning, design system, workspace permissions, and real-time functionality |
+| yanzhao | Project Manager | Project coordination, user authentication, user interaction, OAuth 2.0, and 2FA |
+| helin | Tech Lead | Technical architecture, React/NestJS integration, Prisma, PostgreSQL, and HTTPS |
+| zhwu | Developer | User profiles, notifications, collaborative documents, and internationalization |
+| hanwang | Developer | File uploads, attachment management, and file-related integration |
 
-* Product planning and feature priorities
-* Custom-made design system
-* Advanced permissions system
-* Real-time functionality
-* Product-level technical and UX decisions
+### yshi — Product Owner
 
-### Main Contributions
+**Main Contributions**
+- Designed reusable UI components and a custom design system.
+- Implemented workspace roles and role-based access control.
+- Developed real-time presence functionality.
+- Coordinated product priorities and feature planning.
 
-* Custom reusable UI components and design system
-* Workspace permission and role-based access control
-* Real-time presence and related real-time functionality
-* Product coordination and feature prioritization
+**Technical Challenge**
 
-### Challenges
+Maintaining consistent permissions across workspace features while keeping the application easy to use.
 
-One of the main challenges was maintaining consistent permissions across workspace-related features while keeping the application easy to use.
+**Solution**
 
-The solution was to establish a common workspace role system based on:
+Established a shared workspace role system (`OWNER`, `ADMIN`, `MEMBER`) and reused the permission mechanism across workspace operations.
 
-```text
-OWNER
-ADMIN
-MEMBER
-```
+### yanzhao — Project Manager
 
-and reuse the same permission mechanism across workspace operations.
+**Main Contributions**
+- Implemented user authentication, Google OAuth 2.0, and 2FA.
+- Developed direct messaging business logic using the existing Socket.IO gateway. 
+- Designed and refactored frontend UI components and React hooks for real-time messaging.
+- Coordinated project tasks and tracked progress.
 
----
+### helin — Tech Lead
 
-## yanzhao — Project Manager
+**Main Contributions**
+- Integrated React and NestJS into the application architecture.
+- Integrated Prisma ORM with PostgreSQL.
+- Established the shared frontend/backend development structure.
+- Configured HTTPS using Nginx and TLS.
+- Contributed to technical decisions and code reviews.
 
-### Responsibilities
+### zhwu — Developer
 
-* Project coordination
-* Task distribution
-* Progress tracking
-* User management and authentication
-* User interaction
-* OAuth 2.0
-* Two-factor authentication
+**Main Contributions**
+- Developed user profile functionality and profile information management.
+- Implemented notifications and notification preferences.
+- Developed collaborative document functionality.
+- Added English, French, and Chinese localization.
 
-### Main Contributions
+**Technical Challenges**
+- Synchronizing collaborative document activity between connected users without page refreshes.
+- Keeping translation resources consistent across supported languages.
 
-* Standard user authentication
-* User interaction features
-* Friendship functionality
-* Google OAuth 2.0
-* Two-factor authentication
-* Project coordination and task organization
+**Solutions**
+- Used Socket.IO-based communication together with document state management to synchronize collaborative activity.
+- Maintained separate translation resources for English, French, and Chinese.
 
-### Challenges
+### hanwang — Developer
 
-Authentication required coordination between frontend and backend, including authenticated sessions and protected API access.
+**Main Contributions**
+- Implemented file upload functionality and attachment management.
+- Integrated message attachments into application features.
+- Managed the integration of uploaded files with the application.
 
-The implementation separates authentication responsibilities between the frontend authentication state and backend authentication/authorization mechanisms.
+**Technical Challenge**
 
----
+Managing uploaded files alongside their database metadata.
 
-## helin — Tech Lead
+**Solution**
 
-### Responsibilities
-
-* Technical architecture
-* Frontend/backend framework integration
-* ORM and database architecture
-* Technical decisions
-* Code review and technical coordination
-* HTTPS infrastructure
-
-### Main Contributions
-
-* React and NestJS application architecture
-* Prisma ORM integration
-* PostgreSQL database integration
-* Shared frontend/backend development structure
-* HTTPS configuration using Nginx and TLS
-* Technical decisions and code review
+Separated file storage from database metadata, allowing the application to track file information such as name, URL, type, size, uploader, and associated message.
 
 ---
 
-## zhwu — Developer
+## Project Structure
 
-### Responsibilities
-
-* User profiles
-* Notification system
-* Real-time collaborative features
-* Internationalization
-
-### Main Contributions
-
-* User profile functionality
-* Profile information management
-* Notification system
-* Notification preferences
-* Real-time notification-related functionality
-* Collaborative document functionality
-* Multilingual support
-* English, French, and Chinese localization
-
-### Challenges
-
-Real-time collaboration requires changes made by one user to be propagated to other connected users without requiring a page refresh.
-
-The project uses Socket.IO-based real-time communication together with document state management to synchronize collaborative activity.
-
-Internationalization also requires keeping translated resources consistent across supported languages. Translation keys are maintained separately for English, French, and Chinese.
-
----
-
-## hanwang — Developer
-
-### Responsibilities
-
-* File upload and management system
-* File-related application integration
-* General development and feature integration
-
-### Main Contributions
-
-* File upload functionality
-* Attachment management
-* Message attachments
-* Integration of uploaded files into application features
-
-### Challenges
-
-Uploaded files require both file-system handling and database metadata.
-
-The implementation separates the stored file from its database metadata, allowing the application to track information such as:
-
-```text
-fileName
-fileUrl
-fileType
-fileSize
-uploaderId
-messageId
-```
-
----
-
-# Project Structure
-
-The repository is organized as a pnpm monorepo:
+The repository is organized as a pnpm monorepo, separating the frontend, backend, shared types, and infrastructure configuration.
 
 ```text
 42_ft_transcendence/
@@ -435,13 +305,14 @@ The repository is organized as a pnpm monorepo:
 │   └── api/                 # NestJS backend
 │
 ├── packages/
-│   └── shared-types/        # Shared TypeScript/Zod types and schemas
+│   └── shared-types/        # Shared TypeScript types and Zod schemas
 │
 ├── docs/                    # Project and development documentation
-├── infra/                   # Infrastructure configuration
+├── infra/                   # Infrastructure and secrets configuration
 ├── scripts/                 # Development and validation scripts
+├── docker/                  # Container-related scripts and configuration
 │
-├── compose.yaml             # Docker Compose configuration
+├── compose.yaml             # Container orchestration
 ├── Makefile                 # Common project commands
 ├── package.json             # Root workspace configuration
 ├── pnpm-workspace.yaml      # pnpm workspace definition
@@ -461,21 +332,22 @@ For a detailed overview of the system architecture, service responsibilities, an
 
 The project was developed using official documentation and technical references, including:
 
-* React documentation
-* TypeScript documentation
-* Vite documentation
-* React Router documentation
-* TanStack Query documentation
-* NestJS documentation
-* Prisma documentation
-* PostgreSQL documentation
-* Socket.IO documentation
-* Zod documentation
-* i18next documentation
-* Docker documentation
-* Docker Compose documentation
-* Nginx documentation
-* OAuth 2.0 / Google OAuth documentation
+* [Quick Start of React](https://react.dev/learn)
+* [Using typescript in React](https://react.dev/learn/typescript)
+* [Vite documentation](https://vite.dev/guide/)
+* [React Router](https://www.w3schools.com/react/react_router.asp)
+* [TanStack Query](https://tanstack.com/query/latest)
+* [Overview of NestJS framework](https://docs.nestjs.com/)
+* [Deploying database changes with Prisma Migrate](https://www.prisma.io/docs/orm/v7/prisma-client/deployment/deploy-database-changes-with-prisma-migrate)
+* [Implement Prisma service inside Docker](https://www.prisma.io/docs/guides/deployment/docker)
+* [PostgreSQL documentation](https://www.postgresql.org/docs/)
+* [Getting started of Socket.IO](https://socket.io/docs/v4/tutorial/introduction)
+* [Zod documentation](https://zod.dev/basics)
+* [Getting started of i18next documentation](https://www.i18next.com/overview/getting-started)
+* [Docker secret setup](https://docs.docker.com/reference/cli/docker/secret/)
+* [Docker Compose Quickstart](https://docs.docker.com/compose/gettingstarted/#step-4-enable-compose-watch-for-live-updates)
+* [Beginner's Guide of Nginx](https://nginx.org/en/docs/beginners_guide.html)
+* [Google OAuth documentation](https://developers.google.com/identity/protocols/oauth2)
 
 These resources were used to understand APIs, frameworks, configuration, database operations, authentication, real-time communication, and development best practices.
 
@@ -504,7 +376,7 @@ AI was used as an assistant for research, explanation, debugging, and review. Th
 
 Additional technical information, including detailed development commands, Prisma workflows, database operations, Docker usage, HTTPS configuration, and troubleshooting, is available in:
 
-`docs/DEVELOPMENT.md`
+[DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ---
 

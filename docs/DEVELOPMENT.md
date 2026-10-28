@@ -163,107 +163,6 @@ pnpm install
 ```
 
 ---
-
-# Local Development
-
-Local development runs the frontend and backend directly on the host machine while PostgreSQL can be provided by Docker.
-
-## 1. Start PostgreSQL
-
-Start only the database:
-
-```bash
-docker compose up -d postgres
-```
-
----
-
-## 2. Generate Prisma Client
-
-```bash
-pnpm --filter api exec prisma generate
-```
-
----
-
-## 3. Apply Database Migrations
-
-```bash
-pnpm --filter api exec prisma migrate dev
-```
-
----
-
-## 4. Start the Application
-
-```bash
-pnpm dev
-```
-
-The default local development endpoints are:
-
-| Service  | URL                   |
-| -------- | --------------------- |
-| Frontend | http://localhost:5173 |
-| Backend  | http://localhost:3000 |
-
----
-
-# Docker Development
-
-Docker Compose can run the complete development environment.
-
-## Build and Start
-
-```bash
-docker compose up --build
-```
-
-Run in the background:
-
-```bash
-docker compose up -d --build
-```
-
-The Docker environment includes:
-
-* PostgreSQL
-* Database migration
-* NestJS API
-* React / Vite frontend
-* Nginx HTTPS reverse proxy
-
----
-
-# HTTPS Development
-
-The application is served through Nginx over HTTPS.
-
-Start the complete environment:
-
-```bash
-make start
-```
-
-The Makefile automatically generates a local development certificate when necessary.
-
-The application is available at:
-
-```text
-https://localhost:8443
-```
-
-HTTP is available on:
-
-```text
-http://localhost:8080
-```
-
-and redirects to HTTPS.
-
-The local certificate is self-signed, so browsers may display a certificate warning.
-
-
 # Environment Variables
 Create your local environment configuration from the example provided by the project:
 
@@ -278,15 +177,46 @@ For details, see the
 
 The .env file and generated secret files are local configuration files and must not be committed to version control.
 
-Once the configuration is complete, start the application:
+# Containerized Development
+The project uses Docker Compose or a compatible Podman Compose provider to run the development environment.
+
+## Prerequisites
+
+Install one of the following container engines:
+
+- Docker Engine with Docker Compose.
+- Podman with a compatible Compose provider.
+
+GNU Make and OpenSSL are also required.
+
+The Compose provider must support the features used by the project, including secrets and service dependencies.
+
+## Build and Start
+
+From the project root, run:
 
 ```bash
 make start
 ```
 
-The Makefile automatically generates the required Docker Compose secret files before starting the services.
+The Makefile prepares the local development certificate and generates the required secret files before starting the environment.
 
+The Compose environment includes:
 
+- PostgreSQL
+- Database migration service
+- NestJS API
+- React / Vite frontend
+- Nginx HTTPS reverse proxy
+
+## Access the Application
+
+The application is served through Nginx over HTTPS.
+
+- HTTPS: `https://localhost:8443`
+- HTTP: `http://localhost:8080` (redirects to HTTPS)
+
+The local development certificate is self-signed, so your browser may display a certificate warning.
 
 ---
 
@@ -298,7 +228,6 @@ The project provides a Makefile for common development operations.
 make start      # Build and start the full Docker stack
 make stop       # Stop all containers
 make restart    # Restart the Docker stack
-make dev        # Run the project locally
 make test       # Run unit tests
 make test-e2e   # Run API end-to-end tests
 make ci         # Run local CI checks
@@ -382,15 +311,23 @@ In Docker Compose, the API uses `DATABASE_URL_APP_DOCKER`, while the migration s
 
 This separation follows the principle of least privilege and limits the permissions available to the application at runtime.
 
-Keep database credentials in the local environment configuration. Never commit real database passwords to Git.</WritingBlock>
+Keep database credentials in the local environment configuration. Never commit real database passwords to Git.
 
-## Connect to the PostgreSQL container:
+## Connect to the PostgreSQL Container
+
+Make sure the PostgreSQL container is running, then connect using the administrative account:
 
 ```bash
-docker compose exec postgres psql \
+docker compose --env-file ./apps/api/.env exec postgres psql \
     -U transcendence \
     -d transcendence
 ```
+
+Enter `POSTGRES_PASSWORD` if prompted.
+
+**Note:** The administrative account is for database management only. Do not use it for normal API requests.
+
+
 
 ## List tables
 
@@ -410,35 +347,49 @@ docker compose exec postgres psql \
 \q
 ```
 
----
+## Database Migrations
 
-# Prisma Workflow
+When developing database changes, use `prisma migrate dev` to create a migration.
 
-The following commands are primarily intended for local development.
-
-Whenever the Prisma schema changes, create a migration:
+**Prerequisite:** Make sure the PostgreSQL container is running and the database is ready before creating a migration.
 
 ```bash
-pnpm --filter api exec prisma migrate dev
+# only if necessary
+make db-up
 ```
 
-Generate or regenerate the Prisma Client:
+**1. Temporarily allow the migrator to create databases**
+
+Run the command below. Enter `POSTGRES_PASSWORD` [(check out in environment-configuraton)](./environment-configuration.md) when prompted to access PostgreSQL and change the migrator's permissions.
 
 ```bash
-pnpm --filter api exec prisma generate
+docker compose --env-file ./apps/api/.env exec postgres \
+  sh -c 'psql -U "$POSTGRES_USER" -d postgres -c "ALTER ROLE transcendence_migrator CREATEDB;"'
 ```
 
-If only the generated Prisma Client needs to be updated:
+**2. Create and apply the migration**
+
+Replace `add_your_change` with a short name describing your change.
 
 ```bash
-pnpm --filter api exec prisma generate
+docker compose --env-file ./apps/api/.env run --rm migrate \
+  /app/docker/dev-entrypoint.sh sh -c \
+  'pnpm --dir apps/api exec prisma generate && pnpm --dir apps/api exec prisma migrate dev --name add_your_change'
 ```
 
-Run the database seed:
+**3. Remove the temporary permission**
 
 ```bash
-pnpm --filter api exec prisma db seed
+docker compose --env-file ./apps/api/.env exec postgres \
+  sh -c 'psql -U "$POSTGRES_USER" -d postgres -c "ALTER ROLE transcendence_migrator NOCREATEDB;"'
 ```
+
+**4. Check the migration**
+
+Review the generated SQL in `apps/api/prisma/migrations/` before committing the migration and schema changes.
+
+
+> **Important:** Always run step 3 after the migration attempt, even if it fails.
 
 ---
 
@@ -447,71 +398,15 @@ pnpm --filter api exec prisma db seed
 ## Stop containers
 
 ```bash
-docker compose down
+docker compose --env-file ./apps/api/.env down
 ```
 
 ## Remove database volume
 
-> Warning: This deletes all local PostgreSQL data.
+> **Warning:** This deletes all local PostgreSQL data.
 
 ```bash
-docker compose down -v
-```
-
-## View running containers
-
-```bash
-docker compose ps
-```
-
-## View all logs
-
-```bash
-docker compose logs -f
-```
-
-## View backend logs
-
-```bash
-docker compose logs -f api
-```
-
-## View frontend logs
-
-```bash
-docker compose logs -f web
-```
-
-## View database logs
-
-```bash
-docker compose logs -f postgres
-```
-
-## Restart a specific service
-
-```bash
-docker compose restart postgres
-docker compose restart api
-docker compose restart web
-```
-
-## Rebuild containers
-
-```bash
-docker compose up --build
-```
-
-## Rebuild without cache
-
-```bash
-docker compose build --no-cache
-```
-
-## Remove orphan containers
-
-```bash
-docker compose down --remove-orphans
+docker compose --env-file ./apps/api/.env down -v
 ```
 
 ---
@@ -565,34 +460,32 @@ When modifying shared schemas, make sure both applications continue to compile c
 The application follows a containerized full-stack architecture managed by Docker Compose. Nginx serves as the reverse proxy, connecting the React frontend and NestJS API to PostgreSQL and persistent file storage.
 For a detailed overview of the system architecture, service responsibilities, and networking, see the [Architecture Documentation](ARCHITECTURE.md).
 
-
----
-
 # Troubleshooting
 
 ## Check containers
 
 ```bash
-docker compose ps
+docker compose --env-file ./apps/api/.env ps
 ```
 
 ## Check API logs
 
 ```bash
-docker compose logs -f api
+docker compose --env-file ./apps/api/.env logs -f api
 ```
 
 ## Check frontend logs
 
 ```bash
-docker compose logs -f web
+docker compose --env-file ./apps/api/.env logs -f web
 ```
 
 ## Check database logs
 
 ```bash
-docker compose logs -f postgres
+docker compose --env-file ./apps/api/.env logs -f postgres
 ```
+
 
 ## Restart the environment
 
@@ -609,7 +502,7 @@ make fclean
 make start
 ```
 
-> This removes Docker volumes and local database data.
+> **Warning:** This removes Docker volumes and local database data.
 
 ---
 

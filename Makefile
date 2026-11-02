@@ -1,4 +1,4 @@
-.PHONY: help install dev start stop restart build lint typecheck \
+.PHONY: help install start stop restart build lint typecheck \
         test test-api test-web test-e2e ci \
         db-up db-down db-logs db-migrate db-generate db-reset db-seed\
         certs secrets clean fclean
@@ -6,7 +6,6 @@
 help:
 	@echo "Available commands:"
 	@echo "  make install       Install dependencies"
-	@echo "  make dev           Start API and web locally in development mode"
 	@echo "  make start         Start the full Docker stack"
 	@echo "  make stop          Stop the Docker stack"
 	@echo "  make restart       Restart the Docker stack"
@@ -30,10 +29,6 @@ help:
 
 install:
 	pnpm install
-
-# Local development
-dev:
-	pnpm dev
 
 certs:
 	@mkdir -p infra/nginx/certs

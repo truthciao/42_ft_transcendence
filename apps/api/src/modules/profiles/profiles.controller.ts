@@ -18,6 +18,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
 import { extname } from 'node:path';
 import { diskStorage } from 'multer';
+import { fileTypeFromFile } from 'file-type';
+import { unlink } from 'node:fs/promises';
+
+const allowedTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+];
 
 @UseGuards(JwtAuthGuard)
 @Controller('profiles')
@@ -53,31 +61,50 @@ export class ProfilesController {
       limits: {
         fileSize: 5 * 1024 * 1024,
       },
-
-      fileFilter: (_req, file, callback) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-
-        if (!allowedTypes.includes(file.mimetype)) {
-          callback(
-            new BadRequestException(
-              'Only JPEG, PNG, and WebP images are allowed',
-            ),
-            false,
-          );
-          return;
-        }
-
-        callback(null, true);
-      },
     }),
   )
-  uploadAvatar(
+  async uploadAvatar(
     @CurrentUser('userId') userId: number,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (!file) {
       throw new BadRequestException('Avatar file is required');
     }
+
+    let result;
+
+    try
+    {
+      result = await fileTypeFromFile(file.path);
+    }
+    catch (error)
+    {
+        console.error('Failed to idnetify avatar file type');
+
+        await unlink(file.path);
+
+        throw new BadRequestException('Invalid image file');
+    }
+
+    const extension = extname(file.originalname).toLowerCase();
+
+    const allowedExtensions: Record<string, string[]> = {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
+    };
+
+    const validExtensions = allowedExtensions[result?.mime ?? ''];
+
+    if (
+      !result || 
+      !allowedTypes.includes(result.mime) || 
+      !validExtensions?.includes(extension)
+    ) {
+      await unlink(file.path);
+      throw new BadRequestException('Invalid image file');
+    }
+
     return this.profilesService.uploadAvatar(userId, file);
   }
 

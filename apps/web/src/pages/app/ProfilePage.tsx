@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import {
   profileFormSchema,
+  avatarFileSchema,
   type ProfileFormValues,
   type UpdateProfilePayload,
 } from '@repo/shared-types';
@@ -29,6 +30,7 @@ export function ProfilePage() {
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
+    mode: 'onChange',
     defaultValues: {
       displayName: '',
       bio: '',
@@ -57,6 +59,14 @@ export function ProfilePage() {
     const file = event.target.files?.[0];
 
     if (!file) return;
+
+    const result = avatarFileSchema.safeParse(file);
+
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      event.target.value = '';
+      return;
+    }
 
     uploadAvatarMutation.mutate(file, {
       onSuccess: () => {

@@ -18,7 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
 import { extname } from 'node:path';
 import { diskStorage } from 'multer';
-import { fileTypeFromFile } from 'file-type';
+import { fileTypeFromFile, type FileTypeResult } from 'file-type';
 import { unlink } from 'node:fs/promises';
 
 const allowedTypes = [
@@ -71,13 +71,13 @@ export class ProfilesController {
       throw new BadRequestException('Avatar file is required');
     }
 
-    let result;
+    let result: FileTypeResult | undefined;
 
     try
     {
       result = await fileTypeFromFile(file.path);
     }
-    catch (error)
+    catch 
     {
         console.error('Failed to idnetify avatar file type');
 
@@ -94,7 +94,9 @@ export class ProfilesController {
       'image/webp': ['.webp'],
     };
 
-    const validExtensions = allowedExtensions[result?.mime ?? ''];
+    const validExtensions = result
+      ? allowedExtensions[result.mime]
+      : undefined;
 
     if (
       !result || 

@@ -6,10 +6,41 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { realpathSync } from 'node:fs';
 
 @Injectable()
 export class FilesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private resolveUploadPath(fileUrl: string): string | null {
+  const uploadsRoot = path.resolve(process.cwd(), 'uploads');
+
+  if (
+    !fileUrl.startsWith('/uploads/attachments/') &&
+    !fileUrl.startsWith('/uploads/avatars/')
+  ) {
+    return null;
+  }
+
+  const filePath = path.resolve(process.cwd(), `.${fileUrl}`);
+
+  if (!filePath.startsWith(`${uploadsRoot}${path.sep}`)) {
+    return null;
+  }
+
+  try {
+    const realUploadsRoot = realpathSync(uploadsRoot);
+    const realFilePath = realpathSync(filePath);
+
+    if (!realFilePath.startsWith(`${realUploadsRoot}${path.sep}`)) {
+      return null;
+    }
+
+    return realFilePath;
+  } catch {
+    return null;
+  }
+}
 
   async saveFileRecord(
     userId: number,
@@ -44,10 +75,11 @@ export class FilesService {
 
     if (attachment.uploaderId !== userId) {
       throw new ForbiddenException('PERMISSION_DENIED');
-    }
+    } 
 
-    const filePath = path.join(process.cwd(), attachment.fileUrl);
-    if (fs.existsSync(filePath)) {
+    const filePath = this.resolveUploadPath(attachment.fileUrl);
+
+    if (filePath && fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
 
@@ -64,9 +96,9 @@ export class FilesService {
 
   deletePhysicalFiles(fileUrls: string[]) {
     for (const fileUrl of fileUrls) {
-      const filePath = path.join(process.cwd(), fileUrl);
+      const filePath = this.resolveUploadPath(fileUrl);
 
-      if (fs.existsSync(filePath)) {
+      if (filePath && fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
     }
@@ -76,9 +108,9 @@ export class FilesService {
       return;
     }
 
-    const filePath = path.join(process.cwd(), fileUrl);
+    const filePath = this.resolveUploadPath(fileUrl);
 
-    if (fs.existsSync(filePath)) {
+    if (filePath && fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
   }

@@ -12,10 +12,8 @@ export const multerOptions = {
       file: Express.Multer.File,
       cb: (error: Error | null, destination: string) => void,
     ) => {
-      const query = req.query as { context?: string };
-      const context = query?.context || 'chat';
-      const subFolder = context === 'avatar' ? 'avatars' : 'attachments';
-      const targetPath = `./uploads/${subFolder}`;
+      const targetPath = './uploads/attachments';
+
 
       // 如果对应的子文件夹不存在，自动递归创建
       if (!existsSync(targetPath)) {
@@ -46,9 +44,13 @@ export const multerOptions = {
       'image/jpeg',
       'image/png',
       'image/gif',
+      'image/webp',
       'application/pdf',
       'application/zip',
+      'application/x-zip-compressed',
     ];
+
+
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {

@@ -51,8 +51,10 @@ export class ProfilesService {
   }
 
   async uploadAvatar(userId: number, file: Express.Multer.File) {
-    let profile;
-    let updatedProfile;
+    let profile: { avatarUrl: string | null } | null;
+    let updatedProfile: Awaited<
+      ReturnType<typeof this.prisma.profile.update>
+    >;
 
     const avatarUrl = `/uploads/avatars/${file.filename}`;
 
@@ -67,14 +69,14 @@ export class ProfilesService {
       }
 
       updatedProfile = await this.prisma.profile.update({
-          where: { userId },
-          data: { avatarUrl },
-        });
-      } catch (error) {
-        await unlink(file.path).catch(() => {});
-        throw error;
-      }
-
+        where: { userId },
+        data: { avatarUrl },
+      });
+    } catch (error) {
+      await unlink(file.path).catch(() => {});
+      throw error;
+    }
+ 
     if (profile.avatarUrl) {
       const oldFilename = profile.avatarUrl.split('/').pop();
 

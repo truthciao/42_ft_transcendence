@@ -3,6 +3,47 @@ import { useTranslation } from 'react-i18next';
 import { Paperclip } from 'lucide-react';
 import axios from 'axios'; // 因为需要进度条， 回退到直接使用axios,原生的 fetch API 目前还不支持监听上传进度（Upload Progress）
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+// Chat allowed upload file
+const CHAT_FILE_TYPES: Record<string, string[]> = {
+  'image/jpeg': ['jpg', 'jpeg'],
+  'image/png': ['png'],
+  'image/gif': ['gif'],
+  'image/webp': ['webp'],
+  'application/pdf': ['pdf'],
+  'application/zip': ['zip'],
+  'application/x-zip-compressed': ['zip'],
+};
+
+function validateFile(
+  file: File, 
+): string | null {
+  // 1. Check file size
+  if (file.size > MAX_FILE_SIZE) {
+    return 'size';
+  }
+
+  // 2. Get allowed file types according to context
+  const allowedTypes = CHAT_FILE_TYPES;
+
+  // 3. Extract file extension
+  const extension = file.name.split('.').pop()?.toLowerCase();
+
+  if (!extension) {
+    return 'type';
+  }
+
+  // 4. Check extension and MIME type
+  const allowedExtensions = allowedTypes[file.type];
+
+  if (!allowedExtensions || !allowedExtensions.includes(extension)) {
+    return 'type';
+  }
+
+  return null;
+}
+
 // 保持和 http.ts 一致的 Base URL 逻辑
 const API_BASE_URI = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -15,12 +56,10 @@ export interface AttachmentType {
 
 interface FileUploadProps {
   onUploadSuccess: (attachment: AttachmentType) => void;
-  context?: 'chat' | 'avatar';
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
   onUploadSuccess,
-  context = 'chat',
 }) => {
   const { t } = useTranslation();
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -30,8 +69,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
+    const validationError = validateFile(file);
+
+    if (validationError === 'size') {
       alert(t('fileUpload.sizeLimit', 'File size cannot exceed 5MB!'));
+      e.target.value = '';
+      return;
+    }
+
+    if (validationError === 'type') {
+      alert(t('errors.unsupportedFileType', 'Unsupported file type.'));
       e.target.value = '';
       return;
     }
@@ -45,7 +92,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       const token = localStorage.getItem('access_token');
 
       const response = await axios.post(
-        `${API_BASE_URI}/files/upload?context=${context}`,
+        `${API_BASE_URI}/files/upload?`,
         formData,
         {
           headers: {
@@ -107,7 +154,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         id="chat-file-upload"
         className="hidden"
         onChange={handleFileChange}
-        accept="image/*, application/pdf, .zip"
+        accept="image/jpeg, image/png, image/gif, image/webp, application/pdf, .zip"
+
         disabled={isUploading}
       />
       <label

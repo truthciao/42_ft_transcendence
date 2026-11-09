@@ -51,25 +51,29 @@ export class ProfilesService {
   }
 
   async uploadAvatar(userId: number, file: Express.Multer.File) {
-    const profile = await this.prisma.profile.findUnique({
-      where: { userId },
-      select: {
-        avatarUrl: true,
-      },
-    });
-
-    if (!profile) {
-      throw new NotFoundException('Profile not found');
-    }
+    let profile;
+    let updatedProfile;
 
     const avatarUrl = `/uploads/avatars/${file.filename}`;
 
-    const updatedProfile = await this.prisma.profile.update({
-      where: { userId },
-      data: {
-        avatarUrl,
-      },
-    });
+    try {
+      profile = await this.prisma.profile.findUnique({
+        where: { userId },
+        select: { avatarUrl: true },
+      });
+
+      if (!profile) {
+        throw new NotFoundException('Profile not found');
+      }
+
+      updatedProfile = await this.prisma.profile.update({
+          where: { userId },
+          data: { avatarUrl },
+        });
+      } catch (error) {
+        await unlink(file.path).catch(() => {});
+        throw error;
+      }
 
     if (profile.avatarUrl) {
       const oldFilename = profile.avatarUrl.split('/').pop();

@@ -3,10 +3,20 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 const existsSyncMock = jest.fn<() => boolean>();
 const unlinkSyncMock = jest.fn<() => void>();
+const realpathSyncMock = jest.fn<(filePath: string) => string>();
 
 jest.unstable_mockModule('fs', () => ({
   existsSync: existsSyncMock,
   unlinkSync: unlinkSyncMock,
+}));
+
+const actualNodeFs = jest.requireActual<typeof import('node:fs')>(
+  'node:fs',
+);
+
+jest.unstable_mockModule('node:fs', () => ({
+  ...actualNodeFs,
+  realpathSync: realpathSyncMock,
 }));
 
 const { FilesService } = await import('./files.service.js');
@@ -24,6 +34,8 @@ describe('FilesService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    realpathSyncMock.mockImplementation((filePath) => filePath);
 
     service = new FilesService(prisma as any);
   });

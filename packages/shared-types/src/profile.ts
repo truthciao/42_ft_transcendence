@@ -45,6 +45,29 @@ export const profileFormSchema = z.object({
   preferredLanguage: z.enum(['en', 'fr', 'zh']),
 });
 
+const ALLOWED_AVATAR_TYPES: Record<string, string[]> = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/webp': ['.webp'],
+};
+
+export const avatarFileSchema = z
+  .instanceof(File)
+  .refine(
+    (file) => file.size <= 5 * 1024 * 1024,
+    'Avatar must not exceed 5 MB',
+  )
+  .refine(
+    (file) => {
+      const extension = file.name
+        .slice(file.name.lastIndexOf('.'))
+        .toLowerCase();
+
+      return ALLOWED_AVATAR_TYPES[file.type]?.includes(extension) ?? false;
+    },
+    'File type and extension do not match',
+  );
+
 export type UpdateProfilePayload = z.infer<typeof updateProfileSchema>;
 
 export type ProfileResponse = z.infer<typeof profileResponseSchema>;

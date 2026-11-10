@@ -1,5 +1,12 @@
 import { jest } from '@jest/globals';
-import { MailService } from './mail.service.js';
+
+const readSecretFileMock = jest.fn<(path: string | undefined) => string>();
+
+jest.unstable_mockModule('../../utils/read-secret.js', () => ({
+  readSecretFile: readSecretFileMock,
+}));
+
+const { MailService } = await import('./mail.service.js');
 
 describe('MailService', () => {
   const configService = {
@@ -9,23 +16,25 @@ describe('MailService', () => {
   let service: MailService;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+  jest.clearAllMocks();
 
-    configService.get.mockImplementation((key: string) => {
-      const config: Record<string, string> = {
-        MAIL_HOST: 'smtp.example.com',
-        MAIL_PORT: '587',
-        MAIL_USER: 'test@example.com',
-        MAIL_PASS: 'password',
-        MAIL_SECURE: 'false',
-        MAIL_FROM: 'test@example.com',
-      };
+  // Mock Secret file reading
+  readSecretFileMock.mockReturnValue('password');
 
-      return config[key];
-    });
+  configService.get.mockImplementation((key: string) => {
+    const config: Record<string, string> = {
+      MAIL_HOST: 'smtp.example.com',
+      MAIL_PORT: '587',
+      MAIL_USER: 'test@example.com',
+      MAIL_SECURE: 'false',
+      MAIL_FROM: 'test@example.com',
+    };
 
-    service = new MailService(configService as never);
+    return config[key];
   });
+
+  service = new MailService(configService as never);
+});
 
   it('escapes dynamic values in notification email HTML', () => {
     const html = (

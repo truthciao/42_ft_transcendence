@@ -13,7 +13,7 @@ describe('MailService', () => {
     get: jest.fn<(key: string) => string | undefined>(),
   };
 
-  let service: MailService;
+  let service: InstanceType<typeof MailService>;
 
   beforeEach(() => {
   jest.clearAllMocks();

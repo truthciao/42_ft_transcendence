@@ -7,7 +7,7 @@ import { AuthService } from './auth.service.js';
 import { UsersModule } from '../users/users.module.js';
 import { JwtStrategy } from './strategies/jwt.strategy.js';
 import { GoogleStrategy } from './strategies/google.strategy.js';
-import { readSecretFile } from '../../utils/read-secret.js';
+import { getSecret } from '../../utils/read-secret.js';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { readSecretFile } from '../../utils/read-secret.js';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (_configService: ConfigService) => ({
-        secret: readSecretFile(process.env.JWT_SECRET_FILE),
+        secret: getSecret('JWT_SECRET', 'JWT_SECRET_FILE'),
         signOptions: { expiresIn: '1d' },
       }),
     }),

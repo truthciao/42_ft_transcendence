@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 import escapeHtml from 'escape-html';
-import { readSecretFile } from '../../utils/read-secret.js';
+import { getSecret } from '../../utils/read-secret.js';
 
 type NotificationEmailDataMap = {
   FRIEND_REQUEST_RECEIVED: {
@@ -50,7 +50,7 @@ export class MailService {
     const host = this.configService.get<string>('MAIL_HOST');
     const port = this.configService.get<string>('MAIL_PORT');
     const user = this.configService.get<string>('MAIL_USER');
-    const pass = readSecretFile(process.env.MAIL_PASS_FILE);
+    const pass = getSecret('MAIL_PASS', 'MAIL_PASS_FILE');
     const secure = this.configService.get<string>('MAIL_SECURE') === 'true';
 
     // Allow local SMTP servers like Mailhog to work without credentials.

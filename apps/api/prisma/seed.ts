@@ -1,15 +1,11 @@
-import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '../src/generated/prisma/enums.js';
-import { readSecretFile } from '../src/utils/read-secret.js';
+import { getSecret } from '../src/utils/read-secret.js';
+import { getDatabaseUrl } from '../src/config/database.config.js';
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error('DATABASE_URL is not defined');
-}
+const connectionString = getDatabaseUrl('app');
 
 const adapter = new PrismaPg({
   connectionString,
@@ -17,11 +13,25 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter });
 
+function getSeedAdminPassword(): string {
+  const secretFile = process.env.SEED_ADMIN_PASSWORD_FILE;
+
+  if (secretFile) {
+    return getSecret('SEED_ADMIN_PASSWORD', 'SEED_ADMIN_PASSWORD_FILE');
+  }
+
+  const password = process.env.SEED_ADMIN_PASSWORD?.trim();
+
+  if (!password) {
+    throw new Error('SEED_ADMIN_PASSWORD is not defined');
+  }
+
+  return password;
+}
+
 const SEED_ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL;
 const SEED_ADMIN_USERNAME = process.env.SEED_ADMIN_USERNAME;
-const SEED_ADMIN_PASSWORD = readSecretFile(
-  process.env.SEED_ADMIN_PASSWORD_FILE,
-);
+const SEED_ADMIN_PASSWORD = getSeedAdminPassword();
 
 async function ensureAdminUser() {
   if (!SEED_ADMIN_EMAIL || !SEED_ADMIN_USERNAME || !SEED_ADMIN_PASSWORD) {

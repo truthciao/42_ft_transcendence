@@ -1,15 +1,26 @@
 import { readFileSync } from 'node:fs';
 
-export function readSecretFile(path: string | undefined): string {
-  if (!path) {
-    throw new Error('Secret file path is not configured');
-  }
+export function getSecret(
+    envName: string,
+    fileEnvName: string,
+): string {
+    const secretFile = process.env[fileEnvName];
 
-  const secret = readFileSync(path, 'utf8').trim();
+    if (secretFile) {
+        const secret = readFileSync(secretFile, 'utf8').trim();
 
-  if (!secret) {
-    throw new Error('Secret file is empty');
-  }
+        if (!secret) {
+            throw new Error(`${fileEnvName} points to an empty secret file`);
+        }
 
-  return secret;
+        return secret;
+    }
+
+    const secret = process.env[envName]?.trim();
+
+    if (!secret) {
+        throw new Error(`${envName} is not defined`);
+    }
+
+    return secret;
 }
